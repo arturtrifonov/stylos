@@ -1,0 +1,11 @@
+{
+  "name": "stylos-design-system",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Stylos Design System — documentation, Figma variable snapshots, and Figma Agent skill sources.",
+  "scripts": {
+    "build:skills": "node tools/build-skills.mjs",
+    "validate:skills": "node tools/build-skills.mjs --check"
+  },
+  "license": "UNLICENSED"
+}
