@@ -1,0 +1,29 @@
+# GENERATED FILE. Do not hand-edit structural fields — re-running
+# tools/import-component-registry.mjs overwrites this file from the source
+# CSV. The "notes" field is preserved verbatim from the source and is safe
+# to extend, but will be replaced wholesale on next import, not merged.
+#
+# See docs/components/registry/README.md for schema and workflow.
+
+id: "List"
+name: "List"
+level: "widget"
+role: "content"
+flow_behavior:
+  - "fill"
+children: []
+parents:
+  - "Accordion / Container"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
+notes: ""
+import:
+  batch: 4
+  ready: false

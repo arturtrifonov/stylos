@@ -1,0 +1,23 @@
+# GENERATED FILE. Do not hand-edit structural fields — re-running
+# tools/import-component-registry.mjs overwrites this file from the source
+# CSV. The "notes" field is preserved verbatim from the source and is safe
+# to extend, but will be replaced wholesale on next import, not merged.
+#
+# See docs/components/registry/README.md for schema and workflow.
+
+id: "Pull to Refresh"
+name: "Pull to Refresh"
+level: "object"
+role: "output"
+flow_behavior:
+  - "fill"
+  - "absolute"
+children:
+  - "Icon"
+  - "Button Inner"
+  - "Loader"
+parents: []
+notes: ""
+import:
+  batch: 7
+  ready: false

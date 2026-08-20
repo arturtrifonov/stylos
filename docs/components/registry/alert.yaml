@@ -1,0 +1,64 @@
+# GENERATED FILE. Do not hand-edit structural fields — re-running
+# tools/import-component-registry.mjs overwrites this file from the source
+# CSV. The "notes" field is preserved verbatim from the source and is safe
+# to extend, but will be replaced wholesale on next import, not merged.
+#
+# See docs/components/registry/README.md for schema and workflow.
+
+id: "Alert"
+name: "Alert"
+level: "widget"
+role: "output"
+flow_behavior:
+  - "fill"
+children:
+  - "Avatar"
+  - "Badge"
+  - "Button Basic"
+  - "Button Inner"
+  - "Button Dropdown"
+  - "Button Group"
+  - "Button Icon"
+  - "Checkbox"
+  - "Code Snippet"
+  - "Icon"
+  - "Image"
+  - "Indicator"
+  - "Input Text"
+  - "Input Date"
+  - "Input Search"
+  - "Input Number"
+  - "Input Color"
+  - "Input Datetime"
+  - "Input Email"
+  - "Input Password"
+  - "Input Time"
+  - "Input Telephone"
+  - "Input URL"
+  - "Link"
+  - "List"
+  - "Multiselect"
+  - "Person"
+  - "Tag"
+  - "Text Area"
+  - "Loader"
+  - "Tree"
+  - "Toggle"
+  - "Radio"
+  - "Slider"
+  - "Select"
+  - "Scrollbar"
+  - "Progress"
+parents:
+  - "Accordion / Container"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
+notes: ""
+import:
+  batch: 1
+  ready: true

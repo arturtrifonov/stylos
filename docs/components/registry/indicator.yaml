@@ -1,0 +1,67 @@
+# GENERATED FILE. Do not hand-edit structural fields — re-running
+# tools/import-component-registry.mjs overwrites this file from the source
+# CSV. The "notes" field is preserved verbatim from the source and is safe
+# to extend, but will be replaced wholesale on next import, not merged.
+#
+# See docs/components/registry/README.md for schema and workflow.
+
+id: "Indicator"
+name: "Indicator"
+level: "primitive"
+role: "content"
+flow_behavior:
+  - "fixed"
+children: []
+parents:
+  - "Accordion / Container"
+  - "Accordion / Header"
+  - "Avatar"
+  - "Chips"
+  - "Link"
+  - "Tag"
+  - "Tooltip"
+  - "Asset"
+  - "Button Basic"
+  - "Button Dropdown"
+  - "Button Group"
+  - "Button Icon"
+  - "Code Editor / Text Area"
+  - "Edit Mode / View"
+  - "Edit Mode / Edit"
+  - "Input Text"
+  - "Input Date"
+  - "Input Search"
+  - "Input Number"
+  - "Input Color"
+  - "Input Datetime"
+  - "Input Email"
+  - "Input Password"
+  - "Input Time"
+  - "Input Telephone"
+  - "Input URL"
+  - "Multiselect"
+  - "Select"
+  - "Select Cascade"
+  - "Text Area"
+  - "Progress"
+  - "Table / TD Text"
+  - "Table / TD Link"
+  - "Table / TD Boolean"
+  - "Table / TD Tags"
+  - "Table / TD Person"
+  - "Table / TD Image"
+  - "Table / TH Text"
+  - "Tabs / Tab Item"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
+notes: ""
+import:
+  batch: 1
+  ready: true

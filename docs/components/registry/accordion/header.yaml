@@ -1,0 +1,28 @@
+# GENERATED FILE. Do not hand-edit structural fields — re-running
+# tools/import-component-registry.mjs overwrites this file from the source
+# CSV. The "notes" field is preserved verbatim from the source and is safe
+# to extend, but will be replaced wholesale on next import, not merged.
+#
+# See docs/components/registry/README.md for schema and workflow.
+
+id: "Accordion / Header"
+name: "Accordion / Header"
+level: "object"
+role: "trigger"
+flow_behavior:
+  - "fill"
+children:
+  - "Badge"
+  - "Button Inner"
+  - "Icon"
+  - "Indicator"
+  - "Tag"
+  - "Toggle"
+  - "Avatar"
+  - "Loader"
+parents:
+  - "Accordion"
+notes: ""
+import:
+  batch: 1
+  ready: true

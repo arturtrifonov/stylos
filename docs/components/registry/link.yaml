@@ -1,0 +1,50 @@
+# GENERATED FILE. Do not hand-edit structural fields — re-running
+# tools/import-component-registry.mjs overwrites this file from the source
+# CSV. The "notes" field is preserved verbatim from the source and is safe
+# to extend, but will be replaced wholesale on next import, not merged.
+#
+# See docs/components/registry/README.md for schema and workflow.
+
+id: "Link"
+name: "Link"
+level: "element"
+role: "trigger"
+flow_behavior:
+  - "hug"
+children:
+  - "Icon"
+  - "Badge"
+  - "Indicator"
+  - "Loader"
+parents:
+  - "Accordion / Container"
+  - "Input Text"
+  - "Input Date"
+  - "Input Search"
+  - "Input Number"
+  - "Input Color"
+  - "Input Datetime"
+  - "Input Email"
+  - "Input Password"
+  - "Input Time"
+  - "Input Telephone"
+  - "Input URL"
+  - "Multiselect"
+  - "Select"
+  - "Select Cascade"
+  - "Text Area"
+  - "Table / TD Link"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
+  - "Breadcrumbs"
+notes: ""
+import:
+  batch: 1
+  ready: true
