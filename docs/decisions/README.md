@@ -10,3 +10,4 @@ Filename pattern: `NNNN-short-title.md`, numbered sequentially, never renumbered
 | --- | --- | --- |
 | [0001](0001-figma-connection-model.md) | Figma connection model | Accepted |
 | [0002](0002-skill-version-supersession.md) | Skill version supersession (naming-cleanup v0.5 → v0.7) | Accepted |
+| [0003](0003-component-levels-and-size-grid-scope.md) | Component levels and size-grid scope | Accepted |

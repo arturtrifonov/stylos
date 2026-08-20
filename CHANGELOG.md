@@ -13,6 +13,7 @@ All notable changes to the Stylos Design System project (foundations, components
 - Skill compiler (`tools/build-skills.mjs`) producing `skills/dist/stylos-figma-agent.md`.
 - Decision record: [Figma connection model](docs/decisions/0001-figma-connection-model.md).
 - Interim decision: use Material Symbols as the icon source until a native Stylos icon set exists — see [docs/foundations/icons.md](docs/foundations/icons.md).
+- Decision record: [Component levels and size-grid scope](docs/decisions/0003-component-levels-and-size-grid-scope.md) — confirms the five-level component taxonomy (Primitive, Element, Object, Widget, Layout) from the Airtable component registry, and confirms that shared size grids apply to Element and Object only, permanently — not an open gap for Widget/Layout, by design (widgets vary too much in size to share a rule; the skill can't know what kind of widget it's looking at). `docs/foundations/sizing.md` and `docs/foundations/typography.md` updated accordingly.
 
 ### Changed
 

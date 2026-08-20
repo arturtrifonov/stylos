@@ -15,10 +15,12 @@ Usually-adjustable: text-field/search-field/panel/card width, supported dialog w
 
 Resizing: preserve `Hug contents` unless a documented pattern supports `Fill container`; use `Fill container` only on an axis meant to respond to its parent; preserve min/max constraints and required aspect ratios; never scale an instance to hit a reference measurement.
 
+**Shared size grids apply to the Element and Object architectural levels only, permanently.** See [docs/decisions/0003-component-levels-and-size-grid-scope.md](../decisions/0003-component-levels-and-size-grid-scope.md). Widget- and Layout-level components (Modal, Alert, Breadcrumbs, Header…) are too heterogeneous in size for a shared rule to mean anything — there's no ground truth to extract, so sizing for those is documented per-component rather than derived from a foundation grid. Primitive-level components have preferred sizes, not a strict grid.
+
 ## Open
 
-- The final size scale, shared with [spacing](spacing.md) (master doc [§27, item 3](../master-document.md#27-open-decisions)).
+- The final Element/Object size scale, shared with [spacing](spacing.md) (master doc [§27, item 3](../master-document.md#27-open-decisions)). Note this scale only ever needs to cover Element and Object — see above.
 
 ## TODO
 
-- [ ] Document current confirmed size variable values once the scale is settled.
+- [ ] Document current confirmed size variable values (Element/Object) once the scale is settled.
