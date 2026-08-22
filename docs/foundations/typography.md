@@ -1,21 +1,52 @@
 # Typography
 
-Status: **Partially confirmed.** See master doc [§11](../master-document.md#11-typography-system) for the normative rules.
+Status: **Rules confirmed; typeface bound in Figma but not ratified; naming inconsistencies to reconcile.**
 
 ## Confirmed
 
-- Canonical component size values are full words: `extra small`, `small`, `medium`, `large`, `extra large`. `XS`/`S`/`M`/`L`/`XL` are shorthand in conversation only, never canonical Figma variant values (master doc [§11.2](../master-document.md#112-canonical-component-size-values), resolved by `stylos-naming-cleanup` v0.7 — see [docs/decisions/0002-skill-version-supersession.md](../decisions/0002-skill-version-supersession.md)).
-- Font size binds to `Text Size / [measure]`; line height binds to `String Line Height / [measure]` (single-line content: labels, buttons, tabs, menu items, badges, compact values) or `Text Line Height / [measure]` (wrapping content: body copy, descriptions, messages). Font size and line height must always use the same measure.
-- Default size→measure profiles exist for two architectural levels — **Element** ([§11.4](../master-document.md#114-element-text-profile)) and **Object** ([§11.5](../master-document.md#115-object-text-profile)). A documented component-specific mapping overrides its level's default profile.
+- Canonical component size values are full words: `extra small`, `small`, `medium`, `large`, `extra large`. `XS`/`S`/`M`/`L`/`XL` are shorthand in conversation only, never canonical Figma variant values ([naming.md](naming.md) §4, resolved by `stylos-naming-cleanup` v0.7 — see [ADR 0002](../decisions/0002-skill-version-supersession.md)).
+- Font size and line height must always use the **same measure**. A size bound to one measure with a line height from another is a defect.
+- Line height comes from the family matching the content: **string** for single-line content (labels, buttons, tabs, menu items, badges, compact values), **text** for wrapping content (body copy, descriptions, messages).
+- Default size→measure profiles exist for two architectural levels — **Element** and **Object**. A documented component-specific mapping overrides its level's default profile.
 - Component-wide text sizing targets exactly one **primary text role**, identified via the public text property, semantic layer name, and cross-variant consistency — not every text layer on the component.
-- **Element and Object are the only levels that will ever have a shared size/text profile.** This is a permanent design boundary, not an unfinished feature — see [docs/decisions/0003-component-levels-and-size-grid-scope.md](../decisions/0003-component-levels-and-size-grid-scope.md). Widget- and Layout-level components vary too much in size to encode a shared rule (a Breadcrumbs widget and an Alert widget share nothing size-wise); their typography is documented per-component in `docs/components/`, not derived from a foundation profile. Primitive-level components (Icon, Badge, Loader…) have preferred sizes but no skill-enforced grid.
+- **Element and Object are the only levels that will ever have a shared size/text profile.** Permanent design boundary, not an unfinished feature — see [ADR 0003](../decisions/0003-component-levels-and-size-grid-scope.md). Widget- and Layout-level components vary too much in size to encode a shared rule; their typography is documented per-component in `docs/components/`. Primitive-level components have preferred sizes but no skill-enforced grid.
+- Measure names follow the same ratio-to-base convention as spacing — `1_000` is the base — consistent with [ADR 0006](../decisions/0006-proportional-logic.md).
+
+## Structure
+
+One `font` collection, single-mode, with six groups: `family`, `size`, `line height`, `weight`, `letter spacing`, `paragraph spacing`.
+
+`line height` is subdivided into four families: `text`, `string`, `heading`, `code`.
+
+## Values
+
+**Not transcribed here.** Run `npm run report:tokens` — it renders current values from the newest snapshot. See [effects.md](effects.md) for why documentation does not carry copied token values.
+
+## Typeface
+
+The library currently binds a typeface in Figma; the [snapshot](../../figma/variables/exports/README.md) records which. It is **bound, not ratified** — no decision record has confirmed it, checked its Cyrillic coverage, its variable axes, or its license.
+
+The master document's candidate list (Manrope leading, with Raleway, PT Root UI, Commissioner, IBM Plex Sans considered) predates whatever is bound now and should not be treated as the current state. Requirements stand: web-UI-suitable, sans serif with character, geometric/classical-compatible, variable where practical, free to use, strong Cyrillic support.
+
+Ratification: [`PLAN.md`](../../PLAN.md) 1.3 → ADR 0009.
 
 ## Open
 
-- Final primary typeface, and whether a second accent face is used. Candidates considered: Manrope (leading candidate), Raleway (possible accent), PT Root UI, Commissioner, IBM Plex Sans (master doc [§11.1](../master-document.md#111-font-direction), [§27 item 2](../master-document.md#27-open-decisions)). Requirements: web-UI-suitable, sans serif with character, geometric/classical-compatible, variable where practical, free to use, strong Cyrillic support.
-- Whether Primitive-level "preferred sizes" get written down as a soft reference table anywhere. Not a shared grid (see above) — just currently undocumented.
+### Two naming inconsistencies to reconcile
+
+Neither is a value question, so neither waits on a fresh export.
+
+1. **`family` and `line height` do not use the same family vocabulary.** `family` has three entries; `line height` has four sub-families including `text` and `string`, which presumably share one font family. Either the families should align, or the document should state why line-height families are a finer division than font families.
+2. **The variable names in this document do not match the export.** This document has described font size as binding to `Text Size / [measure]` and line height to `String Line Height / [measure]` / `Text Line Height / [measure]`. The export shows `size/[measure]` and `line height/string/[measure]` inside a `font` collection. One of the two is out of date; the export is more likely to be current, but this should be confirmed against Figma rather than assumed.
+
+### Other
+
+- Whether Primitive-level "preferred sizes" get written down as a soft reference table. Not a shared grid (see above) — just currently undocumented.
+- Whether `weight` needs semantic roles rather than raw numeric names.
 
 ## TODO
 
-- [ ] Confirm and license the primary typeface.
+- [ ] Ratify the typeface: license, Cyrillic coverage, variable axes.
+- [ ] Reconcile the two naming inconsistencies above against Figma.
+- [ ] Record the Element and Object size→measure profiles here rather than only in the archived master document.
 - [ ] Optionally document Primitive-level preferred sizes as a non-normative reference table.

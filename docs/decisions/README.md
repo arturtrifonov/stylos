@@ -12,3 +12,6 @@ Filename pattern: `NNNN-short-title.md`, numbered sequentially, never renumbered
 | [0002](0002-skill-version-supersession.md) | Skill version supersession (naming-cleanup v0.5 → v0.7) | Accepted |
 | [0003](0003-component-levels-and-size-grid-scope.md) | Component levels and size-grid scope | Accepted |
 | [0004](0004-frontend-library-foundations.md) | Frontend library foundations (package structure, tokens, styling, behavior layer) | Accepted, not yet implemented |
+| [0005](0005-master-document-decomposition.md) | Master document decomposition | Accepted, in progress |
+| [0006](0006-proportional-logic.md) | Proportional logic: character vs. arithmetic | Accepted |
+| [0007](0007-token-normalization.md) | Token normalization and canonical storage | Accepted, not yet implemented |
