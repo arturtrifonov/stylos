@@ -1,0 +1,760 @@
+# GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export.
+# Imported 2026-08-23 11:06Z from Stylos / Styles.
+collection: "font"
+layer: "primitive"
+source:
+  imported: "2026-08-23 11:06Z"
+  figma_file: "Stylos / Styles"
+  figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
+modes:
+  - "default"
+tokens:
+  "family/normal":
+    type: "string"
+    id: "VariableID:2325:1466"
+    scopes:
+      - "FONT_FAMILY"
+    values:
+      default: "Georama"
+  "family/display":
+    type: "string"
+    id: "VariableID:2328:1385"
+    scopes:
+      - "FONT_FAMILY"
+    values:
+      default: "Georama"
+  "family/code":
+    type: "string"
+    id: "VariableID:2328:1386"
+    scopes:
+      - "FONT_FAMILY"
+    values:
+      default: "JetBrains Mono"
+  "size/0_500":
+    type: "number"
+    id: "VariableID:2599:853"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 8
+  "size/0_625":
+    type: "number"
+    id: "VariableID:2599:855"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 10
+  "size/0_750":
+    type: "number"
+    id: "VariableID:2599:854"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 12
+  "size/0_875":
+    type: "number"
+    id: "VariableID:2599:857"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 14
+  "size/1_000":
+    type: "number"
+    id: "VariableID:2599:852"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 16
+  "size/1_125":
+    type: "number"
+    id: "VariableID:2599:869"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 18
+  "size/1_250":
+    type: "number"
+    id: "VariableID:2599:868"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 20
+  "size/1_375":
+    type: "number"
+    id: "VariableID:2668:777"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 22
+  "size/1_500":
+    type: "number"
+    id: "VariableID:2599:865"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 24
+  "size/1_625":
+    type: "number"
+    id: "VariableID:2671:788"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 26
+  "size/1_750":
+    type: "number"
+    id: "VariableID:2599:870"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 28
+  "size/1_875":
+    type: "number"
+    id: "VariableID:2671:789"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 30
+  "size/2_000":
+    type: "number"
+    id: "VariableID:2599:864"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 32
+  "size/2_250":
+    type: "number"
+    id: "VariableID:2671:790"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 36
+  "size/2_500":
+    type: "number"
+    id: "VariableID:2600:871"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 40
+  "size/2_750":
+    type: "number"
+    id: "VariableID:2671:791"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 44
+  "size/3_000":
+    type: "number"
+    id: "VariableID:2599:866"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 48
+  "size/3_500":
+    type: "number"
+    id: "VariableID:2600:872"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 56
+  "size/4_000":
+    type: "number"
+    id: "VariableID:2599:867"
+    scopes:
+      - "FONT_SIZE"
+    values:
+      default: 64
+  "line height/text/0_500":
+    type: "number"
+    id: "VariableID:2610:794"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 12
+  "line height/text/0_625":
+    type: "number"
+    id: "VariableID:2610:795"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 16
+  "line height/text/0_750":
+    type: "number"
+    id: "VariableID:2610:796"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 18
+  "line height/text/0_875":
+    type: "number"
+    id: "VariableID:2610:797"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 22
+  "line height/text/1_000":
+    type: "number"
+    id: "VariableID:2610:798"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 24
+  "line height/text/1_125":
+    type: "number"
+    id: "VariableID:2610:799"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 28
+  "line height/text/1_250":
+    type: "number"
+    id: "VariableID:2610:800"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 30
+  "line height/text/1_375":
+    type: "number"
+    id: "VariableID:2671:792"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 34
+  "line height/text/1_500":
+    type: "number"
+    id: "VariableID:2610:801"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 36
+  "line height/text/1_625":
+    type: "number"
+    id: "VariableID:2671:793"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 38
+  "line height/text/1_750":
+    type: "number"
+    id: "VariableID:2610:802"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 42
+  "line height/text/1_875":
+    type: "number"
+    id: "VariableID:2671:794"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 46
+  "line height/text/2_000":
+    type: "number"
+    id: "VariableID:2610:803"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 48
+  "line height/text/2_250":
+    type: "number"
+    id: "VariableID:2671:795"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 56
+  "line height/text/2_500":
+    type: "number"
+    id: "VariableID:2610:804"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 64
+  "line height/text/2_750":
+    type: "number"
+    id: "VariableID:2671:796"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 68
+  "line height/text/3_000":
+    type: "number"
+    id: "VariableID:2610:805"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 72
+  "line height/text/3_500":
+    type: "number"
+    id: "VariableID:2610:806"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 88
+  "line height/text/4_000":
+    type: "number"
+    id: "VariableID:2610:807"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 96
+  "line height/string/0_500":
+    type: "number"
+    id: "VariableID:2606:778"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 8
+  "line height/string/0_625":
+    type: "number"
+    id: "VariableID:2606:779"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 10
+  "line height/string/0_750":
+    type: "number"
+    id: "VariableID:2606:780"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 12
+  "line height/string/0_875":
+    type: "number"
+    id: "VariableID:2606:781"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 14
+  "line height/string/1_000":
+    type: "number"
+    id: "VariableID:2606:782"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 16
+  "line height/string/1_125":
+    type: "number"
+    id: "VariableID:2606:783"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 18
+  "line height/string/1_250":
+    type: "number"
+    id: "VariableID:2606:784"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 20
+  "line height/string/1_375":
+    type: "number"
+    id: "VariableID:2671:797"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 22
+  "line height/string/1_500":
+    type: "number"
+    id: "VariableID:2606:785"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 24
+  "line height/string/1_625":
+    type: "number"
+    id: "VariableID:2671:798"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 26
+  "line height/string/1_750":
+    type: "number"
+    id: "VariableID:2606:786"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 28
+  "line height/string/1_875":
+    type: "number"
+    id: "VariableID:2671:799"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 30
+  "line height/string/2_000":
+    type: "number"
+    id: "VariableID:2606:787"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 32
+  "line height/string/2_250":
+    type: "number"
+    id: "VariableID:2671:800"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 36
+  "line height/string/2_500":
+    type: "number"
+    id: "VariableID:2606:788"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 40
+  "line height/string/2_750":
+    type: "number"
+    id: "VariableID:2671:801"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 44
+  "line height/string/3_000":
+    type: "number"
+    id: "VariableID:2606:789"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 48
+  "line height/string/3_500":
+    type: "number"
+    id: "VariableID:2606:790"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 56
+  "line height/string/4_000":
+    type: "number"
+    id: "VariableID:2606:791"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 64
+  "line height/heading/0_500":
+    type: "number"
+    id: "VariableID:2610:808"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 10
+  "line height/heading/0_625":
+    type: "number"
+    id: "VariableID:2610:809"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 12
+  "line height/heading/0_750":
+    type: "number"
+    id: "VariableID:2610:810"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 15
+  "line height/heading/0_875":
+    type: "number"
+    id: "VariableID:2610:811"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 18
+  "line height/heading/1_000":
+    type: "number"
+    id: "VariableID:2610:812"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 20
+  "line height/heading/1_125":
+    type: "number"
+    id: "VariableID:2610:813"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 23
+  "line height/heading/1_250":
+    type: "number"
+    id: "VariableID:2610:814"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 25
+  "line height/heading/1_500":
+    type: "number"
+    id: "VariableID:2610:815"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 30
+  "line height/heading/1_750":
+    type: "number"
+    id: "VariableID:2610:816"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 35
+  "line height/heading/2_000":
+    type: "number"
+    id: "VariableID:2610:817"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 40
+  "line height/heading/2_500":
+    type: "number"
+    id: "VariableID:2610:818"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 50
+  "line height/heading/3_000":
+    type: "number"
+    id: "VariableID:2610:819"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 60
+  "line height/heading/3_500":
+    type: "number"
+    id: "VariableID:2610:820"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 70
+  "line height/heading/4_000":
+    type: "number"
+    id: "VariableID:2610:821"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 80
+  "line height/code/0_500":
+    type: "number"
+    id: "VariableID:2610:822"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 11
+  "line height/code/0_625":
+    type: "number"
+    id: "VariableID:2610:823"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 13
+  "line height/code/0_750":
+    type: "number"
+    id: "VariableID:2610:824"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 17
+  "line height/code/0_875":
+    type: "number"
+    id: "VariableID:2610:825"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 20
+  "line height/code/1_000":
+    type: "number"
+    id: "VariableID:2610:826"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 22
+  "line height/code/1_125":
+    type: "number"
+    id: "VariableID:2610:827"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 25
+  "line height/code/1_250":
+    type: "number"
+    id: "VariableID:2610:828"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 28
+  "line height/code/1_500":
+    type: "number"
+    id: "VariableID:2610:829"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 33
+  "line height/code/1_750":
+    type: "number"
+    id: "VariableID:2610:830"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 38
+  "line height/code/2_000":
+    type: "number"
+    id: "VariableID:2610:831"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 44
+  "line height/code/2_500":
+    type: "number"
+    id: "VariableID:2610:832"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 55
+  "line height/code/3_000":
+    type: "number"
+    id: "VariableID:2610:833"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 66
+  "line height/code/3_500":
+    type: "number"
+    id: "VariableID:2610:834"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 77
+  "line height/code/4_000":
+    type: "number"
+    id: "VariableID:2610:835"
+    scopes:
+      - "LINE_HEIGHT"
+    values:
+      default: 88
+  "weight/normal":
+    type: "number"
+    id: "VariableID:2328:1409"
+    scopes:
+      - "FONT_STYLE"
+    values:
+      default: 400
+  "weight/semibold":
+    type: "number"
+    id: "VariableID:2328:1418"
+    scopes:
+      - "FONT_STYLE"
+    values:
+      default: 450
+  "weight/bold":
+    type: "number"
+    id: "VariableID:2328:1414"
+    scopes:
+      - "FONT_STYLE"
+    values:
+      default: 700
+  "letter spacing/style/normal":
+    type: "number"
+    id: "VariableID:2328:1435"
+    scopes:
+      - "LETTER_SPACING"
+    values:
+      default: 0
+  "letter spacing/style/uppercase":
+    type: "number"
+    id: "VariableID:2328:1439"
+    scopes:
+      - "LETTER_SPACING"
+    values:
+      default: 1
+  "paragraph spacing/0_500":
+    type: "number"
+    id: "VariableID:2621:777"
+    scopes:
+      - "PARAGRAPH_SPACING"
+    values:
+      default: 4
+  "paragraph spacing/0_625":
+    type: "number"
+    id: "VariableID:2621:778"
+    scopes:
+      - "PARAGRAPH_SPACING"
+    values:
+      default: 5
+  "paragraph spacing/0_750":
+    type: "number"
+    id: "VariableID:2621:779"
+    scopes:
+      - "PARAGRAPH_SPACING"
+    values:
+      default: 6
+  "paragraph spacing/0_875":
+    type: "number"
+    id: "VariableID:2621:780"
+    scopes:
+      - "PARAGRAPH_SPACING"
+    values:
+      default: 7
+  "paragraph spacing/1_000":
+    type: "number"
+    id: "VariableID:2621:781"
+    scopes:
+      - "PARAGRAPH_SPACING"
+    values:
+      default: 8
+  "paragraph spacing/1_125":
+    type: "number"
+    id: "VariableID:2621:782"
+    scopes:
+      - "PARAGRAPH_SPACING"
+    values:
+      default: 9
+  "paragraph spacing/1_250":
+    type: "number"
+    id: "VariableID:2621:783"
+    scopes:
+      - "PARAGRAPH_SPACING"
+    values:
+      default: 10
+  "paragraph spacing/1_500":
+    type: "number"
+    id: "VariableID:2621:784"
+    scopes:
+      - "PARAGRAPH_SPACING"
+    values:
+      default: 12
+  "paragraph spacing/1_750":
+    type: "number"
+    id: "VariableID:2621:785"
+    scopes:
+      - "PARAGRAPH_SPACING"
+    values:
+      default: 14
+  "paragraph spacing/2_000":
+    type: "number"
+    id: "VariableID:2621:786"
+    scopes:
+      - "PARAGRAPH_SPACING"
+    values:
+      default: 16
+  "paragraph spacing/2_500":
+    type: "number"
+    id: "VariableID:2621:787"
+    scopes:
+      - "PARAGRAPH_SPACING"
+    values:
+      default: 20
+  "paragraph spacing/3_000":
+    type: "number"
+    id: "VariableID:2621:788"
+    scopes:
+      - "PARAGRAPH_SPACING"
+    values:
+      default: 24
+  "paragraph spacing/3_500":
+    type: "number"
+    id: "VariableID:2621:789"
+    scopes:
+      - "PARAGRAPH_SPACING"
+    values:
+      default: 28
+  "paragraph spacing/4_000":
+    type: "number"
+    id: "VariableID:2621:790"
+    scopes:
+      - "PARAGRAPH_SPACING"
+    values:
+      default: 32

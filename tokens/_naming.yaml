@@ -1,0 +1,86 @@
+# AUTHORED FILE. Maps Figma's vocabulary onto Stylos's. Nothing here is
+# guessed: an unmapped collection or mode is a build failure, not a default.
+# See docs/specs/0001-token-pipeline.md §5.1 and ADR 0007 §3.
+#
+# This is also the whitelist for `npm run tokens:import` — a collection that
+# is not declared here cannot be imported.
+
+source:
+  file: "Stylos / Styles"
+  key: "2OJYDoTE9EAdQKaJAJK9Kt"
+  url: "https://www.figma.com/design/2OJYDoTE9EAdQKaJAJK9Kt/Stylos--Styles"
+
+# Semantic collection -> the primitive collection it aliases into.
+draws_from:
+  color: "palette"
+  space: "space-scale"
+
+collections:
+  # Two Figma collections, one canonical palette with two modes. They are
+  # separate in Figma so a semantic role can bind to a *different step* per
+  # mode, not merely to a different value of the same step.
+  palette:
+    layer: "primitive"
+    modes:
+      light:
+        from: "palette.light"
+        mode: "Value"
+      dark:
+        from: "palette.dark"
+        mode: "Value"
+  color:
+    layer: "semantic"
+    modes:
+      light:
+        from: "color"
+        mode: "Light Mode"
+      dark:
+        from: "color"
+        mode: "Dark Mode"
+  space-scale:
+    layer: "primitive"
+    modes:
+      default:
+        from: "space.scale"
+        mode: "Mode 1"
+  space:
+    layer: "semantic"
+    modes:
+      default:
+        from: "space"
+        mode: "Value"
+  font:
+    layer: "primitive"
+    modes:
+      default:
+        from: "font"
+        mode: "Mode 1"
+  radius:
+    layer: "primitive"
+    modes:
+      default:
+        from: "radius"
+        mode: "Mode 1"
+  effect:
+    layer: "primitive"
+    modes:
+      default:
+        from: "effect"
+        mode: "Mode 1"
+  border:
+    layer: "primitive"
+    modes:
+      default:
+        from: "border"
+        mode: "Mode 1"
+
+# Roles allowed to reference a different token per mode. A role that does so
+# without being listed here fails the build; so does a role listed here that
+# references the same token in every mode.
+#
+# Shadow colours are not here: Figma cannot bind a variable and change its
+# opacity, so they arrive as literals and are stored exactly as given.
+mode_dependent:
+  - "color/text/static-light"
+  - "color/text/static-dark"
+  - "color/background/base"

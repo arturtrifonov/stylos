@@ -1,0 +1,25 @@
+# GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export.
+# Imported 2026-08-23 11:06Z from Stylos / Styles.
+collection: "border"
+layer: "primitive"
+source:
+  imported: "2026-08-23 11:06Z"
+  figma_file: "Stylos / Styles"
+  figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
+modes:
+  - "default"
+tokens:
+  "width/normal":
+    type: "number"
+    id: "VariableID:2679:778"
+    scopes:
+      - "STROKE_FLOAT"
+    values:
+      default: 1
+  "width/thick":
+    type: "number"
+    id: "VariableID:2679:779"
+    scopes:
+      - "STROKE_FLOAT"
+    values:
+      default: 2

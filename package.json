@@ -2,12 +2,16 @@
   "name": "stylos-design-system",
   "version": "0.1.0",
   "private": true,
-  "description": "Stylos Design System — documentation, Figma variable snapshots, and Figma Agent skill sources.",
+  "description": "Stylos Design System — documentation, canonical design tokens, and Figma Agent skill sources.",
   "scripts": {
     "build:skills": "node tools/build-skills.mjs",
     "validate:skills": "node tools/build-skills.mjs --check",
     "import:registry": "node tools/import-component-registry.mjs docs/components/registry/import-source/2026-08-20-airtable-export.csv",
-    "validate:registry": "node tools/lint-registry.mjs"
+    "validate:registry": "node tools/lint-registry.mjs",
+    "tokens:import": "node tools/import-tokens.mjs",
+    "tokens:check": "node tools/check-tokens.mjs",
+    "tokens:report": "node tools/tokens-report.mjs",
+    "test": "node --test \"tools/**/*.test.mjs\""
   },
   "license": "UNLICENSED"
 }

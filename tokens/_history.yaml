@@ -1,0 +1,136 @@
+# GENERATED FILE — written by tools/import-tokens.mjs. Newest first.
+# When each collection was last imported, and what it did. The values are in git.
+imports:
+  -
+    at: "2026-08-23 11:08Z"
+    collections:
+      -
+        collection: "color"
+        tokens: 110
+        status: "unchanged"
+  -
+    at: "2026-08-23 11:06Z"
+    collections:
+      -
+        collection: "palette"
+        tokens: 288
+        status: "unchanged"
+      -
+        collection: "color"
+        tokens: 110
+        status: "changed"
+      -
+        collection: "space-scale"
+        tokens: 33
+        status: "unchanged"
+      -
+        collection: "space"
+        tokens: 37
+        status: "unchanged"
+      -
+        collection: "font"
+        tokens: 107
+        status: "unchanged"
+      -
+        collection: "radius"
+        tokens: 7
+        status: "unchanged"
+      -
+        collection: "effect"
+        tokens: 14
+        status: "unchanged"
+      -
+        collection: "border"
+        tokens: 2
+        status: "unchanged"
+  -
+    at: "2026-08-23 11:02Z"
+    collections:
+      -
+        collection: "color"
+        tokens: 110
+        status: "unchanged"
+  -
+    at: "2026-08-23 10:58Z"
+    collections:
+      -
+        collection: "palette"
+        tokens: 288
+        status: "unchanged"
+      -
+        collection: "color"
+        tokens: 110
+        status: "changed"
+      -
+        collection: "space-scale"
+        tokens: 33
+        status: "unchanged"
+      -
+        collection: "space"
+        tokens: 37
+        status: "unchanged"
+      -
+        collection: "font"
+        tokens: 107
+        status: "unchanged"
+      -
+        collection: "radius"
+        tokens: 7
+        status: "unchanged"
+      -
+        collection: "effect"
+        tokens: 14
+        status: "unchanged"
+      -
+        collection: "border"
+        tokens: 2
+        status: "unchanged"
+  -
+    at: "2026-08-23 10:58Z"
+    collections:
+      -
+        collection: "color"
+        tokens: 110
+        status: "changed"
+  -
+    at: "2026-08-23 10:57Z"
+    collections:
+      -
+        collection: "color"
+        tokens: 110
+        status: "changed"
+  -
+    at: "2026-08-23 10:57Z"
+    collections:
+      -
+        collection: "palette"
+        tokens: 288
+        status: "new"
+      -
+        collection: "color"
+        tokens: 110
+        status: "new"
+      -
+        collection: "space-scale"
+        tokens: 33
+        status: "new"
+      -
+        collection: "space"
+        tokens: 37
+        status: "new"
+      -
+        collection: "font"
+        tokens: 107
+        status: "new"
+      -
+        collection: "radius"
+        tokens: 7
+        status: "new"
+      -
+        collection: "effect"
+        tokens: 14
+        status: "new"
+      -
+        collection: "border"
+        tokens: 2
+        status: "new"

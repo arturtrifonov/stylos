@@ -1,0 +1,109 @@
+# GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export.
+# Imported 2026-08-23 11:06Z from Stylos / Styles.
+collection: "effect"
+layer: "semantic"
+source:
+  imported: "2026-08-23 11:06Z"
+  figma_file: "Stylos / Styles"
+  figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
+modes:
+  - "default"
+tokens:
+  "shadow/elevation/Level 1":
+    type: "number"
+    id: "VariableID:2332:987"
+    scopes:
+      - "EFFECT_FLOAT"
+    values:
+      default: 2
+  "shadow/elevation/Level 2":
+    type: "number"
+    id: "VariableID:2332:991"
+    scopes:
+      - "EFFECT_FLOAT"
+    values:
+      default: 4
+  "shadow/elevation/Level 3":
+    type: "number"
+    id: "VariableID:2332:994"
+    scopes:
+      - "EFFECT_FLOAT"
+    values:
+      default: 8
+  "shadow/elevation/Level 4":
+    type: "number"
+    id: "VariableID:2332:997"
+    scopes:
+      - "EFFECT_FLOAT"
+    values:
+      default: 12
+  "shadow/elevation/Level 5":
+    type: "number"
+    id: "VariableID:2332:1000"
+    scopes:
+      - "EFFECT_FLOAT"
+    values:
+      default: 16
+  "shadow/elevation/Level 6":
+    type: "number"
+    id: "VariableID:2332:1003"
+    scopes:
+      - "EFFECT_FLOAT"
+    values:
+      default: 24
+  "shadow/spread/Level 1":
+    type: "number"
+    id: "VariableID:2332:1004"
+    scopes:
+      - "EFFECT_FLOAT"
+    values:
+      default: -1
+  "shadow/spread/Level 2":
+    type: "number"
+    id: "VariableID:2332:1008"
+    scopes:
+      - "EFFECT_FLOAT"
+    values:
+      default: -2
+  "shadow/spread/Level 3":
+    type: "number"
+    id: "VariableID:2332:1011"
+    scopes:
+      - "EFFECT_FLOAT"
+    values:
+      default: -3
+  "shadow/spread/Level 4":
+    type: "number"
+    id: "VariableID:2332:1014"
+    scopes:
+      - "EFFECT_FLOAT"
+    values:
+      default: -4
+  "shadow/spread/Level 5":
+    type: "number"
+    id: "VariableID:2332:1017"
+    scopes:
+      - "EFFECT_FLOAT"
+    values:
+      default: -8
+  "shadow/spread/Level 6":
+    type: "number"
+    id: "VariableID:2332:1020"
+    scopes:
+      - "EFFECT_FLOAT"
+    values:
+      default: -12
+  "shadow/color/base":
+    type: "color"
+    id: "VariableID:2363:3475"
+    scopes:
+      - "EFFECT_COLOR"
+    ref:
+      default: "color/shadow/base"
+  "shadow/color/primary":
+    type: "color"
+    id: "VariableID:2363:3474"
+    scopes:
+      - "EFFECT_COLOR"
+    ref:
+      default: "color/shadow/primary"

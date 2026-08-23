@@ -1,0 +1,891 @@
+# GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export.
+# Imported 2026-08-23 11:08Z from Stylos / Styles.
+collection: "color"
+layer: "semantic"
+source:
+  imported: "2026-08-23 11:08Z"
+  figma_file: "Stylos / Styles"
+  figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
+modes:
+  - "light"
+  - "dark"
+tokens:
+  "surface/bold/primary/default":
+    type: "color"
+    id: "VariableID:1943:1229"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/indigo/700"
+  "surface/bold/primary/hover":
+    type: "color"
+    id: "VariableID:1943:1230"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/indigo/800"
+  "surface/bold/primary/active":
+    type: "color"
+    id: "VariableID:1943:1231"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/indigo/900"
+  "surface/bold/primary/disabled":
+    type: "color"
+    id: "VariableID:2579:814"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/100"
+  "surface/bold/base/default":
+    type: "color"
+    id: "VariableID:1943:1238"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/700"
+  "surface/bold/base/hover":
+    type: "color"
+    id: "VariableID:1943:1239"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/800"
+  "surface/bold/base/active":
+    type: "color"
+    id: "VariableID:1943:1240"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/900"
+  "surface/bold/base/disabled":
+    type: "color"
+    id: "VariableID:1943:1253"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/100"
+  "surface/bold/warning/default":
+    type: "color"
+    id: "VariableID:1943:1250"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/amber/700"
+  "surface/bold/warning/hover":
+    type: "color"
+    id: "VariableID:1943:1251"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/amber/800"
+  "surface/bold/warning/active":
+    type: "color"
+    id: "VariableID:1943:1252"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/amber/900"
+  "surface/bold/warning/disabled":
+    type: "color"
+    id: "VariableID:2579:813"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/100"
+  "surface/bold/danger/default":
+    type: "color"
+    id: "VariableID:1943:1244"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/red/700"
+  "surface/bold/danger/hover":
+    type: "color"
+    id: "VariableID:1943:1245"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/red/800"
+  "surface/bold/danger/active":
+    type: "color"
+    id: "VariableID:1943:1246"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/red/900"
+  "surface/bold/danger/disabled":
+    type: "color"
+    id: "VariableID:2579:815"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/100"
+  "surface/bold/success/default":
+    type: "color"
+    id: "VariableID:1943:1247"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/green/700"
+  "surface/bold/success/hover":
+    type: "color"
+    id: "VariableID:1943:1248"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/green/800"
+  "surface/bold/success/active":
+    type: "color"
+    id: "VariableID:1943:1249"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/green/900"
+  "surface/bold/success/disabled":
+    type: "color"
+    id: "VariableID:2579:816"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/100"
+  "surface/subtle/base/default":
+    type: "color"
+    id: "VariableID:1943:1232"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/50"
+  "surface/subtle/base/hover":
+    type: "color"
+    id: "VariableID:1943:1233"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/100"
+  "surface/subtle/base/active":
+    type: "color"
+    id: "VariableID:1943:1234"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/200"
+  "surface/subtle/base/disabled":
+    type: "color"
+    id: "VariableID:2579:817"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/25"
+  "surface/subtle/primary/default":
+    type: "color"
+    id: "VariableID:2579:807"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/indigo/50"
+  "surface/subtle/primary/hover":
+    type: "color"
+    id: "VariableID:2579:808"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/indigo/100"
+  "surface/subtle/primary/active":
+    type: "color"
+    id: "VariableID:2579:809"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/indigo/200"
+  "surface/subtle/primary/disabled":
+    type: "color"
+    id: "VariableID:2579:818"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/25"
+  "surface/subtle/warning/default":
+    type: "color"
+    id: "VariableID:2579:819"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/amber/50"
+  "surface/subtle/warning/hover":
+    type: "color"
+    id: "VariableID:2579:820"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/amber/100"
+  "surface/subtle/warning/active":
+    type: "color"
+    id: "VariableID:2579:821"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/amber/200"
+  "surface/subtle/warning/disabled":
+    type: "color"
+    id: "VariableID:2579:822"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/25"
+  "surface/subtle/danger/default":
+    type: "color"
+    id: "VariableID:2579:823"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/red/50"
+  "surface/subtle/danger/hover":
+    type: "color"
+    id: "VariableID:2579:824"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/red/100"
+  "surface/subtle/danger/active":
+    type: "color"
+    id: "VariableID:2579:825"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/red/200"
+  "surface/subtle/danger/disabled":
+    type: "color"
+    id: "VariableID:2579:826"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/25"
+  "surface/subtle/success/default":
+    type: "color"
+    id: "VariableID:2579:827"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/green/50"
+  "surface/subtle/success/hover":
+    type: "color"
+    id: "VariableID:2579:828"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/green/100"
+  "surface/subtle/success/active":
+    type: "color"
+    id: "VariableID:2579:829"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/green/200"
+  "surface/subtle/success/disabled":
+    type: "color"
+    id: "VariableID:2579:830"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/25"
+  "surface/special/slate":
+    type: "color"
+    id: "VariableID:2395:2832"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/700"
+  "surface/special/gray":
+    type: "color"
+    id: "VariableID:2397:2370"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/gray/700"
+  "surface/special/zinc":
+    type: "color"
+    id: "VariableID:2398:2371"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/zinc/700"
+  "surface/special/neutral":
+    type: "color"
+    id: "VariableID:2398:2372"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/neutral/700"
+  "surface/special/stone":
+    type: "color"
+    id: "VariableID:2398:2373"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/stone/700"
+  "surface/special/red":
+    type: "color"
+    id: "VariableID:2398:2374"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/red/700"
+  "surface/special/orange":
+    type: "color"
+    id: "VariableID:2398:2375"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/orange/700"
+  "surface/special/amber":
+    type: "color"
+    id: "VariableID:2398:2376"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/amber/700"
+  "surface/special/yellow":
+    type: "color"
+    id: "VariableID:2398:2377"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/yellow/700"
+  "surface/special/lime":
+    type: "color"
+    id: "VariableID:2398:2378"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/lime/700"
+  "surface/special/green":
+    type: "color"
+    id: "VariableID:2398:2379"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/green/700"
+  "surface/special/emerald":
+    type: "color"
+    id: "VariableID:2398:2380"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/emerald/700"
+  "surface/special/teal":
+    type: "color"
+    id: "VariableID:2398:2381"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/teal/700"
+  "surface/special/cyan":
+    type: "color"
+    id: "VariableID:2398:2382"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/cyan/700"
+  "surface/special/sky":
+    type: "color"
+    id: "VariableID:2398:2383"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/sky/700"
+  "surface/special/blue":
+    type: "color"
+    id: "VariableID:2398:2384"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/blue/700"
+  "surface/special/indigo":
+    type: "color"
+    id: "VariableID:2398:2385"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/indigo/700"
+  "surface/special/violet":
+    type: "color"
+    id: "VariableID:2398:2386"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/violet/700"
+  "surface/special/purple":
+    type: "color"
+    id: "VariableID:2398:2387"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/purple/700"
+  "surface/special/fuchsia":
+    type: "color"
+    id: "VariableID:2398:2388"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/fuchsia/700"
+  "surface/special/pink":
+    type: "color"
+    id: "VariableID:2398:2389"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/pink/700"
+  "surface/special/rose":
+    type: "color"
+    id: "VariableID:2398:2390"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/rose/700"
+  "text/base":
+    type: "color"
+    id: "VariableID:1943:1254"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/slate/950"
+  "text/secondary":
+    type: "color"
+    id: "VariableID:1943:1263"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/slate/800"
+  "text/tertiary":
+    type: "color"
+    id: "VariableID:1943:1266"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/slate/700"
+  "text/primary":
+    type: "color"
+    id: "VariableID:1943:1257"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/indigo/800"
+  "text/warning":
+    type: "color"
+    id: "VariableID:1943:1261"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/amber/800"
+  "text/danger":
+    type: "color"
+    id: "VariableID:1943:1262"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/red/800"
+  "text/success":
+    type: "color"
+    id: "VariableID:1943:1260"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/green/800"
+  "text/inverted":
+    type: "color"
+    id: "VariableID:1943:1270"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/slate/25"
+  "text/static-light":
+    type: "color"
+    id: "VariableID:2008:9010"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      light: "palette/slate/25"
+      dark: "palette/slate/975"
+  "text/static-dark":
+    type: "color"
+    id: "VariableID:2008:9011"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      light: "palette/slate/975"
+      dark: "palette/slate/25"
+  "text/disabled":
+    type: "color"
+    id: "VariableID:1943:1269"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/slate/300"
+  "text/special/slate":
+    type: "color"
+    id: "VariableID:2398:2392"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/slate/700"
+  "text/special/gray":
+    type: "color"
+    id: "VariableID:2398:2393"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/gray/700"
+  "text/special/zinc":
+    type: "color"
+    id: "VariableID:2398:2394"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/zinc/700"
+  "text/special/neutral":
+    type: "color"
+    id: "VariableID:2398:2395"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/neutral/700"
+  "text/special/stone":
+    type: "color"
+    id: "VariableID:2398:2396"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/stone/700"
+  "text/special/red":
+    type: "color"
+    id: "VariableID:2398:2397"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/red/700"
+  "text/special/orange":
+    type: "color"
+    id: "VariableID:2398:2398"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/orange/700"
+  "text/special/amber":
+    type: "color"
+    id: "VariableID:2398:2399"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/amber/700"
+  "text/special/yellow":
+    type: "color"
+    id: "VariableID:2398:2400"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/yellow/700"
+  "text/special/lime":
+    type: "color"
+    id: "VariableID:2398:2401"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/lime/700"
+  "text/special/green":
+    type: "color"
+    id: "VariableID:2398:2402"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/green/700"
+  "text/special/emerald":
+    type: "color"
+    id: "VariableID:2398:2403"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/emerald/700"
+  "text/special/teal":
+    type: "color"
+    id: "VariableID:2398:2404"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/teal/700"
+  "text/special/cyan":
+    type: "color"
+    id: "VariableID:2398:2405"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/cyan/700"
+  "text/special/sky":
+    type: "color"
+    id: "VariableID:2398:2406"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/sky/700"
+  "text/special/blue":
+    type: "color"
+    id: "VariableID:2398:2407"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/blue/700"
+  "text/special/indigo":
+    type: "color"
+    id: "VariableID:2398:2408"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/indigo/700"
+  "text/special/violet":
+    type: "color"
+    id: "VariableID:2398:2409"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/violet/700"
+  "text/special/purple":
+    type: "color"
+    id: "VariableID:2398:2410"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/purple/700"
+  "text/special/fuchsia":
+    type: "color"
+    id: "VariableID:2398:2411"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/fuchsia/700"
+  "text/special/pink":
+    type: "color"
+    id: "VariableID:2398:2412"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/pink/700"
+  "text/special/rose":
+    type: "color"
+    id: "VariableID:2398:2413"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/rose/700"
+  "background/base":
+    type: "color"
+    id: "VariableID:1943:1276"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      light: "palette/base/white"
+      dark: "palette/base/black"
+  "background/secondary":
+    type: "color"
+    id: "VariableID:1943:1278"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/25"
+  "background/tertiary":
+    type: "color"
+    id: "VariableID:1943:1280"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/50"
+  "background/primary":
+    type: "color"
+    id: "VariableID:1943:1290"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/indigo/50"
+  "background/success":
+    type: "color"
+    id: "VariableID:2339:6898"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/green/50"
+  "background/warning":
+    type: "color"
+    id: "VariableID:2339:6908"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/amber/50"
+  "background/error":
+    type: "color"
+    id: "VariableID:2339:6918"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/red/50"
+  "border/default":
+    type: "color"
+    id: "VariableID:1943:1300"
+    scopes:
+      - "STROKE"
+    ref:
+      default: "palette/slate/400"
+  "border/secondary":
+    type: "color"
+    id: "VariableID:1943:1301"
+    scopes:
+      - "STROKE"
+    ref:
+      default: "palette/slate/100"
+  "border/primary":
+    type: "color"
+    id: "VariableID:1943:1302"
+    scopes:
+      - "STROKE"
+    ref:
+      default: "palette/indigo/800"
+  "border/success":
+    type: "color"
+    id: "VariableID:1943:1306"
+    scopes:
+      - "STROKE"
+    ref:
+      default: "palette/green/800"
+  "border/warning":
+    type: "color"
+    id: "VariableID:1943:1307"
+    scopes:
+      - "STROKE"
+    ref:
+      default: "palette/amber/800"
+  "border/error":
+    type: "color"
+    id: "VariableID:1943:1305"
+    scopes:
+      - "STROKE"
+    ref:
+      default: "palette/red/800"
+  "shadow/base":
+    type: "color"
+    id: "VariableID:2233:3914"
+    values:
+      light: "#000000"
+      dark: "#ffffff"
+    alpha:
+      light: 0.03
+      dark: 0.03
+  "shadow/primary":
+    type: "color"
+    id: "VariableID:2233:3913"
+    values:
+      light: "#5752f1"
+      dark: "#b2bff8"
+    alpha:
+      light: 0.04
+      dark: 0.04

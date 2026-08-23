@@ -1,0 +1,176 @@
+# GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export.
+# Imported 2026-08-23 11:06Z from Stylos / Styles.
+collection: "space-scale"
+layer: "primitive"
+source:
+  imported: "2026-08-23 11:06Z"
+  figma_file: "Stylos / Styles"
+  figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
+modes:
+  - "default"
+tokens:
+  s-0_000:
+    type: "number"
+    id: "VariableID:2539:983"
+    values:
+      default: 0
+  s-0_125:
+    type: "number"
+    id: "VariableID:2547:2522"
+    values:
+      default: 1
+  s-0_250:
+    type: "number"
+    id: "VariableID:2539:981"
+    values:
+      default: 2
+  s-0_375:
+    type: "number"
+    id: "VariableID:2547:2526"
+    values:
+      default: 3
+  s-0_500:
+    type: "number"
+    id: "VariableID:2539:965"
+    values:
+      default: 4
+  s-0_625:
+    type: "number"
+    id: "VariableID:2548:2530"
+    values:
+      default: 5
+  s-0_750:
+    type: "number"
+    id: "VariableID:2539:966"
+    values:
+      default: 6
+  s-0_875:
+    type: "number"
+    id: "VariableID:2550:2534"
+    values:
+      default: 7
+  s-1_000:
+    type: "number"
+    id: "VariableID:2539:968"
+    values:
+      default: 8
+  s-1_250:
+    type: "number"
+    id: "VariableID:2539:964"
+    values:
+      default: 10
+  s-1_500:
+    type: "number"
+    id: "VariableID:2539:973"
+    values:
+      default: 12
+  s-1_750:
+    type: "number"
+    id: "VariableID:2550:2538"
+    values:
+      default: 14
+  s-2_000:
+    type: "number"
+    id: "VariableID:2539:971"
+    values:
+      default: 16
+  s-2_250:
+    type: "number"
+    id: "VariableID:2550:2542"
+    values:
+      default: 18
+  s-2_500:
+    type: "number"
+    id: "VariableID:2539:963"
+    values:
+      default: 20
+  s-2_750:
+    type: "number"
+    id: "VariableID:2550:2546"
+    values:
+      default: 22
+  s-3_000:
+    type: "number"
+    id: "VariableID:2539:970"
+    values:
+      default: 24
+  s-3_250:
+    type: "number"
+    id: "VariableID:2682:777"
+    values:
+      default: 26
+  s-3_500:
+    type: "number"
+    id: "VariableID:2539:978"
+    values:
+      default: 28
+  s-3_750:
+    type: "number"
+    id: "VariableID:2682:780"
+    values:
+      default: 30
+  s-4_000:
+    type: "number"
+    id: "VariableID:2539:977"
+    values:
+      default: 32
+  s-4_250:
+    type: "number"
+    id: "VariableID:2682:779"
+    values:
+      default: 34
+  s-4_500:
+    type: "number"
+    id: "VariableID:2539:982"
+    values:
+      default: 36
+  s-4_750:
+    type: "number"
+    id: "VariableID:2682:778"
+    values:
+      default: 38
+  s-5_000:
+    type: "number"
+    id: "VariableID:2539:976"
+    values:
+      default: 40
+  s-5_500:
+    type: "number"
+    id: "VariableID:2682:781"
+    values:
+      default: 44
+  s-6_000:
+    type: "number"
+    id: "VariableID:2539:974"
+    values:
+      default: 48
+  s-7_000:
+    type: "number"
+    id: "VariableID:2539:972"
+    values:
+      default: 56
+  s-8_000:
+    type: "number"
+    id: "VariableID:2539:969"
+    values:
+      default: 64
+  s-9_000:
+    type: "number"
+    id: "VariableID:2539:967"
+    values:
+      default: 72
+  s-10_000:
+    type: "number"
+    id: "VariableID:2539:975"
+    values:
+      default: 80
+  s-11_000:
+    type: "number"
+    id: "VariableID:2539:980"
+    values:
+      default: 88
+  s-12_000:
+    type: "number"
+    id: "VariableID:2539:979"
+    values:
+      default: 96

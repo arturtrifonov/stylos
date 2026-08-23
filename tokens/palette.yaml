@@ -1,0 +1,2316 @@
+# GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export.
+# Imported 2026-08-23 11:06Z from Stylos / Styles.
+collection: "palette"
+layer: "primitive"
+source:
+  imported: "2026-08-23 11:06Z"
+  figma_file: "Stylos / Styles"
+  figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
+modes:
+  - "light"
+  - "dark"
+tokens:
+  "slate/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7670"
+      dark: "VariableID:2573:1616"
+    values:
+      light: "#f8fafc"
+      dark: "#091621"
+  "slate/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7671"
+      dark: "VariableID:2573:1617"
+    values:
+      light: "#edf1f5"
+      dark: "#222f3c"
+  "slate/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7672"
+      dark: "VariableID:2573:1618"
+    values:
+      light: "#e2e8f0"
+      dark: "#364655"
+  "slate/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7673"
+      dark: "VariableID:2573:1619"
+    values:
+      light: "#cbd5e1"
+      dark: "#495968"
+  "slate/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7674"
+      dark: "VariableID:2573:1620"
+    values:
+      light: "#b6c2d1"
+      dark: "#647689"
+  "slate/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7675"
+      dark: "VariableID:2573:1621"
+    values:
+      light: "#a3b3c4"
+      dark: "#788c9f"
+  "slate/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7676"
+      dark: "VariableID:2573:1622"
+    values:
+      light: "#91a4b7"
+      dark: "#92a4b5"
+  "slate/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7677"
+      dark: "VariableID:2573:1623"
+    values:
+      light: "#768ca1"
+      dark: "#a4b3c3"
+  "slate/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7678"
+      dark: "VariableID:2573:1624"
+    values:
+      light: "#60758a"
+      dark: "#b6c2d0"
+  "slate/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7679"
+      dark: "VariableID:2573:1625"
+    values:
+      light: "#445668"
+      dark: "#cbd5e1"
+  "slate/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7680"
+      dark: "VariableID:2573:1626"
+    values:
+      light: "#2f4254"
+      dark: "#e2e8f0"
+  "slate/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7681"
+      dark: "VariableID:2573:1627"
+    values:
+      light: "#1a2a3a"
+      dark: "#edf1f5"
+  "slate/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7682"
+      dark: "VariableID:2573:1628"
+    values:
+      light: "#02101e"
+      dark: "#f7f9fb"
+  "gray/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7683"
+      dark: "VariableID:2573:1629"
+    values:
+      light: "#f9fafb"
+      dark: "#181e2a"
+  "gray/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7684"
+      dark: "VariableID:2573:1630"
+    values:
+      light: "#eff0f2"
+      dark: "#262e3a"
+  "gray/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7685"
+      dark: "VariableID:2573:1631"
+    values:
+      light: "#e5e7eb"
+      dark: "#3c4553"
+  "gray/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7686"
+      dark: "VariableID:2573:1632"
+    values:
+      light: "#d1d5db"
+      dark: "#4f5864"
+  "gray/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7687"
+      dark: "VariableID:2573:1633"
+    values:
+      light: "#bac1ca"
+      dark: "#6d7380"
+  "gray/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7688"
+      dark: "VariableID:2573:1634"
+    values:
+      light: "#abb1bb"
+      dark: "#848997"
+  "gray/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7689"
+      dark: "VariableID:2573:1635"
+    values:
+      light: "#9ca3af"
+      dark: "#9da3ae"
+  "gray/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7690"
+      dark: "VariableID:2573:1636"
+    values:
+      light: "#838999"
+      dark: "#abb1ba"
+  "gray/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7691"
+      dark: "VariableID:2573:1637"
+    values:
+      light: "#6b7280"
+      dark: "#bac1ca"
+  "gray/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7692"
+      dark: "VariableID:2573:1638"
+    values:
+      light: "#4b5563"
+      dark: "#d1d5db"
+  "gray/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7693"
+      dark: "VariableID:2573:1639"
+    values:
+      light: "#374151"
+      dark: "#e5e7eb"
+  "gray/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7694"
+      dark: "VariableID:2573:1640"
+    values:
+      light: "#1f2937"
+      dark: "#eff0f2"
+  "gray/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7695"
+      dark: "VariableID:2573:1641"
+    values:
+      light: "#111827"
+      dark: "#f7f8f9"
+  "zinc/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7696"
+      dark: "VariableID:2573:1642"
+    values:
+      light: "#fafafa"
+      dark: "#1e1e20"
+  "zinc/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7697"
+      dark: "VariableID:2573:1643"
+    values:
+      light: "#f0f0f1"
+      dark: "#2c2c2e"
+  "zinc/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7698"
+      dark: "VariableID:2573:1644"
+    values:
+      light: "#e4e4e7"
+      dark: "#434349"
+  "zinc/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7699"
+      dark: "VariableID:2573:1645"
+    values:
+      light: "#d4d4d8"
+      dark: "#55555d"
+  "zinc/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7700"
+      dark: "VariableID:2573:1646"
+    values:
+      light: "#c0c0c4"
+      dark: "#73737b"
+  "zinc/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7701"
+      dark: "VariableID:2573:1647"
+    values:
+      light: "#b0b0b9"
+      dark: "#87878f"
+  "zinc/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7702"
+      dark: "VariableID:2573:1648"
+    values:
+      light: "#a1a1aa"
+      dark: "#a1a1a9"
+  "zinc/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7703"
+      dark: "VariableID:2573:1649"
+    values:
+      light: "#878790"
+      dark: "#b0b0b9"
+  "zinc/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7704"
+      dark: "VariableID:2573:1650"
+    values:
+      light: "#71717a"
+      dark: "#c0c0c4"
+  "zinc/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7705"
+      dark: "VariableID:2573:1651"
+    values:
+      light: "#52525b"
+      dark: "#d4d4d8"
+  "zinc/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7706"
+      dark: "VariableID:2573:1652"
+    values:
+      light: "#3f3f46"
+      dark: "#e4e4e7"
+  "zinc/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7707"
+      dark: "VariableID:2573:1653"
+    values:
+      light: "#27272a"
+      dark: "#f0f0f1"
+  "zinc/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7708"
+      dark: "VariableID:2573:1654"
+    values:
+      light: "#18181b"
+      dark: "#f8f8f8"
+  "neutral/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7709"
+      dark: "VariableID:2573:1655"
+    values:
+      light: "#fafafa"
+      dark: "#1d1d1d"
+  "neutral/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7710"
+      dark: "VariableID:2573:1656"
+    values:
+      light: "#f0f0f0"
+      dark: "#2b2b2b"
+  "neutral/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7711"
+      dark: "VariableID:2573:1657"
+    values:
+      light: "#e5e5e5"
+      dark: "#444444"
+  "neutral/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7712"
+      dark: "VariableID:2573:1658"
+    values:
+      light: "#d4d4d4"
+      dark: "#555555"
+  "neutral/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7713"
+      dark: "VariableID:2573:1659"
+    values:
+      light: "#c1c1c1"
+      dark: "#747474"
+  "neutral/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7714"
+      dark: "VariableID:2573:1660"
+    values:
+      light: "#b2b2b2"
+      dark: "#8a8a8a"
+  "neutral/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7715"
+      dark: "VariableID:2573:1661"
+    values:
+      light: "#a3a3a3"
+      dark: "#a3a3a3"
+  "neutral/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7716"
+      dark: "VariableID:2573:1662"
+    values:
+      light: "#8a8a8a"
+      dark: "#b2b2b2"
+  "neutral/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7717"
+      dark: "VariableID:2573:1663"
+    values:
+      light: "#737373"
+      dark: "#c1c1c1"
+  "neutral/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7718"
+      dark: "VariableID:2573:1664"
+    values:
+      light: "#525252"
+      dark: "#d4d4d4"
+  "neutral/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7719"
+      dark: "VariableID:2573:1665"
+    values:
+      light: "#404040"
+      dark: "#e5e5e5"
+  "neutral/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7720"
+      dark: "VariableID:2573:1666"
+    values:
+      light: "#262626"
+      dark: "#f0f0f0"
+  "neutral/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7721"
+      dark: "VariableID:2573:1667"
+    values:
+      light: "#171717"
+      dark: "#f8f8f8"
+  "stone/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7722"
+      dark: "VariableID:2573:1668"
+    values:
+      light: "#fafaf9"
+      dark: "#211f1d"
+  "stone/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7723"
+      dark: "VariableID:2573:1669"
+    values:
+      light: "#f0f0ef"
+      dark: "#2d2a29"
+  "stone/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7724"
+      dark: "VariableID:2573:1670"
+    values:
+      light: "#e7e5e4"
+      dark: "#474441"
+  "stone/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7725"
+      dark: "VariableID:2573:1671"
+    values:
+      light: "#d6d3d1"
+      dark: "#595652"
+  "stone/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7726"
+      dark: "VariableID:2573:1672"
+    values:
+      light: "#c6c3c1"
+      dark: "#79736e"
+  "stone/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7727"
+      dark: "VariableID:2573:1673"
+    values:
+      light: "#b7b1ad"
+      dark: "#8f8985"
+  "stone/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7728"
+      dark: "VariableID:2573:1674"
+    values:
+      light: "#a8a29e"
+      dark: "#a8a29e"
+  "stone/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7729"
+      dark: "VariableID:2573:1675"
+    values:
+      light: "#908984"
+      dark: "#b7b1ad"
+  "stone/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7730"
+      dark: "VariableID:2573:1676"
+    values:
+      light: "#78716c"
+      dark: "#c6c3c1"
+  "stone/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7731"
+      dark: "VariableID:2573:1677"
+    values:
+      light: "#57534e"
+      dark: "#d6d3d1"
+  "stone/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7732"
+      dark: "VariableID:2573:1678"
+    values:
+      light: "#44403c"
+      dark: "#e7e5e4"
+  "stone/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7733"
+      dark: "VariableID:2573:1679"
+    values:
+      light: "#292524"
+      dark: "#f0f0ef"
+  "stone/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7734"
+      dark: "VariableID:2573:1680"
+    values:
+      light: "#1c1917"
+      dark: "#f8f8f7"
+  "red/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7735"
+      dark: "VariableID:2573:1681"
+    values:
+      light: "#fef2f2"
+      dark: "#3a2523"
+  "red/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7736"
+      dark: "VariableID:2573:1682"
+    values:
+      light: "#ffebeb"
+      dark: "#533330"
+  "red/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7737"
+      dark: "VariableID:2573:1683"
+    values:
+      light: "#fee2e2"
+      dark: "#6c4642"
+  "red/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7738"
+      dark: "VariableID:2573:1684"
+    values:
+      light: "#fecaca"
+      dark: "#8b534d"
+  "red/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7739"
+      dark: "VariableID:2573:1685"
+    values:
+      light: "#ffafae"
+      dark: "#b16056"
+  "red/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7740"
+      dark: "VariableID:2573:1686"
+    values:
+      light: "#f98d8f"
+      dark: "#da6d65"
+  "red/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7741"
+      dark: "VariableID:2573:1687"
+    values:
+      light: "#f87171"
+      dark: "#e9807e"
+  "red/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7742"
+      dark: "VariableID:2573:1688"
+    values:
+      light: "#f54845"
+      dark: "#f09394"
+  "red/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7743"
+      dark: "VariableID:2573:1689"
+    values:
+      light: "#cc342e"
+      dark: "#fbb1b0"
+  "red/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7744"
+      dark: "VariableID:2573:1690"
+    values:
+      light: "#a42724"
+      dark: "#fdcbcb"
+  "red/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7745"
+      dark: "VariableID:2573:1691"
+    values:
+      light: "#7f1d1d"
+      dark: "#fee2e2"
+  "red/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7746"
+      dark: "VariableID:2573:1692"
+    values:
+      light: "#610008"
+      dark: "#ffebeb"
+  "red/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7747"
+      dark: "VariableID:2573:1693"
+    values:
+      light: "#3a0003"
+      dark: "#fef2f2"
+  "orange/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7748"
+      dark: "VariableID:2573:1694"
+    values:
+      light: "#fff7ed"
+      dark: "#44302a"
+  "orange/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7749"
+      dark: "VariableID:2573:1695"
+    values:
+      light: "#ffedd5"
+      dark: "#503730"
+  "orange/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7750"
+      dark: "VariableID:2573:1696"
+    values:
+      light: "#ffe5c7"
+      dark: "#6b4c42"
+  "orange/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7751"
+      dark: "VariableID:2573:1697"
+    values:
+      light: "#ffd098"
+      dark: "#845648"
+  "orange/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7752"
+      dark: "VariableID:2573:1698"
+    values:
+      light: "#fdba74"
+      dark: "#a9634d"
+  "orange/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7753"
+      dark: "VariableID:2573:1699"
+    values:
+      light: "#fb923c"
+      dark: "#d97c58"
+  "orange/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7754"
+      dark: "VariableID:2573:1700"
+    values:
+      light: "#ff7e2f"
+      dark: "#eb8e5d"
+  "orange/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7755"
+      dark: "VariableID:2573:1701"
+    values:
+      light: "#f3601a"
+      dark: "#f29853"
+  "orange/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7756"
+      dark: "VariableID:2573:1702"
+    values:
+      light: "#c2410c"
+      dark: "#f9bc7c"
+  "orange/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7757"
+      dark: "VariableID:2573:1703"
+    values:
+      light: "#9a3412"
+      dark: "#fed09b"
+  "orange/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7758"
+      dark: "VariableID:2573:1704"
+    values:
+      light: "#7c2d12"
+      dark: "#ffe5c8"
+  "orange/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7759"
+      dark: "VariableID:2573:1705"
+    values:
+      light: "#5a1700"
+      dark: "#ffedd5"
+  "orange/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7760"
+      dark: "VariableID:2573:1706"
+    values:
+      light: "#440f00"
+      dark: "#fff7ed"
+  "amber/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7761"
+      dark: "VariableID:2573:1707"
+    values:
+      light: "#fffbeb"
+      dark: "#40322b"
+  "amber/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7762"
+      dark: "VariableID:2573:1708"
+    values:
+      light: "#fef3c7"
+      dark: "#513d34"
+  "amber/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7763"
+      dark: "VariableID:2573:1709"
+    values:
+      light: "#fee891"
+      dark: "#695044"
+  "amber/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7764"
+      dark: "VariableID:2573:1710"
+    values:
+      light: "#fcd34d"
+      dark: "#7f5b49"
+  "amber/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7765"
+      dark: "VariableID:2573:1711"
+    values:
+      light: "#fbbf24"
+      dark: "#9e6b50"
+  "amber/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7766"
+      dark: "VariableID:2573:1712"
+    values:
+      light: "#f59e0b"
+      dark: "#c18458"
+  "amber/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7767"
+      dark: "VariableID:2573:1713"
+    values:
+      light: "#ee8a0a"
+      dark: "#db9759"
+  "amber/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7768"
+      dark: "VariableID:2573:1714"
+    values:
+      light: "#d67312"
+      dark: "#e6a553"
+  "amber/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7769"
+      dark: "VariableID:2573:1715"
+    values:
+      light: "#b45309"
+      dark: "#f7c040"
+  "amber/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7770"
+      dark: "VariableID:2573:1716"
+    values:
+      light: "#92400e"
+      dark: "#fbd356"
+  "amber/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7771"
+      dark: "VariableID:2573:1717"
+    values:
+      light: "#78350f"
+      dark: "#fee893"
+  "amber/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7772"
+      dark: "VariableID:2573:1718"
+    values:
+      light: "#5a2200"
+      dark: "#fef3c7"
+  "amber/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7773"
+      dark: "VariableID:2573:1719"
+    values:
+      light: "#3d1703"
+      dark: "#fdf9e9"
+  "yellow/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7774"
+      dark: "VariableID:2573:1720"
+    values:
+      light: "#fefce8"
+      dark: "#41352d"
+  "yellow/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7775"
+      dark: "VariableID:2573:1721"
+    values:
+      light: "#fef9c3"
+      dark: "#534337"
+  "yellow/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7776"
+      dark: "VariableID:2573:1722"
+    values:
+      light: "#fef08a"
+      dark: "#675446"
+  "yellow/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7777"
+      dark: "VariableID:2573:1723"
+    values:
+      light: "#ffd752"
+      dark: "#785f4a"
+  "yellow/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7778"
+      dark: "VariableID:2573:1724"
+    values:
+      light: "#f6c919"
+      dark: "#92714f"
+  "yellow/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7779"
+      dark: "VariableID:2573:1725"
+    values:
+      light: "#eab308"
+      dark: "#b08b55"
+  "yellow/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7780"
+      dark: "VariableID:2573:1726"
+    values:
+      light: "#d79622"
+      dark: "#c99d5d"
+  "yellow/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7781"
+      dark: "VariableID:2573:1727"
+    values:
+      light: "#be8100"
+      dark: "#dfb657"
+  "yellow/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7782"
+      dark: "VariableID:2573:1728"
+    values:
+      light: "#a16207"
+      dark: "#f3ca3c"
+  "yellow/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7783"
+      dark: "VariableID:2573:1729"
+    values:
+      light: "#854d0e"
+      dark: "#fed75a"
+  "yellow/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7784"
+      dark: "VariableID:2573:1730"
+    values:
+      light: "#713f12"
+      dark: "#fef08c"
+  "yellow/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7785"
+      dark: "VariableID:2573:1731"
+    values:
+      light: "#582c00"
+      dark: "#fef9c4"
+  "yellow/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7786"
+      dark: "VariableID:2573:1732"
+    values:
+      light: "#3d1d00"
+      dark: "#fcfae6"
+  "lime/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7787"
+      dark: "VariableID:2573:1733"
+    values:
+      light: "#f7fee7"
+      dark: "#32382d"
+  "lime/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7788"
+      dark: "VariableID:2573:1734"
+    values:
+      light: "#ecfccb"
+      dark: "#3a4332"
+  "lime/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7789"
+      dark: "VariableID:2573:1735"
+    values:
+      light: "#d9f99d"
+      dark: "#45503c"
+  "lime/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7790"
+      dark: "VariableID:2573:1736"
+    values:
+      light: "#bef264"
+      dark: "#556447"
+  "lime/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7791"
+      dark: "VariableID:2573:1737"
+    values:
+      light: "#a3e635"
+      dark: "#627b4d"
+  "lime/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7792"
+      dark: "VariableID:2573:1738"
+    values:
+      light: "#84cc16"
+      dark: "#749a53"
+  "lime/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7793"
+      dark: "VariableID:2573:1739"
+    values:
+      light: "#72b300"
+      dark: "#82af54"
+  "lime/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7794"
+      dark: "VariableID:2573:1740"
+    values:
+      light: "#609d00"
+      dark: "#91c757"
+  "lime/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7795"
+      dark: "VariableID:2573:1741"
+    values:
+      light: "#4d7c0f"
+      dark: "#a7e44b"
+  "lime/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7796"
+      dark: "VariableID:2573:1742"
+    values:
+      light: "#3f6212"
+      dark: "#bff16b"
+  "lime/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7797"
+      dark: "VariableID:2573:1743"
+    values:
+      light: "#365118"
+      dark: "#d9f99f"
+  "lime/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7798"
+      dark: "VariableID:2573:1744"
+    values:
+      light: "#273d0f"
+      dark: "#ecfccb"
+  "lime/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7799"
+      dark: "VariableID:2573:1745"
+    values:
+      light: "#192a07"
+      dark: "#f5fce5"
+  "green/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7800"
+      dark: "VariableID:2573:1746"
+    values:
+      light: "#f0fdf4"
+      dark: "#2b3a2f"
+  "green/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7801"
+      dark: "VariableID:2573:1747"
+    values:
+      light: "#dcfce7"
+      dark: "#324436"
+  "green/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7802"
+      dark: "VariableID:2573:1748"
+    values:
+      light: "#bbf7d0"
+      dark: "#415747"
+  "green/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7803"
+      dark: "VariableID:2573:1749"
+    values:
+      light: "#86efac"
+      dark: "#46664e"
+  "green/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7804"
+      dark: "VariableID:2573:1750"
+    values:
+      light: "#4ade80"
+      dark: "#4c7e57"
+  "green/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7805"
+      dark: "VariableID:2573:1751"
+    values:
+      light: "#2ccb63"
+      dark: "#519f62"
+  "green/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7806"
+      dark: "VariableID:2573:1752"
+    values:
+      light: "#00ba54"
+      dark: "#4cb668"
+  "green/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7807"
+      dark: "VariableID:2573:1753"
+    values:
+      light: "#16a34a"
+      dark: "#4ec76f"
+  "green/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7808"
+      dark: "VariableID:2573:1754"
+    values:
+      light: "#15803d"
+      dark: "#5adc86"
+  "green/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7809"
+      dark: "VariableID:2573:1755"
+    values:
+      light: "#166534"
+      dark: "#8aeeae"
+  "green/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7810"
+      dark: "VariableID:2573:1756"
+    values:
+      light: "#14532d"
+      dark: "#bcf7d0"
+  "green/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7811"
+      dark: "VariableID:2573:1757"
+    values:
+      light: "#003d1c"
+      dark: "#dcfce7"
+  "green/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7812"
+      dark: "VariableID:2573:1758"
+    values:
+      light: "#002d13"
+      dark: "#effcf3"
+  "emerald/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7813"
+      dark: "VariableID:2573:1759"
+    values:
+      light: "#ecfdf5"
+      dark: "#283530"
+  "emerald/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7814"
+      dark: "VariableID:2573:1760"
+    values:
+      light: "#d1fae5"
+      dark: "#32443d"
+  "emerald/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7815"
+      dark: "VariableID:2573:1761"
+    values:
+      light: "#aaf6d3"
+      dark: "#3c524a"
+  "emerald/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7816"
+      dark: "VariableID:2573:1762"
+    values:
+      light: "#77efbf"
+      dark: "#466558"
+  "emerald/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7817"
+      dark: "VariableID:2573:1763"
+    values:
+      light: "#50e0ab"
+      dark: "#4c7e69"
+  "emerald/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7818"
+      dark: "VariableID:2573:1764"
+    values:
+      light: "#27cb92"
+      dark: "#4e9777"
+  "emerald/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7819"
+      dark: "VariableID:2573:1765"
+    values:
+      light: "#13ba83"
+      dark: "#50b68b"
+  "emerald/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7820"
+      dark: "VariableID:2573:1766"
+    values:
+      light: "#139a6d"
+      dark: "#4dc796"
+  "emerald/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7821"
+      dark: "VariableID:2573:1767"
+    values:
+      light: "#147f5d"
+      dark: "#5fdead"
+  "emerald/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7822"
+      dark: "VariableID:2573:1768"
+    values:
+      light: "#11644b"
+      dark: "#7ceec0"
+  "emerald/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7823"
+      dark: "VariableID:2573:1769"
+    values:
+      light: "#064e3b"
+      dark: "#abf6d3"
+  "emerald/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7824"
+      dark: "VariableID:2573:1770"
+    values:
+      light: "#003d2d"
+      dark: "#d1fae5"
+  "emerald/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7825"
+      dark: "VariableID:2573:1771"
+    values:
+      light: "#00281c"
+      dark: "#ecfdf5"
+  "teal/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7826"
+      dark: "VariableID:2573:1772"
+    values:
+      light: "#f0fdfa"
+      dark: "#263231"
+  "teal/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7827"
+      dark: "VariableID:2573:1773"
+    values:
+      light: "#ccfbf1"
+      dark: "#334442"
+  "teal/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7828"
+      dark: "VariableID:2573:1774"
+    values:
+      light: "#99f6e4"
+      dark: "#3f5351"
+  "teal/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7829"
+      dark: "VariableID:2573:1775"
+    values:
+      light: "#5eead4"
+      dark: "#43615e"
+  "teal/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7830"
+      dark: "VariableID:2573:1776"
+    values:
+      light: "#3ce0c9"
+      dark: "#4f7d78"
+  "teal/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7831"
+      dark: "VariableID:2573:1777"
+    values:
+      light: "#11c9b4"
+      dark: "#4b9289"
+  "teal/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7832"
+      dark: "VariableID:2573:1778"
+    values:
+      light: "#14b8a6"
+      dark: "#51b5a6"
+  "teal/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7833"
+      dark: "VariableID:2573:1779"
+    values:
+      light: "#0d9488"
+      dark: "#46c6b3"
+  "teal/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7834"
+      dark: "VariableID:2573:1780"
+    values:
+      light: "#1c7d75"
+      dark: "#52dec9"
+  "teal/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7835"
+      dark: "VariableID:2573:1781"
+    values:
+      light: "#115e59"
+      dark: "#66e9d4"
+  "teal/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7836"
+      dark: "VariableID:2573:1782"
+    values:
+      light: "#134e4a"
+      dark: "#9bf6e4"
+  "teal/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7837"
+      dark: "VariableID:2573:1783"
+    values:
+      light: "#003c38"
+      dark: "#ccfbf1"
+  "teal/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7838"
+      dark: "VariableID:2573:1784"
+    values:
+      light: "#002422"
+      dark: "#effcf9"
+  "cyan/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7839"
+      dark: "VariableID:2573:1785"
+    values:
+      light: "#ecfeff"
+      dark: "#29353b"
+  "cyan/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7840"
+      dark: "VariableID:2573:1786"
+    values:
+      light: "#cffafe"
+      dark: "#314149"
+  "cyan/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7841"
+      dark: "VariableID:2573:1787"
+    values:
+      light: "#a5f3fc"
+      dark: "#3e515a"
+  "cyan/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7842"
+      dark: "VariableID:2573:1788"
+    values:
+      light: "#67e8f9"
+      dark: "#46636e"
+  "cyan/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7843"
+      dark: "VariableID:2573:1789"
+    values:
+      light: "#2ed9f4"
+      dark: "#497687"
+  "cyan/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7844"
+      dark: "VariableID:2573:1790"
+    values:
+      light: "#00c5df"
+      dark: "#4b91a7"
+  "cyan/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7845"
+      dark: "VariableID:2573:1791"
+    values:
+      light: "#00b3d0"
+      dark: "#4eb1c7"
+  "cyan/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7846"
+      dark: "VariableID:2573:1792"
+    values:
+      light: "#0891b2"
+      dark: "#43c2d8"
+  "cyan/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7847"
+      dark: "VariableID:2573:1793"
+    values:
+      light: "#0e7490"
+      dark: "#48d7f0"
+  "cyan/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7848"
+      dark: "VariableID:2573:1794"
+    values:
+      light: "#155e75"
+      dark: "#6ee7f7"
+  "cyan/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7849"
+      dark: "VariableID:2573:1795"
+    values:
+      light: "#114a5f"
+      dark: "#a6f3fc"
+  "cyan/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7850"
+      dark: "VariableID:2573:1796"
+    values:
+      light: "#00374a"
+      dark: "#cffafe"
+  "cyan/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7851"
+      dark: "VariableID:2573:1797"
+    values:
+      light: "#002634"
+      dark: "#ebfdfe"
+  "sky/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7852"
+      dark: "VariableID:2573:1798"
+    values:
+      light: "#f0f9ff"
+      dark: "#27333c"
+  "sky/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7853"
+      dark: "VariableID:2573:1799"
+    values:
+      light: "#e0f2fe"
+      dark: "#32424f"
+  "sky/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7854"
+      dark: "VariableID:2573:1800"
+    values:
+      light: "#cdeeff"
+      dark: "#3f5362"
+  "sky/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7855"
+      dark: "VariableID:2573:1801"
+    values:
+      light: "#a7dffc"
+      dark: "#426075"
+  "sky/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7856"
+      dark: "VariableID:2573:1802"
+    values:
+      light: "#7dd3fc"
+      dark: "#457192"
+  "sky/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7857"
+      dark: "VariableID:2573:1803"
+    values:
+      light: "#38bdf8"
+      dark: "#4586b4"
+  "sky/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7858"
+      dark: "VariableID:2573:1804"
+    values:
+      light: "#0ea5e9"
+      dark: "#4ba5da"
+  "sky/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7859"
+      dark: "VariableID:2573:1805"
+    values:
+      light: "#0284c7"
+      dark: "#54bcee"
+  "sky/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7860"
+      dark: "VariableID:2573:1806"
+    values:
+      light: "#0a6ca4"
+      dark: "#84d2f8"
+  "sky/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7861"
+      dark: "VariableID:2573:1807"
+    values:
+      light: "#075985"
+      dark: "#a9dffa"
+  "sky/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7862"
+      dark: "VariableID:2573:1808"
+    values:
+      light: "#0c4a6e"
+      dark: "#ceeeff"
+  "sky/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7863"
+      dark: "VariableID:2573:1809"
+    values:
+      light: "#003755"
+      dark: "#e0f2fe"
+  "sky/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7864"
+      dark: "VariableID:2573:1810"
+    values:
+      light: "#002339"
+      dark: "#f0f9ff"
+  "blue/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7865"
+      dark: "VariableID:2573:1811"
+    values:
+      light: "#eff6ff"
+      dark: "#1e2a47"
+  "blue/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7866"
+      dark: "VariableID:2573:1812"
+    values:
+      light: "#e7f1ff"
+      dark: "#283452"
+  "blue/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7867"
+      dark: "VariableID:2573:1813"
+    values:
+      light: "#dbeafe"
+      dark: "#3e4c6d"
+  "blue/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7868"
+      dark: "VariableID:2573:1814"
+    values:
+      light: "#bfdbfe"
+      dark: "#455c91"
+  "blue/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7869"
+      dark: "VariableID:2573:1815"
+    values:
+      light: "#93c5fd"
+      dark: "#4a70b9"
+  "blue/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7870"
+      dark: "VariableID:2573:1816"
+    values:
+      light: "#73b1ff"
+      dark: "#5081cf"
+  "blue/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7871"
+      dark: "VariableID:2573:1817"
+    values:
+      light: "#529df9"
+      dark: "#67a0e7"
+  "blue/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7872"
+      dark: "VariableID:2573:1818"
+    values:
+      light: "#3279ec"
+      dark: "#7cb1f4"
+  "blue/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7873"
+      dark: "VariableID:2573:1819"
+    values:
+      light: "#2560e0"
+      dark: "#97c5f8"
+  "blue/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7874"
+      dark: "VariableID:2573:1820"
+    values:
+      light: "#2448b8"
+      dark: "#c0dbfd"
+  "blue/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7875"
+      dark: "VariableID:2573:1821"
+    values:
+      light: "#1e3a8a"
+      dark: "#dbeafe"
+  "blue/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7876"
+      dark: "VariableID:2573:1822"
+    values:
+      light: "#081c6b"
+      dark: "#e7f1ff"
+  "blue/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7877"
+      dark: "VariableID:2573:1823"
+    values:
+      light: "#020659"
+      dark: "#eff6ff"
+  "indigo/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7878"
+      dark: "VariableID:2573:1824"
+    values:
+      light: "#f4f6ff"
+      dark: "#272947"
+  "indigo/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7879"
+      dark: "VariableID:2573:1825"
+    values:
+      light: "#ebf0ff"
+      dark: "#333655"
+  "indigo/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7880"
+      dark: "VariableID:2573:1826"
+    values:
+      light: "#e0e7ff"
+      dark: "#484e7b"
+  "indigo/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7881"
+      dark: "VariableID:2573:1827"
+    values:
+      light: "#cbd5ff"
+      dark: "#51589b"
+  "indigo/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7882"
+      dark: "VariableID:2573:1828"
+    values:
+      light: "#b1bffd"
+      dark: "#636bc5"
+  "indigo/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7883"
+      dark: "VariableID:2573:1829"
+    values:
+      light: "#97a7fa"
+      dark: "#7079d9"
+  "indigo/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7884"
+      dark: "VariableID:2573:1830"
+    values:
+      light: "#818cf8"
+      dark: "#8792e5"
+  "indigo/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7885"
+      dark: "VariableID:2573:1831"
+    values:
+      light: "#686cf8"
+      dark: "#9aa8f0"
+  "indigo/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7886"
+      dark: "VariableID:2573:1832"
+    values:
+      light: "#5752f1"
+      dark: "#b2bff8"
+  "indigo/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7887"
+      dark: "VariableID:2573:1833"
+    values:
+      light: "#4338ca"
+      dark: "#cbd5fd"
+  "indigo/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7888"
+      dark: "VariableID:2573:1834"
+    values:
+      light: "#3730a3"
+      dark: "#e0e7ff"
+  "indigo/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7889"
+      dark: "VariableID:2573:1835"
+    values:
+      light: "#231b6d"
+      dark: "#ebf0ff"
+  "indigo/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7890"
+      dark: "VariableID:2573:1836"
+    values:
+      light: "#160158"
+      dark: "#f4f6ff"
+  "violet/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7891"
+      dark: "VariableID:2573:1837"
+    values:
+      light: "#f4f2fe"
+      dark: "#2f2945"
+  "violet/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7892"
+      dark: "VariableID:2573:1838"
+    values:
+      light: "#f1edff"
+      dark: "#3a3156"
+  "violet/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7893"
+      dark: "VariableID:2573:1839"
+    values:
+      light: "#eae6fb"
+      dark: "#524678"
+  "violet/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7894"
+      dark: "VariableID:2573:1840"
+    values:
+      light: "#ddd6fe"
+      dark: "#6552a0"
+  "violet/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7895"
+      dark: "VariableID:2573:1841"
+    values:
+      light: "#c4b5fd"
+      dark: "#7a60c3"
+  "violet/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7896"
+      dark: "VariableID:2573:1842"
+    values:
+      light: "#b49efe"
+      dark: "#8970d8"
+  "violet/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7897"
+      dark: "VariableID:2573:1843"
+    values:
+      light: "#a17eff"
+      dark: "#a088eb"
+  "violet/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7898"
+      dark: "VariableID:2573:1844"
+    values:
+      light: "#8b5cf6"
+      dark: "#b3a1f3"
+  "violet/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7899"
+      dark: "VariableID:2573:1845"
+    values:
+      light: "#7c3aed"
+      dark: "#c4b6f8"
+  "violet/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7900"
+      dark: "VariableID:2573:1846"
+    values:
+      light: "#661bd0"
+      dark: "#ddd6fd"
+  "violet/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7901"
+      dark: "VariableID:2573:1847"
+    values:
+      light: "#5017a0"
+      dark: "#eae6fb"
+  "violet/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7902"
+      dark: "VariableID:2573:1848"
+    values:
+      light: "#350071"
+      dark: "#f1edff"
+  "violet/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7903"
+      dark: "VariableID:2573:1849"
+    values:
+      light: "#240051"
+      dark: "#f4f2fe"
+  "purple/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7904"
+      dark: "VariableID:2573:1850"
+    values:
+      light: "#faf5ff"
+      dark: "#231b2d"
+  "purple/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7905"
+      dark: "VariableID:2573:1851"
+    values:
+      light: "#f5ecff"
+      dark: "#3f3051"
+  "purple/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7906"
+      dark: "VariableID:2573:1852"
+    values:
+      light: "#efe4fb"
+      dark: "#574170"
+  "purple/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7907"
+      dark: "VariableID:2573:1853"
+    values:
+      light: "#e9d5ff"
+      dark: "#71529c"
+  "purple/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7908"
+      dark: "VariableID:2573:1854"
+    values:
+      light: "#d8b4fe"
+      dark: "#8b60c3"
+  "purple/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7909"
+      dark: "VariableID:2573:1855"
+    values:
+      light: "#c995ff"
+      dark: "#a16eda"
+  "purple/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7910"
+      dark: "VariableID:2573:1856"
+    values:
+      light: "#b778f4"
+      dark: "#b284e3"
+  "purple/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7911"
+      dark: "VariableID:2573:1857"
+    values:
+      light: "#a855f7"
+      dark: "#c69af4"
+  "purple/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7912"
+      dark: "VariableID:2573:1858"
+    values:
+      light: "#9333ea"
+      dark: "#d7b6fa"
+  "purple/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7913"
+      dark: "VariableID:2573:1859"
+    values:
+      light: "#7817c7"
+      dark: "#e9d5fe"
+  "purple/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7914"
+      dark: "VariableID:2573:1860"
+    values:
+      light: "#5b0a91"
+      dark: "#efe4fb"
+  "purple/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7915"
+      dark: "VariableID:2573:1861"
+    values:
+      light: "#3e0065"
+      dark: "#f5ecff"
+  "purple/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7916"
+      dark: "VariableID:2573:1862"
+    values:
+      light: "#2b1141"
+      dark: "#faf5ff"
+  "fuchsia/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7917"
+      dark: "VariableID:2573:1863"
+    values:
+      light: "#fdf4ff"
+      dark: "#342335"
+  "fuchsia/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7918"
+      dark: "VariableID:2573:1864"
+    values:
+      light: "#fbecff"
+      dark: "#452d45"
+  "fuchsia/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7919"
+      dark: "VariableID:2573:1865"
+    values:
+      light: "#f4e2f9"
+      dark: "#5e3e5f"
+  "fuchsia/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7920"
+      dark: "VariableID:2573:1866"
+    values:
+      light: "#f5d0fe"
+      dark: "#7c4d7f"
+  "fuchsia/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7921"
+      dark: "VariableID:2573:1867"
+    values:
+      light: "#f0abfc"
+      dark: "#9e57a7"
+  "fuchsia/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7922"
+      dark: "VariableID:2573:1868"
+    values:
+      light: "#ee8efc"
+      dark: "#c364d1"
+  "fuchsia/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7923"
+      dark: "VariableID:2573:1869"
+    values:
+      light: "#e56bf7"
+      dark: "#da7ee8"
+  "fuchsia/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7924"
+      dark: "VariableID:2573:1870"
+    values:
+      light: "#d23de8"
+      dark: "#e795f3"
+  "fuchsia/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7925"
+      dark: "VariableID:2573:1871"
+    values:
+      light: "#ad25be"
+      dark: "#edaef8"
+  "fuchsia/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7926"
+      dark: "VariableID:2573:1872"
+    values:
+      light: "#891d92"
+      dark: "#f4d1fd"
+  "fuchsia/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7927"
+      dark: "VariableID:2573:1873"
+    values:
+      light: "#68106d"
+      dark: "#f4e2f9"
+  "fuchsia/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7928"
+      dark: "VariableID:2573:1874"
+    values:
+      light: "#48004c"
+      dark: "#fbecff"
+  "fuchsia/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7929"
+      dark: "VariableID:2573:1875"
+    values:
+      light: "#2e0031"
+      dark: "#fdf4ff"
+  "pink/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7930"
+      dark: "VariableID:2573:1876"
+    values:
+      light: "#fdf2f8"
+      dark: "#362227"
+  "pink/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7931"
+      dark: "VariableID:2573:1877"
+    values:
+      light: "#fee9f5"
+      dark: "#4a2d35"
+  "pink/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7932"
+      dark: "VariableID:2573:1878"
+    values:
+      light: "#f8e3ef"
+      dark: "#6a424d"
+  "pink/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7933"
+      dark: "VariableID:2573:1879"
+    values:
+      light: "#fbcfe8"
+      dark: "#864c5b"
+  "pink/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7934"
+      dark: "VariableID:2573:1880"
+    values:
+      light: "#f9a8d4"
+      dark: "#af5a71"
+  "pink/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7935"
+      dark: "VariableID:2573:1881"
+    values:
+      light: "#ff8ec7"
+      dark: "#cd6693"
+  "pink/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7936"
+      dark: "VariableID:2573:1882"
+    values:
+      light: "#f472b6"
+      dark: "#e782b4"
+  "pink/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7937"
+      dark: "VariableID:2573:1883"
+    values:
+      light: "#e44093"
+      dark: "#f695c5"
+  "pink/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7938"
+      dark: "VariableID:2573:1884"
+    values:
+      light: "#c92766"
+      dark: "#f5abd3"
+  "pink/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7939"
+      dark: "VariableID:2573:1885"
+    values:
+      light: "#9d174d"
+      dark: "#fad0e8"
+  "pink/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7940"
+      dark: "VariableID:2573:1886"
+    values:
+      light: "#7d113e"
+      dark: "#f8e3ef"
+  "pink/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7941"
+      dark: "VariableID:2573:1887"
+    values:
+      light: "#530025"
+      dark: "#fee9f5"
+  "pink/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7942"
+      dark: "VariableID:2573:1888"
+    values:
+      light: "#340015"
+      dark: "#fdf2f8"
+  "rose/25":
+    type: "color"
+    id:
+      light: "VariableID:2252:7943"
+      dark: "VariableID:2573:1889"
+    values:
+      light: "#fff1f2"
+      dark: "#442b2e"
+  "rose/50":
+    type: "color"
+    id:
+      light: "VariableID:2252:7944"
+      dark: "VariableID:2573:1890"
+    values:
+      light: "#ffeaec"
+      dark: "#482c30"
+  "rose/100":
+    type: "color"
+    id:
+      light: "VariableID:2252:7945"
+      dark: "VariableID:2573:1891"
+    values:
+      light: "#fde2e4"
+      dark: "#693f45"
+  "rose/200":
+    type: "color"
+    id:
+      light: "VariableID:2252:7946"
+      dark: "VariableID:2573:1892"
+    values:
+      light: "#fecdd3"
+      dark: "#864b51"
+  "rose/300":
+    type: "color"
+    id:
+      light: "VariableID:2252:7947"
+      dark: "VariableID:2573:1893"
+    values:
+      light: "#ffabb5"
+      dark: "#af5a60"
+  "rose/400":
+    type: "color"
+    id:
+      light: "VariableID:2252:7948"
+      dark: "VariableID:2573:1894"
+    values:
+      light: "#ff909d"
+      dark: "#d3636e"
+  "rose/500":
+    type: "color"
+    id:
+      light: "VariableID:2252:7949"
+      dark: "VariableID:2573:1895"
+    values:
+      light: "#fb7185"
+      dark: "#ec818e"
+  "rose/600":
+    type: "color"
+    id:
+      light: "VariableID:2252:7950"
+      dark: "VariableID:2573:1896"
+    values:
+      light: "#ee395a"
+      dark: "#f696a1"
+  "rose/700":
+    type: "color"
+    id:
+      light: "VariableID:2252:7951"
+      dark: "VariableID:2573:1897"
+    values:
+      light: "#cb2646"
+      dark: "#fbadb6"
+  "rose/800":
+    type: "color"
+    id:
+      light: "VariableID:2252:7952"
+      dark: "VariableID:2573:1898"
+    values:
+      light: "#9f1239"
+      dark: "#fdced3"
+  "rose/900":
+    type: "color"
+    id:
+      light: "VariableID:2252:7953"
+      dark: "VariableID:2573:1899"
+    values:
+      light: "#7e022f"
+      dark: "#fde2e4"
+  "rose/950":
+    type: "color"
+    id:
+      light: "VariableID:2252:7954"
+      dark: "VariableID:2573:1900"
+    values:
+      light: "#52001c"
+      dark: "#ffeaec"
+  "rose/975":
+    type: "color"
+    id:
+      light: "VariableID:2252:7955"
+      dark: "VariableID:2573:1901"
+    values:
+      light: "#410014"
+      dark: "#fff1f2"
+  "base/white":
+    type: "color"
+    id:
+      light: "VariableID:2254:8108"
+      dark: "VariableID:2573:2788"
+    values:
+      light: "#ffffff"
+      dark: "#ffffff"
+  "base/black":
+    type: "color"
+    id:
+      light: "VariableID:2254:8109"
+      dark: "VariableID:2573:2789"
+    values:
+      light: "#000000"
+      dark: "#000000"
