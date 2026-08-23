@@ -15,8 +15,7 @@ Six records lived here and were removed on 2026-08-23. Not because they were wro
 | Skill version supersession (v0.5 → v0.7) | a note in [`skills/README.md`](../../skills/README.md) |
 | Component levels; size grids are Element/Object only | a rule in [`sizing.md`](../foundations/sizing.md) |
 | Frontend library foundations (Svelte, Melt UI, plain CSS) | the planned approach in [`PLAN.md`](../../PLAN.md) Stage 5 |
-| Master document decomposition | a work order, [SPEC 0002](../specs/0002-master-document-decomposition.md) |
-| Proportional logic — base-8, not Fibonacci | a rule in [`spacing.md`](../foundations/spacing.md) |
+| Proportional logic — the base-8 scale | a rule in [`spacing.md`](../foundations/spacing.md) |
 | Token normalization and canonical storage | [SPEC 0001](../specs/0001-token-pipeline.md) and [`tokens/README.md`](../../tokens/README.md) |
 
 Two of those six were already contradicted by the system within a day of being written. That is the argument in miniature: at this stage the durable thing is the **rule**, not the record of deciding it.

@@ -17,4 +17,3 @@ Every spec names the decision record it implements. If a spec finds itself argui
 | # | Title | Implements | Status |
 | --- | --- | --- | --- |
 | [0001](0001-token-pipeline.md) | Token pipeline | — | Built |
-| [0002](0002-master-document-decomposition.md) | Master document decomposition | — | In progress |

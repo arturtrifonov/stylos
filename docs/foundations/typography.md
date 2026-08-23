@@ -49,7 +49,7 @@ If the family is ever swapped for static instances, this breaks quietly: 450 res
 
 Georama for `family/normal` and `family/display`, JetBrains Mono for `family/code`. Both under the SIL Open Font License, which permits embedding and redistribution including in a commercial product.
 
-**Cyrillic is not a requirement.** Georama covers the Google Fonts Latin Plus glyph set and does not include Cyrillic; that is accepted. The master document's §11.1 lists "strong Cyrillic support" among the typeface requirements — that line is not current and does not carry over.
+Georama covers the Google Fonts Latin Plus glyph set: Latin, Western European and Vietnamese. That is the supported range.
 
 ## Stale variable names elsewhere
 

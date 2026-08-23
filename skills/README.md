@@ -1,6 +1,6 @@
 # skills/
 
-Figma Agent skills, authored as modular sources and compiled into one Markdown document for manual import into Figma Agent. See master doc [§18](../docs/master-document.md#18-figma-agent-skill-system) and [§19](../docs/master-document.md#19-skill-source-and-distribution-architecture) for the full rationale.
+Figma Agent skills, authored as modular sources and compiled into one Markdown document for manual import into Figma Agent. Why the sources are modular and the distribution is a single file is explained below.
 
 ## Why modular source + monolithic distribution
 
@@ -17,7 +17,7 @@ Figma Agent imports a single document. Maintaining four-plus skills as one growi
 npm run build:skills
 ```
 
-Runs [`tools/build-skills.mjs`](../tools/build-skills.mjs), which reads `targets/figma-agent.md` for the include order, concatenates each listed skill's `SKILL.md`, and writes `dist/stylos-figma-agent.md`. Import that file into Figma Agent manually — see master doc [§8.5](../docs/master-document.md#85-figma-agent-and-external-automation) for why manual import is the current (acceptable) workflow rather than automated installation.
+Runs [`tools/build-skills.mjs`](../tools/build-skills.mjs), which reads `targets/figma-agent.md` for the include order, concatenates each listed skill's `SKILL.md`, and writes `dist/stylos-figma-agent.md`. Import that file into Figma Agent manually. Automated installation is not available, and the manual step is accepted rather than worked around.
 
 ## Current skills
 
@@ -28,7 +28,7 @@ Runs [`tools/build-skills.mjs`](../tools/build-skills.mjs), which reads `targets
 | `stylos-component-integrity-check` | 0.2 | Read-only | [src/component-integrity-check/SKILL.md](src/component-integrity-check/SKILL.md) |
 | `stylos-reference-reconstruction` | 0.1 | Build directly unless material product ambiguity exists | [src/reference-reconstruction/SKILL.md](src/reference-reconstruction/SKILL.md) |
 
-Note: the master document's [§18](../docs/master-document.md#18-figma-agent-skill-system) table cites `stylos-naming-cleanup` as v0.5 and its [§16](../docs/master-document.md#16-known-naming-conflict) describes a naming conflict as open. Both are stale — this repository imports **v0.7**, which already resolves that conflict by flagging the abbreviated size values as violations. The versions in the table above are the current ones.
+Note on versions: the `metadata` block in each `SKILL.md` is repository-only — Figma's export does not carry it, so a version number cannot round-trip. Whether a loaded skill matches this repository is answered by comparing the text, not by trusting a number.
 
 ## Rules for editing a skill
 

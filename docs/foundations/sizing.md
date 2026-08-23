@@ -1,6 +1,6 @@
 # Sizing
 
-Status: **Rules confirmed, scale open.** See master doc [§12.2–12.3](../master-document.md#122-component-sizing-rules).
+Status: **Rules confirmed, scale open.**
 
 ## Confirmed
 
@@ -25,7 +25,7 @@ This is a reference, not an enforced grid. A primitive may sit outside it where 
 
 ## Open
 
-- The final Element/Object size scale, shared with [spacing](spacing.md) (master doc [§27, item 3](../master-document.md#27-open-decisions)). Note this scale only ever needs to cover Element and Object — see above.
+- The final Element/Object size scale, shared with [spacing](spacing.md) ([`PLAN.md`](../../PLAN.md) Stage 1). Note this scale only ever needs to cover Element and Object — see above.
 
 ## TODO
 

@@ -4,7 +4,7 @@ Structured, relational metadata for every component: architectural level, behavi
 
 ## Why this exists separately from `docs/components/<name>.md`
 
-The full [component documentation standard](../../master-document.md#17-component-documentation-standard) (§17, 20 points: purpose, anatomy, public API, accessibility, examples…) is prose written by hand — it doesn't belong in structured data. This registry holds the narrower slice that's genuinely relational and worth querying/generating from: what level a component is, what it's built from, what it's used inside, and how it behaves when resized. A future documentation generator reads this registry to build composition diagrams and level groupings automatically; it should never need to parse the prose docs to do that.
+The full [component documentation standard](../STANDARD.md) (20 points: purpose, anatomy, public API, accessibility, examples…) is prose written by hand — it doesn't belong in structured data. This registry holds the narrower slice that's genuinely relational and worth querying/generating from: what level a component is, what it's built from, what it's used inside, and how it behaves when resized. A future documentation generator reads this registry to build composition diagrams and level groupings automatically; it should never need to parse the prose docs to do that.
 
 Don't duplicate registry fields into a component's Markdown doc as prose that can drift — link to the registry entry instead.
 
@@ -17,7 +17,7 @@ id: "Table / TD Text"        # canonical identifier — must exactly match the c
 name: "Table / TD Text"      # display name, currently always equal to id
 level: "object"              # primitive | element | object | widget | layout
 role: "output"               # content | trigger | input | toolbar | output | container
-flow_behavior:                # resizing behavior(s) — see master doc §12.3
+flow_behavior:                # resizing behavior(s) — see docs/foundations/sizing.md
   - "fill"                    # hug | fixed | fill | absolute
 children:                     # components this one is composed from
   - "Badge"

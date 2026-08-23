@@ -4,8 +4,7 @@ Status: **Structure and naming model confirmed, values not ratified.**
 
 ## Confirmed
 
-- The scale is **base-8, named as a ratio to that base** — `s-1_000` is 8, `s-1_500` is 12. It is **not** Fibonacci-derived — the library never implemented that, and re-deriving every value to match a description would cost a rebinding of 96 components for a mathematical property no user perceives. Classical proportion is the system's character; it is not the arithmetic of its scale.
-- A new spacing value must sit on the scale, or make the case for changing the scale. "It is a Fibonacci number" is not an argument.
+- The scale is **base-8, named as a ratio to that base** — `s-1_000` is 8, `s-1_500` is 12.
 - Spacing is drawn from the scale. A value that is not on the scale is not a spacing value, and adding one is a system decision, not a local exception.
 - Two layers: primitives in `space.scale`, semantic roles in `space`. Semantic roles carry a role prefix — `s-` for size, `g-` for gap — and reuse the same ratio suffix as the primitive they correspond to.
 - The naming-model comparison, when it runs, must stay specific to spacing and compare at minimum: absolute value names, scale-position names, ordinal numeric names, T-shirt names, relational semantic names, property/context-based names, and hybrid models. It must document trade-offs, contexts, exceptions, and implications for both Figma and code. Generic token-taxonomy arguments count only if they produce a concrete spacing decision.

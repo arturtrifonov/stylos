@@ -1,6 +1,6 @@
 # Component documentation standard
 
-**Normative.** What a component document must contain. Extracted from master doc §17.
+**Normative.** What a component document must contain, and when a component is ready to publish.
 
 Every public component gets one Markdown file in this directory, named `<component-name>.md` — kebab-case matching the component's Title Case Figma name (`Icon Button` → `icon-button.md`).
 
@@ -41,6 +41,28 @@ Do not copy a PropTable that already lives correctly in Figma. Reference it.
 
 **This split is provisional.** Which of the twenty points is authoritative in which home is open decision #14, settled by ADR 0015 ([`PLAN.md`](../../PLAN.md) Stage 4). Writing a full set of documents before that record exists risks rewriting them, which is why the plan puts the boundary decision first.
 
+## Ready to publish
+
+The standard above says what the *document* contains. This says when the *component* is ready for the library. Both have to hold.
+
+A component is ready when:
+
+- its name, layers, properties and values follow [naming.md](../foundations/naming.md);
+- no default or meaningless layer names remain;
+- its public properties are in the canonical order, and controlled groups are adjacent;
+- the supported states and combinations are valid;
+- token-relevant values are variable- or style-backed, unless a documented exception applies;
+- every variable, style and component reference resolves;
+- aliases and modes resolve in every supported theme;
+- primary and supporting text roles are documented;
+- a component-specific size mapping is documented wherever it differs from the level default;
+- intrinsic and adjustable axes are documented;
+- examples and known limitations exist;
+- accessibility expectations are stated;
+- existing instances have an understood migration path for any breaking change.
+
+Most of these are what `stylos-component-integrity-check` and `stylos-naming-cleanup` check for. Run them; do not re-check by eye what a skill checks reliably.
+
 ## Working rules
 
 - **Start from the registry entry.** Level, role, composition, and flow behaviour are already recorded there for all 96 components. Points 4 and 13 are transcription, not research.
@@ -50,4 +72,4 @@ Do not copy a PropTable that already lives correctly in Figma. Reference it.
 
 ## Status
 
-No component documents exist yet. The inventory does — 96 entries under [`registry/`](registry/README.md) — and the v0.1 core set of 23 components is scheduled in [`PLAN.md`](../../PLAN.md) Stage 4. `Button` is described in narrative form in the archived master document; that description is a starting point, not a document meeting this standard.
+No component documents exist yet. The inventory does — 96 entries under [`registry/`](registry/README.md) — and the v0.1 core set of 23 components is scheduled in [`PLAN.md`](../../PLAN.md) Stage 4.

@@ -62,11 +62,10 @@ Everything downstream waits on **S1**. It is the stage most likely to slip, beca
 **Why first:** every later stage builds on what the repository asserts. Where it asserts something false, the cost compounds.
 
 - Record the Figma file keys for Components and GUI Helpers. Styles is known. **S2 cannot start without them.**
-- Make the installed skill build identifiable — a content hash in `skills/dist/`, and a record of which build is loaded into Figma Agent. Today that cannot be answered.
-- Decompose the master document — [SPEC 0002](docs/specs/0002-master-document-decomposition.md). The largest remaining item, and best done in passes.
+- Make the installed skill build identifiable. Figma does not carry the `metadata` block, so a version number cannot round-trip; the version belongs in `description`, which Figma does carry.
 
-**Gate:** nothing in the repository is known to be false, and `docs/master-document.md` is archived with nothing citing it.
-**Estimate:** 4–5 weeks.
+**Gate:** nothing in the repository is known to be false.
+**Estimate:** under a week.
 
 ---
 
@@ -98,7 +97,7 @@ Ordered by dependency.
 **Why:** two records of 96 components share no identifiers, so divergence is undetectable and the cost grows with time. Run this in code-work slots alongside Stage 1's judgement work.
 
 - Extend the registry schema with `figma:` — `file_key`, `node_id`, `last_verified`.
-- A read-only reconciliation script: read the three files via the Figma REST API, compare against the registry by name, report added / renamed / removed / unlinked. The repository still never writes to Figma.
+- A read-only reconciliation script: read the Components and GUI files via the Figma REST API, compare against the registry by name, report added / renamed / removed / unlinked. The repository still never writes to Figma.
 - Resolve every divergence it finds. Expect real drift — the registry is a snapshot of Airtable from 20 August 2026.
 - Backfill `node_id` for all 96 entries.
 
@@ -192,15 +191,15 @@ At 5–10 h/week:
 
 | Stage | Estimate | Cumulative |
 | --- | ---: | ---: |
-| S0 — truthful baseline | 4–5 wk | 5 wk |
-| S1 — foundations | 6–8 wk | 13 wk |
+| S0 — truthful baseline | <1 wk | 1 wk |
+| S1 — foundations | 6–8 wk | 9 wk |
 | S2 — registry ↔ Figma | 4 wk | *parallel* |
-| S3 — tokens to CSS | 1 wk | 14 wk |
-| S4 — component contracts | 6–8 wk | 22 wk |
-| S5 — `@stylos/ui` | 10–12 wk | 34 wk |
-| S6 — proof + docs | 4 wk | **38 wk** |
+| S3 — tokens to CSS | 1 wk | 10 wk |
+| S4 — component contracts | 6–8 wk | 18 wk |
+| S5 — `@stylos/ui` | 10–12 wk | 30 wk |
+| S6 — proof + docs | 4 wk | **34 wk** |
 
-**≈ 8–10 months**, with S2 absorbed into S1's code-work slots. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
+**≈ 7–9 months**, with S2 absorbed into S1's code-work slots. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
 
 **Scope levers, in the order to pull them:**
 

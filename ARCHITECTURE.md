@@ -83,7 +83,7 @@ This is the only closed loop in the system, and the only automated step anywhere
 | `skills/dist/stylos-figma-agent.md` | `skills/src/`, `skills/targets/` | `tools/build-skills.mjs` | yes |
 | `docs/components/registry/*.yaml` | Airtable CSV export | `tools/import-component-registry.mjs` | yes — one-time bootstrap only |
 | `docs/components/registry/import-source/*.csv` | Airtable | manual export | yes — immutable snapshot |
-| `tokens/*.yaml` | a Figma export, `tokens/_naming.yaml`, `tokens/_aliases.yaml` | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
+| `tokens/*.yaml` | a Figma export and `tokens/_naming.yaml` | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
 
 Re-running the registry importer overwrites hand edits. It is a bootstrap step, not a sync.
 
@@ -121,21 +121,19 @@ Ordered by cost of leaving them.
 | --- | --- |
 | `ARCHITECTURE.md` | how the system is put together |
 | `docs/foundations/` | rules of the design language |
-| `docs/decisions/` | why things are the way they are |
+| `docs/decisions/` | the few boundaries expensive enough to reverse that they earn a record |
 | `docs/components/registry/` | the component inventory |
 
-**Derived:** `skills/dist/`, `figma/variables/exports/`, `CHANGELOG.md`.
+**Derived:** `skills/dist/`, `tokens/*.yaml`, `CHANGELOG.md`.
 
-**Archived:** `docs/archive/master-document.md` — a bootstrap dump written to carry the project into a new working context. It contains early ideas, superseded values, and aspirational passages presented as fact. It has **no normative force** and is not maintained. Nothing should cite it.
-
-An open question is anything not described here and not settled by a decision record. It is not tracked as a separate list, because a separate list drifts from reality.
+An open question is anything not settled by a rule in `docs/foundations/` or by this document. It is not tracked as a separate list, because a separate list drifts from reality; open questions are attached to the stage that answers them in [`PLAN.md`](PLAN.md).
 
 ---
 
 ## 7. Conventions
 
 - **Language:** English, throughout the repository, including commit messages.
-- **Decisions:** any material change gets a record in `docs/decisions/`, numbered sequentially, never renumbered. Small corrective edits go straight into the relevant document and `CHANGELOG.md`.
+- **Rules go in `docs/foundations/`**, each with its reasoning in a sentence. A decision record is reserved for a boundary that is expensive to reverse and keeps being re-opened — see [`docs/decisions/README.md`](docs/decisions/README.md). Everything else is a rule, a work order in `docs/specs/`, or a `CHANGELOG.md` line.
 - **Generated output is never edited by hand.** Change the source and rebuild.
-- **Snapshots are immutable.** A new export is a new dated file, never an overwrite.
+- **Figma exports are not kept.** `npm run tokens:import` reads one and writes `tokens/`; the export itself is discarded. History lives in git.
 - **Figma is never written to from this repository.** Explicit non-goal until a reliable round trip exists.

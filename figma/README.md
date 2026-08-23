@@ -4,15 +4,19 @@ Documentation of the Figma library structure. **Figma is the source of truth for
 
 ## Library structure
 
-Stylos currently spans **three linked Figma files**:
+Four Stylos files, plus one external library:
 
-| File | Contents |
-| --- | --- |
-| Components | Component and component-set definitions (e.g. Button, Icon Button, Text Field) |
-| Styles | Variables, styles, and other shared foundations consumed by Components |
-| GUI Helpers | Supporting assets that aren't product components — cursors and similar helper elements |
+| File | Key | Contents |
+| --- | --- | --- |
+| [Stylos / Styles](https://www.figma.com/design/2OJYDoTE9EAdQKaJAJK9Kt/Stylos--Styles) | `2OJYDoTE9EAdQKaJAJK9Kt` | variables and styles — the foundations everything else consumes |
+| [Stylos / Components](https://www.figma.com/design/WUc07ZBtjRvypXtsOlbVut/Stylos--Components) | `WUc07ZBtjRvypXtsOlbVut` | component and component-set definitions |
+| [Stylos / GUI components](https://www.figma.com/design/vmR8eiLdeZQuEVXokZK57c/Stylos--GUI-components) | `vmR8eiLdeZQuEVXokZK57c` | supporting assets that aren't product components — cursors and similar |
+| [Stylos Playground](https://www.figma.com/design/Fx2BP5qzqL9Gkas8JTFKz6/Stylos-Playground) | `Fx2BP5qzqL9Gkas8JTFKz6` | scratch file for testing how components actually behave. Not a source of anything |
+| [Default Kit / Material Icons](https://www.figma.com/design/mal5Fp20UXdswiLoBTVDvI/Default-Kit--Material-Icons) | `mal5Fp20UXdswiLoBTVDvI` | **external** — the icon source, used as an interim measure. See [icons.md](../docs/foundations/icons.md) |
 
-Icons currently come from an external Material Symbols library, used as an interim source rather than a fourth Stylos-owned file — see [docs/foundations/icons.md](../docs/foundations/icons.md).
+The keys are the segment of each URL after `/design/`. They are what the Figma REST API addresses a file by, and the reason they are written down: without them nothing can ask Figma what it contains.
+
+**The Playground is not documentation and not a library.** It exists to try things; nothing in this repository should ever cite it as evidence of how a component works.
 
 ## Where the variables went
 
@@ -26,4 +30,3 @@ Past exports remain in git history up to commit `80a0b51`, if one is ever wanted
 
 - Anything hand-edited that claims to represent current Figma state.
 - Raw variable exports. They are input to `tokens:import`, not an artifact.
-- Tokens Studio exports, unless explicitly labeled as such and clearly marked non-authoritative (master doc [§8.4](../docs/master-document.md#84-tokens-studio)).

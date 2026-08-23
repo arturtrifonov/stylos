@@ -1,6 +1,6 @@
 # tools/
 
-Only scripts required to build or validate project artifacts. Kept small and dependency-free during Alpha (master doc [§20.5](../docs/master-document.md#205-tools)) — add a dependency only when a script genuinely can't do its job without one.
+Only scripts required to build or validate project artifacts. **Kept small and dependency-free** — a dependency is added only when a script genuinely cannot do its job without one, because every one of them is a thing to track, update and be broken by — add a dependency only when a script genuinely can't do its job without one.
 
 ## `build-skills.mjs`
 
@@ -65,4 +65,4 @@ Shared, dependency-free modules for the above.
 Not built yet — see [docs/decisions/0001-figma-connection-model.md](../docs/decisions/0001-figma-connection-model.md):
 
 - A Figma REST API script to pull variable snapshots and/or component screenshots automatically, now that a real component inventory exists to point it at (`docs/components/registry/`).
-- Link/heading/duplicate-rule validation across skill sources (master doc [§19](../docs/master-document.md#19-skill-source-and-distribution-architecture) mentions this as a build-model goal; not implemented — `build-skills.mjs` currently only validates structural completeness, not cross-skill rule conflicts).
+- Link/heading/duplicate-rule validation across skill sources (not implemented — `build-skills.mjs` currently only validates structural completeness, not cross-skill rule conflicts).

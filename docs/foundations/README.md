@@ -1,16 +1,19 @@
 # docs/foundations/
 
-One document per foundation. Each should eventually contain the confirmed values, the naming pattern, the modes/aliasing rules, and the constraints for that foundation — detailed enough that a designer or a Figma Agent skill doesn't need to reverse-engineer intent from the Figma file.
+One document per foundation: the confirmed rules, the naming patterns, the constraints — detailed enough that neither a designer nor a Figma Agent skill has to reverse-engineer intent from the Figma file.
 
-Right now most of these are stubs: they record what the master document already confirms, and point at the specific open decisions blocking the rest. Fill them in as each foundation is formalized (master doc [Phase 2](../master-document.md#phase-2--foundation-formalization)).
+| Foundation | State |
+| --- | --- |
+| [color.md](color.md) | structure confirmed; the dark transform rule and the theme contract are open |
+| [typography.md](typography.md) | confirmed |
+| [spacing.md](spacing.md) | scale and naming model confirmed; which steps stay is open |
+| [sizing.md](sizing.md) | rules confirmed; the Element/Object scale is open |
+| [naming.md](naming.md) | confirmed — the naming contract for components, layers and properties |
+| [icons.md](icons.md) | usage rules confirmed; the icon source is interim |
+| [effects.md](effects.md) | structure confirmed; the shadow scale is open |
 
-| Foundation | File | Status |
-| --- | --- | --- |
-| Color | [color.md](color.md) | Core palette structure confirmed; canonical palette values and dark-context transformations open |
-| Typography | [typography.md](typography.md) | Size scale and text/line-height binding pattern confirmed; primary typeface not yet chosen |
-| Spacing | [spacing.md](spacing.md) | Direction confirmed (Fibonacci-derived); scale and naming model open |
-| Sizing | [sizing.md](sizing.md) | Component-sizing decision order confirmed; final scale open |
-| Icons | [icons.md](icons.md) | Usage rules confirmed; interim source decided (Material Symbols), native icon set not started |
-| Effects | [effects.md](effects.md) | Usage rules confirmed (variables only); scale not yet defined |
+## What belongs here
 
-Do not invent values here to fill a gap. If a value isn't confirmed in Figma or the master document, the document should say so and link to the relevant [open decision](../master-document.md#27-open-decisions) rather than guessing.
+Rules, and the reasoning behind them. **Not values** — those live in [`tokens/`](../../tokens/README.md) and are rendered with `npm run tokens:report`.
+
+Do not invent a value to fill a gap. If something is not settled, the document says so and points at the stage in [`PLAN.md`](../../PLAN.md) that settles it.

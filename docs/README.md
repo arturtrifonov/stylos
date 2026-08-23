@@ -1,17 +1,19 @@
 # docs/
 
-Authored design-system knowledge. This is a source in its own right, not a generated export — everything here is written and maintained by hand.
+Authored design-system knowledge. Written and maintained by hand — none of it is generated.
 
-## Contents
-
-- [`master-document.md`](master-document.md) — the master project document. Project-wide intent, contracts, principles, naming rules, skill system, roadmap, governance, and open decisions. Start here.
-- [`foundations/`](foundations/README.md) — one document per foundation (color, typography, spacing, sizing, icons, effects). Detail that would make the master document unmaintainable if inlined.
-- [`components/`](components/README.md) — one document per public component, following the standard in master doc [§17](master-document.md#17-component-documentation-standard).
-- [`decisions/`](decisions/README.md) — decision records for architectural choices, so the reasoning behind a decision survives longer than the decision itself.
-- [`research/`](research/README.md) — open investigations that haven't produced a decision yet (e.g. spacing-token naming, per master doc [§12.1](master-document.md#121-direction)).
+| | |
+| --- | --- |
+| [`charter.md`](charter.md) | what the system is for, its character, its scope and boundaries |
+| [`foundations/`](foundations/README.md) | the rules of the design language — colour, typography, spacing, sizing, naming, icons, effects |
+| [`components/`](components/README.md) | the documentation standard and the component registry |
+| [`specs/`](specs/README.md) | work orders — what to build, disposable once built |
+| [`decisions/`](decisions/README.md) | the few boundaries expensive enough to reverse that they earn a record |
+| [`research/`](research/README.md) | open investigations that have not produced a rule yet |
 
 ## Editorial rules
 
-- The master document defines what's true project-wide. A foundation or component document may add detail; it must not contradict the master document. If it needs to, that's a decision record, and the master document gets updated.
-- Every open item should trace back to [§27 Open decisions](master-document.md#27-open-decisions) in the master document, or be added there.
-- Don't duplicate a normative rule in two places. If a rule lives in a skill (`skills/src/`), the skill is the source for its own operation (master doc [§1](master-document.md#1-document-status-and-terminology)) — link to it rather than restating it.
+- **A rule lives in one place**, with its reasoning in a sentence beside it. If a rule needs restating somewhere else, link instead.
+- **Values are not transcribed.** Token values live in [`tokens/`](../tokens/README.md) and are rendered by `npm run tokens:report`. A number copied into prose is wrong at the next change in Figma, and a wrong number in a foundation document gets built against.
+- **Where a skill defines a rule for its own operation, the skill is the source.** Link to it rather than restating it.
+- **Do not invent a value to fill a gap.** If something is not settled, say so and point at the stage in [`PLAN.md`](../PLAN.md) that settles it.

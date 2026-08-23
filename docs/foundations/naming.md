@@ -1,10 +1,10 @@
 # Naming and public API rules
 
-**Normative.** The naming contract for components, layers, properties, and variants. Extracted from master doc §15.
+**Normative.** The naming contract for components, layers, properties, and variants.
 
 The operational contract is `stylos-naming-cleanup` **v0.7** ([`skills/src/naming-cleanup/SKILL.md`](../../skills/src/naming-cleanup/SKILL.md)). Where the skill states a more specific rule for its own operation, the skill governs — see [`ARCHITECTURE.md`](../../ARCHITECTURE.md) §7. This document states the contract the skill enforces; it does not restate the skill's procedure.
 
-Components are public APIs ([charter](../charter.md), principle 6.3). A name is part of that API: renaming one is a breaking change, not a tidy-up.
+Components are public APIs — see [charter](../charter.md). A name is part of that API: renaming one is a breaking change, not a tidy-up.
 
 ---
 
