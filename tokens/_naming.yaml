@@ -1,6 +1,6 @@
 # AUTHORED FILE. Maps Figma's vocabulary onto Stylos's. Nothing here is
 # guessed: an unmapped collection or mode is a build failure, not a default.
-# See docs/specs/0001-token-pipeline.md §5.1 and ADR 0007 §3.
+# See docs/specs/0001-token-pipeline.md §5.1.
 #
 # This is also the whitelist for `npm run tokens:import` — a collection that
 # is not declared here cannot be imported.
@@ -37,17 +37,17 @@ collections:
       dark:
         from: "color"
         mode: "Dark Mode"
-  space-scale:
+  dimension-scale:
     layer: "primitive"
     modes:
       default:
-        from: "space.scale"
+        from: "dimension.scale"
         mode: "Mode 1"
-  space:
+  dimension:
     layer: "semantic"
     modes:
       default:
-        from: "space"
+        from: "dimension"
         mode: "Value"
   font:
     layer: "primitive"

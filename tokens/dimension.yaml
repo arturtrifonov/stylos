@@ -1,9 +1,9 @@
 # GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export.
-# Imported 2026-08-23 11:06Z from Stylos / Styles.
-collection: "space"
+# Imported 2026-08-23 21:08Z from Stylos / Styles.
+collection: "dimension"
 layer: "semantic"
 source:
-  imported: "2026-08-23 11:06Z"
+  imported: "2026-08-23 21:08Z"
   figma_file: "Stylos / Styles"
   figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
 modes:
@@ -15,256 +15,256 @@ tokens:
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-1_000"
+      default: "dimension-scale/s-1_000"
   "size/s-1_250":
     type: "number"
     id: "VariableID:2706:7275"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-1_250"
+      default: "dimension-scale/s-1_250"
   "size/s-1_500":
     type: "number"
     id: "VariableID:2539:984"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-1_500"
+      default: "dimension-scale/s-1_500"
   "size/s-1_750":
     type: "number"
     id: "VariableID:2539:1004"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-1_750"
+      default: "dimension-scale/s-1_750"
   "size/s-2_000":
     type: "number"
     id: "VariableID:2539:1008"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-2_000"
+      default: "dimension-scale/s-2_000"
   "size/s-2_250":
     type: "number"
     id: "VariableID:2539:1012"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-2_250"
+      default: "dimension-scale/s-2_250"
   "size/s-2_500":
     type: "number"
     id: "VariableID:2539:1016"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-2_500"
+      default: "dimension-scale/s-2_500"
   "size/s-2_750":
     type: "number"
     id: "VariableID:2682:783"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-2_750"
+      default: "dimension-scale/s-2_750"
   "size/s-3_000":
     type: "number"
     id: "VariableID:2540:1105"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-3_000"
+      default: "dimension-scale/s-3_000"
   "size/s-3_250":
     type: "number"
     id: "VariableID:2682:782"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-3_250"
+      default: "dimension-scale/s-3_250"
   "size/s-3_500":
     type: "number"
     id: "VariableID:2540:1106"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-3_500"
+      default: "dimension-scale/s-3_500"
   "size/s-3_750":
     type: "number"
     id: "VariableID:2682:786"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-3_750"
+      default: "dimension-scale/s-3_750"
   "size/s-4_000":
     type: "number"
     id: "VariableID:2540:1107"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-4_000"
+      default: "dimension-scale/s-4_000"
   "size/s-4_250":
     type: "number"
     id: "VariableID:2682:787"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-4_250"
+      default: "dimension-scale/s-4_250"
   "size/s-4_500":
     type: "number"
     id: "VariableID:2682:784"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-4_500"
+      default: "dimension-scale/s-4_500"
   "size/s-4_750":
     type: "number"
     id: "VariableID:2682:788"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-4_750"
+      default: "dimension-scale/s-4_750"
   "size/s-5_000":
     type: "number"
     id: "VariableID:2540:1110"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-5_000"
+      default: "dimension-scale/s-5_000"
   "size/s-5_500":
     type: "number"
     id: "VariableID:2682:785"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-5_500"
+      default: "dimension-scale/s-5_500"
   "size/s-6_000":
     type: "number"
     id: "VariableID:2540:1111"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-6_000"
+      default: "dimension-scale/s-6_000"
   "size/s-7_000":
     type: "number"
     id: "VariableID:2540:1112"
     scopes:
       - "WIDTH_HEIGHT"
     ref:
-      default: "space-scale/s-7_000"
+      default: "dimension-scale/s-7_000"
   "gap/g-0_000":
     type: "number"
     id: "VariableID:2542:845"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-0_000"
+      default: "dimension-scale/s-0_000"
   "gap/g-0_125":
     type: "number"
     id: "VariableID:2542:846"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-0_125"
+      default: "dimension-scale/s-0_125"
   "gap/g-0_250":
     type: "number"
     id: "VariableID:2542:848"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-0_250"
+      default: "dimension-scale/s-0_250"
   "gap/g-0_375":
     type: "number"
     id: "VariableID:2542:851"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-0_375"
+      default: "dimension-scale/s-0_375"
   "gap/g-0_500":
     type: "number"
     id: "VariableID:2542:852"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-0_500"
+      default: "dimension-scale/s-0_500"
   "gap/g-0_625":
     type: "number"
     id: "VariableID:2542:853"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-0_625"
+      default: "dimension-scale/s-0_625"
   "gap/g-0_750":
     type: "number"
     id: "VariableID:2542:854"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-0_750"
+      default: "dimension-scale/s-0_750"
   "gap/g-0_875":
     type: "number"
     id: "VariableID:2539:1027"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-0_875"
+      default: "dimension-scale/s-0_875"
   "gap/g-1_000":
     type: "number"
     id: "VariableID:2542:857"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-1_000"
+      default: "dimension-scale/s-1_000"
   "gap/g-1_250":
     type: "number"
     id: "VariableID:2542:858"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-1_250"
+      default: "dimension-scale/s-1_250"
   "gap/g-1_500":
     type: "number"
     id: "VariableID:2542:859"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-1_500"
+      default: "dimension-scale/s-1_500"
   "gap/g-1_750":
     type: "number"
     id: "VariableID:2683:789"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-1_750"
+      default: "dimension-scale/s-1_750"
   "gap/g-2_000":
     type: "number"
     id: "VariableID:2540:1099"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-2_000"
+      default: "dimension-scale/s-2_000"
   "gap/g-2_250":
     type: "number"
     id: "VariableID:2683:790"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-2_250"
+      default: "dimension-scale/s-2_250"
   "gap/g-2_500":
     type: "number"
     id: "VariableID:2540:1100"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-2_500"
+      default: "dimension-scale/s-2_500"
   "gap/g-3_000":
     type: "number"
     id: "VariableID:2540:1101"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-3_000"
+      default: "dimension-scale/s-3_000"
   "gap/g-3_500":
     type: "number"
     id: "VariableID:2540:1102"
     scopes:
       - "GAP"
     ref:
-      default: "space-scale/s-3_500"
+      default: "dimension-scale/s-3_500"

@@ -39,7 +39,7 @@ Figma stays the live source for StateDiagrams, PropTables, anatomy diagrams, and
 
 Do not copy a PropTable that already lives correctly in Figma. Reference it.
 
-**This split is provisional.** Which of the twenty points is authoritative in which home is open decision #14, settled by ADR 0015 ([`PLAN.md`](../../PLAN.md) Stage 4). Writing a full set of documents before that record exists risks rewriting them, which is why the plan puts the boundary decision first.
+**This split is provisional.** Which of the twenty points is authoritative in which home is settled in [`PLAN.md`](../../PLAN.md) Stage 4, before the component documents are written — writing a full set first risks rewriting all of them.
 
 ## Ready to publish
 

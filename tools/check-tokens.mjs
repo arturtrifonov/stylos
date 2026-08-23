@@ -52,6 +52,30 @@ export function runCheck({ root, strict = false }) {
 
   const collections = loadCanonical(root);
 
+  // A canonical file nothing declares. This is what a rename leaves behind:
+  // `_naming.yaml` starts saying `dimension`, the importer writes
+  // `dimension.yaml`, and `space.yaml` sits there for ever looking current.
+  const declared = new Set((naming.get("collections") ?? new Map()).keys());
+  for (const name of listCanonical(root)) {
+    if (!declared.has(name)) {
+      problems.errors.push(
+        `tokens/${name}.yaml: no collection "${name}" in tokens/_naming.yaml. ` +
+          `If it was renamed, delete this file — the new one is written on import. ` +
+          `If it should still exist, declare it.`
+      );
+    }
+  }
+
+  // The converse: declared but never imported.
+  for (const name of declared) {
+    if (!listCanonical(root).includes(name)) {
+      problems.warnings.push(
+        `tokens/_naming.yaml declares "${name}", which has not been imported yet: ` +
+          `npm run tokens:import -- --collection <figma name> <file>`
+      );
+    }
+  }
+
   verifyCanonical(
     { collections, modeDependent: naming.get("mode_dependent") ?? [] },
     problems

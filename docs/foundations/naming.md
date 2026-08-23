@@ -2,7 +2,7 @@
 
 **Normative.** The naming contract for components, layers, properties, and variants.
 
-The operational contract is `stylos-naming-cleanup` **v0.7** ([`skills/src/naming-cleanup/SKILL.md`](../../skills/src/naming-cleanup/SKILL.md)). Where the skill states a more specific rule for its own operation, the skill governs — see [`ARCHITECTURE.md`](../../ARCHITECTURE.md) §7. This document states the contract the skill enforces; it does not restate the skill's procedure.
+`stylos-naming-cleanup` ([`skills/src/naming-cleanup/SKILL.md`](../../skills/src/naming-cleanup/SKILL.md)) enforces these rules in Figma. It is derived from this document and never the reverse: where the two disagree, the skill is what has to change ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §6). This document states the rules; it does not restate the skill's procedure.
 
 Components are public APIs — see [charter](../charter.md). A name is part of that API: renaming one is a breaking change, not a tidy-up.
 
@@ -43,9 +43,9 @@ Lowercase, both names and values.
 | Property | Values | For |
 | --- | --- | --- |
 | `state` | `default`, `hover`, `active`, `focus`, `disabled` | interaction only |
-| `tone` | `base`, `neutral`, `primary`, `info`, `success`, `warning`, `error`, `danger`, `inverted` | semantic visual meaning |
+| `tone` | drawn from the colour vocabulary — see below | which semantic colour the component takes |
 | `validation` | `off`, `error`, `warning`, `success` | form outcome |
-| `checked` | `unchecked`, `checked`, `indeterminate` | checkbox / radio selection |
+| `is checked` | `false`, `true`, `mixed` | checkbox / radio selection |
 | `is expanded` | `false`, `true` | disclosure |
 | `is filled` | `false`, `true` | filled-input state |
 
@@ -53,9 +53,29 @@ Do not use:
 
 - `status` as an overloaded semantic/state property;
 - `Static` for the base state — it is `default`;
-- `Check State` — it is `checked`;
+- `Check State` — it is `is checked`;
 - camelCase such as `isOpen`, `isFilled`;
 - Title Case property names or values.
+
+### A colour is not a state
+
+**`tone` names a colour. `state` and `validation` name a condition. They map many-to-one, and they never share a vocabulary.**
+
+An input in the error state takes the `danger` colour: `error` is what happened, `danger` is what it looks like. A destructive button is `danger` too, and nothing about it is an error — deleting a record on purpose is not a failure. Give both the name `error` and the distinction collapses: `tone="error"` ends up meaning "red", an appearance name wearing a semantic one.
+
+### The `tone` vocabulary
+
+A `tone` value names one of the colours the system has: the five slots in [`color.md`](color.md) — `base`, `primary`, `success`, `warning`, `danger` — plus `inverted`.
+
+**Which of them a component offers is the component's own business.** A Button and a Badge do not carry the same set, and neither is expected to. The vocabulary is closed; the per-component subset is not, and no list of tone values anywhere should be read as a whitelist every component must satisfy.
+
+What the vocabulary does rule out is a value with no colour behind it:
+
+| Not a `tone` | Why |
+| --- | --- |
+| `error` | a validation outcome, not a colour — the colour is `danger` |
+| `neutral` | another word for `base` |
+| `info` | the system has no such colour ([`color.md`](color.md)) |
 
 ### Size values
 
@@ -94,24 +114,21 @@ Where present, in this order:
 2. `tone`
 3. `style`
 4. `size`
-5. `density` ¹
-6. `state`
-7. `validation`
-8. `checked`
-9. `is filled`
-10. `is expanded`
-11. `orientation`
-12. `alignment`
-13. `position`
-14. `icon position`
-15. `arrows`
-16. `angle`
-17. `first link type`
-18. component-specific properties
+5. `state`
+6. `validation`
+7. `is checked`
+8. `is filled`
+9. `is expanded`
+10. `orientation`
+11. `alignment`
+12. `position`
+13. `icon position`
+14. `arrows`
+15. `angle`
+16. `first link type`
+17. component-specific properties
 
 Only properties that exist are included. Rare component-specific properties sit at the end of their group.
-
-¹ `density` holds a canonical position but has no confirmed definition — its meaning and use are unresolved ([`PLAN.md`](../../PLAN.md) 1.6). Do not introduce it on a new component until that is settled.
 
 ## 9. Controlled property groups
 

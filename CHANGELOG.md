@@ -4,6 +4,40 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-08-23 (Stage 1 closed down)
+
+- **`density` is dropped.** It held a canonical slot in the variant-property order with no definition behind it. Removed from `naming.md` §8 rather than left as a placeholder for a dimension the system does not have.
+- **The dark palette has no transformation rule, deliberately.** Measured across all 288 tokens: the dark ramp broadly inverts the light one — steps 900/950/975 reproduce light 100/50/25 almost exactly — but the deep steps diverge, lifted by 3–7 L% and desaturated, because a literal inversion gives unusable near-black surfaces. `color.md` now records the palette as authored rather than derived. A formula is not wanted: the same transform on different hues does not give equivalent results, so a rule written in numbers would be false at the first new hue group.
+- **Ratio naming in `spacing.md` is ratified with its reason.** `s-1_500` means "one and a half bases", not "12 pixels", and that is the point — the scale exists so decisions are made in relations. The planned seven-way naming comparison is dropped; it would have reviewed a model that is already working for the reason it was chosen.
+- **Radius and border are ratified.** Seven radius steps (0, 2, 4, 6, 8, 10, 1000) and two border widths (1, 2), all already matching `effects.md`. What remains open under effects is only the shadow scale.
+- `effect/shadow/color/*` aliases `color/shadow/*` rather than duplicating it, so the question of where shadow colour belongs is closed. What is *not* closed: `color/shadow/primary` holds indigo/700's value as a literal, not a reference, so it will not follow a rebinding of the `primary` slot — and the SPEC 0001 §5.6 rule 7 check cannot see it, because it walks references.
+- Skill repairs and the `tone=error` migration moved from Stage 1 to **Stage 4**, where the components they operate on are actually worked. `text-sizing` binds `Text Size / [measure]`, a collection Figma no longer has; which component sets carry `tone=error` is visible only in Figma, and recording it belongs with documenting each component.
+- `PLAN.md` Stage 1 is down to two items: rename the collection, and define the shadow scale.
+- `STANDARD.md` cited "open decision #14, settled by ADR 0015". Decision records were retired and no such file exists; the sentence now points at the stage that settles it.
+
+### Changed — 2026-08-23 (theme contract)
+
+- **The mode lives in `color`, not in the palette.** `color.md` claimed the opposite. The palettes are two sources; the semantic collection is the one with Light Mode and Dark Mode, and each mode picks a step from the palette of the same name. That is why they are separate Figma collections: two modes of one collection would only let a step change its value, while separate collections let a role choose a *different step* per mode. `tokens/_naming.yaml` already said this correctly — the document was the thing that was wrong.
+- **The slot layer is named.** Every semantic role outside `*/special/*` resolves into exactly five hue groups: `base`→slate, `primary`→indigo, `success`→green, `warning`→amber, `danger`→red. Verified against `tokens/color.yaml`: 64 referencing roles, no sixth group. A client rebrands by rebinding those five, not by overriding roles.
+- **Two kinds of role.** 66 slot-bound roles follow a rebrand; 44 hue-bound `*/special/*` roles do not, because naming a specific hue is their purpose — categorical colour for tags, statuses and series must not move when the brand does.
+- `error` finished becoming `danger`. `background/error` and `border/error` were the last two holdouts; every other role had already moved.
+- **A colour is not a state** ([`naming.md`](docs/foundations/naming.md) §4). `tone` names a colour, `state` and `validation` name a condition, and they map many-to-one: an input's `error` state takes the `danger` colour, and a destructive button is `danger` without any error being involved. `tone` loses `error` (a validation outcome), `neutral` (duplicate of `base`) and `info` (no such colour exists).
+- **`naming.md` no longer treats a skill as a contract.** Its opening paragraph named `stylos-naming-cleanup` v0.7 "the operational contract" and gave the skill the last word, citing an `ARCHITECTURE.md` section that says nothing of the kind — §6 lists the normative places, and `skills/` is not among them; `skills/dist/` is explicitly derived. A skill takes the rules, it does not set them.
+- `naming.md`'s `tone` row is a **vocabulary, not a whitelist**. Values are drawn from the five slots plus `inverted`; which subset a component offers is that component's business, and a Button and a Badge are not expected to match.
+- The checkbox / radio variant property is **`is checked`** with values `false`, `true`, `mixed` — not `checked` with `unchecked`/`checked`/`indeterminate`. Under the `is` form the old values stopped parsing: `is checked = checked` says nothing.
+- `color.md` listed four mode-dependent roles. There are three — `shadow/*` arrives as literals because Figma cannot bind a variable and change its opacity, so the mode rules never reach it. The SPEC 0001 example carried the same error.
+
+### Added — 2026-08-23 (theme contract)
+
+- SPEC 0001 §5.1 gains a `slots:` declaration and §5.6 a check for it: a role bound to a hue group outside the five fails. Such a role looks harmless in Figma but will not follow a rebrand, so the theme comes out half-changed silently.
+- `PLAN.md` 1.8 — bring `tone` values in the Figma component sets onto the colour vocabulary. A breaking change to component APIs, cheapest now.
+
+### Changed — 2026-08-23 (sizing)
+
+- `docs/foundations/sizing.md` — the level→size mapping is recorded, and recorded as **a recommendation rather than a rule**. It says what a component of that level and size usually is, so a new one built to it lines up with what exists. Every other value on the scale stays available: a status indicator is 8px, below the smallest recommended Primitive, because at 12 it would read as enormous. That is not a violation and nothing flags it.
+- The Element and Object runs are no longer open — both are written down, in token names rather than pixels so they cannot go stale.
+- **rem is not part of the sizing scale.** A relative unit would earn its place if component dimensions derived from font size; they are set directly, so rem only adds a second base to reason about. It also collides with the token naming, where the ratio is to 8 and not to 16 — `s-1_500` is 12px, which is 0.75rem, and two different "one and a half" sitting next to each other is a defect waiting to happen.
+
 ### Added — 2026-08-23 (Figma files recorded)
 
 - All five Figma files are now identified by key in [`figma/README.md`](figma/README.md): Styles, Components, GUI components, Playground, and the external Material Icons kit. The key is the URL segment after `/design/` — what the REST API addresses a file by, and without which nothing can ask Figma what it contains. This unblocks Stage 2.

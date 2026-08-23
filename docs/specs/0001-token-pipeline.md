@@ -66,7 +66,7 @@ Verified against the 2026-08-22 export from **Stylos / Styles**. Do not infer th
 - **Every token carries** `$extensions."com.figma.variableId"`, and most carry `$extensions."com.figma.scopes"`.
 - **Each document carries** `$extensions."com.figma.modeName"` at its root. This is the *only* trustworthy source of the mode name: filenames arrive renamed by hand (the 2026-08-20 export contains `effect (unresloved).json`), so nothing may be inferred from them.
 - **Colours** are `{colorSpace: "srgb", components: [r, g, b], alpha?}` with float components.
-- **Values are resolved, but the alias graph is not discarded.** An earlier draft of this section claimed no token carries a reference. In fact `$extensions."com.figma.aliasData"` is present on 108/110 `color` tokens, 37/37 `space` tokens, and 2/14 `effect` tokens, carrying `targetVariableName` and `targetVariableSetName`.
+- **Values are resolved, but the alias graph is not discarded.** An earlier draft of this section claimed no token carries a reference. In fact `$extensions."com.figma.aliasData"` is present on 108/110 `color` tokens, 37/37 `dimension` tokens, and 2/14 `effect` tokens, carrying `targetVariableName` and `targetVariableSetName`.
 
   The pipeline still treats the authored alias record as the contract and verifies it by value matching (§5.7) — but where `aliasData` exists it is **cross-checked** against the value match, and a disagreement is a hard failure. Value matching alone could pick the wrong step where two primitives share a value.
 
@@ -82,8 +82,8 @@ Verified against the 2026-08-22 export from **Stylos / Styles**. Do not infer th
 | `palette.dark` | `Value` | 288 |
 | `color` | `Light Mode`, `Dark Mode` | 110 |
 | `font` | `Mode 1` | 107 |
-| `space.scale` | `Mode 1` | 33 |
-| `space` | `Value` | 37 |
+| `dimension.scale` | `Mode 1` | 33 |
+| `dimension` | `Value` | 37 |
 | `effect` | `Mode 1` | 14 |
 | `radius` | `Mode 1` | 7 |
 | `border` | `Mode 1` | 2 |
@@ -104,7 +104,7 @@ You name the collection you are updating and hand it its files. The tool never s
 
 An earlier draft of this section designed import as a scan of `~/Downloads`, recognising exports by content and silently skipping everything else. **That is withdrawn.** The collections are known and declared; a pipeline that searches for its own input is a pipeline that will one day import the wrong file and say nothing. Recognition-by-content survives only as *validation* of a file you pointed at.
 
-`<name>` is a **Figma** collection name as declared in `tokens/_naming.yaml` — `palette.light`, `color`, `space.scale`. Not a canonical name: the argument names the thing being exported, and `_naming.yaml` already keys on exactly that, which makes it the whitelist. It must therefore exist before the first import.
+`<name>` is a **Figma** collection name as declared in `tokens/_naming.yaml` — `palette.light`, `color`, `dimension.scale`. Not a canonical name: the argument names the thing being exported, and `_naming.yaml` already keys on exactly that, which makes it the whitelist. It must therefore exist before the first import.
 
 A repeatable flag rather than positional pairs, because a collection can have several mode files and positional grouping would have to guess where one collection's files end and the next name begins. Nine flags for a full refresh is the honest price.
 
@@ -121,7 +121,7 @@ Everything is validated before anything is written.
 
 ### The file is named after its mode, not its collection
 
-This is the trap the design has to survive. Figma names an export after the **mode** inside it, so a full refresh downloads ten files of which five are called `Mode 1.tokens.json` (`font`, `space.scale`, `radius`, `effect`, `border`) and three are `Value.tokens.json` (`palette.light`, `palette.dark`, `space`) — the browser distinguishing them only by appending ` (1)`, ` (2)`.
+This is the trap the design has to survive. Figma names an export after the **mode** inside it, so a full refresh downloads ten files of which five are called `Mode 1.tokens.json` (`font`, `dimension.scale`, `radius`, `effect`, `border`) and three are `Value.tokens.json` (`palette.light`, `palette.dark`, `dimension`) — the browser distinguishing them only by appending ` (1)`, ` (2)`.
 
 The mode check cannot catch a mix-up, because the swapped files declare the same mode. Handing `radius`'s file to `--collection font` would otherwise be accepted in silence, and swapping the two palettes would invert light and dark across the whole system.
 
@@ -212,7 +212,14 @@ source:
 
 draws_from:                    # semantic collection -> its primitive collection
   color: "palette"
-  space: "space-scale"
+  dimension: "dimension-scale"
+
+slots:                         # the five colours the system has; a client
+  base: "slate"                # rebrands by rebinding these, never by
+  primary: "indigo"            # repointing individual roles
+  success: "green"
+  warning: "amber"
+  danger: "red"
 
 collections:
   palette:
@@ -239,12 +246,15 @@ mode_dependent:                # roles allowed to point at a different
   - "color/text/static-light"  # primitive per mode
   - "color/text/static-dark"
   - "color/background/base"
-  - "color/shadow/base"
 ```
 
 Canonical mode names: `default` for single-mode collections, `light` / `dark` where a real mode distinction exists.
 
-Note the shape this normalises away: `palette.light` and `palette.dark` are two Figma *collections* that become one canonical collection with two *modes*.
+Note the shape this normalises away: `palette.light` and `palette.dark` are two Figma *collections* that become one canonical collection with two *modes*. They are separate in Figma so that a role can bind to a **different step** per mode, not merely to a different value of the same step — the mode belongs to the semantic layer, not to the palette ([`color.md`](../foundations/color.md)).
+
+`shadow/*` is not in `mode_dependent`: Figma cannot bind a variable and change its opacity, so shadow colours arrive as literals and are stored as given. They are not references, so the mode rules do not reach them.
+
+`slots` is the customization contract, and it is also checkable — see §5.6 rule 7.
 
 ### 5.2 `tokens/_aliases.yaml` — authored (temporarily)
 
@@ -336,18 +346,21 @@ Numbers and strings pass through unchanged.
 4. A semantic token (in a collection named in `draws_from`) with no `ref`.
 5. A `ref` whose target does not exist, or whose value disagrees with the value stored beside it in any mode — including alpha, unless `ref_ignores_alpha`.
 6. A role resolving to different primitives per mode without being listed in `mode_dependent` — **and the converse**: a role listed there that resolves identically in every mode.
-7. A YAML round-trip that does not reproduce the token map.
+7. A `color` role outside `*/special/*` whose `ref`, in any mode, resolves to a hue group that is not a declared slot. `palette/base/*` — white and black — is exempt.
+8. A YAML round-trip that does not reproduce the token map.
 
 **Warnings — reported on every run, exit 0:**
 
-8. *(import only)* A colour that is not 8-bit representable (§5.5).
-9. *(import only)* An alpha that does not survive rounding to 3 places.
+9. *(import only)* A colour that is not 8-bit representable (§5.5).
+10. *(import only)* An alpha that does not survive rounding to 3 places.
 
 `--strict` promotes warnings to failures. Default is lenient because a 0.30/255 drift is imperceptible, and failing the whole pipeline on it would only teach people to bypass the check.
 
 Collect and report **all** problems, not the first. Warnings print before failures.
 
 Rule 6's converse matters: a stale `mode_dependent` entry silently weakens rule 6 for that role, so it must be caught.
+
+Rule 7 is what keeps the rebrand mechanism real. A role bound to a sixth hue group looks harmless in Figma and is invisible in review, but it will not follow a slot rebinding — so the theme silently comes out half-changed. `*/special/*` is exempt because naming a hue directly *is* its purpose: it carries categorical colour, which must not move when the brand does.
 
 ### 5.7 Why aliases are authored rather than inferred
 
@@ -361,7 +374,7 @@ Value matching works on the current data but cannot be relied on: two palette en
 
 ```
 npm run tokens:report                # everything
-npm run tokens:report radius space   # named collections only
+npm run tokens:report radius dimension   # named collections only
 ```
 
 Reads `tokens/*.yaml` — **never the export** — and writes Markdown to stdout.
@@ -420,7 +433,7 @@ Measured against the 2026-08-22 export from **Stylos / Styles**. These are check
 3. Importing `palette.light` without `palette.dark` is refused, naming the sources for both.
 4. `--dry-run` reports what would be imported and writes nothing.
 5. Each collection is reported as `new`, `changed`, or `unchanged`, and `tokens/_history.yaml` gains one entry per import.
-6. A full import of all nine Figma collections writes 8 files — `palette`, `color`, `space-scale`, `space`, `font`, `radius`, `border`, `effect` — totalling 598 canonical tokens, and prints exactly two warnings: `palette/neutral/50` (light) and `palette/neutral/950` (dark), each a drift of 0.30/255.
+6. A full import of all nine Figma collections writes 8 files — `palette`, `color`, `dimension-scale`, `dimension`, `font`, `radius`, `border`, `effect` — totalling 598 canonical tokens, and prints exactly two warnings: `palette/neutral/50` (light) and `palette/neutral/950` (dark), each a drift of 0.30/255.
 7. No Figma export file is left anywhere in the repository afterwards.
 
 **Check**
@@ -448,7 +461,7 @@ Measured against the 2026-08-22 export from **Stylos / Styles**. These are check
 ## 10. Notes for the implementer
 
 - The two known warnings in criterion 8 are real data, not a bug: `neutral/50` and `neutral/950` are authored in Figma as `0.94`, which is not a multiple of 1/255. Leave them warning.
-- `space` aliases `space-scale` cleanly — all 37 roles resolve. The alias mechanism is not colour-specific; drive it from `draws_from` rather than hard-coding palette.
+- `dimension` references `dimension-scale` cleanly — all 37 roles resolve. The mechanism is not colour-specific: references are read from `aliasData` whatever the collection.
 - `color/shadow/base` is both `ignore_alpha` and mode-dependent (black in light, white in dark). It exercises two rules at once and is a good first test case.
 - `ignore_alpha` is not a loosening of the check. Figma cannot build a semi-transparent colour from an alias, so a role that reuses a primitive at reduced opacity exports as a literal. Comparing on RGB recovers the binding that limitation hid; recording those roles as literals instead would throw away the theming link.
 - `color/shadow/primary` aliases `indigo/700` in **both** modes and is therefore *not* mode-dependent, even though its resolved RGB differs per mode — because the palette's own value for `indigo/700` differs. Rule 6 turns on the step name, not the value.

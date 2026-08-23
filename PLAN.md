@@ -51,7 +51,7 @@ S0 truthful baseline ──▶ S1 foundations ──┬──▶ S3 CSS ──�
                       S2 registry↔Figma ────────────┘   (independent of S1)
 ```
 
-Everything downstream waits on **S1**. It is the stage most likely to slip, because it is judgement work with no external forcing function.
+Everything downstream used to wait on **S1**, and S1 was the stage most likely to slip. It is now two items, so the long pole has moved to **S4** — twenty-three component contracts, each needing judgement that cannot be batched.
 
 ---
 
@@ -73,28 +73,23 @@ Everything downstream waits on **S1**. It is the stage most likely to slip, beca
 
 **Why:** blocks tokens, component documentation and code simultaneously.
 
-Ordered by dependency.
-
 | # | Work | Produces |
 | --- | --- | --- |
-| 1.1 | Ratify the base-8 spacing/sizing scale — which steps earn their place | `spacing.md`, `sizing.md` |
-| 1.2 | Review the ratio-to-base naming model against the alternatives | `docs/research/`, then `spacing.md` |
-| 1.3 | Fix the stale variable names in `text-sizing` and `component-integrity-check`, which bind to a path Figma no longer has | the two skill sources |
-| 1.4 | State the dark-context transformation as a rule that can be reapplied and checked, not as a set of values | `color.md` |
-| 1.5 | Define the light/dark/client-theme contract — which semantic roles a client theme may override | `color.md` |
-| 1.6 | Decide `density`: a real dimension of the system, or dropped | `naming.md` |
-| 1.7 | Ratify the radius and border scales; define the shadow scale | `effects.md` |
+| 1.1 | Rename the `space` collection to `dimension` — it holds control sizes and gaps, and a control's height is not spacing | Figma, `_naming.yaml`, `spacing.md`, `sizing.md` |
+| 1.2 | Define the shadow scale; ratify radius and border, which already match their document | `effects.md` |
 
-**Much of this is ratification, not derivation.** The scale, the naming model, the radius and border values all exist in Figma already — the work is confirming what is built or changing it deliberately, and writing it down. Typography is settled. Only 1.4, 1.5 and 1.6 are open in the original sense.
+**This is ratification, not derivation.** Everything here exists in Figma already; the work is confirming it or changing it deliberately, and writing it down. Colour, typography, sizing and the theme contract are settled.
+
+1.1 is a rename, not a restructure. Splitting sizes and gaps into two Figma collections would be expensive and buys nothing — they are both lengths in the layout plane, which is what `dimension` names. Renaming a Figma collection does not break bindings; those resolve by ID.
 
 **Gate:** no foundation document leaves open a question a component contract or the CSS build depends on.
-**Estimate:** 6–8 weeks.
+**Estimate:** 1–2 weeks.
 
 ---
 
 ### Stage 2 — Link the registry to Figma
 
-**Why:** two records of 96 components share no identifiers, so divergence is undetectable and the cost grows with time. Run this in code-work slots alongside Stage 1's judgement work.
+**Why:** two records of 96 components share no identifiers, so divergence is undetectable and the cost grows with time. It is the first stage that is mostly code, and it gates S4 — the registry has to be trustworthy before component contracts are written against it.
 
 - Extend the registry schema with `figma:` — `file_key`, `node_id`, `last_verified`.
 - A read-only reconciliation script: read the Components and GUI files via the Figma REST API, compare against the registry by name, report added / renamed / removed / unlinked. The repository still never writes to Figma.
@@ -116,7 +111,8 @@ The import and canonical layers are built ([SPEC 0001](docs/specs/0001-token-pip
 
 - `tokens/*.yaml` → CSS custom properties, preserving the primitive/semantic indirection so palette overrides propagate.
 - One deterministic, documented rule for token name → custom property name.
-- Mode scoping per the contract settled in 1.5.
+- Mode scoping per [`color.md`](docs/foundations/color.md): palette emitted flat and unscoped; the semantic layer emitted once per mode with every role declared in both; one global switch.
+- The slot layer emitted as its own indirection, so a client rebrand is five bindings rather than 110 overrides.
 - Fail on a token that disappeared between runs without acknowledgement — the release-validation step.
 
 **Gate:** the build produces CSS covering every semantic role, and a deliberately renamed token fails the check.
@@ -140,7 +136,9 @@ The import and canonical layers are built ([SPEC 0001](docs/specs/0001-token-pip
 - Decide the accessibility target and browser baseline. `STANDARD.md` requires an accessibility section per component, so it cannot wait for Stage 5.
 - Decide the depth of component-specific tokens.
 - Create `docs/components/_template.md` so each document is mechanical rather than re-derived.
+- **Review the skill set before running any of it**: what each skill is for, what to repair, what to drop. `text-sizing` currently binds `Text Size / [measure]`, a collection Figma no longer has — it would fail on every component. A skill that runs on a stale contract writes the stale contract into the library.
 - Run `stylos-component-integrity-check` over the set and **fix findings in Figma before documenting** — otherwise the defect gets written down as the contract.
+- Move every `tone=error` to `tone=danger` as each set is worked through, and drop `neutral` and `info` where they appear. Which sets carry them is only visible in Figma; recording it per component is part of this stage, not a survey to run ahead of it.
 - Write the documents, starting from each registry entry.
 
 **Gate:** every core component has a document meeting the standard, passes the integrity check, and links to its registry entry and Figma node.
@@ -192,20 +190,20 @@ At 5–10 h/week:
 | Stage | Estimate | Cumulative |
 | --- | ---: | ---: |
 | S0 — truthful baseline | <1 wk | 1 wk |
-| S1 — foundations | 6–8 wk | 9 wk |
-| S2 — registry ↔ Figma | 4 wk | *parallel* |
-| S3 — tokens to CSS | 1 wk | 10 wk |
-| S4 — component contracts | 6–8 wk | 18 wk |
-| S5 — `@stylos/ui` | 10–12 wk | 30 wk |
-| S6 — proof + docs | 4 wk | **34 wk** |
+| S1 — foundations | 1–2 wk | 3 wk |
+| S2 — registry ↔ Figma | 4 wk | 7 wk |
+| S3 — tokens to CSS | 1 wk | 8 wk |
+| S4 — component contracts | 6–8 wk | 16 wk |
+| S5 — `@stylos/ui` | 10–12 wk | 28 wk |
+| S6 — proof + docs | 4 wk | **32 wk** |
 
-**≈ 7–9 months**, with S2 absorbed into S1's code-work slots. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
+**≈ 7–8 months.** S1 collapsed from 6–8 weeks to 1–2 because most of it turned out to be ratification of what Figma already holds, and the rest moved to S4 where the components are. S2 no longer hides inside S1's slack and is now sequential, which eats most of the saving. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
 
 **Scope levers, in the order to pull them:**
 
 1. Cut the core set from 23 to 12 components — drop Table cells, Side Panel, Tabs, Toast. Saves ~6 weeks across S4 and S5.
 2. Ship the documentation surface as rendered Markdown instead of Storybook. Saves ~2 weeks in S6.
-3. Defer `density` (1.6) and component-token depth by adopting "not a system dimension" as the provisional answer. Saves ~1 week.
+3. Defer component-token depth by adopting "no component-specific tokens" as the provisional answer. Saves ~1 week.
 
 Do **not** pull: the integrity check before documenting, the documentation-boundary decision before writing documents, or the proof screen.
 
@@ -215,12 +213,10 @@ Do **not** pull: the integrity check before documenting, the documentation-bound
 
 | Question | Stage |
 | --- | --- |
-| Spacing and sizing scale — which steps stay | 1.1 |
-| Spacing naming model — ratio-to-base is in use; is it right | 1.2 |
-| Dark-context transformation as a rule | 1.4 |
-| Light/dark/client-theme contract | 1.5 |
-| Definition of `density` | 1.6 |
-| Radius, border, shadow scales | 1.7 |
+| What the size-and-gap collection should be called | 1.1 |
+| Shadow scale | 1.2 |
+| Skill set — purpose, repairs, what to drop | 4 |
+| `tone` values that have no colour behind them | 4 |
 | Registry ↔ Figma identity | 2 |
 | Token name → CSS custom property mapping | 3 |
 | Figma / Markdown documentation boundary | 4 |
