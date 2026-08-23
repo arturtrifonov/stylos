@@ -20,7 +20,7 @@ That single gate is chosen because it is the only test that exercises the whole 
 | --- | --- | --- |
 | 1 | No foundation document leaves open a question a component or the CSS build depends on | reading them |
 | 2 | Tokens generate to CSS custom properties from the canonical set | the build command |
-| 3 | Every registry entry carries a Figma node identifier | the registry check |
+| 3 | Every core-set entry carries a Figma node identifier, and the registry is readable | the registry view |
 | 4 | The v0.1 core component set meets [`STANDARD.md`](docs/components/STANDARD.md) | review against the standard |
 | 5 | `@stylos/ui` builds and renders every documented variant of that set | package build |
 | 6 | Component props map 1:1 onto Figma variant properties | mapping table per component |
@@ -44,9 +44,9 @@ That single gate is chosen because it is the only test that exercises the whole 
 ## 3. Critical path
 
 ```
-S0 truthful baseline ──┬──▶ S3 CSS ────────────────────────┐
-                       │                                   ├──▶ S5 @stylos/ui ──▶ S6 proof ──▶ v0.1
-                       └──▶ S2 registry↔Figma ──▶ S4 contracts ─┘
+S0 truthful baseline ──┬──▶ S3 CSS ───────────────────────────┐
+                       │                                      ├──▶ S5 @stylos/ui ──▶ S6 proof ──▶ v0.1
+                       └──▶ S2 registry readable ──▶ S4 contracts ─┘
 ```
 
 **The foundations stage is gone** — every document in `docs/foundations/` is confirmed, and what remains open in them blocks nothing. Stage numbers are kept as they were so that references elsewhere still resolve.
@@ -68,19 +68,24 @@ The long pole is now **S4**: twenty-three component contracts, each needing judg
 
 ---
 
-### Stage 2 — Link the registry to Figma
+### Stage 2 — Make the registry readable — **done, 2026-08-24**
 
-**Why:** two records of 96 components share no identifiers, so divergence is undetectable and the cost grows with time. It gates S4 — the registry has to be trustworthy before component contracts are written against it.
+**Why:** the component data moved out of Airtable on 20 August, but nothing to read it with moved with it, so Airtable is still where the owner looks. A registry that cannot be read is not a registry — it gates S4, where every component document starts from its entry.
 
-- Extend the registry schema with `figma:` — `file_key`, `node_id`, `last_verified`.
-- A read-only reconciliation script: read the Components and GUI files via the Figma REST API, compare against the registry by name, report added / renamed / removed / unlinked. The repository still never writes to Figma.
-- Resolve every divergence it finds. Expect real drift — the registry is a snapshot of Airtable from 20 August 2026.
-- Backfill `node_id` for all 96 entries.
+Built to [SPEC 0002](docs/specs/0002-registry-viewer.md):
 
-**Note:** the Variables REST API is Enterprise-only, but the *files* API used here is not. Confirm before scheduling.
+- A generated view over the 96 entries: filterable table, and relations followable as links rather than by opening files.
+- Status **derived** from facts on disk — is there a document, is there a Figma node — never a field someone remembers to update.
+- A `figma:` block per entry, filled in as each component is opened for other reasons. No bulk sync: the API cannot reach unpublished components reliably, and the identifier is in the address bar at the moment it is needed anyway.
+- Checks the current validator lacks — duplicate ids, a file away from the path its id implies, an unaddressable Figma link; and, as reports rather than failures, one-sided relations, a child at or above its parent's level, and entries with no relations at all.
 
-**Gate:** the registry check exits 0 and every entry resolves to a live node.
-**Estimate:** 4 weeks.
+**Not here:** component parameters and the contract itself. That is blocked on the documentation-boundary decision, which is the first item of Stage 4.
+
+**Gate:** met. `npm run registry:view` renders all 96 with working relation links, and `npm run validate:registry` separates contradictions from judgements.
+
+**One expectation was wrong.** The relation damage the CSV export was expected to have left is not there: all 962 child edges and 962 parent edges are reciprocal. What the extended validator does report is 109 cases of a component composed from something at or above its own level — a question about the level model, not about the import — and 3 entries with no relations at all.
+
+**Cost:** under a week.
 
 ---
 
@@ -171,13 +176,13 @@ At 5–10 h/week:
 | Stage | Estimate | Cumulative |
 | --- | ---: | ---: |
 | S0 — truthful baseline | <1 wk | 1 wk |
-| S2 — registry ↔ Figma | 4 wk | 5 wk |
-| S3 — tokens to CSS | 1 wk | *parallel* |
-| S4 — component contracts | 6–8 wk | 13 wk |
-| S5 — `@stylos/ui` | 10–12 wk | 25 wk |
-| S6 — proof + docs | 4 wk | **29 wk** |
+| S2 — registry readable | done | 2 wk |
+| S3 — tokens to CSS | 1 wk | 3 wk |
+| S4 — component contracts | 6–8 wk | 11 wk |
+| S5 — `@stylos/ui` | 10–12 wk | 23 wk |
+| S6 — proof + docs | 4 wk | **27 wk** |
 
-**≈ 6–7 months.** The foundations stage was budgeted at 6–8 weeks and cost days: almost all of it turned out to be ratification of what Figma already held, and the rest belonged to S4 with the components. S3 runs beside S2 — different kind of work, no shared dependency. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
+**≈ 6 months.** Two stages shrank on inspection rather than on optimism. Foundations was budgeted at 6–8 weeks and cost days, being mostly ratification of what Figma already held. S2 was four weeks of automated registry↔Figma reconciliation whose only consumer does not exist; what the registry actually needs is to be readable, which is a week. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
 
 **Scope levers, in the order to pull them:**
 
@@ -195,7 +200,7 @@ Do **not** pull: the integrity check before documenting, the documentation-bound
 | --- | --- |
 | Skill set — purpose, repairs, what to drop | 4 |
 | `tone` values that have no colour behind them | 4 |
-| Registry ↔ Figma identity | 2 |
+| Component parameters — where the contract records them | 4 |
 | Token name → CSS custom property mapping | 3 |
 | Figma / Markdown documentation boundary | 4 |
 | Accessibility target and browser baseline | 4 |

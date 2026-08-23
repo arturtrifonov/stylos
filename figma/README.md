@@ -1,6 +1,6 @@
 # figma/
 
-Documentation of the Figma library structure. **Figma is the source of truth for everything visual, and this directory never becomes a second copy of it.** See [docs/decisions/0001-figma-connection-model.md](../docs/decisions/0001-figma-connection-model.md).
+Documentation of the Figma library structure. **Figma holds the values — variables and styles — and this directory never becomes a second copy of them.** Component contracts are not held here; they are authored in [`docs/components/registry/`](../docs/components/registry/README.md), and the Figma library is one implementation of them ([`ARCHITECTURE.md`](../ARCHITECTURE.md) §1). See also [decision 0001](../docs/decisions/0001-figma-connection-model.md).
 
 ## Library structure
 

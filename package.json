@@ -6,8 +6,8 @@
   "scripts": {
     "build:skills": "node tools/build-skills.mjs",
     "validate:skills": "node tools/build-skills.mjs --check",
-    "import:registry": "node tools/import-component-registry.mjs docs/components/registry/import-source/2026-08-20-airtable-export.csv",
     "validate:registry": "node tools/lint-registry.mjs",
+    "registry:view": "node tools/build-registry-view.mjs",
     "tokens:import": "node tools/import-tokens.mjs",
     "tokens:check": "node tools/check-tokens.mjs",
     "tokens:report": "node tools/tokens-report.mjs",

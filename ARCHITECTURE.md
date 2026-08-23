@@ -14,20 +14,24 @@ Every domain has exactly one authoritative source. When two places disagree, the
 
 | Domain | Source of truth | Location | How it changes |
 | --- | --- | --- | --- |
-| Variables, styles | Figma | Figma cloud | by hand in the file |
-| Components, variants, states | Figma | Figma cloud | by hand, or via skills through Figma Agent |
-| Component levels, roles, relations | YAML registry | `docs/components/registry/` | by hand, validated by `npm run validate:registry` |
+| Variables, styles — the *values* | Figma | Figma cloud | by hand in the file |
+| Components — the *contract* | YAML registry | `docs/components/registry/` | by hand, validated by `npm run validate:registry`, read with `npm run registry:view` |
+| Components in Figma — one *implementation* of that contract | Figma | Figma cloud | by hand, or via skills through Figma Agent |
 | Foundation rules | Markdown | `docs/foundations/` | by hand |
 | Architectural decisions | Markdown | `docs/decisions/` | by hand, one record per material change |
 | Skill behaviour | Markdown sources | `skills/src/` | by hand, compiled to `skills/dist/` |
 | System structure | this document | `ARCHITECTURE.md` | by hand |
-| Canonical tokens | *derived* | `tokens/` | `tools/import-tokens.mjs`, from a Figma export plus `tokens/_naming.yaml` and `tokens/_aliases.yaml` |
-| Figma-to-Stylos naming, alias map | YAML | `tokens/_naming.yaml`, `tokens/_aliases.yaml` | by hand, validated by `npm run tokens:check` |
+| Canonical tokens | *derived* | `tokens/` | `tools/import-tokens.mjs`, from a Figma export plus `tokens/_naming.yaml` |
+| Figma-to-Stylos naming, slots, mode rules | YAML | `tokens/_naming.yaml` | by hand, validated by `npm run tokens:check` |
 | Compiled skill document | *derived* | `skills/dist/` | `tools/build-skills.mjs` |
 | Code library | **does not exist** | — | — |
 | Published documentation | **does not exist** | — | — |
 
-Figma is the live source for anything visual. This repository is the source for everything else. The relationship is **one-directional and versioned** — the repository never writes to Figma, and Figma state is captured only by importing it into `tokens/`. Reasoning: [`0001-figma-connection-model`](docs/decisions/0001-figma-connection-model.md).
+**Values are authored where they are judged by eye; contracts are authored where they can bind more than one implementation.** Colours and dimensions are decided in Figma, so Figma holds them and `tokens/` imports them. A component's contract cannot be held by Figma, because Figma is one of the two things that must satisfy it — the Svelte package is the other, and neither can be authoritative over the other. A limitation of one tool would otherwise become a rule of the system. See [`docs/components/README.md`](docs/components/README.md).
+
+Authoring values in Figma is current practice, not a permanent commitment; moving them into the repository is an open intention with no date.
+
+The relationship stays **one-directional**: the repository never writes to Figma. Holding the contract here does not change that — it means Figma is *checked against* the contract, not edited from the repository. Reasoning: [`0001-figma-connection-model`](docs/decisions/0001-figma-connection-model.md).
 
 ---
 
@@ -58,7 +62,11 @@ Components in Figma      ──✗ no link ✗──      docs/components/regist
 
 Components themselves live in Figma. Their metadata — level, role, flow behaviour, children, parents, notes — lives as one YAML file per component under `docs/components/registry/`, with the path mirroring each component's Figma `/` hierarchy. 96 components were imported from an Airtable export on 20 August 2026; Airtable is retired as a source. Hand-editing the YAML is the expected workflow.
 
-`npm run validate:registry` checks references and levels **within the registry**. It does not check the registry against Figma.
+`npm run validate:registry` checks the registry **against itself**: references resolve, ids are unique, each file sits at the path its id implies, and any `figma:` block could address a real node. It separates contradictions (exit 1) from findings a human has to settle — a one-sided relation, a child at or above its parent's level, an entry with no relations (exit 0). It does not check the registry against Figma.
+
+`npm run registry:view` renders the whole set as one self-contained HTML file under `build/`, where relations are links rather than files to open. Two flags in it are derived at build time and never authored: `documented` (the component's Markdown document exists) and `linked` (a Figma node is recorded). The output is not committed — it is cheap to rebuild and would put a 96-row diff into every registry change.
+
+An entry may carry a `figma:` block naming the file and node it is implemented by. That is a hand-recorded address, not a sync: it is filled in when a component is opened in Figma for other reasons.
 
 **Break:** the two records share no identifiers. A component renamed, added, or removed in Figma produces no signal in the registry, and nothing can detect the divergence automatically.
 
@@ -81,11 +89,12 @@ This is the only closed loop in the system, and the only automated step anywhere
 | Artifact | Produced from | By | Committed |
 | --- | --- | --- | --- |
 | `skills/dist/stylos-figma-agent.md` | `skills/src/`, `skills/targets/` | `tools/build-skills.mjs` | yes |
-| `docs/components/registry/*.yaml` | Airtable CSV export | `tools/import-component-registry.mjs` | yes — one-time bootstrap only |
+| `docs/components/registry/*.yaml` | Airtable CSV export | `tools/import-component-registry.mjs` | yes — hand-edited since; the importer is retired |
+| `build/registry.html` | `docs/components/registry/*.yaml` | `tools/build-registry-view.mjs` | no — derived, rebuilt on demand |
 | `docs/components/registry/import-source/*.csv` | Airtable | manual export | yes — immutable snapshot |
 | `tokens/*.yaml` | a Figma export and `tokens/_naming.yaml` | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
 
-Re-running the registry importer overwrites hand edits. It is a bootstrap step, not a sync.
+The registry importer ran once, on 2026-08-20. It deletes and rewrites every file rather than merging, so it is kept as the record of how the registry came to exist and refuses to run without `--overwrite-hand-edits`.
 
 ---
 

@@ -1,14 +1,17 @@
 #!/usr/bin/env node
-// One-time-per-refresh import: converts the Airtable component registry CSV
-// into one YAML file per component under docs/components/registry/.
+// RETIRED. The bootstrap import that created docs/components/registry/ from
+// the Airtable CSV. It ran once, on 2026-08-20, and is kept as the record of
+// how those files came to exist — not as a step in any workflow.
 //
-// The CSV is not the source of truth going forward — the generated YAML
-// files are. Re-running this script overwrites generated files from a fresh
-// CSV export; it never merges, so hand edits to generated YAML will be lost
-// on re-import. See docs/components/registry/README.md.
+// Hand-editing the YAML is the workflow now (docs/components/registry/
+// README.md), and this script does not merge: it deletes every registry file
+// and writes them again from the CSV. Running it against the current registry
+// would destroy every hand edit, every `figma:` block, and every field the
+// schema has gained since. There is deliberately no npm script for it, and it
+// refuses to run without --overwrite-hand-edits saying so out loud.
 //
-// Usage:
-//   node tools/import-component-registry.mjs <path-to-csv>
+// Usage (do not):
+//   node tools/import-component-registry.mjs <path-to-csv> --overwrite-hand-edits
 
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync } from "node:fs";
 import path from "node:path";
@@ -19,7 +22,17 @@ const outDir = path.join(root, "docs/components/registry");
 
 const csvPath = process.argv[2];
 if (!csvPath) {
-  console.error("Usage: node tools/import-component-registry.mjs <path-to-csv>");
+  console.error("Usage: node tools/import-component-registry.mjs <path-to-csv> --overwrite-hand-edits");
+  process.exit(1);
+}
+
+if (!process.argv.includes("--overwrite-hand-edits")) {
+  console.error(
+    "This import is retired. It ran once, on 2026-08-20, and the registry has been\n" +
+      "hand-edited since — this script deletes every file under docs/components/registry/\n" +
+      "and writes them again from the CSV, merging nothing.\n\n" +
+      "If that is genuinely what you want, pass --overwrite-hand-edits."
+  );
   process.exit(1);
 }
 
@@ -86,9 +99,12 @@ function yamlString(value) {
   return JSON.stringify(value);
 }
 
-function yamlList(items) {
-  if (items.length === 0) return "[]";
-  return "\n" + items.map((i) => `  - ${yamlString(i)}`).join("\n");
+// An empty list omits its key rather than writing `[]`: the restricted YAML
+// subset in tools/lib/yaml.mjs has no flow-collection syntax, and every reader
+// of the registry goes through it.
+function yamlField(key, items) {
+  if (items.length === 0) return "";
+  return `${key}:\n` + items.map((i) => `  - ${yamlString(i)}`).join("\n") + "\n";
 }
 
 const source = readFileSync(csvPath, "utf8").replace(/^﻿/, "");
@@ -137,21 +153,15 @@ for (const r of dataRows) {
   const filePath = path.join(outDir, `${slugPath(name)}.yaml`);
   mkdirSync(path.dirname(filePath), { recursive: true });
 
-  const yaml = `# GENERATED FILE. Do not hand-edit structural fields — re-running
-# tools/import-component-registry.mjs overwrites this file from the source
-# CSV. The "notes" field is preserved verbatim from the source and is safe
-# to extend, but will be replaced wholesale on next import, not merged.
-#
-# See docs/components/registry/README.md for schema and workflow.
+  const yaml = `# Hand-edited. This file is the source for its component's structural data.
+# The CSV import that created it ran once, on 2026-08-20, and will not run
+# again — see docs/components/registry/README.md for the schema and workflow.
 
 id: ${yamlString(name)}
 name: ${yamlString(name)}
 level: ${yamlString(level.toLowerCase())}
 role: ${role ? yamlString(role.toLowerCase()) : "null"}
-flow_behavior: ${yamlList(flowBehavior.map((f) => f.toLowerCase()))}
-children: ${yamlList(children)}
-parents: ${yamlList(parents)}
-notes: ${yamlString(notes)}
+${yamlField("flow_behavior", flowBehavior.map((f) => f.toLowerCase()))}${yamlField("children", children)}${yamlField("parents", parents)}notes: ${yamlString(notes)}
 import:
   batch: ${batch || "null"}
   ready: ${ready === "checked"}

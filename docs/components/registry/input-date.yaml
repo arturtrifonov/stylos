@@ -1,9 +1,6 @@
-# GENERATED FILE. Do not hand-edit structural fields — re-running
-# tools/import-component-registry.mjs overwrites this file from the source
-# CSV. The "notes" field is preserved verbatim from the source and is safe
-# to extend, but will be replaced wholesale on next import, not merged.
-#
-# See docs/components/registry/README.md for schema and workflow.
+# Hand-edited. This file is the source for its component's structural data.
+# The CSV import that created it ran once, on 2026-08-20, and will not run
+# again — see docs/components/registry/README.md for the schema and workflow.
 
 id: "Input Date"
 name: "Input Date"

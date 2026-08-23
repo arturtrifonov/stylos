@@ -38,7 +38,9 @@ Each directory has a `README.md` explaining what belongs in it.
 
 ## Figma and this repository
 
-Figma is the live source of truth for variables, styles and components. This repository is the source for everything else, and it **never writes to Figma** — that is an explicit non-goal until a reliable round trip exists ([decision 0001](docs/decisions/0001-figma-connection-model.md)).
+Figma holds the *values* — variables and styles — and `tokens/` imports them. It does **not** hold component contracts: those are authored here, and Figma is one implementation of them, checked against them ([`ARCHITECTURE.md`](ARCHITECTURE.md) §1).
+
+The repository **never writes to Figma** — an explicit non-goal until a reliable round trip exists ([decision 0001](docs/decisions/0001-figma-connection-model.md)).
 
 Variables move one way. An export is made by hand and read once:
 
@@ -56,5 +58,6 @@ The exported files are not kept — `tokens/*.yaml` is the record, and its histo
 npm install
 npm test                  # tool tests
 npm run build:skills      # skills/src/ → skills/dist/, imported into Figma Agent by hand
-npm run validate:registry # component registry references and levels
+npm run validate:registry # component registry: contradictions fail, judgements are reported
+npm run registry:view     # → build/registry.html, the readable view of the registry
 ```
