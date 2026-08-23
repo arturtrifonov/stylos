@@ -14,6 +14,4 @@ Status: **Confirmed.**
 
 **Not transcribed here.** Run `npm run tokens:report` — it renders the current scale from `tokens/`. See [color.md](color.md) for why.
 
-## Open
-
-- The collection is named `space`, but it holds control sizes as well as gaps. A control's height is not spacing — see [sizing.md](sizing.md). The rename to `dimension` is [`PLAN.md`](../../PLAN.md) 1.1; nothing moves between collections.
+Sizes and gaps share the collection `dimension` — both are lengths in the layout plane. Spacing is the `g-` half of it; control dimensions are the `s-` half, and those are [sizing.md](sizing.md)'s subject.

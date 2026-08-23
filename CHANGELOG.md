@@ -4,6 +4,14 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-08-23 (foundations closed)
+
+- **The shadow composition is written down, and it is derivable.** `Elevation N` is not one shadow but a stack: layers 1…N in `shadow/color/base`, then layer N repeated in `shadow/color/primary` — N + 1 layers. Each layer is `0 elevation(k) elevation(k) spread(k)`, so X is always zero and **blur equals the Y offset**. That is why there is no blur token: it is not independent. The rule reproduces all six Figma effect styles exactly, which means effect styles never need exporting — the CSS build generates them from two number scales and this composition.
+- Two consequences recorded in `effects.md`, both easy to get wrong: the stack is **cumulative**, so a generator emitting one layer per level is wrong above level 1; and every level carries a `shadow/color/primary` tint, so shadows are brand-coloured — and since that colour is a literal rather than a reference, rebinding the `primary` slot leaves all six behind.
+- The `space` collection is now **`dimension`** (`dimension` and `dimension-scale`). Sizes and gaps are both lengths in the layout plane; a control's height is not spacing. `sizing.md` and `spacing.md` follow the new name.
+- **Stage 1 is removed from `PLAN.md`.** Every document in `docs/foundations/` is confirmed and nothing left open in them blocks a component contract or the CSS build. Stage numbers 2–6 are kept as they were so references elsewhere still resolve.
+- The schedule drops from 32 to **29 weeks**, and the long pole moves from foundations to S4. The stage budgeted at 6–8 weeks cost days — nearly all of it was ratification of what Figma already held.
+
 ### Changed — 2026-08-23 (Stage 1 closed down)
 
 - **`density` is dropped.** It held a canonical slot in the variant-property order with no definition behind it. Removed from `naming.md` §8 rather than left as a placeholder for a dimension the system does not have.

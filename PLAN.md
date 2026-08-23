@@ -44,14 +44,14 @@ That single gate is chosen because it is the only test that exercises the whole 
 ## 3. Critical path
 
 ```
-S0 truthful baseline ──▶ S1 foundations ──┬──▶ S3 CSS ──▶ S5 @stylos/ui ──▶ S6 proof ──▶ v0.1
-                                          │                  ▲
-                                          └──▶ S4 contracts ─┘
-                                                    ▲
-                      S2 registry↔Figma ────────────┘   (independent of S1)
+S0 truthful baseline ──┬──▶ S3 CSS ────────────────────────┐
+                       │                                   ├──▶ S5 @stylos/ui ──▶ S6 proof ──▶ v0.1
+                       └──▶ S2 registry↔Figma ──▶ S4 contracts ─┘
 ```
 
-Everything downstream used to wait on **S1**, and S1 was the stage most likely to slip. It is now two items, so the long pole has moved to **S4** — twenty-three component contracts, each needing judgement that cannot be batched.
+**The foundations stage is gone** — every document in `docs/foundations/` is confirmed, and what remains open in them blocks nothing. Stage numbers are kept as they were so that references elsewhere still resolve.
+
+The long pole is now **S4**: twenty-three component contracts, each needing judgement that cannot be batched.
 
 ---
 
@@ -61,7 +61,6 @@ Everything downstream used to wait on **S1**, and S1 was the stage most likely t
 
 **Why first:** every later stage builds on what the repository asserts. Where it asserts something false, the cost compounds.
 
-- Record the Figma file keys for Components and GUI Helpers. Styles is known. **S2 cannot start without them.**
 - Make the installed skill build identifiable. Figma does not carry the `metadata` block, so a version number cannot round-trip; the version belongs in `description`, which Figma does carry.
 
 **Gate:** nothing in the repository is known to be false.
@@ -69,27 +68,9 @@ Everything downstream used to wait on **S1**, and S1 was the stage most likely t
 
 ---
 
-### Stage 1 — Close the foundation contracts
-
-**Why:** blocks tokens, component documentation and code simultaneously.
-
-| # | Work | Produces |
-| --- | --- | --- |
-| 1.1 | Rename the `space` collection to `dimension` — it holds control sizes and gaps, and a control's height is not spacing | Figma, `_naming.yaml`, `spacing.md`, `sizing.md` |
-| 1.2 | Define the shadow scale; ratify radius and border, which already match their document | `effects.md` |
-
-**This is ratification, not derivation.** Everything here exists in Figma already; the work is confirming it or changing it deliberately, and writing it down. Colour, typography, sizing and the theme contract are settled.
-
-1.1 is a rename, not a restructure. Splitting sizes and gaps into two Figma collections would be expensive and buys nothing — they are both lengths in the layout plane, which is what `dimension` names. Renaming a Figma collection does not break bindings; those resolve by ID.
-
-**Gate:** no foundation document leaves open a question a component contract or the CSS build depends on.
-**Estimate:** 1–2 weeks.
-
----
-
 ### Stage 2 — Link the registry to Figma
 
-**Why:** two records of 96 components share no identifiers, so divergence is undetectable and the cost grows with time. It is the first stage that is mostly code, and it gates S4 — the registry has to be trustworthy before component contracts are written against it.
+**Why:** two records of 96 components share no identifiers, so divergence is undetectable and the cost grows with time. It gates S4 — the registry has to be trustworthy before component contracts are written against it.
 
 - Extend the registry schema with `figma:` — `file_key`, `node_id`, `last_verified`.
 - A read-only reconciliation script: read the Components and GUI files via the Figma REST API, compare against the registry by name, report added / renamed / removed / unlinked. The repository still never writes to Figma.
@@ -190,14 +171,13 @@ At 5–10 h/week:
 | Stage | Estimate | Cumulative |
 | --- | ---: | ---: |
 | S0 — truthful baseline | <1 wk | 1 wk |
-| S1 — foundations | 1–2 wk | 3 wk |
-| S2 — registry ↔ Figma | 4 wk | 7 wk |
-| S3 — tokens to CSS | 1 wk | 8 wk |
-| S4 — component contracts | 6–8 wk | 16 wk |
-| S5 — `@stylos/ui` | 10–12 wk | 28 wk |
-| S6 — proof + docs | 4 wk | **32 wk** |
+| S2 — registry ↔ Figma | 4 wk | 5 wk |
+| S3 — tokens to CSS | 1 wk | *parallel* |
+| S4 — component contracts | 6–8 wk | 13 wk |
+| S5 — `@stylos/ui` | 10–12 wk | 25 wk |
+| S6 — proof + docs | 4 wk | **29 wk** |
 
-**≈ 7–8 months.** S1 collapsed from 6–8 weeks to 1–2 because most of it turned out to be ratification of what Figma already holds, and the rest moved to S4 where the components are. S2 no longer hides inside S1's slack and is now sequential, which eats most of the saving. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
+**≈ 6–7 months.** The foundations stage was budgeted at 6–8 weeks and cost days: almost all of it turned out to be ratification of what Figma already held, and the rest belonged to S4 with the components. S3 runs beside S2 — different kind of work, no shared dependency. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
 
 **Scope levers, in the order to pull them:**
 
@@ -213,8 +193,6 @@ Do **not** pull: the integrity check before documenting, the documentation-bound
 
 | Question | Stage |
 | --- | --- |
-| What the size-and-gap collection should be called | 1.1 |
-| Shadow scale | 1.2 |
 | Skill set — purpose, repairs, what to drop | 4 |
 | `tone` values that have no colour behind them | 4 |
 | Registry ↔ Figma identity | 2 |
@@ -237,7 +215,7 @@ Its scope and timing are open, not its existence. It is not on the critical path
 
 | Risk | Signal | Countermeasure |
 | --- | --- | --- |
-| Stage 1 stalls — judgement work with no forcing function | two sessions on the same question | §2.2: adopt what Figma does, write it down as provisional |
+| S4 stalls — twenty-three contracts of judgement work with no forcing function | two sessions on the same component | §2.2: adopt what Figma does, write it down as provisional |
 | Completionism against the 96-component registry | documenting outside the core set | the Stage 4 table is the scope |
 | Registry drift resumes after S2 | the check not run for weeks | make it part of the pre-commit habit |
 | Documentation drifts from the built system | a document describing something that no longer exists | keep facts in one place; documents point rather than copy |

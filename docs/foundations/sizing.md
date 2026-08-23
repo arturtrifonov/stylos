@@ -17,7 +17,7 @@ Resizing: preserve `Hug contents` unless a documented pattern supports `Fill con
 
 ## The scale, and what the level mapping means
 
-The scale is built in **pixels** on a base of 8, finely subdivided at the small end and coarser as values grow. Values live in [`tokens/`](../../tokens/README.md) under `space-scale` and are aliased by the `size` role in `space`; `npm run tokens:report space-scale space` prints them.
+The scale is built in **pixels** on a base of 8, finely subdivided at the small end and coarser as values grow. Values live in [`tokens/`](../../tokens/README.md) under `dimension-scale` and are aliased by the `size` role in `dimension`; `npm run tokens:report dimension-scale dimension` prints them.
 
 **The scale is not expressed in rem, and rem is not part of it.** A rem-based scale makes sense when a component's dimensions derive from its font size. Stylos does not work that way — sizes are set directly — so a relative unit adds a second base to reason about and nothing else.
 
@@ -45,6 +45,4 @@ Only **Element and Object** have a grid that a skill applies mechanically, and t
 
 Primitive has a recommendation, as above, but no skill-enforced grid.
 
-## Open
-
-- Whether the `size` role belongs in the `space` collection at all. A control's height is not spacing, and the two are grouped together mainly by history.
+The collection is called `dimension` because it holds both — a control's height and the gap beside it are both lengths in the layout plane. It is not called `space`: a control's height is not spacing.
