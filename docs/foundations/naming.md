@@ -1,6 +1,6 @@
 # Naming and public API rules
 
-**Normative.** The naming contract for components, layers, properties, and variants. Extracted from master doc §15 by [ADR 0005](../decisions/0005-master-document-decomposition.md).
+**Normative.** The naming contract for components, layers, properties, and variants. Extracted from master doc §15.
 
 The operational contract is `stylos-naming-cleanup` **v0.7** ([`skills/src/naming-cleanup/SKILL.md`](../../skills/src/naming-cleanup/SKILL.md)). Where the skill states a more specific rule for its own operation, the skill governs — see [`ARCHITECTURE.md`](../../ARCHITECTURE.md) §7. This document states the contract the skill enforces; it does not restate the skill's procedure.
 
@@ -59,7 +59,7 @@ Do not use:
 
 ### Size values
 
-Canonical size values are **full words**: `extra small`, `small`, `medium`, `large`, `extra large`. `XS`/`S`/`M`/`L`/`XL` are conversational shorthand and never appear as Figma variant values. Settled by [ADR 0002](../decisions/0002-skill-version-supersession.md); enforced by `naming-cleanup` v0.7, which flags abbreviations as violations and maps them to the full words.
+Canonical size values are **full words**: `extra small`, `small`, `medium`, `large`, `extra large`. `XS`/`S`/`M`/`L`/`XL` are conversational shorthand and never appear as Figma variant values. Enforced by `naming-cleanup` v0.7, which flags abbreviations as violations and maps them to the full words.
 
 ## 5. Text properties
 
@@ -184,4 +184,4 @@ Do not create a global canonical position for a property that appears once or tw
 
 ## Relationship to the Svelte package
 
-Component props in `@stylos/ui` map 1:1 onto the variant and component properties defined here ([ADR 0004](../decisions/0004-frontend-library-foundations.md)). Melt UI supplies interaction behaviour only; anatomy and naming stay authored by Stylos. Where a prop name and a Figma property name diverge, one of the two is wrong — that is a defect, not a translation ([`PLAN.md`](../../PLAN.md) Stage 5).
+Component props in `@stylos/ui` are intended to map 1:1 onto the variant and component properties defined here — see [`PLAN.md`](../../PLAN.md) Stage 5 for the planned approach. Whatever supplies interaction behaviour, anatomy and naming stay authored by Stylos. Where a prop name and a Figma property name diverge, one of the two is wrong — that is a defect, not a translation ([`PLAN.md`](../../PLAN.md) Stage 5).

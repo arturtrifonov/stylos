@@ -4,7 +4,8 @@ Status: **Structure and naming model confirmed, values not ratified.**
 
 ## Confirmed
 
-- The scale is **base-8, named as a ratio to that base** — `s-1_000` is 8, `s-1_500` is 12. It is **not** Fibonacci-derived; that framing is withdrawn by [ADR 0006](../decisions/0006-proportional-logic.md). Classical proportion remains the system's character, not the arithmetic of its scale.
+- The scale is **base-8, named as a ratio to that base** — `s-1_000` is 8, `s-1_500` is 12. It is **not** Fibonacci-derived — the library never implemented that, and re-deriving every value to match a description would cost a rebinding of 96 components for a mathematical property no user perceives. Classical proportion is the system's character; it is not the arithmetic of its scale.
+- A new spacing value must sit on the scale, or make the case for changing the scale. "It is a Fibonacci number" is not an argument.
 - Spacing is drawn from the scale. A value that is not on the scale is not a spacing value, and adding one is a system decision, not a local exception.
 - Two layers: primitives in `space.scale`, semantic roles in `space`. Semantic roles carry a role prefix — `s-` for size, `g-` for gap — and reuse the same ratio suffix as the primitive they correspond to.
 - The naming-model comparison, when it runs, must stay specific to spacing and compare at minimum: absolute value names, scale-position names, ordinal numeric names, T-shirt names, relational semantic names, property/context-based names, and hybrid models. It must document trade-offs, contexts, exceptions, and implications for both Figma and code. Generic token-taxonomy arguments count only if they produce a concrete spacing decision.
@@ -15,8 +16,8 @@ Status: **Structure and naming model confirmed, values not ratified.**
 
 ## Open
 
-- Ratification of the scale: which steps earn their place, and whether the semantic `space` collection should mirror the primitive scale as closely as it does. [`PLAN.md`](../../PLAN.md) 1.1 → ADR 0007.
-- Ratification of the naming model. Ratio-to-base is implemented and in use, so the research reviews a live model rather than choosing among seven candidates — but "already built" is not "right". [`PLAN.md`](../../PLAN.md) 1.2 → ADR 0008.
+- Ratification of the scale: which steps earn their place, and whether the semantic `space` collection should mirror the primitive scale as closely as it does. [`PLAN.md`](../../PLAN.md) Stage 1.
+- Ratification of the naming model. Ratio-to-base is implemented and in use, so the research reviews a live model rather than choosing among seven candidates — but "already built" is not "right". [`PLAN.md`](../../PLAN.md) Stage 1.
 - Whether `size` belongs in the spacing collection at all, or in [sizing](sizing.md). It is currently a spacing role, which is arguable: a control's height is not spacing.
 
 ## TODO

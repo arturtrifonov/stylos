@@ -2,9 +2,8 @@
 
 **Status:** Implemented 2026-08-23
 **Date:** 2026-08-22
-**Implements:** [ADR 0007 — Token normalization and canonical storage](../decisions/0007-token-normalization.md)
 
-A work order, not a normative document. It says what to build; [ADR 0007](../decisions/0007-token-normalization.md) says why, and wins on any conflict. Rules of the design language live in [`docs/foundations/`](../foundations/README.md).
+A work order. It says what to build and why that shape; rules of the design language live in [`docs/foundations/`](../foundations/README.md) and win on any conflict.
 
 ---
 
@@ -40,7 +39,7 @@ tokens/*.yaml                       the record — generated, never hand-edited
 ### Out of scope
 
 - CSS generation (`tokens:build`) — a later spec
-- The Figma plugin — a later spec; see [ADR 0007](../decisions/0007-token-normalization.md) §9
+- The Figma plugin — a later spec; see §5.7 and [`PLAN.md`](../../PLAN.md)
 - Any write path to Figma — a standing non-goal ([ADR 0001](../decisions/0001-figma-connection-model.md))
 - Changing anything under `docs/foundations/` — those documents already defer values to the report
 
@@ -51,7 +50,7 @@ tokens/*.yaml                       the record — generated, never hand-edited
 | | |
 | --- | --- |
 | Runtime | Node ≥ 22, ESM (`.mjs`) |
-| Dependencies | **none** — `node:` built-ins only. This is a standing rule for `tools/` ([ADR 0004](../decisions/0004-frontend-library-foundations.md), `tools/README.md`) |
+| Dependencies | **none** — `node:` built-ins only. This is a standing rule for `tools/` (see `tools/README.md`) |
 | Style | match the existing scripts in `tools/` — small, single-purpose, fail loudly with a message that says what to do next |
 | Output to stdout | the report only. Everything else goes to stderr, so `npm run tokens:report > file.md` is clean |
 | Exit codes | 0 success, 1 any failure |
@@ -69,11 +68,11 @@ Verified against the 2026-08-22 export from **Stylos / Styles**. Do not infer th
 - **Colours** are `{colorSpace: "srgb", components: [r, g, b], alpha?}` with float components.
 - **Values are resolved, but the alias graph is not discarded.** An earlier draft of this section claimed no token carries a reference. In fact `$extensions."com.figma.aliasData"` is present on 108/110 `color` tokens, 37/37 `space` tokens, and 2/14 `effect` tokens, carrying `targetVariableName` and `targetVariableSetName`.
 
-  The pipeline still treats `tokens/_aliases.yaml` as the authored record and verifies it by value matching, per [ADR 0007](../decisions/0007-token-normalization.md) §2 — but where `aliasData` exists it is **cross-checked** against the value match, and a disagreement is a hard failure. Value matching alone could pick the wrong step where two primitives share a value.
+  The pipeline still treats the authored alias record as the contract and verifies it by value matching (§5.7) — but where `aliasData` exists it is **cross-checked** against the value match, and a disagreement is a hard failure. Value matching alone could pick the wrong step where two primitives share a value.
 
   The two `color` tokens without `aliasData` are `shadow/base` and `shadow/primary`. Figma cannot build a semi-transparent colour from an alias, so those roles are stored as literals despite being conceptually bound to `base/black`/`base/white` and `indigo/700`. That limitation is why `ignore_alpha` exists — see §5.2.
 
-  This weakens the case in [ADR 0007](../decisions/0007-token-normalization.md) §9 for building a Figma plugin, whose stated purpose is to recover an alias graph the export was believed to destroy. That record needs revisiting.
+  This weakens the case for building a Figma plugin, whose main stated purpose was recovering an alias graph the export was believed to destroy. Worth re-examining before that work is scheduled — see [`PLAN.md`](../../PLAN.md).
 
 ### The nine collections in the current export
 
@@ -156,7 +155,7 @@ The dated scheme was version control reimplemented by hand — git already store
 
 The mirrored directory was worse, and the reason is not size. **Because collections are imported one at a time, the directory was never an export of anything.** `radius` from one evening, `color` from three months later — a combination that existed in Figma at no single moment, with a manifest stamping one date across the whole thing as though it had. Checks anchored to it were verifying the token contract against a composite the tool had fabricated: confidence without grounds, which is worse than no check.
 
-What makes this safe to drop is that **the canonical set verifies against itself.** `ref` and `values` are deliberately redundant (ADR 0007 §5) — `ref` is the contract, `values` is what Figma resolved it to — so comparing them needs no export. All 257 value↔reference pairs check out from `tokens/*.yaml` alone.
+What makes this safe to drop is that **the canonical set verifies against itself.** `ref` and `values` are deliberately redundant (§5.4) — `ref` is the contract, `values` is what Figma resolved it to — so comparing them needs no export. All 257 value↔reference pairs check out from `tokens/*.yaml` alone.
 
 The checks that genuinely need the raw floats — colour space, 8-bit representability, mode-name parity — are meaningful **only about the export in hand**, so they run during import and nowhere else.
 
@@ -354,7 +353,7 @@ Rule 6's converse matters: a stale `mode_dependent` entry silently weakens rule 
 
 Value matching works on the current data but cannot be relied on: two palette entries already share a value — `zinc/25` = `neutral/25` in light, `zinc/975` = `neutral/975` in dark. Recovery succeeds today only because no semantic role happens to point at either. The map is the record; matching only verifies it.
 
-Full reasoning: [ADR 0007](../decisions/0007-token-normalization.md) §2.
+
 
 ---
 

@@ -4,7 +4,7 @@ The canonical token set — **the record**, and the contract everything downstre
 
 Figma is the source of truth; this is the repository's record of it. Nothing sits in between: the exported files are read once at import and never committed, because a directory of exports collected one collection at a time is not an export of anything.
 
-Reasoning: [ADR 0007](../docs/decisions/0007-token-normalization.md). What it does: [SPEC 0001](../docs/specs/0001-token-pipeline.md).
+How it works and why it is shaped this way: [SPEC 0001](../docs/specs/0001-token-pipeline.md).
 
 ## Two kinds of file
 

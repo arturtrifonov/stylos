@@ -15,7 +15,13 @@ Usually-adjustable: text-field/search-field/panel/card width, supported dialog w
 
 Resizing: preserve `Hug contents` unless a documented pattern supports `Fill container`; use `Fill container` only on an axis meant to respond to its parent; preserve min/max constraints and required aspect ratios; never scale an instance to hit a reference measurement.
 
-**Shared size grids apply to the Element and Object architectural levels only, permanently.** See [docs/decisions/0003-component-levels-and-size-grid-scope.md](../decisions/0003-component-levels-and-size-grid-scope.md). Widget- and Layout-level components (Modal, Alert, Breadcrumbs, Header…) are too heterogeneous in size for a shared rule to mean anything — there's no ground truth to extract, so sizing for those is documented per-component rather than derived from a foundation grid. Primitive-level components have preferred sizes, not a strict grid.
+**Shared size grids apply to the Element and Object architectural levels only, permanently.** This is a boundary, not an unfinished feature: a shared grid can only exist where the components at that level have comparable structure, and beyond Object they do not. Widget- and Layout-level components (Modal, Alert, Breadcrumbs, Header…) are too heterogeneous in size for a shared rule to mean anything — there's no ground truth to extract, so sizing for those is documented per-component rather than derived from a foundation grid. Primitive-level components have preferred sizes, not a strict grid — see below.
+
+## Primitive preferred sizes
+
+Icon, Badge, Indicator, Loader and similar primitives use: **12, 14, 16, 18, 20**.
+
+This is a reference, not an enforced grid. A primitive may sit outside it where the component it lives in requires that, and no check flags it — which is the difference between this and the Element/Object grids.
 
 ## Open
 

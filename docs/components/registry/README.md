@@ -1,6 +1,6 @@
 # docs/components/registry/
 
-Structured, relational metadata for every component: architectural level, behavioral role, composition (parents/children), and sizing behavior. This directory — not Airtable — is the source of truth for this data going forward. See [docs/decisions/0003-component-levels-and-size-grid-scope.md](../../decisions/0003-component-levels-and-size-grid-scope.md) for why the level taxonomy looks the way it does.
+Structured, relational metadata for every component: architectural level, behavioral role, composition (parents/children), and sizing behavior. This directory — not Airtable — is the source of truth for this data going forward. The five-level taxonomy — primitive, element, object, widget, layout — comes from the original component registry and is confirmed; see [sizing.md](../../foundations/sizing.md) for what it means for size grids.
 
 ## Why this exists separately from `docs/components/<name>.md`
 

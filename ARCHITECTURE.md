@@ -43,7 +43,7 @@ Figma Variables ──manual export──▶ tokens/*.yaml ──✗──▶ CS
 
 Variables are authored in Figma. An export is made by hand and handed to `npm run tokens:import`, which folds Figma's nine collections into eight canonical ones and writes `tokens/*.yaml` — the record everything else reads. **The exported files are not committed**: read once, then discarded. `npm run tokens:check` verifies the record against itself, since `ref` and `values` are deliberately redundant.
 
-The CSS conversion (`tokens:build`) and the package are both decided but unbuilt — see [`0004-frontend-library-foundations`](docs/decisions/0004-frontend-library-foundations.md) and [`0007-token-normalization`](docs/decisions/0007-token-normalization.md).
+The CSS conversion (`tokens:build`) and the package are both planned but unbuilt — see [`PLAN.md`](PLAN.md) Stages 3 and 5.
 
 **Break:** the export is still manual and has no cadence. Nothing detects that Figma has moved on, so `tokens/` is only as current as the last person to import. What `npm run tokens:check` does catch is drift *within* the record — an alias that no longer agrees with the value beside it, or a mode dependence that is not declared.
 
@@ -93,7 +93,7 @@ Re-running the registry importer overwrites hand edits. It is a bootstrap step, 
 
 Stated explicitly so it is never assumed.
 
-- **A front-end library.** No package, no dependencies, no component code. Structure is decided in [`0004`](docs/decisions/0004-frontend-library-foundations.md); building it before the Figma contracts stabilise would create maintenance without delivering anything.
+- **A front-end library.** No package, no dependencies, no component code. The intended structure is sketched in [`PLAN.md`](PLAN.md) Stage 5; building it before the Figma contracts stabilise would create maintenance without delivering anything.
 - **CSS token output.** The token pipeline exists and produces the canonical set (`tokens/*.yaml`), but no script converts it into CSS custom properties yet — that is `tokens:build`, a later spec.
 - **Any published documentation surface.** No site, no Storybook, no designer-facing portal. Documentation is Markdown in git, read in an editor.
 - **A link between the registry and Figma.** No shared identifiers in either direction.

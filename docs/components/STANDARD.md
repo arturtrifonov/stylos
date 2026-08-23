@@ -1,6 +1,6 @@
 # Component documentation standard
 
-**Normative.** What a component document must contain. Extracted from master doc §17 by [ADR 0005](../decisions/0005-master-document-decomposition.md).
+**Normative.** What a component document must contain. Extracted from master doc §17.
 
 Every public component gets one Markdown file in this directory, named `<component-name>.md` — kebab-case matching the component's Title Case Figma name (`Icon Button` → `icon-button.md`).
 
@@ -15,7 +15,7 @@ A document that describes only appearance has not met this standard.
 1. **Name and summary** — what the component is.
 2. **Purpose** — the user or product need it serves.
 3. **Use when / do not use when** — boundaries against adjacent components.
-4. **Architectural level** — primitive, element, object, widget, or layout ([ADR 0003](../decisions/0003-component-levels-and-size-grid-scope.md)). Take it from the [registry entry](registry/README.md), do not re-derive it.
+4. **Architectural level** — primitive, element, object, widget, or layout (see [sizing.md](../foundations/sizing.md)). Take it from the [registry entry](registry/README.md), do not re-derive it.
 5. **Anatomy** — named parts and nested components.
 6. **Public API** — variant, text, boolean, and instance-swap properties in the canonical order defined by [naming.md](../foundations/naming.md) §8–§10.
 7. **Property definitions** — meaning, values, defaults, dependencies, invalid combinations.

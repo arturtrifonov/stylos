@@ -28,7 +28,7 @@ Runs [`tools/build-skills.mjs`](../tools/build-skills.mjs), which reads `targets
 | `stylos-component-integrity-check` | 0.2 | Read-only | [src/component-integrity-check/SKILL.md](src/component-integrity-check/SKILL.md) |
 | `stylos-reference-reconstruction` | 0.1 | Build directly unless material product ambiguity exists | [src/reference-reconstruction/SKILL.md](src/reference-reconstruction/SKILL.md) |
 
-Note: the master document's [§18](../docs/master-document.md#18-figma-agent-skill-system) table still cites `stylos-naming-cleanup` as v0.5. This repo imports v0.7, which already resolves the conflict described in the master document's [§16](../docs/master-document.md#16-known-naming-conflict). See [docs/decisions/0002-skill-version-supersession.md](../docs/decisions/0002-skill-version-supersession.md).
+Note: the master document's [§18](../docs/master-document.md#18-figma-agent-skill-system) table cites `stylos-naming-cleanup` as v0.5 and its [§16](../docs/master-document.md#16-known-naming-conflict) describes a naming conflict as open. Both are stale — this repository imports **v0.7**, which already resolves that conflict by flagging the abbreviated size values as violations. The versions in the table above are the current ones.
 
 ## Rules for editing a skill
 

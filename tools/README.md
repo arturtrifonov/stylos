@@ -28,7 +28,7 @@ Both are deliberately dependency-free — the CSV parser and the YAML reader are
 
 ## The token pipeline
 
-Turns a Figma variable export into a canonical, self-verifying record. Built to [SPEC 0001](../docs/specs/0001-token-pipeline.md); the reasoning is [ADR 0007](../docs/decisions/0007-token-normalization.md).
+Turns a Figma variable export into a canonical, self-verifying record. Built to [SPEC 0001](../docs/specs/0001-token-pipeline.md), which also carries the reasoning.
 
 ```bash
 npm run tokens:import -- --collection radius ~/Downloads/"Mode 1.tokens.json"
