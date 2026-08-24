@@ -10,7 +10,6 @@ Deterministic. `tools/build-skills.mjs` reads this list top to bottom and concat
 
 - component-integrity-check
 - naming-cleanup
-- text-sizing
 - reference-reconstruction
 
 To add a skill to this target: add its source directory under `../src/`, then add its folder name to the list above.

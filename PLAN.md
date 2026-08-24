@@ -44,12 +44,10 @@ That single gate is chosen because it is the only test that exercises the whole 
 ## 3. Critical path
 
 ```
-S0 truthful baseline ──┬──▶ S3 CSS ──────┐
-                       │                 ├──▶ S5 @stylos/ui ──▶ S6 proof ──▶ v0.1
-                       └──▶ S4 contracts ┘
+S0 truthful baseline ──▶ S4 contracts ──▶ S5 @stylos/ui ──▶ S6 proof ──▶ v0.1
 ```
 
-**Two stages are gone** — the foundations are confirmed and the registry is readable. Stage numbers are kept as they were so that references elsewhere still resolve.
+**Three stages are gone.** The foundations are confirmed and the registry is readable, so S1 and S2 are behind. S3 — tokens to CSS — was a week of output with no reader: custom properties can only be proved by something rendering with them, and that something is the package. It is now the first step of S5. Stage numbers are kept as they were so that references elsewhere still resolve.
 
 The long pole is now **S4**: twenty-three component contracts, each needing judgement that cannot be batched.
 
@@ -65,23 +63,6 @@ The long pole is now **S4**: twenty-three component contracts, each needing judg
 
 **Gate:** nothing in the repository is known to be false.
 **Estimate:** under a week.
-
----
-
-### Stage 3 — Tokens to CSS
-
-**Why:** the last link between Figma and any code.
-
-The import and canonical layers are built ([SPEC 0001](docs/specs/0001-token-pipeline.md)). What remains is generation:
-
-- `tokens/*.yaml` → CSS custom properties, preserving the primitive/semantic indirection so palette overrides propagate.
-- One deterministic, documented rule for token name → custom property name.
-- Mode scoping per [`color.md`](docs/foundations/color.md): palette emitted flat and unscoped; the semantic layer emitted once per mode with every role declared in both; one global switch.
-- The slot layer emitted as its own indirection, so a client rebrand is five bindings rather than 110 overrides.
-- Fail on a token that disappeared between runs without acknowledgement — the release-validation step.
-
-**Gate:** the build produces CSS covering every semantic role, and a deliberately renamed token fails the check.
-**Estimate:** 1 week.
 
 ---
 
@@ -101,7 +82,7 @@ The import and canonical layers are built ([SPEC 0001](docs/specs/0001-token-pip
 - Decide the accessibility target and browser baseline. `STANDARD.md` requires an accessibility section per component, so it cannot wait for Stage 5.
 - Decide the depth of component-specific tokens.
 - Create `docs/components/_template.md` so each document is mechanical rather than re-derived.
-- **Review the skill set before running any of it**: what each skill is for, what to repair, what to drop. `text-sizing` currently binds `Text Size / [measure]`, a collection Figma no longer has — it would fail on every component. A skill that runs on a stale contract writes the stale contract into the library.
+- **Review the skill set before running any of it**: what each remaining skill is for, what to repair, whether it is detailed enough to be followed. `text-sizing` is already gone; `component-integrity-check` and `naming-cleanup` both carry text that predates `docs/foundations/`. A skill that runs on a stale contract writes the stale contract into the library.
 - Run `stylos-component-integrity-check` over the set and **fix findings in Figma before documenting** — otherwise the defect gets written down as the contract.
 - Move every `tone=error` to `tone=danger` as each set is worked through, and drop `neutral` and `info` where they appear. Which sets carry them is only visible in Figma; recording it per component is part of this stage, not a survey to run ahead of it.
 - Write the documents, starting from each registry entry.
@@ -113,7 +94,16 @@ The import and canonical layers are built ([SPEC 0001](docs/specs/0001-token-pip
 
 ### Stage 5 — `@stylos/ui`
 
-**Planned approach**, not yet committed — revisit when the work actually starts:
+**First, generate the CSS** — what used to be Stage 3, moved here because its output has no reader until something renders with it:
+
+- `tokens/*.yaml` → CSS custom properties, preserving the primitive/semantic indirection so palette overrides propagate.
+- One deterministic, documented rule for token name → custom property name.
+- Mode scoping per [`color.md`](docs/foundations/color.md): palette emitted flat and unscoped; the semantic layer emitted once per mode with every role declared in both; one global switch.
+- The slot layer emitted as its own indirection, so a client rebrand is five bindings rather than 110 overrides.
+- Shadows composed per [`effects.md`](docs/foundations/effects.md) — cumulative stacks, not one layer per level.
+- Fail on a token that disappeared between runs without acknowledgement.
+
+**Then the package itself. Planned approach**, not yet committed — revisit when the work actually starts:
 
 - **One package**, `@stylos/ui`, rather than splitting tokens/icons/components. Simplest to version for a solo maintainer; splitting later is a mechanical extraction, not a redesign.
 - **Plain CSS + custom properties** for component internals, referencing the same properties consumer theming uses. No build-time styling dependency, one styling vocabulary, and a component's internals and a consumer's override become the same mechanism rather than two layers.
@@ -155,12 +145,11 @@ At 5–10 h/week:
 | Stage | Estimate | Cumulative |
 | --- | ---: | ---: |
 | S0 — truthful baseline | <1 wk | 1 wk |
-| S3 — tokens to CSS | 1 wk | 2 wk |
-| S4 — component contracts | 6–8 wk | 10 wk |
-| S5 — `@stylos/ui` | 10–12 wk | 22 wk |
+| S4 — component contracts | 6–8 wk | 9 wk |
+| S5 — `@stylos/ui`, CSS included | 11–13 wk | 22 wk |
 | S6 — proof + docs | 4 wk | **26 wk** |
 
-**≈ 6 months.** Two stages shrank on inspection rather than on optimism, and both are now behind. Foundations was budgeted at 6–8 weeks and cost days, being mostly ratification of what Figma already held. S2 was four weeks of automated registry↔Figma reconciliation whose only consumer exists nowhere; what the registry actually needed was to be readable, and that took a day. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
+**≈ 6 months.** The total has not moved: the CSS week did not disappear, it moved next to the thing that consumes it. Two stages before it shrank on inspection rather than on optimism, and both are behind. Foundations was budgeted at 6–8 weeks and cost days, being mostly ratification of what Figma already held. S2 was four weeks of automated registry↔Figma reconciliation whose only consumer exists nowhere; what the registry actually needed was to be readable, and that took a day. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
 
 **Scope levers, in the order to pull them:**
 
@@ -179,7 +168,7 @@ Do **not** pull: the integrity check before documenting, the documentation-bound
 | Skill set — purpose, repairs, what to drop | 4 |
 | `tone` values that have no colour behind them | 4 |
 | Component parameters — where the contract records them | 4 |
-| Token name → CSS custom property mapping | 3 |
+| Token name → CSS custom property mapping | 5 |
 | Figma / Markdown documentation boundary | 4 |
 | Accessibility target and browser baseline | 4 |
 | Component-specific token depth | 4 |

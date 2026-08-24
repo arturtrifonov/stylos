@@ -53,14 +53,11 @@ Georama covers the Google Fonts Latin Plus glyph set: Latin, Western European an
 
 ## Stale variable names elsewhere
 
-Figma is the source of truth for variable names, and it currently uses `font/size/[measure]` and `font/line height/[family]/[measure]`.
+Figma holds the variable names, and they are currently `font/size/[measure]` and `font/line height/[family]/[measure]`.
 
-Two places still refer to an older scheme — `Text Size / [measure]`, `String Line Height / [measure]`, `Text Line Height / [measure]`:
+`skills/src/component-integrity-check/SKILL.md` still shows the older scheme — `Text Size / [measure]` — in its example messages. Cosmetic: the skill reads bindings rather than making them, so it resolves nothing by that name. Correct it when the skill is next touched.
 
-- `skills/src/text-sizing/SKILL.md`, which *binds* to those names;
-- `skills/src/component-integrity-check/SKILL.md`, in its examples.
-
-This is not a documentation nicety for the sizing skill: it binds to a variable path that no longer exists, so it will fail to resolve. Fix the skills against the current names when they are next touched.
+`stylos-text-sizing` *bound* to that dead path, which is one of the reasons it was removed.
 
 ## Default size→measure profiles
 
@@ -86,4 +83,4 @@ A component-specific mapping, where one is documented, always overrides its leve
 | `large` | `1_625` |
 | `extra large` | `1_875` |
 
-These are authored rules, not exported values, which is why they are written here rather than left to `npm run tokens:report`. `skills/src/text-sizing/SKILL.md` currently restates them; it should cite this document instead, so there is one copy.
+These are authored rules, not exported values, which is why they are written here rather than left to `npm run tokens:report`. This is now the only copy — `stylos-text-sizing` restated them and has been removed.

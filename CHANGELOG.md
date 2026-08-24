@@ -4,6 +4,26 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Removed — 2026-08-24 (`stylos-text-sizing`)
+
+- **The skill is gone.** It bound font size and line height to `Text Size / [measure]` — a variable path Figma no longer has, so it would have failed on every component it touched. Beyond that it restated the Element and Object size→measure profiles that [`typography.md`](docs/foundations/typography.md) authors, which that document had already flagged as a duplicate waiting to drift; it performed a one-time operation, where the recurring need is the *check* that `component-integrity-check` already covers; and it was the narrowest of the four, one property pair on one layer, carrying its own version and its own slot in the imported document for that.
+- Removed from the build target's include order and from the skills table. `typography.md` is now the only copy of the profiles. `src/shared/` no longer lists the size values as duplicated logic — only `naming-cleanup` uses them.
+- If the mechanical application across five variants is wanted later, it belongs inside a broader component-building skill rather than as a skill of its own.
+
+### Changed — 2026-08-24 (what a skill may restate)
+
+Two rules added to `skills/README.md`, both learned from `naming-cleanup` carrying two different `tone` lists, neither matching the tokens:
+
+- **A closed list may be restated in a skill; an authored rule may not.** Figma Agent reads one document and cannot reach the repository, so `state`, `validation` and the canonical size values have to be written in verbatim — they are short, stable, and changing one means changing both places. A rule that carries reasoning belongs in `docs/foundations/` and is cited, not retold.
+- **A list of examples is not a whitelist**, and a skill that illustrates values has to say so — otherwise the illustration is later enforced as the permitted set. This is what happened to `tone`, whose values are a vocabulary each component draws from rather than a set every component must satisfy.
+
+An earlier proposal to *generate* these lists into the skills at build time is withdrawn: there is nothing to generate them from. `size` and `state` are not tokens and have no machine-readable source, and the drift that prompted the idea was in an example enumeration, which generation would not have touched.
+
+### Changed — 2026-08-24 (Stage 3 folded into Stage 5)
+
+- **Tokens-to-CSS is no longer its own stage.** Custom properties can only be proved by something rendering with them, and nothing renders until the package exists — so a week of generation ahead of S5 produced output with no reader and no test. It is now the first step of S5, with the mode scoping, slot layer and cumulative shadow composition the foundations settled. Requirement 2 of the definition of done is unchanged; it is satisfied inside S5.
+- The total is unchanged at **26 weeks** — the week did not vanish, it moved next to what consumes it. The critical path is now a single line: S0 → S4 → S5 → S6.
+
 ### Added — 2026-08-24 (the registry becomes readable — SPEC 0002)
 
 - **`npm run registry:view` writes `build/registry.html`**, one self-contained file over the 96 registry entries: filter by level and role with counts visible before filtering, search, sort by any column, and a detail panel where `parents` and `children` are links that select that component. Following a relation used to mean finding and opening another file. CSS, JavaScript and data are inlined because the file is opened over `file://`, where fetching a sibling JSON is blocked — a two-file design would have failed silently in exactly the situation it is built for. No CDN, no font, no dependency, no socket. The output is gitignored: it is derived, cheap to rebuild, and committing it would put a 96-row diff into every registry change.

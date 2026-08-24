@@ -24,7 +24,6 @@ Runs [`tools/build-skills.mjs`](../tools/build-skills.mjs), which reads `targets
 | Skill | Version | Mode | Source |
 | --- | ---: | --- | --- |
 | `stylos-naming-cleanup` | 0.7 | Inspect, plan, then rename unless direct cleanup requested | [src/naming-cleanup/SKILL.md](src/naming-cleanup/SKILL.md) |
-| `stylos-text-sizing` | 0.2 | Apply directly when scope and mapping are unambiguous | [src/text-sizing/SKILL.md](src/text-sizing/SKILL.md) |
 | `stylos-component-integrity-check` | 0.2 | Read-only | [src/component-integrity-check/SKILL.md](src/component-integrity-check/SKILL.md) |
 | `stylos-reference-reconstruction` | 0.1 | Build directly unless material product ambiguity exists | [src/reference-reconstruction/SKILL.md](src/reference-reconstruction/SKILL.md) |
 
@@ -34,4 +33,6 @@ Note on versions: the `metadata` block in each `SKILL.md` is repository-only —
 
 - Bump `metadata.version` in the skill's own `SKILL.md` frontmatter on any behavior change.
 - Don't let two skills define the same rule differently — if they need to share a rule, move it to `src/shared/` and reference it.
+- **A closed list may be restated here; an authored rule may not.** Figma Agent reads one document and cannot reach the repository, so `state`, `validation` and the canonical size values have to be written into a skill verbatim. Those are short, stable, and changing one means changing both places. A *rule* that carries reasoning — a size profile, the colour model — belongs in `docs/foundations/` and is cited rather than retold: two prose copies of one rule drift, and the skill's copy is the one nobody re-reads.
+- **A list of examples is not a whitelist.** Where a skill illustrates values rather than bounding them, say so in the skill — otherwise the illustration gets enforced later as the permitted set, which is how `stylos-naming-cleanup` ended up with two different `tone` lists.
 - Run `npm run build:skills` after any change and re-import the regenerated `dist/stylos-figma-agent.md` into Figma Agent — the dist file is not auto-synced to Figma.
