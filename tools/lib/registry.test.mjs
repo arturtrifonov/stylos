@@ -56,16 +56,16 @@ test("slugs a nested name into the path both directories mirror", () => {
   assert.equal(documentPathFor("Table / TD Text"), "docs/components/table/td-text.md");
 });
 
-test("builds a Figma URL, converting the node id to the dashed form URLs use", () => {
+test("builds a Figma URL out of the two parts, unchanged", () => {
   assert.equal(
-    figmaUrl({ file_key: "WUc07ZBtjRvypXtsOlbVut", node_id: "1234:5678" }),
-    "https://www.figma.com/design/WUc07ZBtjRvypXtsOlbVut/?node-id=1234-5678"
+    figmaUrl({ file_key: "WUc07ZBtjRvypXtsOlbVut", node_id: "4479-13507" }),
+    "https://www.figma.com/design/WUc07ZBtjRvypXtsOlbVut/?node-id=4479-13507"
   );
 });
 
 test("builds no URL from half a record", () => {
   assert.equal(figmaUrl({ file_key: "WUc07ZBtjRvypXtsOlbVut" }), null);
-  assert.equal(figmaUrl({ node_id: "1234:5678" }), null);
+  assert.equal(figmaUrl({ node_id: "4479-13507" }), null);
   assert.equal(figmaUrl(null), null);
 });
 
@@ -134,7 +134,7 @@ test("derives documented from the document existing, and linked from a node id",
     assert.deepEqual(derive(root, entries[0]), { documented: false, linked: false });
     assert.deepEqual(derive(root, entries[1]), { documented: true, linked: false });
 
-    entries[0].figma = { file_key: "WUc07ZBtjRvypXtsOlbVut", node_id: "1234:5678" };
+    entries[0].figma = { file_key: "WUc07ZBtjRvypXtsOlbVut", node_id: "4479-13507" };
     assert.equal(derive(root, entries[0]).linked, true);
   } finally {
     rmSync(root, { recursive: true, force: true });

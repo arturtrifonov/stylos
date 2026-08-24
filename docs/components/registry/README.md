@@ -26,8 +26,7 @@ parents:                      # components/component sets this one is used insid
 notes: ""                     # freeform, carried over from the Airtable source
 figma:                        # optional — where this component is in Figma; absent means not linked yet
   file_key: "WUc07ZBtjRvypXtsOlbVut"
-  node_id: "1234:5678"
-  type: "component_set"       # component | component_set
+  node_id: "4479-13507"
   last_verified: "2026-08-24"
 import:
   batch: 1                    # Airtable's original build/priority sequencing — meaning not yet fully specified, carried over as-is
@@ -43,7 +42,8 @@ import:
 Every key is optional and the whole block may be absent, which is the state of most entries. Entries are filled in as each component is opened in Figma for other reasons — there is no bulk sync step, and there is not going to be one: the REST API does not reach unpublished components reliably, and the identifier is in the address bar at exactly the moment it is needed.
 
 - **`file_key` belongs to the entry, not to the repository.** Components live in two files, `Stylos / Components` and `Stylos / GUI components` ([`figma/README.md`](../../../figma/README.md)); a key belonging to any other file is a failure.
-- **`node_id` is stored in the API's colon form** (`1234:5678`). Figma's URLs use a dash; the view converts when it builds the link. The URL itself is never stored — it is derivable, and a stored URL rots in a way the parts do not.
+- **`node_id` is stored exactly as the URL gives it** — the dash form, `4479-13507`. Both parts are then a straight copy out of the address bar and the link is a concatenation; nothing converts anything, so there is no conversion to get wrong. The URL itself is never stored — it is derivable, and a stored URL rots in a way the parts do not.
+- **There is no `type` field.** Nothing in the view or the checks reads a node's kind, and Figma reports it itself when anything ever asks. A field that is derivable from the thing it describes, and that nothing consumes, is a claim waiting to go stale.
 
 ### There is no status field, deliberately
 

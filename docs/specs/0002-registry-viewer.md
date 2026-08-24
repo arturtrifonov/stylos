@@ -39,22 +39,30 @@ The consequence is that Airtable is still where the owner looks. The data moved 
 ```yaml
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
-  node_id: "1234:5678"
-  type: "component_set"        # component | component_set
+  node_id: "4479-13507"
   last_verified: "2026-08-24"
 ```
+
+Two facts, both copied straight out of the address bar.
+
+**There is no `type` field.** An earlier draft had `component` / `component_set`. It is dropped: the link works the same either way, nothing in the view or the checks reads it, and Figma reports a node's type itself when anything ever asks. A field that is derivable from the thing it describes, and that nothing consumes, is a claim waiting to go stale.
 
 Every key optional; an absent block means "not linked yet", which is the state of all 96 entries today. Entries are filled in as each component is opened in Figma for other reasons — there is no bulk sync step, and this spec does not add one.
 
 **`file_key` belongs to the entry, not to the repository.** Components live in two files, `Stylos / Components` and `Stylos / GUI components` ([`figma/README.md`](../../figma/README.md)).
 
-**Store `node_id` in the API's colon form** (`1234:5678`). Figma's URLs use a dash (`node-id=1234-5678`); the view converts when it builds the link, so the record keeps one canonical form:
+**Store `node_id` exactly as the URL gives it** — the dash form, `4479-13507`. Both parts are then a straight copy out of the address bar, with no conversion for a human to get wrong:
 
 ```
-https://www.figma.com/design/{file_key}/?node-id={node_id with ":" → "-"}
+https://www.figma.com/design/WUc07ZBtjRvypXtsOlbVut/Stylos--Components?node-id=4479-13507&t=…
+                             └────────── file_key ──────────┘              └ node_id ┘
 ```
 
-Do not store the URL. It is derivable, and a stored URL rots in a way the parts do not.
+An earlier draft required the API's colon form on the grounds that it is canonical. That was backwards: the only consumer today is the link, which needs the dash, so the rule bought nothing and charged a manual conversion on every entry. `figmaUrl()` normalises `:` → `-`, which makes it a no-op for dash input, so records written either way keep working. A future API consumer converts in the other direction — one line, written once rather than typed ninety-six times.
+
+Accept `%3A` on read as well: older Figma links percent-encode the colon.
+
+Do not store the URL itself. It is derivable, and a stored URL rots in a way the parts do not.
 
 ### 3.2 Status is derived, never authored
 
@@ -130,16 +138,20 @@ Current checks: every `children`/`parents` reference resolves to a real `id`; ev
 
 1. Two entries with the same `id`.
 2. A file whose path does not match its `id` under the mapping in §3.3.
-3. `figma.type` present and not one of `component`, `component_set`.
-4. `figma.node_id` present without `figma.file_key`, or a `file_key` that is not one of the two component files in [`figma/README.md`](../../figma/README.md).
+3. `figma.node_id` present without `figma.file_key`, or a `file_key` that is not one of the two component files in [`figma/README.md`](../../figma/README.md).
 
 **New reports — exit 0:**
 
-5. **Non-reciprocal relations.** A lists B in `children` while B does not list A in `parents`, or the reverse. Expect real findings: the data came from a CSV export of relational fields, which the registry README already records as lossy. Report both directions of every mismatch; do not repair automatically, because which side is wrong is a judgement.
-6. **A child at or above its parent's level**, in the order primitive → element → object → widget → layout. Information, not a fault: a legitimate case may exist, and this repository names exceptions rather than forbidding them ([charter](../charter.md), "Explicit exceptions over hidden inconsistency").
-7. **Orphans** — entries with neither parents nor children. Usually a gap in the import rather than a real island.
+4. **Non-reciprocal relations.** A lists B in `children` while B does not list A in `parents`, or the reverse. Composition is symmetric by definition in this schema, so a one-sided relation is always a defect on one of the two sides — which side is a judgement, so report both and repair nothing automatically.
 
 Report all findings, not the first.
+
+### Two checks this spec asked for and should not have
+
+Both were drafted here and are **withdrawn**. They ran once against the real data and each produced a large number of findings that were not defects, which is worse than producing none: a report that is mostly noise stops being read, and takes the real findings down with it.
+
+- **A child at or above its parent's level.** This assumes `level` is a containment hierarchy. It is not — it is a band of size, which is how [`sizing.md`](../foundations/sizing.md) uses it. Under that meaning a 24px Avatar inside a 40px Input Text is unremarkable, and the check reported 109 such relations, 33 of them Avatar alone.
+- **Orphans — entries with neither parents nor children.** This assumes every component is composed of something or contained in something. Nothing says that. The three entries it flagged — Date Picker, Dropdown, Popover — are overlays, which are opened by a component rather than nested inside one. The schema has one relation, composition, and it does not reach that; their emptiness is accurate, not missing.
 
 ## 6. Acceptance criteria
 

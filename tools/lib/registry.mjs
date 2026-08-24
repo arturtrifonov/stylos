@@ -28,8 +28,6 @@ export const COMPONENT_FILE_KEYS = new Map([
   ["vmR8eiLdeZQuEVXokZK57c", "Stylos / GUI components"],
 ]);
 
-export const FIGMA_TYPES = ["component", "component_set"];
-
 const KNOWN_FIELDS = new Set([
   "id",
   "name",
@@ -71,13 +69,13 @@ export function documentPathFor(id) {
 }
 
 /**
- * Figma addresses a node with a dash in a URL and a colon everywhere else. The
- * registry stores the colon form and this builds the link, so no stored URL
- * can rot out of step with the parts it was built from.
+ * Both parts are stored exactly as the address bar gives them, so the link is
+ * a concatenation and nothing here converts anything. The URL itself is never
+ * stored: it is derivable, and a stored URL rots in a way the parts do not.
  */
 export function figmaUrl(figma) {
   if (!figma?.file_key || !figma?.node_id) return null;
-  return `https://www.figma.com/design/${figma.file_key}/?node-id=${figma.node_id.replace(/:/g, "-")}`;
+  return `https://www.figma.com/design/${figma.file_key}/?node-id=${figma.node_id}`;
 }
 
 /** Rank in the composition order primitive → layout, or -1 for an unknown level. */

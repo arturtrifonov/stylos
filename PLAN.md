@@ -44,12 +44,12 @@ That single gate is chosen because it is the only test that exercises the whole 
 ## 3. Critical path
 
 ```
-S0 truthful baseline ──┬──▶ S3 CSS ───────────────────────────┐
-                       │                                      ├──▶ S5 @stylos/ui ──▶ S6 proof ──▶ v0.1
-                       └──▶ S2 registry readable ──▶ S4 contracts ─┘
+S0 truthful baseline ──┬──▶ S3 CSS ──────┐
+                       │                 ├──▶ S5 @stylos/ui ──▶ S6 proof ──▶ v0.1
+                       └──▶ S4 contracts ┘
 ```
 
-**The foundations stage is gone** — every document in `docs/foundations/` is confirmed, and what remains open in them blocks nothing. Stage numbers are kept as they were so that references elsewhere still resolve.
+**Two stages are gone** — the foundations are confirmed and the registry is readable. Stage numbers are kept as they were so that references elsewhere still resolve.
 
 The long pole is now **S4**: twenty-three component contracts, each needing judgement that cannot be batched.
 
@@ -65,27 +65,6 @@ The long pole is now **S4**: twenty-three component contracts, each needing judg
 
 **Gate:** nothing in the repository is known to be false.
 **Estimate:** under a week.
-
----
-
-### Stage 2 — Make the registry readable — **done, 2026-08-24**
-
-**Why:** the component data moved out of Airtable on 20 August, but nothing to read it with moved with it, so Airtable is still where the owner looks. A registry that cannot be read is not a registry — it gates S4, where every component document starts from its entry.
-
-Built to [SPEC 0002](docs/specs/0002-registry-viewer.md):
-
-- A generated view over the 96 entries: filterable table, and relations followable as links rather than by opening files.
-- Status **derived** from facts on disk — is there a document, is there a Figma node — never a field someone remembers to update.
-- A `figma:` block per entry, filled in as each component is opened for other reasons. No bulk sync: the API cannot reach unpublished components reliably, and the identifier is in the address bar at the moment it is needed anyway.
-- Checks the current validator lacks — duplicate ids, a file away from the path its id implies, an unaddressable Figma link; and, as reports rather than failures, one-sided relations, a child at or above its parent's level, and entries with no relations at all.
-
-**Not here:** component parameters and the contract itself. That is blocked on the documentation-boundary decision, which is the first item of Stage 4.
-
-**Gate:** met. `npm run registry:view` renders all 96 with working relation links, and `npm run validate:registry` separates contradictions from judgements.
-
-**One expectation was wrong.** The relation damage the CSV export was expected to have left is not there: all 962 child edges and 962 parent edges are reciprocal. What the extended validator does report is 109 cases of a component composed from something at or above its own level — a question about the level model, not about the import — and 3 entries with no relations at all.
-
-**Cost:** under a week.
 
 ---
 
@@ -176,13 +155,12 @@ At 5–10 h/week:
 | Stage | Estimate | Cumulative |
 | --- | ---: | ---: |
 | S0 — truthful baseline | <1 wk | 1 wk |
-| S2 — registry readable | done | 2 wk |
-| S3 — tokens to CSS | 1 wk | 3 wk |
-| S4 — component contracts | 6–8 wk | 11 wk |
-| S5 — `@stylos/ui` | 10–12 wk | 23 wk |
-| S6 — proof + docs | 4 wk | **27 wk** |
+| S3 — tokens to CSS | 1 wk | 2 wk |
+| S4 — component contracts | 6–8 wk | 10 wk |
+| S5 — `@stylos/ui` | 10–12 wk | 22 wk |
+| S6 — proof + docs | 4 wk | **26 wk** |
 
-**≈ 6 months.** Two stages shrank on inspection rather than on optimism. Foundations was budgeted at 6–8 weeks and cost days, being mostly ratification of what Figma already held. S2 was four weeks of automated registry↔Figma reconciliation whose only consumer does not exist; what the registry actually needs is to be readable, which is a week. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
+**≈ 6 months.** Two stages shrank on inspection rather than on optimism, and both are now behind. Foundations was budgeted at 6–8 weeks and cost days, being mostly ratification of what Figma already held. S2 was four weeks of automated registry↔Figma reconciliation whose only consumer exists nowhere; what the registry actually needed was to be readable, and that took a day. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
 
 **Scope levers, in the order to pull them:**
 
@@ -222,7 +200,7 @@ Its scope and timing are open, not its existence. It is not on the critical path
 | --- | --- | --- |
 | S4 stalls — twenty-three contracts of judgement work with no forcing function | two sessions on the same component | §2.2: adopt what Figma does, write it down as provisional |
 | Completionism against the 96-component registry | documenting outside the core set | the Stage 4 table is the scope |
-| Registry drift resumes after S2 | the check not run for weeks | make it part of the pre-commit habit |
+| The registry drifts from Figma unnoticed | `validate:registry` not run for weeks | make it part of the pre-commit habit |
 | Documentation drifts from the built system | a document describing something that no longer exists | keep facts in one place; documents point rather than copy |
 | The proof screen gets skipped as "obvious" | v0.1 tagged without S6 | it is the gate |
 

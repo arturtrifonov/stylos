@@ -28,8 +28,7 @@ parents:
 notes: ""
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
-  node_id: "1234:5678"
-  type: "component_set"
+  node_id: "4479-13507"
 import:
   batch: 1
   ready: false
@@ -73,7 +72,7 @@ test("resolves the Figma link at build time, so no stored URL can rot", () => {
   const badgeEntry = data.entries.find((e) => e.id === "Badge");
   assert.equal(
     badgeEntry.figma_url,
-    "https://www.figma.com/design/WUc07ZBtjRvypXtsOlbVut/?node-id=1234-5678"
+    "https://www.figma.com/design/WUc07ZBtjRvypXtsOlbVut/?node-id=4479-13507"
   );
   assert.equal(badgeEntry.linked, true);
   assert.equal(data.entries.find((e) => e.id === "Table / TD Text").figma_url, null);

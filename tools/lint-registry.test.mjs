@@ -77,8 +77,7 @@ test("accepts a complete figma block", () => {
     entry("Badge", {
       figma: {
         file_key: "WUc07ZBtjRvypXtsOlbVut",
-        node_id: "1234:5678",
-        type: "component_set",
+        node_id: "4479-13507",
         last_verified: "2026-08-24",
       },
     }),
@@ -86,19 +85,23 @@ test("accepts a complete figma block", () => {
   assert.deepEqual(result.errors, []);
 });
 
-test("fails a figma type that is neither component nor component_set", () => {
-  const result = checkRegistry([entry("Badge", { figma: { type: "frame" } })]);
-  assert.match(result.errors.join("\n"), /figma\.type "frame" is not one of component, component_set/);
+test("says nothing about a field the figma block has grown", () => {
+  const result = checkRegistry([
+    entry("Badge", {
+      figma: { file_key: "WUc07ZBtjRvypXtsOlbVut", node_id: "4479-13507", page: "Buttons" },
+    }),
+  ]);
+  assert.deepEqual(result.errors, []);
 });
 
 test("fails a node id with no file to address it in", () => {
-  const result = checkRegistry([entry("Badge", { figma: { node_id: "1234:5678" } })]);
+  const result = checkRegistry([entry("Badge", { figma: { node_id: "4479-13507" } })]);
   assert.match(result.errors.join("\n"), /figma\.node_id without figma\.file_key/);
 });
 
 test("fails a file key that is not one of the two component files", () => {
   const result = checkRegistry([
-    entry("Badge", { figma: { file_key: "2OJYDoTE9EAdQKaJAJK9Kt", node_id: "1:2" } }),
+    entry("Badge", { figma: { file_key: "2OJYDoTE9EAdQKaJAJK9Kt", node_id: "4479-13507" } }),
   ]);
   assert.match(result.errors.join("\n"), /is not a component file/);
   assert.match(result.errors.join("\n"), /Stylos \/ Components/);

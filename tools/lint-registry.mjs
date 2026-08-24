@@ -31,7 +31,6 @@ import {
   levelRank,
   LEVELS,
   COMPONENT_FILE_KEYS,
-  FIGMA_TYPES,
 } from "./lib/registry.mjs";
 
 export function checkRegistry(entries) {
@@ -77,11 +76,6 @@ export function checkRegistry(entries) {
 
     const figma = entry.figma;
     if (figma) {
-      if (figma.type !== undefined && !FIGMA_TYPES.includes(figma.type)) {
-        errors.push(
-          `${entry.file}: figma.type "${figma.type}" is not one of ${FIGMA_TYPES.join(", ")}`
-        );
-      }
       if (figma.node_id && !figma.file_key) {
         errors.push(
           `${entry.file}: figma.node_id without figma.file_key — a node id is only addressable ` +
