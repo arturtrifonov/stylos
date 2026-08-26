@@ -4,6 +4,92 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-08-24 (a loaded skill names its own version)
+
+- `skills/README.md` and `PLAN.md` Stage 0 gave two different answers to the same question. The plan said the version belongs in `description`; the README said a loaded skill is identified "by comparing the text, not by trusting a number". Comparison is not a workable answer — it means diffing seventy kilobytes by hand at the moment you want a one-word answer.
+- Settled on the description, with one condition: **the version is appended by `tools/build-skills.mjs` from each source's `metadata.version`, never typed in.** A hand-written version is a claim about a file that becomes false the moment the file changes without it — which is precisely when the question is asked. Three versions were bumped in this repository today with no build between them.
+- The two questions are also separated: the description answers *which* build is loaded in Figma; `npm run validate:skills` answers whether `dist/` matches the sources at all.
+
+### Changed — 2026-08-24 (`stylos-reference-reconstruction` v0.2)
+
+The rules in this skill were already right. What failed was that its central step produced nothing anyone could see.
+
+- **The semantic mapping is now required, printed, and concrete.** It was described as an internal structure to use "when useful" — optional, and invisible, so skipping it left no trace. The report then listed what was mapped *after* the build, which means it could be written from whatever was produced rather than from a plan that drove it. Rows now name real assets and real property values, and a row with an empty asset column is not a mapping — that role goes to the gap list instead of becoming an improvised shape.
+- **The mapping is what gets delegated.** The Figma Agent hands the actual construction to an executor that never sees the skill: it cannot learn that a component exposes `has checkbox` unless the instruction says so, and given a goal rather than a mapping it will build the shape out of primitives. Everything in the skill is invisible downstream, so a rule only the planner has read cannot constrain a build the planner does not perform. Printing the mapping is not an approval gate — it prints and proceeds.
+- **Verification counts before it judges.** Thirteen "confirm that…" items were all internal opinions. The report now opens with instances placed, instances detached, layers drawn from primitives, and the components used by name. Those can be checked without opening the file; "preserved the hierarchy" cannot.
+- **The report reports departures from the mapping, not the mapping again.** It was printed before the build, so repeating it doubles the output and hides the one thing worth reading — where the build diverged from the plan.
+- `Primary type` in the mapping example is `tone=primary`; buttons carry `tone`.
+
+### Added — 2026-08-24 (component descriptions)
+
+- **A component's Figma description is written when its document is written** ([`STANDARD.md`](docs/components/STANDARD.md), [`PLAN.md`](PLAN.md) Stage 4). Three lines: what it is for by role, what it is not for and which neighbour is, and where it normally lives if it is used inside another component — points 2 and 3 of the standard, compressed to what Figma carries.
+- Besides the name, the description is the only thing shown in the Assets panel, in Dev Mode, and to an agent searching the library. That last part is a **hypothesis, not a measured result**: whether richer descriptions improve how `reference-reconstruction` finds roles is untested, and how the orchestrator reads the library is not documented anywhere we can see. The description earns its place for a designer browsing the panel regardless, which is why it is recorded as a deliverable rather than as a fix.
+
+### Changed — 2026-08-24 (`stylos-component-integrity-check` v0.3)
+
+Only what had fallen behind. The skill's substance is sound and is left alone — it already marks its own summaries as examples rather than a closed vocabulary, carries twelve rules against inventing findings, refuses to fabricate an allowlist, and reports the sizing exceptions as information rather than faults. That is the discipline `naming-cleanup` had to be taught this week.
+
+- **Dead variable names in the report examples.** `Text Size / 1_125` → `font/size/1_125`; `Size / 1_500` → `size/s-3_000`. Neither path exists any more. The skill reads bindings rather than making them, so nothing failed — but an agent takes the shape of a report from its examples, and a plausible name in a retired scheme reads as a real finding. Nothing in the repository refers to the old scheme now.
+- **`/` no longer appears as a path separator in reports.** Component names now use a slash for Assets-panel grouping ([`naming.md`](docs/foundations/naming.md) §2), so a report that also used it for hierarchy made the two indistinguishable. Every level is separated by `›`, and a variant is written as Figma names it — `size=medium, state=hover` rather than `Button / medium`.
+- Example component names follow the current library — `Button Basic`, not `Button`.
+
+**Left as it is, deliberately.** Two findings from the review are not defects at this stage:
+
+- The report says what it found but not what it covered, so `No problems found` cannot be weighed against how much was inspected.
+- `Info` findings repeat on every run: a legitimate unbound icon-container width is re-announced forever, because a declared exception has nowhere to live that the skill can read.
+
+Both resolve the same way and neither needs the skill changed: once a component is documented, its exceptions are recorded there and the audit's list is reconciled against them once, in Stage 4. The skill is also intended to ship with the system for people checking components of their own, where there is no registry to read at all.
+
+### Changed — 2026-08-24 (`stylos-naming-cleanup` v0.9 — the vocabulary stops judging)
+
+Running v0.8 on Indicator produced one rename and a page of architectural questions. Two mistakes, both introduced in v0.8 and both mine.
+
+- **The tone vocabulary was wrong.** It listed the five semantic slots plus `inverted` and called everything else a defect. [`color.md`](docs/foundations/color.md) describes two kinds of colour role — 66 slot-bound and 44 hue-bound `*/special/*` for categorical colour — and the vocabulary was written from the first half only. Indicator is a coloured dot: exposing the whole palette on `tone` is exactly what it is for. `neutral` was also declared "another word for `base`", which is false — it is a palette hue group of its own, and `surface/special/neutral` exists. `secondary` and `tertiary` are real too: `text/secondary`, `background/tertiary`.
+- **The skill should not have been checking values at all.** Whether `secondary` belongs on a component's `tone` is a design decision made when the component was designed, not a naming defect. A naming tool that walks every value asking which are permitted turns a rename into an architecture review, which is what it did.
+
+The rule now: **mappings are applied, lists are not swept.** Seeing `Status` makes it `tone`; seeing `error` as a tone makes it `danger`. Nothing reports a value as missing, unlisted, or in need of justification. The Vocabulary section is a reference for mapping and says so in its heading.
+
+- **`naming.md` restates `tone` as a condition rather than a list**: a tone value names a colour role the system has, of which there are three kinds — semantic slots, the neutral hierarchy (`secondary`, `tertiary`, `inverted`), and any palette hue by name. Only `error` and `info` are wrong, and only the first has a rename.
+- The "Left alone" section added in v0.8 is what surfaced all of this. With the old counting report the run would have read "1 renamed" and the cause would have been invisible.
+
+### Added — 2026-08-24 (Indicator splits)
+
+- `Indicator` carries semantic status tones and the full categorical palette on one `tone` property, and one property cannot mean both. It becomes two components — `Indicator Status` for the semantic tones, a second for the hues — which is also how it was arranged before. Recorded in the component's registry entry; the work is Stage 4.
+- The name order follows [`naming.md`](docs/foundations/naming.md) §2: the component's own name leads, so `Indicator Status`, not `Status Indicator`.
+
+### Added — 2026-08-24 (how components are organised)
+
+- **A slash may only be used where the last segment is a name that stands on its own.** Figma names an instance after the last segment and drops the rest of the path, so `Button / Base` becomes a layer called `Base` — meaningless in a layer tree — while `Tabs / Tab Item` becomes `Tab Item`, which is not. Related components that cannot share a path share a **prefix** instead: `Button Base`, `Button Hollow`. That prefix is also what Figma itself uses to decide components are related.
+- **A slash group is a category, never a claim about containment.** A component used inside another stays top-level; `Tab Item` is not filed under `Tabs`. What is composed of what lives in the registry's `children` and `parents`, where it is checkable — a folder name is not.
+- **Components used inside others stay public and unprefixed.** No `_` marker: publishing them is required for composition, so a marker prevents nothing, and a prefix lands in every nested instance and clutters the tree it was meant to help. Where a component is normally used inside another, its Figma description says so — visible in the Assets panel and in Dev Mode, free in the layer tree. Pagination's page links stay available for anyone building a custom paginator.
+- **A visual treatment that shares anatomy and API is a `style` value, not a component — except where the variant matrix would make the set too large.** Button's base, hollow and ghost are conceptually `style`; they are separate components because a third dimension over `tone` × `size` × `state` triples the set and Figma's performance suffers at that size. Recorded in [`docs/components/README.md`](docs/components/README.md) as a declared exception, in the sense that section already defines: the contract says these are separate components and says the reason is a Figma limit, not a difference in the components. A Svelte implementation has no such limit and may expose one component with a `style` prop.
+
+### Added — 2026-08-24 (two audiences)
+
+- [`charter.md`](docs/charter.md) now distinguishes **the library's users from the infrastructure's user.** `docs/`, `tools/`, `tokens/` and `skills/` serve one person today, so a warning there aimed at nobody is clutter. Figma component names, their descriptions and the component documents are read by whoever designs with Stylos, and that set is meant to grow. The distinction is what decides whether a signal earns its place — the two were being conflated, which made "nobody would do that" look like an argument in both directions.
+
+### Changed — 2026-08-24 (naming-cleanup, second pass)
+
+- **A name collision is usually a name that is not specific enough.** Only a genuinely uniform list — five items, six page links — produces a real collision, and those are numbered. If one name fits two unrelated layers, they are two different things and each needs the name that says which; the skill now looks for the more precise name instead of resolving the conflict.
+- **The breakage warning is removed.** The skill said to flag renames that could break a public API or existing instances, without saying which those are — a warning with no case behind it, so it either fires on everything or on nothing. Nothing leaves the library file until the library is published, and instances inside the file follow their component. The paragraph now records that, and records that publication is when to revisit it.
+
+### Changed — 2026-08-24 (`stylos-naming-cleanup` v0.8)
+
+- **One `Vocabulary` section replaces five copies.** The property values were stated in the variant-properties section, the size section, a "Meaning of common variant properties" section, the mappings table and the quality bar. Five copies is why `tone` ended up with two different lists that agreed with neither each other nor the tokens. The other sections now refer to the one.
+- **The vocabulary marks each list as closed, vocabulary, or open** — a distinction the skill never made and that caused most of the confusion here. *Closed*: a value outside the list is a violation (`state`, `validation`, `size`, the booleans). *Vocabulary*: the words are fixed but the per-component subset is not, so offering only some is fine (`tone`). *Open*: the values belong to the component and only the naming convention applies (`type`, `style`, `orientation`, `alignment`, `position`). Without the third kind, `primary` and `secondary` sat in a global list of "good values" as though every component shared them.
+- **Mappings are per property.** A flat list of values cannot map correctly: `Error` → `error` is right on `validation` and wrong on `tone`, where it is `danger`. That flat list is how the dead colours survived.
+- **Four stale facts removed.** `density` (dropped from the system, and it appeared in three places); `size / xs` … `size / xl` presented as correct token naming, which the scale never used — it is `s-1_000`…`s-7_000`; `error`, `info` and `neutral` as tone values; `regular` and `compact`, which were density values.
+- **The canonical property order now states its principle** — a property that changes the meaning of what is below it comes first — so an unlisted property can be placed by reasoning instead of by memory. Also added to [`naming.md`](docs/foundations/naming.md) §8, which is where the rule belongs.
+
+### Changed — 2026-08-24 (how the skill applies and reports)
+
+- **It applies directly instead of asking first.** The two-stage default meant every ordinary run produced a plan and waited. A rename is reversible and Figma keeps undo, so the gate bought nothing: a forty-line plan gets approved unread, which is worse than no gate because it looks like review. Confirmation now happens only where §Ambiguity rules already required it — a name a human has to choose — and about those names specifically.
+- **The report shows the resulting state, not a list of edits.** "Is this right now" is a state; "what did you touch" is a diff, and the second was being printed for the first question. Closed properties are shown in full including unchanged values, because a missing `focus` is visible in a complete state set and invisible in a diff. Properties print in canonical order, so a wrong order shows itself.
+- **"Left alone" is now required in every report.** Counting renames hid the skips, and a skipped name is exactly what a report exists to surface.
+- **What the API cannot do is handed over as an instruction, not a sentence.** Property order cannot be changed through the Plugin API without breaking instance bindings, so it is always manual — and it was being emitted as `has active page → active page text → … → has page 6`, a horizontal chain with an ellipsis, to be carried out in a vertical panel by dragging. It is now a numbered list of the target order with every entry spelled out, and what is wrong stated once in prose underneath.
+- `→` now means one thing in a report — "was renamed to". It previously also meant "comes before", in the same document.
+- **Renames are passed down as finished pairs**, never as an intent. The Figma Agent delegates the actual mutation to a sub-agent that does not see the skill, so a constraint like "do not change auto layout" never reaches it; an instruction naming both ends of a rename has nothing else it could do.
+
 ### Removed — 2026-08-24 (`stylos-text-sizing`)
 
 - **The skill is gone.** It bound font size and line height to `Text Size / [measure]` — a variable path Figma no longer has, so it would have failed on every component it touched. Beyond that it restated the Element and Object size→measure profiles that [`typography.md`](docs/foundations/typography.md) authors, which that document had already flagged as a duplicate waiting to drift; it performed a one-time operation, where the recurring need is the *check* that `component-integrity-check` already covers; and it was the narrowest of the four, one property pair on one layer, carrying its own version and its own slot in the imported document for that.

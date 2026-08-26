@@ -4,7 +4,7 @@ Status: **Confirmed.**
 
 ## Confirmed
 
-- Canonical component size values are full words: `extra small`, `small`, `medium`, `large`, `extra large`. `XS`/`S`/`M`/`L`/`XL` are shorthand in conversation only, never canonical Figma variant values ([naming.md](naming.md) §4; `stylos-naming-cleanup` v0.7 flags the abbreviations as violations).
+- Canonical component size values are full words: `extra small`, `small`, `medium`, `large`, `extra large`. `XS`/`S`/`M`/`L`/`XL` are shorthand in conversation only, never canonical Figma variant values ([naming.md](naming.md) §4; `stylos-naming-cleanup` flags the abbreviations as violations).
 - Font size and line height must always use the **same measure**. A size bound to one measure with a line height from another is a defect.
 - Line height comes from the family matching the content: **string** for single-line content (labels, buttons, tabs, menu items, badges, compact values), **text** for wrapping content (body copy, descriptions, messages).
 - Default size→measure profiles exist for two architectural levels — **Element** and **Object**. A documented component-specific mapping overrides its level's default profile.
@@ -55,9 +55,7 @@ Georama covers the Google Fonts Latin Plus glyph set: Latin, Western European an
 
 Figma holds the variable names, and they are currently `font/size/[measure]` and `font/line height/[family]/[measure]`.
 
-`skills/src/component-integrity-check/SKILL.md` still shows the older scheme — `Text Size / [measure]` — in its example messages. Cosmetic: the skill reads bindings rather than making them, so it resolves nothing by that name. Correct it when the skill is next touched.
-
-`stylos-text-sizing` *bound* to that dead path, which is one of the reasons it was removed.
+`stylos-text-sizing` *bound* to that dead path, which is one of the reasons it was removed. `component-integrity-check` showed it in example messages and has been corrected. Nothing in the repository now refers to the old scheme.
 
 ## Default size→measure profiles
 

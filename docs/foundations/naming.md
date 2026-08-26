@@ -2,7 +2,7 @@
 
 **Normative.** The naming contract for components, layers, properties, and variants.
 
-`stylos-naming-cleanup` ([`skills/src/naming-cleanup/SKILL.md`](../../skills/src/naming-cleanup/SKILL.md)) enforces these rules in Figma. It is derived from this document and never the reverse: where the two disagree, the skill is what has to change ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §6). This document states the rules; it does not restate the skill's procedure.
+`stylos-naming-cleanup` v0.9 ([`skills/src/naming-cleanup/SKILL.md`](../../skills/src/naming-cleanup/SKILL.md)) enforces these rules in Figma. It is derived from this document and never the reverse: where the two disagree, the skill is what has to change ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §6). This document states the rules; it does not restate the skill's procedure.
 
 Components are public APIs — see [charter](../charter.md). A name is part of that API: renaming one is a breaking change, not a tidy-up.
 
@@ -22,9 +22,15 @@ Title Case with spaces.
 
 `Button` · `Icon Button` · `Text Field` · `Date Picker` · `Navigation Item`
 
-`/` is for library hierarchy only. Do not encode size, state, icon presence, or any other property as a slash hierarchy when a variant or component property can carry it.
+`/` groups components in the Assets panel. Do not encode size, state, icon presence, or any other property as a slash hierarchy when a variant or component property can carry it.
 
-The registry mirrors this hierarchy as a file path — `Table / TD Text` → `table/td-text.yaml` — and a component's `id` there must match its Figma name exactly ([registry README](../components/registry/README.md)).
+**The last segment must be a name that stands on its own.** Figma names an instance after the last segment, so the rest of the path is gone the moment the component is placed: `Button / Base` becomes a layer called `Base`, which means nothing in a layer tree. `Tabs / Tab Item` becomes `Tab Item`, which does. Where the last segment cannot stand alone, use a compound name instead — `Button Base`, `Button Hollow`.
+
+**A slash group is a category, never a claim about containment.** A component used inside another is not filed under it: `Tab Item` is a top-level component whether or not `Tabs` is the only thing that uses it. What is composed of what is recorded in the registry's `children` and `parents`, which is checkable; a folder name is not.
+
+**Components used inside other components stay public and unprefixed.** No `_` marker, no hiding. Publishing them is required for composition anyway, so a marker prevents nothing, and a name prefix lands in every nested instance and clutters the layer tree it is meant to help. Where a component is normally used inside another, say so in its Figma description — that is visible in the Assets panel and in Dev Mode, and costs nothing in the tree.
+
+The registry mirrors this naming as a file path — `Table / TD Text` → `table/td-text.yaml` — and a component's `id` there must match its Figma name exactly ([registry README](../components/registry/README.md)).
 
 ## 3. Layers
 
@@ -63,23 +69,32 @@ Do not use:
 
 An input in the error state takes the `danger` colour: `error` is what happened, `danger` is what it looks like. A destructive button is `danger` too, and nothing about it is an error — deleting a record on purpose is not a failure. Give both the name `error` and the distinction collapses: `tone="error"` ends up meaning "red", an appearance name wearing a semantic one.
 
-### The `tone` vocabulary
+### What a `tone` value may be
 
-A `tone` value names one of the colours the system has: the five slots in [`color.md`](color.md) — `base`, `primary`, `success`, `warning`, `danger` — plus `inverted`.
+**A `tone` value names a colour role the system has.** There are three kinds, and a component draws on whichever fits what it is:
 
-**Which of them a component offers is the component's own business.** A Button and a Badge do not carry the same set, and neither is expected to. The vocabulary is closed; the per-component subset is not, and no list of tone values anywhere should be read as a whitelist every component must satisfy.
+| Kind | Values | For |
+| --- | --- | --- |
+| semantic slots | `base`, `primary`, `success`, `warning`, `danger` | meaning — a primary action, a destructive one |
+| neutral hierarchy | `secondary`, `tertiary`, `inverted` | rank within neutral structure |
+| palette hues by name | `slate`, `amber`, `violet`, … | categorical colour, per the hue-bound roles in [`color.md`](color.md) |
 
-What the vocabulary does rule out is a value with no colour behind it:
+**Which of them a component offers is the component's own business**, and a component built for categorical colour legitimately exposes the whole palette. Indicator does; that is not a violation, and no list of tone values anywhere is a whitelist every component must satisfy.
+
+Only two words are wrong as a tone:
 
 | Not a `tone` | Why |
 | --- | --- |
 | `error` | a validation outcome, not a colour — the colour is `danger` |
-| `neutral` | another word for `base` |
 | `info` | the system has no such colour ([`color.md`](color.md)) |
+
+`neutral` is neither: it is a palette hue group like `slate` or `zinc`, and `surface/special/neutral` exists.
+
+**A component whose `tone` carries both kinds at once is a design question, not a naming one.** Indicator is being split for exactly that reason — `Indicator Status` for the semantic tones, a second component for the categorical hues ([`PLAN.md`](../../PLAN.md) Stage 4).
 
 ### Size values
 
-Canonical size values are **full words**: `extra small`, `small`, `medium`, `large`, `extra large`. `XS`/`S`/`M`/`L`/`XL` are conversational shorthand and never appear as Figma variant values. Enforced by `naming-cleanup` v0.7, which flags abbreviations as violations and maps them to the full words.
+Canonical size values are **full words**: `extra small`, `small`, `medium`, `large`, `extra large`. `XS`/`S`/`M`/`L`/`XL` are conversational shorthand and never appear as Figma variant values. Enforced by `naming-cleanup`, which flags abbreviations as violations and maps them to the full words.
 
 ## 5. Text properties
 
@@ -107,6 +122,8 @@ Role-based, lowercase:
 Prefer `leading`/`trailing` over `left`/`right` — localization and RTL depend on it.
 
 ## 8. Canonical variant-property order
+
+**A property that changes the meaning of what is below it comes first.** Changing `type` changes which tones make sense; changing `tone` does not change which sizes exist; changing `state` changes nothing below it. Arrangement is last because nothing depends on it. A property not listed below finds its place by asking what its change would invalidate.
 
 Where present, in this order:
 

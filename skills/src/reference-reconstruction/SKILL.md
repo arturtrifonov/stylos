@@ -4,7 +4,7 @@ description: "Rebuild a Figma interface from a screenshot, image, mockup, wirefr
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.1
+  version: 0.2
 ---
 
 # Stylos Reference Reconstruction
@@ -126,21 +126,39 @@ For each meaningful source element, determine:
 4. the required variant, state, tone, size, and exposed properties
 5. the relevant content and layout behavior
 
-Resolve mappings before fine layout work. When useful, use this internal structure:
+**Produce this mapping before building anything, and print it.** It is not a private planning aid: it is the instruction the build step works from, and the only thing a delegated executor will know about the library. An executor that receives a description of the task rather than a mapping has no way to learn that a component exposes `has checkbox`, and will build the shape out of primitives instead.
+
+Name real assets and real property values, as they exist in the library — not categories:
 
 | Source element | Inferred role | Stylos asset | Configuration | Intentional difference |
 | --- | --- | --- | --- | --- |
-| Bright call-to-action | Primary action | Button | Primary type, appropriate size | Uses Stylos primary color and dimensions |
+| Bright call-to-action | Primary action | `Button Basic` | `tone=primary`, `size=medium`, `button text` set | Stylos primary colour and dimensions |
+| Row with a tick box | Selectable tree row | `Tree Item` | `has checkbox=true`, `icon` swapped for the field-type icon | — |
+
+A row whose **Stylos asset** column is empty is not a mapping. Search the library for that role before building; if nothing matches, it belongs in the gap list, not in an improvised shape.
 
 ### 4. Build with system assets
 
+Build from the mapping. Nothing is built that has no row in it.
+
 Use instances, variables, styles, auto layout, and exposed properties. Preserve the reference's logic while allowing the system to determine its appearance.
 
-If the user asked for direct reconstruction, proceed without waiting for approval. Ask only when ambiguity would materially change the product behavior, data, or component family.
+**Delegate the mapping, never the task.** Where the work is passed to another agent or tool, pass the resolved rows — this component, these property values — and not the goal. Everything in this skill is invisible to whatever executes the change; a rule that only the planner has read cannot constrain a build it does not perform.
+
+Printing the mapping is not a request for approval. If the user asked for direct reconstruction, print it and proceed. Ask only when ambiguity would materially change the product behavior, data, or component family.
 
 ### 5. Verify against intent and system rules
 
-Compare the result with the reference at two levels:
+Count first, judge second. Before assessing anything, establish:
+
+- how many component instances were placed
+- how many of them are detached
+- how many layers were drawn from primitives rather than instantiated
+- which Stylos components were used, by name
+
+A reconstruction with instances and no primitives is verifiable at a glance; "preserved the hierarchy" is an opinion. If primitives were drawn where a component exists, that is a defect regardless of how the result looks.
+
+Then compare with the reference at two levels:
 
 - Does it preserve the same product logic, hierarchy, content, and relationships?
 - Does it use Stylos without visual imitation, detached components, or unauthorized overrides?
@@ -155,7 +173,7 @@ Examples:
 
 | Reference | Incorrect reconstruction | Correct reconstruction |
 | --- | --- | --- |
-| Orange primary button | Copy the orange fill | Use the Stylos primary Button configuration |
+| Orange primary button | Copy the orange fill | Use the Button component with `tone=primary` |
 | 10 px icon action | Scale an Icon Button to 10 px | Use the smallest supported Stylos size |
 | 18 px semibold heading | Recreate the font parameters | Use the corresponding Stylos heading style |
 | 300 px text input | Rebuild the input at the exact source height | Use Text Field and adjust only an allowed external width |
@@ -383,7 +401,13 @@ Never:
 
 ## Verification
 
-Before finishing, confirm that:
+Report these counts, then confirm the rest:
+
+- instances placed, instances detached, layers drawn from primitives
+- Stylos components used, by name
+- rows in the mapping that were not built, and why
+
+Then confirm that:
 
 - the reconstructed screen preserves the reference's task, content, hierarchy, and relationships
 - every source element was interpreted by role rather than copied by appearance
@@ -401,19 +425,25 @@ Before finishing, confirm that:
 
 ## Output format
 
-After building, return a compact report:
+After building, return a compact report. **Do not repeat the mapping** — it was printed before the build. Report what departed from it.
 
 ```md
 Reconstructed using Stylos.
 
-Mapped:
-- [major source role] -> [Stylos component or pattern]
+Built: 55 instances, 0 detached, 0 layers drawn from primitives.
+Components used: Tree Item, Button Basic, Window Header, Scrollbar.
 
-Intentional differences:
-- [difference caused by Stylos behavior or tokens]
+Departed from the mapping:
+- Group header — planned `Tree Item` with `is expandable=true`; the property is not
+  exposed on this variant, so the disclosure icon is an instance swap instead.
+
+Intentional differences from the reference:
+- [difference caused by Stylos behaviour or tokens]
 
 Needs review:
-- [material assumption or unsupported pattern]
+- [material assumption, or a role with no supported component]
 ```
 
-Omit empty sections. Do not list routine pixel differences or every component instance.
+The counts come first because they are the only part of the report that can be checked without opening the file. A report that says what it built and not what it departed from is a summary of intentions, not of results.
+
+Omit empty sections, except the counts, which are always reported. Do not list routine pixel differences or every component instance.

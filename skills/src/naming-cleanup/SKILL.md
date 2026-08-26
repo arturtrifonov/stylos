@@ -4,7 +4,7 @@ description: "Clean up naming in a selected Figma component or component set acc
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.7
+  version: 0.9
 ---
 
 # Stylos Naming Cleanup
@@ -43,13 +43,49 @@ If the selected object is not a component, component set, or clear component-rel
 
 ## Operating mode
 
-Work in two stages unless the user explicitly asks to apply changes immediately:
+**Apply directly. Do not ask for confirmation first.**
 
 1. Inspect the selected component or component set.
-2. Produce a rename plan grouped by object type.
-3. Apply renames only after confirmation, or apply immediately if the user explicitly requested direct cleanup.
+2. Apply the renames.
+3. Report the result, including what was left alone and what the API could not do.
 
-If the agent can safely rename objects directly in Figma, rename only names and property labels. Do not change geometry, variants, visibility, constraints, auto layout, styles, variables, or component structure.
+A rename is reversible and Figma keeps undo, so a confirmation step buys nothing here: a plan listing forty renames gets approved without being read, which is worse than no gate because it looks like review. Produce a plan first only when the user asks for one.
+
+Stop and ask only where §Ambiguity rules already says to — where a name could map to several roles and a human has to choose. Ask about those specific names; do not turn one ambiguity into a confirmation prompt for the whole run.
+
+Rename only names and property labels. Do not change geometry, variants, visibility, constraints, auto layout, styles, variables, or component structure.
+
+## Vocabulary — for mapping, not for judging
+
+**This section exists so a name can be mapped to the right one. It is not a list to audit a component against.**
+
+Which values a component offers is a design decision, made when the component was designed. Whether `secondary` belongs on a particular `tone` is not a naming defect and is not this skill's question. Walking a component's values and asking which are "allowed" turns a rename into an architecture review and produces a page of questions instead of a cleanup.
+
+Apply a mapping when a known-wrong word appears. Do not sweep for conformance, do not report a value as missing, and do not ask whether a value is legitimate.
+
+| Property | What it carries |
+| --- | --- |
+| `type` | the component's own kinds |
+| `tone` | a colour role the system has — see below |
+| `style` | the component's own visual treatments |
+| `size` | `extra small`, `small`, `medium`, `large`, `extra large`, in that order |
+| `state` | `default`, `hover`, `active`, `focus`, `disabled` |
+| `validation` | `off`, `error`, `warning`, `success` |
+| `is checked` | `false`, `true`, `mixed` |
+| `is filled`, `is expanded` | `false`, `true` |
+| `orientation`, `alignment`, `position`, `icon position` | the component's own |
+
+**`tone` names a colour role, and the system has three kinds of them:** the semantic slots (`base`, `primary`, `success`, `warning`, `danger`), the neutral hierarchy (`secondary`, `tertiary`, `inverted`), and any palette hue by name (`slate`, `amber`, `violet`, and the rest). A component built for categorical colour — an indicator dot, a tag — legitimately exposes the whole palette. That is normal and nothing flags it.
+
+Only two words are wrong as a tone, and both have a mapping: `error` is a validation outcome and becomes `danger`; `info` names no colour the system has, so it needs a decision rather than a rename.
+
+**`tone` names a colour; `state` and `validation` name a condition.** They map many-to-one: an input in the error state takes the `danger` colour.
+
+**Do not use `status` as a variant property.** It is too close to `state`. Whatever it was carrying belongs to `tone`, `validation`, or one of the booleans.
+
+**Size values are never abbreviated in a component.** `xs`…`xl` are conversational shorthand only. They are not how tokens are named either — the scale is `s-1_000`…`s-7_000`, a ratio to the base of 8.
+
+**Do not use `state` for colour, validation, checked state, or open/closed state.** Each of those has its own property.
 
 ## Naming rules
 
@@ -76,21 +112,25 @@ Bad:
 - `icon_button`
 - `IconButton`
 
-Use `/` only for library hierarchy.
+Use `/` only to group components in the Assets panel, and only when **the last segment is a name that stands on its own**. Figma names an instance after the last segment and discards the rest of the path.
 
 Good:
 
-- `Button / Primary`
-- `Input / Text Field`
-- `Navigation / Sidebar`
-- `Overlay / Modal`
-- `Data Display / Table`
+- `Tabs / Tab Item` — an instance reads `Tab Item`
+- `Table / TD Text` — an instance reads `TD Text`
 
 Bad:
 
-- `Button / Primary / Medium / Hover / With Icon`
+- `Button / Base` — an instance reads `Base`, which means nothing in a layer tree. Use `Button Base`.
+- `Button / Primary / Medium / Hover / With Icon` — properties, not a path.
 
-If a difference can be represented as a variant or component property, prefer property naming over long slash hierarchy.
+Related components that cannot share a path share a **prefix** instead: `Button Base`, `Button Hollow`, `Button Ghost`.
+
+A slash group is a category, never a claim about containment. A component used inside another is still top-level: `Tab Item` is not filed under `Tabs`.
+
+Never prefix a component with `_` or otherwise mark it as internal. Components used inside others are published and public; where one is normally used inside another, that belongs in its Figma description, not in its name.
+
+If a difference can be represented as a variant or component property, prefer property naming over a slash hierarchy.
 
 ### Layers
 
@@ -177,7 +217,6 @@ Good:
 - `style`
 - `size`
 - `state`
-- `density`
 - `validation`
 - `is checked`
 - `is filled`
@@ -199,89 +238,28 @@ Bad:
 - `Button Type`
 - `Component State`
 
-Variant values use lowercase.
-
-Good:
-
-- `primary`
-- `secondary`
-- `success`
-- `extra small`
-- `small`
-- `medium`
-- `large`
-- `extra large`
-- `default`
-- `hover`
-- `active`
-- `disabled`
-- `regular`
-- `compact`
+Variant values use lowercase, with spaces between words.
 
 Bad:
 
 - `Primary`
-- `Secondary`
 - `Static`
 - `Hover`
-- `Disabled`
-- `xs`
-- `s`
-- `m`
-- `l`
-- `xl`
+- `xs`, `s`, `m`, `l`, `xl`
+
+Which values a property may take is in [Vocabulary](#vocabulary). Do not judge a value without knowing its property: `error` is correct on `validation` and wrong on `tone`.
 
 Use `default` instead of `static` when the property represents the base state in a state set.
 
 ### Size values
 
-Use full readable size names for component variant values.
-
-Good for component variants:
-
-- `extra small`
-- `small`
-- `medium`
-- `large`
-- `extra large`
-
-Bad for component variants:
-
-- `xs`
-- `s`
-- `m`
-- `l`
-- `xl`
-
-Short size aliases are allowed only for tokens, variables, and code export.
-
-Good for tokens and variables:
-
-- `size / xs`
-- `size / s`
-- `size / m`
-- `size / l`
-- `size / xl`
-
-Use this exact order for component size values:
+Full words, per [Vocabulary](#vocabulary). Their order is fixed and is not alphabetical:
 
 1. `extra small`
 2. `small`
 3. `medium`
 4. `large`
 5. `extra large`
-
-Do not alphabetize size values.
-
-Use `state` only for interaction states: `default`, `hover`, `active`, `focus`, `disabled`.
-
-Do not use `status` as a variant property. It is too close to `state`. Use more specific names:
-
-- `tone` for semantic visual meaning: `base`, `info`, `success`, `warning`, `error`, `inverted`
-- `validation` for form validation outcome: `off`, `error`, `warning`, `success`
-- `is checked` for checkbox/radio selection: `false`, `true`, `mixed`
-- `is expanded` for disclosure state: `false`, `true`
-- `is filled` for filled input state: `false`, `true`
 
 ### Text component properties
 
@@ -416,26 +394,20 @@ Figma already separates variant properties from component properties in the UI. 
 
 ### Canonical variant property order
 
-Use this order for variant properties:
+**The principle: a property that changes the meaning of what is below it comes first.** Changing `type` changes which tones make sense; changing `tone` does not change which sizes exist; changing `state` changes nothing below it. Arrangement comes last because nothing depends on it. A property not listed below finds its place by asking what it would invalidate.
 
-1. `type`
-2. `tone`
-3. `style`
-4. `size`
-5. `density`
-6. `state`
-7. `validation`
-8. `is checked`
-9. `is filled`
-10. `is expanded`
-11. `orientation`
-12. `alignment`
-13. `position`
-14. `icon position`
-15. `arrows`
-16. `angle`
-17. `first link type`
-18. component-specific variant properties
+| Band | Properties |
+| --- | --- |
+| what it is | `type` |
+| what it means | `tone` |
+| how it is rendered | `style` |
+| how big | `size` |
+| what is happening to it | `state`, `validation` |
+| its internal condition | `is checked`, `is filled`, `is expanded` |
+| how it is arranged | `orientation`, `alignment`, `position`, `icon position` |
+| its own | `arrows`, `angle`, `first link type`, anything component-specific |
+
+Read top to bottom, left to right, for the full order.
 
 Only include properties that exist in the component.
 
@@ -458,83 +430,6 @@ Bad:
 - `state`
 - `size`
 - `type`
-
-### Meaning of common variant properties
-
-Use `state` only for interaction state.
-
-Good `state` values:
-
-- `default`
-- `hover`
-- `active`
-- `focus`
-- `disabled`
-
-Do not use `state` for semantic color, validation, checked state, or open/closed state.
-
-Use `tone` for semantic visual meaning.
-
-Good `tone` values:
-
-- `base`
-- `neutral`
-- `primary`
-- `info`
-- `success`
-- `warning`
-- `error`
-- `danger`
-- `inverted`
-
-Use `validation` for form validation outcome.
-
-Good `validation` values:
-
-- `off`
-- `error`
-- `warning`
-- `success`
-
-Use `is checked` for checkbox and radio selection state.
-
-Do not use the bare property name `checked` in the public Figma component API. It is too easy to confuse with a value.
-
-Good `is checked` values for binary controls:
-
-- `false`
-- `true`
-
-Good `is checked` values for tri-state checkboxes:
-
-- `false`
-- `true`
-- `mixed`
-
-Use `mixed` for the indeterminate visual state. Avoid `indeterminate` in the property value unless the component explicitly needs product-facing wording.
-
-Use `is expanded` for accordion, disclosure, or expandable header state.
-
-Good `is expanded` values:
-
-- `false`
-- `true`
-
-Use `is filled` for input filled/empty visual state.
-
-Good `is filled` values:
-
-- `false`
-- `true`
-
-Do not use:
-
-- `Status`
-- `Check State`
-- `checked`
-- `isOpen`
-- `isFilled`
-- `Static`
 
 ### Controlled property group rule
 
@@ -867,79 +762,89 @@ Flag these as warnings:
 
 Warnings should not block cleanup, but include them in the report.
 
-### Step 4: Create rename plan
+### Step 4: Apply the renames
 
-Return a grouped rename plan before applying changes unless the user explicitly requested immediate cleanup.
+Apply directly. A plan is produced first only when the user asked for one; the format is then the same as the report below, with `will be` in place of `was`.
 
-Format:
+Pass each rename down as a **finished pair** — this layer, this new name. Never delegate the intent ("tidy the names"), because the rules in this skill are not visible further down: an instruction that names both ends has nothing else it could do, and one that names a goal does.
+
+Apply only name changes. Do not change layer hierarchy, auto layout, constraints, variants, visibility, styles, variable bindings, colour, typography, spacing, effects, or prototype connections.
+
+Renames do not break anything outside the library file: nothing reaches another file until the library is published. Inside the file, instances of a renamed component update with it. Do not warn about breakage — there is none to warn about at this stage. This changes when the library is published, and this paragraph is what to revisit then.
+
+### Step 5: Report the result
+
+Report the component **as it now stands**, not as a list of edits. The question being answered is "is this right now", which is a state; a diff answers "what did you touch", which is a different and less useful question.
+
+Show closed properties in full, including values that were already correct — a missing `focus` in a state set is visible in a complete list and invisible in a diff. Mark what changed with `was`, and list the properties in canonical order so a wrong order is visible without a line saying so.
 
 ```md
-## Rename plan
+## Button — after cleanup
 
-### Component
-- `Old name` → `New name`
+**Variant properties**
+type · tone · size · state
 
-### Variant properties
-- `Type` → `type`
-- `Size` → `size`
-- `State` → `state`
-- `Check State` → `is checked`
+**size**
+  extra small          was `XS`
+  small                was `S`
+  medium               was `M`
+  large                was `L`
+  extra large          was `XL`
 
-### Variant values
-- `Primary` → `primary`
-- `Secondary` → `secondary`
-- `XS` → `extra small`
-- `S` → `small`
-- `M` → `medium`
-- `L` → `large`
-- `XL` → `extra large`
-- `Static` → `default`
+**state**
+  default              was `Static`
+  hover
+  active
+  focus
+  disabled
 
-### Component properties
-- `Text` → `label text`
-- `Show Left Icon` → `has leading icon`
-- `Left Icon` → `leading icon`
-- `Show Right Icon` → `has trailing icon`
-- `Right Icon` → `trailing icon`
+**Component properties**
+  label text           was `Text`
+  has leading icon     was `Show Left Icon`
+  leading icon         was `Left Icon`
 
-### Layers
-- `Text` → `Label text`
-- `Frame 1` → `Content`
-- `Rectangle 1` → `Background`
+**Layers** — 14 renamed, 6 already correct
+  Label text           was `Text`
+  Content              was `Frame 1`
+  Background           was `Rectangle 1`
+
+**Left alone**
+  `Container` — a technical wrapper; not a role name, but not wrong either
+  `Text 2` — could be `helper text` or `description text`; needs a decision
 ```
 
-### Step 5: Apply safe renames
+**"Left alone" is not optional.** Counting what was renamed hides what was not, and a skipped name is exactly the failure a report exists to surface.
 
-Apply only name changes.
+`→` in a report means "was renamed to" and nothing else. It never means "comes before".
 
-Do not change:
+### Step 6: Hand back what the API cannot do
 
-- layer hierarchy
-- auto layout
-- constraints
-- component variants
-- visibility
-- styles
-- variables bindings
-- color values
-- typography values
-- spacing values
-- effects
-- prototype connections
+The Plugin API cannot reorder properties without breaking instance bindings, so property order is always a manual fix. Anything else the API refuses goes in the same section.
 
-If applying a rename could break a public API or existing instances, mention the risk before applying.
+This is an instruction for a person working in the Figma properties panel, which is a vertical list. Write it as a vertical list:
 
-### Step 6: Verify after renaming
+```md
+## Needs your hand — the Plugin API cannot reorder properties
 
-After applying changes, inspect the result and report:
+**Pagination — component properties.** Drag into this order:
 
-- number of renamed components
-- number of renamed layers
-- number of renamed component properties
-- number of renamed variant properties
-- number of renamed variant values
-- unresolved warnings
-- any items that require human decision
+1. has active page
+2. active page text
+3. has overflow
+4. has page 2
+5. has page 3
+6. has page 4
+7. has page 5
+8. has page 6
+
+Two things are out of place: `active page text` is last, though it belongs
+directly under the boolean that controls it; and the pages run backwards.
+```
+
+- **Enumerate every entry.** No `…`, no ranges — an ellipsis cannot be dragged.
+- **Number the lines**, so a place in the list can be kept while working.
+- **State what is wrong once, in prose, after the list.** Not as a second chain of arrows.
+- **Say why it is manual** in the heading, so it does not read as the skill having failed.
 
 ## Common mappings
 
@@ -1016,7 +921,6 @@ Use these mappings unless context clearly suggests otherwise.
 - `isFilled` → `is filled`
 - `isOpen` → `is expanded`
 - `Validation` → `validation`
-- `Density` → `density`
 - `Mode` → `mode` only if it is not a Figma variable mode
 - `Alignment` → `alignment`
 - `Align` → `alignment`
@@ -1026,44 +930,48 @@ Use these mappings unless context clearly suggests otherwise.
 - `Arrows` → `arrows`
 - `First Link Type` → `first link type`
 
-### Variant values
+### Variant values, by property
 
-- `Primary` → `primary`
-- `Secondary` → `secondary`
-- `Tertiary` → `tertiary`
-- `Info` → `info`
-- `Success` → `success`
-- `Warning` → `warning`
-- `Danger` → `danger`
-- `Error` → `error`
-- `Base` → `base`
-- `Neutral` → `neutral`
-- `Inverted` → `inverted`
-- `Off` → `off`
-- `True` → `true`
-- `False` → `false`
+A value cannot be mapped without knowing its property. `Error` is a correct `validation` value and is not a tone at all, so the same word maps differently depending on where it sits.
+
+**`tone`** — after `Status` → `tone`:
+
+- `Error` → `danger`
+- `Info`, `Neutral` → not tone values; ask which of the vocabulary applies
+- `Base`, `Primary`, `Success`, `Warning`, `Danger`, `Inverted` → lowercase
+
+**`state`**
+
+- `Static` → `default`
+- `Default`, `Hover`, `Active`, `Focus`, `Disabled` → lowercase
+
+**`validation`**
+
+- `Off`, `Error`, `Warning`, `Success` → lowercase. `error` stays `error` here.
+
+**`is checked`**
+
 - `Checked` → `true`
 - `Unchecked` → `false`
 - `Indeterminate` → `mixed`
-- `Left` → `leading`
-- `Right` → `trailing`
-- `XS` → `extra small`
-- `S` → `small`
-- `M` → `medium`
-- `L` → `large`
-- `XL` → `extra large`
-- `xs` → `extra small`
-- `s` → `small`
-- `m` → `medium`
-- `l` → `large`
-- `xl` → `extra large`
-- `Static` → `default`
-- `Default` → `default`
-- `Hover` → `hover`
-- `Active` → `active`
-- `Disabled` → `disabled`
-- `Regular` → `regular`
-- `Compact` → `compact`
+
+**`is filled`, `is expanded`**
+
+- `True` → `true`, `False` → `false`
+
+**`size`**
+
+- `XS` / `xs` → `extra small`
+- `S` / `s` → `small`
+- `M` / `m` → `medium`
+- `L` / `l` → `large`
+- `XL` / `xl` → `extra large`
+
+**`icon position`, `alignment`, `position`**
+
+- `Left` → `leading`, `Right` → `trailing`
+
+**Open properties** — `type`, `style`, and the rest: lowercase with spaces, nothing else. Their values belong to the component and are not mapped to a system list.
 
 ## Ambiguity rules
 
@@ -1079,27 +987,11 @@ Ask the user before renaming when:
 
 Do not invent overly specific names without visual or structural evidence.
 
-## Output format
+### When two layers want the same name
 
-When reporting back to the user, use a compact summary.
+Only a genuinely uniform list produces a real collision — five list items, six page links. Number those: `Item 1`, `Item 2`.
 
-Example:
-
-```md
-Done.
-
-Renamed:
-- 1 component
-- 8 component properties
-- 14 layers
-- 6 variant values
-
-Still needs review:
-- `Content` may be too generic
-- `Container` kept because it appears to be a technical wrapper
-```
-
-If not applying changes yet, return only the rename plan and ask for confirmation.
+Otherwise a collision means the name is not specific enough. If `Label text` fits two layers, they are two different labels and each needs the name that says which: `Label text` and `Helper text`, not `Label text` and `Label text 2`. Look for the more precise name rather than resolving the conflict.
 
 ## Quality bar
 
@@ -1113,15 +1005,16 @@ The final component should meet these conditions:
 - boolean properties use `has` or `is`
 - no public boolean property uses `show`
 - instance swap icon properties use `leading` / `trailing`
-- variant property names use lowercase
-- variant values use lowercase
-- component size values use full readable names: `extra small`, `small`, `medium`, `large`, `extra large`
-- component size values follow the canonical order: `extra small`, `small`, `medium`, `large`, `extra large`
+- variant property names and values use lowercase
+- `size` values are full words in their fixed order
 - `default` is used instead of `static` for the base state
-- recurring properties follow canonical property order
+- recurring properties follow canonical property order, or the report says they could not be reordered
 - controlled properties are placed immediately after their `has` boolean
-- `state` is used only for interaction states
-- `checked` is not used as a public component property name; use `is checked`
-- `tone` is used instead of `status` for semantic visual meaning
-- `validation`, `is checked`, `is filled`, and `is expanded` are used instead of overloaded state/status names
 - variable names use slash-separated lowercase hierarchy when variables are in scope
+
+And of the report itself:
+
+- it shows the component's resulting state, not a list of edits
+- closed properties are shown in full, including values that did not change
+- everything left alone is listed, with the reason
+- anything the API could not do is handed over as a numbered list, not a chain of arrows

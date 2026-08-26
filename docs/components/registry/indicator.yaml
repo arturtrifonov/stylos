@@ -57,7 +57,7 @@ parents:
   - "Modal"
   - "Side Panel"
   - "Side Panel Menu"
-notes: ""
+notes: "Splits in two. Its `tone` currently carries both the semantic slots and the whole palette: the first is a status meaning, the second is categorical colour, and one property cannot be both. Planned as `Indicator Status` for the semantic tones and a second component for the hues. Stage 4 work."
 import:
   batch: 1
   ready: true

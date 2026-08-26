@@ -36,6 +36,14 @@ The name and character of Stylos are associated with the column, antiquity, arch
 
 These govern composition, rhythm, density, and the relationships between elements. They are the system's character, not the arithmetic of its scales — those are settled in [`foundations/`](foundations/README.md) on their own terms.
 
+## Two audiences, and they are not the same size
+
+**The library will have users. The infrastructure has one.**
+
+`docs/`, `tools/`, `tokens/` and `skills/` exist to keep the system honest for the person maintaining it — today that is one person, and a warning aimed at nobody is clutter. Figma component names, their descriptions, and the component documents are the other side: they are read by whoever designs with Stylos, and that set is meant to grow.
+
+The distinction decides whether a signal earns its place. A note in the repository warning against a mistake only the owner could make is worth deleting; the same note on a component's Figma description is worth keeping, because the person it warns has not arrived yet.
+
 ## The customization boundary
 
 Stylos supports themes and product-specific content while keeping its own **component anatomy, scale, typography logic, interaction patterns, and proportional character**.

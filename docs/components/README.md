@@ -28,6 +28,16 @@ In practice a component is tried in Figma before it is written down: that is whe
 
 The repository still never writes to Figma ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §1). Checking is not editing.
 
+### One component or a variant
+
+A visual treatment that shares anatomy and API with another is a `style` value, not a separate component — that is what the property is for.
+
+**Except where the variant matrix would make the set too large.** Button's treatments — base, hollow, ghost — are conceptually `style` values, and they are separate components because adding a third dimension to `tone` × `size` × `state` multiplies the set threefold, and Figma's performance suffers on sets that size. Decomposition is preferred over a set that is slow to open.
+
+This is a declared exception in the sense §"Exceptions are declared, not permitted" means: the contract records that these are separate components, and records that the reason is a Figma limit rather than a difference in the components themselves. A Svelte implementation has no such limit and may expose them as one component with a `style` prop — which is exactly the kind of divergence the contract exists to carry.
+
+Related-but-separate components share a name prefix — `Button Base`, `Button Hollow`. That prefix is how Figma itself decides components are related, and it survives into instance names, which a slash path does not ([`naming.md`](../foundations/naming.md) §2).
+
 ### Where a thing is written down
 
 Figma stays the place for StateDiagrams, PropTables, anatomy diagrams and variant matrices — spatial documentation that text reproduces badly. That is a question of medium, not of authority: the contract those diagrams illustrate is still authored here. Don't duplicate a PropTable that already renders correctly in Figma — link to it.

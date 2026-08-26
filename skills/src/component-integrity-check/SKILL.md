@@ -4,7 +4,7 @@ description: "Audit selected Figma components, component sets, instances, or sev
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.2
+  version: 0.3
 ---
 
 # Stylos Component Integrity Check
@@ -359,12 +359,14 @@ Sort findings in this order:
 Use one item per root cause:
 
 ```md
-- Error: A bound variable no longer exists — `Button / medium` › `Content` › `Label text` › font size; unresolved variable `Text Size / 1_125`.
-- Error: An instance uses an unsupported component configuration and requires Reset to default — `Button / medium / disabled` › `Leading icon`; stored variant value `outline` is no longer supported.
-- Warning: A numeric value is not bound to a variable — `Button / large` › `Content` › gap: `12`.
-- Warning: A color is not bound to a variable or style — `Button / hover` › `Background` › fill: `#6D5EF7`.
-- Info: An icon container uses an unbound width for optical spacing compensation — `Button / medium` › `Leading icon` › `Icon container` › width: `18`.
+- Error: A bound variable no longer exists — `Button Basic` › `size=medium` › `Content` › `Label text` › font size; unresolved variable `font/size/1_125`.
+- Error: An instance uses an unsupported component configuration and requires Reset to default — `Button Basic` › `size=medium, state=disabled` › `Leading icon`; stored variant value `outline` is no longer supported.
+- Warning: A numeric value is not bound to a variable — `Button Basic` › `size=large` › `Content` › gap: `12`.
+- Warning: A color is not bound to a variable or style — `Button Basic` › `state=hover` › `Background` › fill: `#6D5EF7`.
+- Info: An icon container uses an unbound width for optical spacing compensation — `Button Basic` › `size=medium` › `Leading icon` › `Icon container` › width: `18`.
 ```
+
+Separate every level of the path with `›`. Do not use `/` as a separator: in a component name a slash means an Assets-panel group, and a report that also uses it for hierarchy makes the two indistinguishable. Write a variant as Figma names it — `size=medium, state=hover`.
 
 For each item, include:
 
@@ -389,7 +391,7 @@ If there are no errors or warnings but there are information findings, return th
 ```md
 No problems found.
 
-- Info: A non-square aspect-ratio-locked layer derives its height from its variable-bound width — `Logo` › width: `24` via `Size / 1_500`; derived height: `16`.
+- Info: A non-square aspect-ratio-locked layer derives its height from its variable-bound width — `Logo` › width: `24` via `size/s-3_000`; derived height: `16`.
 ```
 
 Information findings are not conditions for passing the audit. If the audit is incomplete, never return `No problems found.`; return the incomplete-inspection warning instead.

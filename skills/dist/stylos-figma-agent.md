@@ -9,10 +9,9 @@
 
 Compiled skill document for manual import into Figma Agent. Contains:
 
-- `stylos-component-integrity-check` v0.2
-- `stylos-naming-cleanup` v0.7
-- `stylos-text-sizing` v0.2
-- `stylos-reference-reconstruction` v0.1
+- `stylos-component-integrity-check` v0.3
+- `stylos-naming-cleanup` v0.9
+- `stylos-reference-reconstruction` v0.2
 
 ---
 
@@ -22,7 +21,7 @@ description: "Audit selected Figma components, component sets, instances, or sev
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.2
+  version: 0.3
 ---
 
 # Stylos Component Integrity Check
@@ -377,12 +376,14 @@ Sort findings in this order:
 Use one item per root cause:
 
 ```md
-- Error: A bound variable no longer exists — `Button / medium` › `Content` › `Label text` › font size; unresolved variable `Text Size / 1_125`.
-- Error: An instance uses an unsupported component configuration and requires Reset to default — `Button / medium / disabled` › `Leading icon`; stored variant value `outline` is no longer supported.
-- Warning: A numeric value is not bound to a variable — `Button / large` › `Content` › gap: `12`.
-- Warning: A color is not bound to a variable or style — `Button / hover` › `Background` › fill: `#6D5EF7`.
-- Info: An icon container uses an unbound width for optical spacing compensation — `Button / medium` › `Leading icon` › `Icon container` › width: `18`.
+- Error: A bound variable no longer exists — `Button Basic` › `size=medium` › `Content` › `Label text` › font size; unresolved variable `font/size/1_125`.
+- Error: An instance uses an unsupported component configuration and requires Reset to default — `Button Basic` › `size=medium, state=disabled` › `Leading icon`; stored variant value `outline` is no longer supported.
+- Warning: A numeric value is not bound to a variable — `Button Basic` › `size=large` › `Content` › gap: `12`.
+- Warning: A color is not bound to a variable or style — `Button Basic` › `state=hover` › `Background` › fill: `#6D5EF7`.
+- Info: An icon container uses an unbound width for optical spacing compensation — `Button Basic` › `size=medium` › `Leading icon` › `Icon container` › width: `18`.
 ```
+
+Separate every level of the path with `›`. Do not use `/` as a separator: in a component name a slash means an Assets-panel group, and a report that also uses it for hierarchy makes the two indistinguishable. Write a variant as Figma names it — `size=medium, state=hover`.
 
 For each item, include:
 
@@ -407,7 +408,7 @@ If there are no errors or warnings but there are information findings, return th
 ```md
 No problems found.
 
-- Info: A non-square aspect-ratio-locked layer derives its height from its variable-bound width — `Logo` › width: `24` via `Size / 1_500`; derived height: `16`.
+- Info: A non-square aspect-ratio-locked layer derives its height from its variable-bound width — `Logo` › width: `24` via `size/s-3_000`; derived height: `16`.
 ```
 
 Information findings are not conditions for passing the audit. If the audit is incomplete, never return `No problems found.`; return the incomplete-inspection warning instead.
@@ -438,7 +439,7 @@ description: "Clean up naming in a selected Figma component or component set acc
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.7
+  version: 0.9
 ---
 
 # Stylos Naming Cleanup
@@ -477,13 +478,49 @@ If the selected object is not a component, component set, or clear component-rel
 
 ## Operating mode
 
-Work in two stages unless the user explicitly asks to apply changes immediately:
+**Apply directly. Do not ask for confirmation first.**
 
 1. Inspect the selected component or component set.
-2. Produce a rename plan grouped by object type.
-3. Apply renames only after confirmation, or apply immediately if the user explicitly requested direct cleanup.
+2. Apply the renames.
+3. Report the result, including what was left alone and what the API could not do.
 
-If the agent can safely rename objects directly in Figma, rename only names and property labels. Do not change geometry, variants, visibility, constraints, auto layout, styles, variables, or component structure.
+A rename is reversible and Figma keeps undo, so a confirmation step buys nothing here: a plan listing forty renames gets approved without being read, which is worse than no gate because it looks like review. Produce a plan first only when the user asks for one.
+
+Stop and ask only where §Ambiguity rules already says to — where a name could map to several roles and a human has to choose. Ask about those specific names; do not turn one ambiguity into a confirmation prompt for the whole run.
+
+Rename only names and property labels. Do not change geometry, variants, visibility, constraints, auto layout, styles, variables, or component structure.
+
+## Vocabulary — for mapping, not for judging
+
+**This section exists so a name can be mapped to the right one. It is not a list to audit a component against.**
+
+Which values a component offers is a design decision, made when the component was designed. Whether `secondary` belongs on a particular `tone` is not a naming defect and is not this skill's question. Walking a component's values and asking which are "allowed" turns a rename into an architecture review and produces a page of questions instead of a cleanup.
+
+Apply a mapping when a known-wrong word appears. Do not sweep for conformance, do not report a value as missing, and do not ask whether a value is legitimate.
+
+| Property | What it carries |
+| --- | --- |
+| `type` | the component's own kinds |
+| `tone` | a colour role the system has — see below |
+| `style` | the component's own visual treatments |
+| `size` | `extra small`, `small`, `medium`, `large`, `extra large`, in that order |
+| `state` | `default`, `hover`, `active`, `focus`, `disabled` |
+| `validation` | `off`, `error`, `warning`, `success` |
+| `is checked` | `false`, `true`, `mixed` |
+| `is filled`, `is expanded` | `false`, `true` |
+| `orientation`, `alignment`, `position`, `icon position` | the component's own |
+
+**`tone` names a colour role, and the system has three kinds of them:** the semantic slots (`base`, `primary`, `success`, `warning`, `danger`), the neutral hierarchy (`secondary`, `tertiary`, `inverted`), and any palette hue by name (`slate`, `amber`, `violet`, and the rest). A component built for categorical colour — an indicator dot, a tag — legitimately exposes the whole palette. That is normal and nothing flags it.
+
+Only two words are wrong as a tone, and both have a mapping: `error` is a validation outcome and becomes `danger`; `info` names no colour the system has, so it needs a decision rather than a rename.
+
+**`tone` names a colour; `state` and `validation` name a condition.** They map many-to-one: an input in the error state takes the `danger` colour.
+
+**Do not use `status` as a variant property.** It is too close to `state`. Whatever it was carrying belongs to `tone`, `validation`, or one of the booleans.
+
+**Size values are never abbreviated in a component.** `xs`…`xl` are conversational shorthand only. They are not how tokens are named either — the scale is `s-1_000`…`s-7_000`, a ratio to the base of 8.
+
+**Do not use `state` for colour, validation, checked state, or open/closed state.** Each of those has its own property.
 
 ## Naming rules
 
@@ -510,21 +547,25 @@ Bad:
 - `icon_button`
 - `IconButton`
 
-Use `/` only for library hierarchy.
+Use `/` only to group components in the Assets panel, and only when **the last segment is a name that stands on its own**. Figma names an instance after the last segment and discards the rest of the path.
 
 Good:
 
-- `Button / Primary`
-- `Input / Text Field`
-- `Navigation / Sidebar`
-- `Overlay / Modal`
-- `Data Display / Table`
+- `Tabs / Tab Item` — an instance reads `Tab Item`
+- `Table / TD Text` — an instance reads `TD Text`
 
 Bad:
 
-- `Button / Primary / Medium / Hover / With Icon`
+- `Button / Base` — an instance reads `Base`, which means nothing in a layer tree. Use `Button Base`.
+- `Button / Primary / Medium / Hover / With Icon` — properties, not a path.
 
-If a difference can be represented as a variant or component property, prefer property naming over long slash hierarchy.
+Related components that cannot share a path share a **prefix** instead: `Button Base`, `Button Hollow`, `Button Ghost`.
+
+A slash group is a category, never a claim about containment. A component used inside another is still top-level: `Tab Item` is not filed under `Tabs`.
+
+Never prefix a component with `_` or otherwise mark it as internal. Components used inside others are published and public; where one is normally used inside another, that belongs in its Figma description, not in its name.
+
+If a difference can be represented as a variant or component property, prefer property naming over a slash hierarchy.
 
 ### Layers
 
@@ -611,7 +652,6 @@ Good:
 - `style`
 - `size`
 - `state`
-- `density`
 - `validation`
 - `is checked`
 - `is filled`
@@ -633,89 +673,28 @@ Bad:
 - `Button Type`
 - `Component State`
 
-Variant values use lowercase.
-
-Good:
-
-- `primary`
-- `secondary`
-- `success`
-- `extra small`
-- `small`
-- `medium`
-- `large`
-- `extra large`
-- `default`
-- `hover`
-- `active`
-- `disabled`
-- `regular`
-- `compact`
+Variant values use lowercase, with spaces between words.
 
 Bad:
 
 - `Primary`
-- `Secondary`
 - `Static`
 - `Hover`
-- `Disabled`
-- `xs`
-- `s`
-- `m`
-- `l`
-- `xl`
+- `xs`, `s`, `m`, `l`, `xl`
+
+Which values a property may take is in [Vocabulary](#vocabulary). Do not judge a value without knowing its property: `error` is correct on `validation` and wrong on `tone`.
 
 Use `default` instead of `static` when the property represents the base state in a state set.
 
 ### Size values
 
-Use full readable size names for component variant values.
-
-Good for component variants:
-
-- `extra small`
-- `small`
-- `medium`
-- `large`
-- `extra large`
-
-Bad for component variants:
-
-- `xs`
-- `s`
-- `m`
-- `l`
-- `xl`
-
-Short size aliases are allowed only for tokens, variables, and code export.
-
-Good for tokens and variables:
-
-- `size / xs`
-- `size / s`
-- `size / m`
-- `size / l`
-- `size / xl`
-
-Use this exact order for component size values:
+Full words, per [Vocabulary](#vocabulary). Their order is fixed and is not alphabetical:
 
 1. `extra small`
 2. `small`
 3. `medium`
 4. `large`
 5. `extra large`
-
-Do not alphabetize size values.
-
-Use `state` only for interaction states: `default`, `hover`, `active`, `focus`, `disabled`.
-
-Do not use `status` as a variant property. It is too close to `state`. Use more specific names:
-
-- `tone` for semantic visual meaning: `base`, `info`, `success`, `warning`, `error`, `inverted`
-- `validation` for form validation outcome: `off`, `error`, `warning`, `success`
-- `is checked` for checkbox/radio selection: `false`, `true`, `mixed`
-- `is expanded` for disclosure state: `false`, `true`
-- `is filled` for filled input state: `false`, `true`
 
 ### Text component properties
 
@@ -850,26 +829,20 @@ Figma already separates variant properties from component properties in the UI. 
 
 ### Canonical variant property order
 
-Use this order for variant properties:
+**The principle: a property that changes the meaning of what is below it comes first.** Changing `type` changes which tones make sense; changing `tone` does not change which sizes exist; changing `state` changes nothing below it. Arrangement comes last because nothing depends on it. A property not listed below finds its place by asking what it would invalidate.
 
-1. `type`
-2. `tone`
-3. `style`
-4. `size`
-5. `density`
-6. `state`
-7. `validation`
-8. `is checked`
-9. `is filled`
-10. `is expanded`
-11. `orientation`
-12. `alignment`
-13. `position`
-14. `icon position`
-15. `arrows`
-16. `angle`
-17. `first link type`
-18. component-specific variant properties
+| Band | Properties |
+| --- | --- |
+| what it is | `type` |
+| what it means | `tone` |
+| how it is rendered | `style` |
+| how big | `size` |
+| what is happening to it | `state`, `validation` |
+| its internal condition | `is checked`, `is filled`, `is expanded` |
+| how it is arranged | `orientation`, `alignment`, `position`, `icon position` |
+| its own | `arrows`, `angle`, `first link type`, anything component-specific |
+
+Read top to bottom, left to right, for the full order.
 
 Only include properties that exist in the component.
 
@@ -892,83 +865,6 @@ Bad:
 - `state`
 - `size`
 - `type`
-
-### Meaning of common variant properties
-
-Use `state` only for interaction state.
-
-Good `state` values:
-
-- `default`
-- `hover`
-- `active`
-- `focus`
-- `disabled`
-
-Do not use `state` for semantic color, validation, checked state, or open/closed state.
-
-Use `tone` for semantic visual meaning.
-
-Good `tone` values:
-
-- `base`
-- `neutral`
-- `primary`
-- `info`
-- `success`
-- `warning`
-- `error`
-- `danger`
-- `inverted`
-
-Use `validation` for form validation outcome.
-
-Good `validation` values:
-
-- `off`
-- `error`
-- `warning`
-- `success`
-
-Use `is checked` for checkbox and radio selection state.
-
-Do not use the bare property name `checked` in the public Figma component API. It is too easy to confuse with a value.
-
-Good `is checked` values for binary controls:
-
-- `false`
-- `true`
-
-Good `is checked` values for tri-state checkboxes:
-
-- `false`
-- `true`
-- `mixed`
-
-Use `mixed` for the indeterminate visual state. Avoid `indeterminate` in the property value unless the component explicitly needs product-facing wording.
-
-Use `is expanded` for accordion, disclosure, or expandable header state.
-
-Good `is expanded` values:
-
-- `false`
-- `true`
-
-Use `is filled` for input filled/empty visual state.
-
-Good `is filled` values:
-
-- `false`
-- `true`
-
-Do not use:
-
-- `Status`
-- `Check State`
-- `checked`
-- `isOpen`
-- `isFilled`
-- `Static`
 
 ### Controlled property group rule
 
@@ -1301,79 +1197,89 @@ Flag these as warnings:
 
 Warnings should not block cleanup, but include them in the report.
 
-### Step 4: Create rename plan
+### Step 4: Apply the renames
 
-Return a grouped rename plan before applying changes unless the user explicitly requested immediate cleanup.
+Apply directly. A plan is produced first only when the user asked for one; the format is then the same as the report below, with `will be` in place of `was`.
 
-Format:
+Pass each rename down as a **finished pair** — this layer, this new name. Never delegate the intent ("tidy the names"), because the rules in this skill are not visible further down: an instruction that names both ends has nothing else it could do, and one that names a goal does.
+
+Apply only name changes. Do not change layer hierarchy, auto layout, constraints, variants, visibility, styles, variable bindings, colour, typography, spacing, effects, or prototype connections.
+
+Renames do not break anything outside the library file: nothing reaches another file until the library is published. Inside the file, instances of a renamed component update with it. Do not warn about breakage — there is none to warn about at this stage. This changes when the library is published, and this paragraph is what to revisit then.
+
+### Step 5: Report the result
+
+Report the component **as it now stands**, not as a list of edits. The question being answered is "is this right now", which is a state; a diff answers "what did you touch", which is a different and less useful question.
+
+Show closed properties in full, including values that were already correct — a missing `focus` in a state set is visible in a complete list and invisible in a diff. Mark what changed with `was`, and list the properties in canonical order so a wrong order is visible without a line saying so.
 
 ```md
-## Rename plan
+## Button — after cleanup
 
-### Component
-- `Old name` → `New name`
+**Variant properties**
+type · tone · size · state
 
-### Variant properties
-- `Type` → `type`
-- `Size` → `size`
-- `State` → `state`
-- `Check State` → `is checked`
+**size**
+  extra small          was `XS`
+  small                was `S`
+  medium               was `M`
+  large                was `L`
+  extra large          was `XL`
 
-### Variant values
-- `Primary` → `primary`
-- `Secondary` → `secondary`
-- `XS` → `extra small`
-- `S` → `small`
-- `M` → `medium`
-- `L` → `large`
-- `XL` → `extra large`
-- `Static` → `default`
+**state**
+  default              was `Static`
+  hover
+  active
+  focus
+  disabled
 
-### Component properties
-- `Text` → `label text`
-- `Show Left Icon` → `has leading icon`
-- `Left Icon` → `leading icon`
-- `Show Right Icon` → `has trailing icon`
-- `Right Icon` → `trailing icon`
+**Component properties**
+  label text           was `Text`
+  has leading icon     was `Show Left Icon`
+  leading icon         was `Left Icon`
 
-### Layers
-- `Text` → `Label text`
-- `Frame 1` → `Content`
-- `Rectangle 1` → `Background`
+**Layers** — 14 renamed, 6 already correct
+  Label text           was `Text`
+  Content              was `Frame 1`
+  Background           was `Rectangle 1`
+
+**Left alone**
+  `Container` — a technical wrapper; not a role name, but not wrong either
+  `Text 2` — could be `helper text` or `description text`; needs a decision
 ```
 
-### Step 5: Apply safe renames
+**"Left alone" is not optional.** Counting what was renamed hides what was not, and a skipped name is exactly the failure a report exists to surface.
 
-Apply only name changes.
+`→` in a report means "was renamed to" and nothing else. It never means "comes before".
 
-Do not change:
+### Step 6: Hand back what the API cannot do
 
-- layer hierarchy
-- auto layout
-- constraints
-- component variants
-- visibility
-- styles
-- variables bindings
-- color values
-- typography values
-- spacing values
-- effects
-- prototype connections
+The Plugin API cannot reorder properties without breaking instance bindings, so property order is always a manual fix. Anything else the API refuses goes in the same section.
 
-If applying a rename could break a public API or existing instances, mention the risk before applying.
+This is an instruction for a person working in the Figma properties panel, which is a vertical list. Write it as a vertical list:
 
-### Step 6: Verify after renaming
+```md
+## Needs your hand — the Plugin API cannot reorder properties
 
-After applying changes, inspect the result and report:
+**Pagination — component properties.** Drag into this order:
 
-- number of renamed components
-- number of renamed layers
-- number of renamed component properties
-- number of renamed variant properties
-- number of renamed variant values
-- unresolved warnings
-- any items that require human decision
+1. has active page
+2. active page text
+3. has overflow
+4. has page 2
+5. has page 3
+6. has page 4
+7. has page 5
+8. has page 6
+
+Two things are out of place: `active page text` is last, though it belongs
+directly under the boolean that controls it; and the pages run backwards.
+```
+
+- **Enumerate every entry.** No `…`, no ranges — an ellipsis cannot be dragged.
+- **Number the lines**, so a place in the list can be kept while working.
+- **State what is wrong once, in prose, after the list.** Not as a second chain of arrows.
+- **Say why it is manual** in the heading, so it does not read as the skill having failed.
 
 ## Common mappings
 
@@ -1450,7 +1356,6 @@ Use these mappings unless context clearly suggests otherwise.
 - `isFilled` → `is filled`
 - `isOpen` → `is expanded`
 - `Validation` → `validation`
-- `Density` → `density`
 - `Mode` → `mode` only if it is not a Figma variable mode
 - `Alignment` → `alignment`
 - `Align` → `alignment`
@@ -1460,44 +1365,48 @@ Use these mappings unless context clearly suggests otherwise.
 - `Arrows` → `arrows`
 - `First Link Type` → `first link type`
 
-### Variant values
+### Variant values, by property
 
-- `Primary` → `primary`
-- `Secondary` → `secondary`
-- `Tertiary` → `tertiary`
-- `Info` → `info`
-- `Success` → `success`
-- `Warning` → `warning`
-- `Danger` → `danger`
-- `Error` → `error`
-- `Base` → `base`
-- `Neutral` → `neutral`
-- `Inverted` → `inverted`
-- `Off` → `off`
-- `True` → `true`
-- `False` → `false`
+A value cannot be mapped without knowing its property. `Error` is a correct `validation` value and is not a tone at all, so the same word maps differently depending on where it sits.
+
+**`tone`** — after `Status` → `tone`:
+
+- `Error` → `danger`
+- `Info`, `Neutral` → not tone values; ask which of the vocabulary applies
+- `Base`, `Primary`, `Success`, `Warning`, `Danger`, `Inverted` → lowercase
+
+**`state`**
+
+- `Static` → `default`
+- `Default`, `Hover`, `Active`, `Focus`, `Disabled` → lowercase
+
+**`validation`**
+
+- `Off`, `Error`, `Warning`, `Success` → lowercase. `error` stays `error` here.
+
+**`is checked`**
+
 - `Checked` → `true`
 - `Unchecked` → `false`
 - `Indeterminate` → `mixed`
-- `Left` → `leading`
-- `Right` → `trailing`
-- `XS` → `extra small`
-- `S` → `small`
-- `M` → `medium`
-- `L` → `large`
-- `XL` → `extra large`
-- `xs` → `extra small`
-- `s` → `small`
-- `m` → `medium`
-- `l` → `large`
-- `xl` → `extra large`
-- `Static` → `default`
-- `Default` → `default`
-- `Hover` → `hover`
-- `Active` → `active`
-- `Disabled` → `disabled`
-- `Regular` → `regular`
-- `Compact` → `compact`
+
+**`is filled`, `is expanded`**
+
+- `True` → `true`, `False` → `false`
+
+**`size`**
+
+- `XS` / `xs` → `extra small`
+- `S` / `s` → `small`
+- `M` / `m` → `medium`
+- `L` / `l` → `large`
+- `XL` / `xl` → `extra large`
+
+**`icon position`, `alignment`, `position`**
+
+- `Left` → `leading`, `Right` → `trailing`
+
+**Open properties** — `type`, `style`, and the rest: lowercase with spaces, nothing else. Their values belong to the component and are not mapped to a system list.
 
 ## Ambiguity rules
 
@@ -1513,27 +1422,11 @@ Ask the user before renaming when:
 
 Do not invent overly specific names without visual or structural evidence.
 
-## Output format
+### When two layers want the same name
 
-When reporting back to the user, use a compact summary.
+Only a genuinely uniform list produces a real collision — five list items, six page links. Number those: `Item 1`, `Item 2`.
 
-Example:
-
-```md
-Done.
-
-Renamed:
-- 1 component
-- 8 component properties
-- 14 layers
-- 6 variant values
-
-Still needs review:
-- `Content` may be too generic
-- `Container` kept because it appears to be a technical wrapper
-```
-
-If not applying changes yet, return only the rename plan and ask for confirmation.
+Otherwise a collision means the name is not specific enough. If `Label text` fits two layers, they are two different labels and each needs the name that says which: `Label text` and `Helper text`, not `Label text` and `Label text 2`. Look for the more precise name rather than resolving the conflict.
 
 ## Quality bar
 
@@ -1547,299 +1440,19 @@ The final component should meet these conditions:
 - boolean properties use `has` or `is`
 - no public boolean property uses `show`
 - instance swap icon properties use `leading` / `trailing`
-- variant property names use lowercase
-- variant values use lowercase
-- component size values use full readable names: `extra small`, `small`, `medium`, `large`, `extra large`
-- component size values follow the canonical order: `extra small`, `small`, `medium`, `large`, `extra large`
+- variant property names and values use lowercase
+- `size` values are full words in their fixed order
 - `default` is used instead of `static` for the base state
-- recurring properties follow canonical property order
+- recurring properties follow canonical property order, or the report says they could not be reordered
 - controlled properties are placed immediately after their `has` boolean
-- `state` is used only for interaction states
-- `checked` is not used as a public component property name; use `is checked`
-- `tone` is used instead of `status` for semantic visual meaning
-- `validation`, `is checked`, `is filled`, and `is expanded` are used instead of overloaded state/status names
 - variable names use slash-separated lowercase hierarchy when variables are in scope
 
----
-
----
-name: stylos-text-sizing
-description: "Apply Stylos Text Size and matching String or Text Line Height variable bindings to the primary text role in a selected Figma component or component set. Use when updating typography across size variants in Figma. Resolve an explicitly provided component mapping first; otherwise use confirmed Element or Object defaults. Do not change component naming, secondary text, or unrelated typography."
-metadata:
-  owner: Artur Trifonov
-  system: Stylos Design System
-  version: 0.2
----
-
-# Stylos Text Sizing
-
-Apply matching font-size and line-height variables to the primary text role in the selected Figma component or component set.
-
-## When to use
-
-Use this skill when the user asks to:
-
-- set text sizes and line heights in a component
-- bind typography to Stylos variables
-- update typography across `size` variants
-- apply the default Element or Object text-size profile
-- apply a custom text-size mapping to a specific component
-
-Do not use this skill for:
-
-- component, property, variant, or layer naming cleanup
-- typography scale design
-- font family, weight, style, letter spacing, alignment, or text-case changes
-- color, spacing, effects, layout, or component structure
-- updating every text layer in a component
-
-## Operating mode
-
-Work on the current Figma selection.
-
-If the user asks to change, apply, set, or update sizing, apply the bindings directly. Do not require a separate confirmation when the scope, mapping, and primary text role are unambiguous.
-
-If the selection is:
-
-- a component set: process its relevant variants
-- a single main component: process that component
-- an instance: ask whether to update the source component or only the selected instance
-- not a component, component set, or clear component-related frame: ask the user to define the scope
-
-## Scope
-
-Change only:
-
-- font-size variable binding
-- line-height variable binding
-
-Change these bindings only on the component's primary text role.
-
-Do not change:
-
-- secondary or supporting text unless it is the component's primary content
-- raw text content
-- font family, weight, style, or letter spacing
-- text case, alignment, or resizing behavior
-- layer names
-- component, variant, or property names
-- variant values
-- component structure, layout, or nested-instance structure
-- colors, spacing, effects, or other variables
-
-## Resolve the size mapping
-
-Treat level profiles as defaults, not universal rules.
-
-Use this priority:
-
-1. Use a mapping explicitly provided in the current request.
-2. Use a component-specific mapping explicitly defined in its documentation or established project context.
-3. If no component override exists, use the default profile for the component's confirmed architectural level.
-
-A component-specific mapping always takes priority over the level default.
-
-Do not treat the component's current bindings as an intentional custom mapping unless the user or component documentation identifies them as such. The current bindings may be the values that need correction.
-
-Require one exact measure for every size included in the task. Do not calculate missing measures, choose the nearest measure, or silently combine a partial custom mapping with a default profile.
-
-If the task targets all five sizes and the custom mapping is incomplete, ask for the missing values.
-
-### Confirm the component level
-
-Treat the level as confirmed only when it is:
-
-- stated by the user
-- encoded explicitly in the component's library hierarchy, page, section, metadata, or documentation
-
-Do not infer `Element` or `Object` from visual complexity alone.
-
-If the level is unknown and the user did not provide a complete component-specific mapping, ask for the level or mapping.
-
-Do not infer defaults for architectural levels other than `Element` and `Object`. Their profiles are not defined yet.
-
-## Canonical size values
-
-The real `size` variant values used in Stylos components are:
-
-- `extra small`
-- `small`
-- `medium`
-- `large`
-- `extra large`
-
-Use these full values when matching Figma variants.
-
-Do not rename the `size` property or its values as part of this skill.
-
-### Request shorthand
-
-The user may describe the same five sizes in abbreviated form:
-
-- `XS` → `extra small`
-- `S` → `small`
-- `M` → `medium`
-- `L` → `large`
-- `XL` → `extra large`
-
-Treat these abbreviations only as shorthand in the request. They are not the real Figma variant values.
-
-The user may also provide an unlabeled list of exactly five measures. Interpret it in this fixed order:
-
-1. `extra small`
-2. `small`
-3. `medium`
-4. `large`
-5. `extra large`
-
-For example:
-
-`0_750, 0_875, 1_125, 1_250, 1_500`
-
-means:
-
-- `extra small` → `0_750`
-- `small` → `0_875`
-- `medium` → `1_125`
-- `large` → `1_250`
-- `extra large` → `1_500`
-
-If an unlabeled list does not contain exactly five measures or its intended order is unclear, ask the user.
-
-## Default profiles
-
-### Element
-
-| Size | Measure |
-| --- | --- |
-| `extra small` | `0_750` |
-| `small` | `0_875` |
-| `medium` | `1_125` |
-| `large` | `1_250` |
-| `extra large` | `1_500` |
-
-### Object
-
-| Size | Measure |
-| --- | --- |
-| `extra small` | `0_875` |
-| `small` | `1_125` |
-| `medium` | `1_375` |
-| `large` | `1_625` |
-| `extra large` | `1_875` |
-
-## Bind matching variables
-
-For each processed size, bind:
-
-- font size to `Text Size / [measure]`
-- line height to either `String Line Height / [measure]` or `Text Line Height / [measure]`
-
-Font size and line height must use the same measure.
-
-Good:
-
-- `Text Size / 0_875`
-- `String Line Height / 0_875`
-
-Good:
-
-- `Text Size / 1_375`
-- `Text Line Height / 1_375`
-
-Bad:
-
-- `Text Size / 0_875`
-- `String Line Height / 1_125`
-
-If an exact variable is unavailable, stop for that size and report it. Do not use a raw value, calculate a substitute, or choose the nearest measure.
-
-## Identify the primary text role
-
-Do not update every text layer.
-
-Use this priority:
-
-1. Prefer the text layer connected to the component's primary public text property.
-2. Prefer a layer whose semantic role matches the component, such as `Label text` in `Label`, `Button text` in `Button`, or `Heading text` in `Heading`.
-3. Prefer the equivalent text layer repeated consistently across all variants.
-4. Use component anatomy and placement only as supporting evidence.
-
-Treat helper, description, caption, shortcut, counter, status, and other supporting text as secondary unless the component itself represents that role.
-
-Do not select a layer only because it is the first text layer in the hierarchy.
-
-If several text layers are equally plausible primary targets, ask the user to choose. Do not change all candidates.
-
-## Choose the line-height family
-
-Use one line-height family for the primary text role across the component set.
-
-Apply this priority:
-
-1. Preserve an existing valid binding to `String Line Height` or `Text Line Height`.
-2. Infer the family from the component or primary text role name.
-3. Infer it from intended text behavior and resizing settings.
-
-Use `String Line Height` for text intended to remain on one line.
-
-Typical signals:
-
-- component or primary role named `Label`
-- label, button, tab, menu item, badge, value, or similar control text
-- auto-width or hug-content behavior
-- no intended wrapping
-
-Use `Text Line Height` for text intended to wrap across lines.
-
-Typical signals:
-
-- component or primary role named `Text`
-- body, paragraph, description, message, or similar prose
-- fixed-width or fill-container text with auto height
-- intended wrapping
-
-Current sample content occupying one line is not enough to classify the component as a string. Prefer intended behavior.
-
-If the existing binding, naming, and resizing behavior conflict, ask the user which family to use.
-
-## Apply bindings
-
-1. Inspect the selected component or component set.
-2. Identify the `size` variant property and match its full canonical values.
-3. Resolve the component-specific mapping or confirm the architectural level.
-4. Identify one primary text role and its equivalent layer in every relevant variant.
-5. Choose `String Line Height` or `Text Line Height`.
-6. Bind font size and line height using the same resolved measure.
-7. Apply the same mapping to every non-size variant that shares the processed size.
-
-If processing a single component or variant without a `size` property, use a size only when it is unambiguous from the request, component, or variant name. Otherwise ask the user.
-
-Do not detach nested instances or override unrelated nested text.
-
-If the primary text is supplied by a nested `Label` or `Text` component and its typography cannot be changed safely through exposed properties, report the blocker.
-
-## Verify
-
-After applying changes, confirm that:
-
-- the mapping source is explicit: request override, documented component override, `Element` default, or `Object` default
-- every processed full `size` value uses its resolved `Text Size` variable
-- font size and line height use the same measure
-- the selected line-height family is consistent for the primary text role
-- no raw font-size or line-height value remains on the primary text role
-- secondary text layers were not modified
-- naming, other typography, and component properties remain unchanged
-
-Report:
-
-- mapping source
-- applied size-to-measure mapping
-- line-height family
-- processed sizes
-- skipped variants
-- missing variables
-- unresolved ambiguities
+And of the report itself:
+
+- it shows the component's resulting state, not a list of edits
+- closed properties are shown in full, including values that did not change
+- everything left alone is listed, with the reason
+- anything the API could not do is handed over as a numbered list, not a chain of arrows
 
 ---
 
@@ -1849,7 +1462,7 @@ description: "Rebuild a Figma interface from a screenshot, image, mockup, wirefr
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.1
+  version: 0.2
 ---
 
 # Stylos Reference Reconstruction
@@ -1971,21 +1584,39 @@ For each meaningful source element, determine:
 4. the required variant, state, tone, size, and exposed properties
 5. the relevant content and layout behavior
 
-Resolve mappings before fine layout work. When useful, use this internal structure:
+**Produce this mapping before building anything, and print it.** It is not a private planning aid: it is the instruction the build step works from, and the only thing a delegated executor will know about the library. An executor that receives a description of the task rather than a mapping has no way to learn that a component exposes `has checkbox`, and will build the shape out of primitives instead.
+
+Name real assets and real property values, as they exist in the library — not categories:
 
 | Source element | Inferred role | Stylos asset | Configuration | Intentional difference |
 | --- | --- | --- | --- | --- |
-| Bright call-to-action | Primary action | Button | Primary type, appropriate size | Uses Stylos primary color and dimensions |
+| Bright call-to-action | Primary action | `Button Basic` | `tone=primary`, `size=medium`, `button text` set | Stylos primary colour and dimensions |
+| Row with a tick box | Selectable tree row | `Tree Item` | `has checkbox=true`, `icon` swapped for the field-type icon | — |
+
+A row whose **Stylos asset** column is empty is not a mapping. Search the library for that role before building; if nothing matches, it belongs in the gap list, not in an improvised shape.
 
 ### 4. Build with system assets
 
+Build from the mapping. Nothing is built that has no row in it.
+
 Use instances, variables, styles, auto layout, and exposed properties. Preserve the reference's logic while allowing the system to determine its appearance.
 
-If the user asked for direct reconstruction, proceed without waiting for approval. Ask only when ambiguity would materially change the product behavior, data, or component family.
+**Delegate the mapping, never the task.** Where the work is passed to another agent or tool, pass the resolved rows — this component, these property values — and not the goal. Everything in this skill is invisible to whatever executes the change; a rule that only the planner has read cannot constrain a build it does not perform.
+
+Printing the mapping is not a request for approval. If the user asked for direct reconstruction, print it and proceed. Ask only when ambiguity would materially change the product behavior, data, or component family.
 
 ### 5. Verify against intent and system rules
 
-Compare the result with the reference at two levels:
+Count first, judge second. Before assessing anything, establish:
+
+- how many component instances were placed
+- how many of them are detached
+- how many layers were drawn from primitives rather than instantiated
+- which Stylos components were used, by name
+
+A reconstruction with instances and no primitives is verifiable at a glance; "preserved the hierarchy" is an opinion. If primitives were drawn where a component exists, that is a defect regardless of how the result looks.
+
+Then compare with the reference at two levels:
 
 - Does it preserve the same product logic, hierarchy, content, and relationships?
 - Does it use Stylos without visual imitation, detached components, or unauthorized overrides?
@@ -2000,7 +1631,7 @@ Examples:
 
 | Reference | Incorrect reconstruction | Correct reconstruction |
 | --- | --- | --- |
-| Orange primary button | Copy the orange fill | Use the Stylos primary Button configuration |
+| Orange primary button | Copy the orange fill | Use the Button component with `tone=primary` |
 | 10 px icon action | Scale an Icon Button to 10 px | Use the smallest supported Stylos size |
 | 18 px semibold heading | Recreate the font parameters | Use the corresponding Stylos heading style |
 | 300 px text input | Rebuild the input at the exact source height | Use Text Field and adjust only an allowed external width |
@@ -2228,7 +1859,13 @@ Never:
 
 ## Verification
 
-Before finishing, confirm that:
+Report these counts, then confirm the rest:
+
+- instances placed, instances detached, layers drawn from primitives
+- Stylos components used, by name
+- rows in the mapping that were not built, and why
+
+Then confirm that:
 
 - the reconstructed screen preserves the reference's task, content, hierarchy, and relationships
 - every source element was interpreted by role rather than copied by appearance
@@ -2246,19 +1883,25 @@ Before finishing, confirm that:
 
 ## Output format
 
-After building, return a compact report:
+After building, return a compact report. **Do not repeat the mapping** — it was printed before the build. Report what departed from it.
 
 ```md
 Reconstructed using Stylos.
 
-Mapped:
-- [major source role] -> [Stylos component or pattern]
+Built: 55 instances, 0 detached, 0 layers drawn from primitives.
+Components used: Tree Item, Button Basic, Window Header, Scrollbar.
 
-Intentional differences:
-- [difference caused by Stylos behavior or tokens]
+Departed from the mapping:
+- Group header — planned `Tree Item` with `is expandable=true`; the property is not
+  exposed on this variant, so the disclosure icon is an instance swap instead.
+
+Intentional differences from the reference:
+- [difference caused by Stylos behaviour or tokens]
 
 Needs review:
-- [material assumption or unsupported pattern]
+- [material assumption, or a role with no supported component]
 ```
 
-Omit empty sections. Do not list routine pixel differences or every component instance.
+The counts come first because they are the only part of the report that can be checked without opening the file. A report that says what it built and not what it departed from is a summary of intentions, not of results.
+
+Omit empty sections, except the counts, which are always reported. Do not list routine pixel differences or every component instance.

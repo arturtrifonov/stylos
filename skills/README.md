@@ -23,15 +23,19 @@ Runs [`tools/build-skills.mjs`](../tools/build-skills.mjs), which reads `targets
 
 | Skill | Version | Mode | Source |
 | --- | ---: | --- | --- |
-| `stylos-naming-cleanup` | 0.7 | Inspect, plan, then rename unless direct cleanup requested | [src/naming-cleanup/SKILL.md](src/naming-cleanup/SKILL.md) |
-| `stylos-component-integrity-check` | 0.2 | Read-only | [src/component-integrity-check/SKILL.md](src/component-integrity-check/SKILL.md) |
-| `stylos-reference-reconstruction` | 0.1 | Build directly unless material product ambiguity exists | [src/reference-reconstruction/SKILL.md](src/reference-reconstruction/SKILL.md) |
+| `stylos-naming-cleanup` | 0.9 | Renames directly; reports the resulting state | [src/naming-cleanup/SKILL.md](src/naming-cleanup/SKILL.md) |
+| `stylos-component-integrity-check` | 0.3 | Read-only | [src/component-integrity-check/SKILL.md](src/component-integrity-check/SKILL.md) |
+| `stylos-reference-reconstruction` | 0.2 | Build directly unless material product ambiguity exists | [src/reference-reconstruction/SKILL.md](src/reference-reconstruction/SKILL.md) |
 
-Note on versions: the `metadata` block in each `SKILL.md` is repository-only — Figma's export does not carry it, so a version number cannot round-trip. Whether a loaded skill matches this repository is answered by comparing the text, not by trusting a number.
+**How to tell which build is loaded in Figma.** The `metadata` block is repository-only — Figma does not carry it, so a version cannot round-trip on its own. It carries `description`, so `tools/build-skills.mjs` appends the source's `metadata.version` to each skill's description when it compiles. Figma Agent then shows the version beside the skill, and a loaded build can be identified by reading it.
+
+The version is written by the build, never typed into the description by hand. A hand-written number is a claim about a file, and it is wrong from the moment the file changes without it — which is exactly when the question gets asked.
+
+That answers *which* build is loaded. Whether `dist/` matches the sources at all is a separate question, and `npm run validate:skills` answers it.
 
 ## Rules for editing a skill
 
-- Bump `metadata.version` in the skill's own `SKILL.md` frontmatter on any behavior change.
+- Bump `metadata.version` in the skill's own `SKILL.md` frontmatter on any behaviour change. The build carries it into the compiled description; do not write a version into the description yourself.
 - Don't let two skills define the same rule differently — if they need to share a rule, move it to `src/shared/` and reference it.
 - **A closed list may be restated here; an authored rule may not.** Figma Agent reads one document and cannot reach the repository, so `state`, `validation` and the canonical size values have to be written into a skill verbatim. Those are short, stable, and changing one means changing both places. A *rule* that carries reasoning — a size profile, the colour model — belongs in `docs/foundations/` and is cited rather than retold: two prose copies of one rule drift, and the skill's copy is the one nobody re-reads.
 - **A list of examples is not a whitelist.** Where a skill illustrates values rather than bounding them, say so in the skill — otherwise the illustration gets enforced later as the permitted set, which is how `stylos-naming-cleanup` ended up with two different `tone` lists.

@@ -39,7 +39,19 @@ Figma stays the live source for StateDiagrams, PropTables, anatomy diagrams, and
 
 Do not copy a PropTable that already lives correctly in Figma. Reference it.
 
-**This split is provisional.** Which of the twenty points is authoritative in which home is settled in [`PLAN.md`](../../PLAN.md) Stage 4, before the component documents are written — writing a full set first risks rewriting all of them.
+**This split is provisional.** Which of the twenty points is authoritative in which home is open decision #14, settled by ADR 0015 ([`PLAN.md`](../../PLAN.md) Stage 4). Writing a full set of documents before that record exists risks rewriting them, which is why the plan puts the boundary decision first.
+
+## The Figma description
+
+Each component carries a short description in Figma, written when its document is written. It is the only thing besides the name that shows in the Assets panel and in Dev Mode, and the only thing besides the name that an agent searching the library can read.
+
+Three lines at most:
+
+- what the component is for, by role rather than appearance;
+- what it is not for, naming the adjacent component that is;
+- where it normally lives, if it is normally used inside another component.
+
+This is points 2 and 3 of the standard above, compressed. The document is the long form; the description is what reaches someone who never opens it.
 
 ## Ready to publish
 

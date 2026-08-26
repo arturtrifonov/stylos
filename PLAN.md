@@ -59,7 +59,7 @@ The long pole is now **S4**: twenty-three component contracts, each needing judg
 
 **Why first:** every later stage builds on what the repository asserts. Where it asserts something false, the cost compounds.
 
-- Make the installed skill build identifiable. Figma does not carry the `metadata` block, so a version number cannot round-trip; the version belongs in `description`, which Figma does carry.
+- Make the installed skill build identifiable. Figma does not carry the `metadata` block, so a version cannot round-trip on its own — but it carries `description`. `tools/build-skills.mjs` appends each source's `metadata.version` to its description at compile time, so the loaded build names itself. Injected by the build, never typed: a hand-written version is wrong from the moment the file changes without it.
 
 **Gate:** nothing in the repository is known to be false.
 **Estimate:** under a week.
@@ -86,6 +86,7 @@ The long pole is now **S4**: twenty-three component contracts, each needing judg
 - Run `stylos-component-integrity-check` over the set and **fix findings in Figma before documenting** — otherwise the defect gets written down as the contract.
 - Move every `tone=error` to `tone=danger` as each set is worked through, and drop `neutral` and `info` where they appear. Which sets carry them is only visible in Figma; recording it per component is part of this stage, not a survey to run ahead of it.
 - Write the documents, starting from each registry entry.
+- **Write each component's Figma description while documenting it** — one line of what it is for, one of what it is not for, and where it normally lives if it is used inside another component. That is points 2 and 3 of `STANDARD.md` compressed to what fits in Figma, and it is the only thing besides the name that an agent searching the library can learn about a component. Whether it measurably improves `reference-reconstruction`'s mapping is untested; the description earns its place for a designer browsing the Assets panel either way.
 
 **Gate:** every core component has a document meeting the standard, passes the integrity check, and links to its registry entry and Figma node.
 **Estimate:** 6–8 weeks.
