@@ -2,6 +2,29 @@
 
 Status: **Confirmed.**
 
+## What an axis can do
+
+Every axis of every component is one of four things. The word says **how the dimension is arrived at** — not who decides it, and not whether it ever changes.
+
+| Value | The dimension is |
+| --- | --- |
+| `hug` | whatever the contents need |
+| `fixed` | a definite number |
+| `fill` | whatever the container has left |
+| `absolute` | set by position rather than by layout — the node is out of the flow |
+
+### `fixed` and adjustable are orthogonal
+
+This is the one that gets confused, and it is worth being exact about.
+
+**`fixed` means the component always has a definite dimension rather than a rubber one.** **Adjustable means that number is the consumer's to name.** A component can be both at once: it ships a sensible value, and a layout that needs a different one sets it outright. Setting a fixed dimension to another fixed dimension does not make the axis `fill`.
+
+`fill` is a different claim. It says the dimension is surrendered to the container and has no value of its own until the container is measured — "take what is left", not "take this number".
+
+The test: **if the number can be written down without knowing what the component is inside, the axis is `fixed`.** If it cannot, it is `fill` or `hug`.
+
+A contract records the axis in `sizing_model.horizontal` and `sizing_model.vertical`, and records who names it in `sizing_model.adjustable` ([registry README](../components/registry/README.md)). The two fields answer different questions and neither implies the other.
+
 ## Per-axis decision order
 
 Dimensions are evaluated per axis, in order:
