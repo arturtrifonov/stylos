@@ -1,0 +1,192 @@
+# Contract written 2026-08-27 from the live component set. Replaces part of
+# indicator.yaml, whose id "Indicator" no longer matches any component in Figma.
+# See docs/components/registry/README.md for the schema.
+
+id: "Indicator Special"
+name: "Indicator Special"
+family: "Indicator"
+level: "primitive"
+role: "content"
+status: "draft"
+version: "0.1"
+summary: "A dot in a named palette hue, for colour that identifies rather than judges."
+purpose: "Products colour-code things that have no rank: projects, calendars, labels, teams, tags. That colour means \"this one, not that one\", and borrowing a semantic role to say it would claim something the data does not — a green project is not a healthy project. This component exists so categorical colour has somewhere to live that is separate from the status vocabulary, which is the reason the old single Indicator was split in two."
+use_when:
+  - "The colour says which of several things this is, and carries no judgement about it."
+do_not_use_when:
+  -
+    text: "The dot reports a condition — success, a warning, a failure, a rank."
+    instead: "Indicator Status"
+  -
+    text: "The category comes with a name that has to be readable. A hue alone identifies nothing to someone seeing it for the first time."
+    instead: "Tag"
+  -
+    text: "The marker carries a count."
+    instead: "Badge"
+parents:
+  - "Accordion / Container"
+  - "Accordion / Header"
+  - "Avatar"
+  - "Chips"
+  - "Link"
+  - "Tag"
+  - "Tooltip"
+  - "Asset"
+  - "Button Basic"
+  - "Button Dropdown"
+  - "Button Group"
+  - "Button Icon"
+  - "Code Editor / Text Area"
+  - "Edit Mode / View"
+  - "Edit Mode / Edit"
+  - "Input Text"
+  - "Input Date"
+  - "Input Search"
+  - "Input Number"
+  - "Input Color"
+  - "Input Datetime"
+  - "Input Email"
+  - "Input Password"
+  - "Input Time"
+  - "Input Telephone"
+  - "Input URL"
+  - "Multiselect"
+  - "Select"
+  - "Select Cascade"
+  - "Text Area"
+  - "Progress"
+  - "Table / TD Text"
+  - "Table / TD Link"
+  - "Table / TD Boolean"
+  - "Table / TD Tags"
+  - "Table / TD Person"
+  - "Table / TD Image"
+  - "Table / TH Text"
+  - "Tabs / Tab Item"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
+flow_behavior:
+  - "fixed"
+a11y:
+  -
+    status: "requires"
+    note: "Colour is the only thing that differs between values, so the indicator alone can never carry the meaning — WCAG 2.2 SC 1.4.1 Use of Color, Level A. Whatever it marks must also name the category without colour."
+  -
+    status: "warning"
+    criterion: "WCAG 2.2 SC 1.4.1"
+    note: "Twenty-two hues cannot be told apart reliably by anyone with a colour vision deficiency, and several of them are close even for those without one. Every hue clears 3:1 against the surface, so each dot is visible; that says nothing about telling one from another. Where more than a handful are in play at once, the accompanying name is not a nicety but the actual carrier of the distinction."
+sizing_model:
+  horizontal: "fixed"
+  vertical: "fixed"
+  adjustable: true
+  intent: "Each size ships a minimum footprint, and the dot is the part that does not follow it: centred, with its own fixed dimension, it keeps its size whatever the footprint is set to. That decoupling is the entire reason two runs exist — `size` is chosen for the mark, and the footprint is adjusted around it. The dot advances only every other size, so a larger nominal size reads as a slightly larger dot rather than a circle: the footprint doubles from 8 to 16 while the mark grows only from 8 to 12. Neither run is derived from the other, and moving one does not move the other. For what fixed and adjustable mean together, see sizing.md."
+  ring: "width/normal"
+  sizes:
+    -
+      size: "extra small"
+      footprint: "size/s-1_000"
+      dot: "size/s-1_000"
+    -
+      size: "small"
+      footprint: "size/s-1_250"
+      dot: "size/s-1_000"
+    -
+      size: "medium"
+      footprint: "size/s-1_500"
+      dot: "size/s-1_250"
+    -
+      size: "large"
+      footprint: "size/s-1_750"
+      dot: "size/s-1_250"
+    -
+      size: "extra large"
+      footprint: "size/s-2_000"
+      dot: "size/s-1_500"
+variants:
+  count: 110
+  complete_cross_product: true
+api:
+  -
+    name: "tone"
+    kind: "variant"
+    default: "slate"
+    description: "Which palette hue the dot takes. The list mirrors a role family rather than selecting from the tone vocabulary — tone X paints the dot with `text/special/X` — and the family here is the full categorical palette. Every hue in it measures between 4.74:1 and 5.70:1 against a white surface, a spread of under one point across twenty-two colours; that flatness is a property of the palette and is easy to lose in a future adjustment."
+    values:
+      -
+        value: "amber"
+      -
+        value: "blue"
+      -
+        value: "cyan"
+      -
+        value: "emerald"
+      -
+        value: "fuchsia"
+      -
+        value: "gray"
+      -
+        value: "green"
+      -
+        value: "indigo"
+      -
+        value: "lime"
+      -
+        value: "neutral"
+      -
+        value: "orange"
+      -
+        value: "pink"
+      -
+        value: "purple"
+      -
+        value: "red"
+      -
+        value: "rose"
+      -
+        value: "sky"
+      -
+        value: "slate"
+      -
+        value: "stone"
+      -
+        value: "teal"
+      -
+        value: "violet"
+      -
+        value: "yellow"
+      -
+        value: "zinc"
+  -
+    name: "size"
+    kind: "variant"
+    default: "medium"
+    description: "Picks the mark, and ships a minimum footprint to go with it. The footprint is a starting value a layout may set to something else; the dot keeps its size when it does. Because the dot advances only every other size, two adjacent sizes can reserve different space and paint the same mark."
+    values:
+      -
+        value: "extra small"
+        note: "The smallest the component goes, and the only size where the dot fills the footprint exactly."
+      -
+        value: "small"
+        note: "Same dot as extra small, with room around it."
+      -
+        value: "medium"
+      -
+        value: "large"
+        note: "Same dot as medium, with room around it."
+      -
+        value: "extra large"
+limitations:
+  - "The 1px ring is decorative. `border/secondary` measures 1.23:1 against a white surface, so it separates the dot from a busy background optically but carries no contrast."
+  - "No state property. The indicator is not interactive and reports rather than responds."
+  - "Nothing assigns a hue to a category. Which project is `violet` is the product's decision and the product's to keep stable; the component only paints what it is told."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "504-140010"
+  last_verified: "2026-08-27"

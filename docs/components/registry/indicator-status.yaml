@@ -1,0 +1,165 @@
+# Contract written 2026-08-27 from the live component set. Replaces part of
+# indicator.yaml, whose id "Indicator" no longer matches any component in Figma.
+# See docs/components/registry/README.md for the schema.
+
+id: "Indicator Status"
+name: "Indicator Status"
+family: "Indicator"
+level: "primitive"
+role: "content"
+status: "draft"
+version: "0.1"
+summary: "A dot reporting one of the system's semantic conditions."
+purpose: "A condition has to be visible down a long list without spending a row, a column or a sentence on it. This is the smallest thing that can carry one. It draws only from the semantic and neutral colour roles, so what it shows is a judgement the system already makes — good, wrong, dangerous, ranked — rather than a category."
+use_when:
+  - "The thing being shown is a condition the system already has a colour for: success, warning, danger, primary emphasis, or a neutral rank."
+do_not_use_when:
+  -
+    text: "The colour identifies which of several things this is rather than reporting a condition. A project colour or a calendar colour carries no judgement and must not borrow one."
+    instead: "Indicator Special"
+  -
+    text: "The status comes with a number."
+    instead: "Badge"
+  -
+    text: "The marker is meant to be read, selected or acted on. This is a dot, not a control and not a label."
+    instead: "Tag"
+parents:
+  - "Accordion / Container"
+  - "Accordion / Header"
+  - "Avatar"
+  - "Chips"
+  - "Link"
+  - "Tag"
+  - "Tooltip"
+  - "Asset"
+  - "Button Basic"
+  - "Button Dropdown"
+  - "Button Group"
+  - "Button Icon"
+  - "Code Editor / Text Area"
+  - "Edit Mode / View"
+  - "Edit Mode / Edit"
+  - "Input Text"
+  - "Input Date"
+  - "Input Search"
+  - "Input Number"
+  - "Input Color"
+  - "Input Datetime"
+  - "Input Email"
+  - "Input Password"
+  - "Input Time"
+  - "Input Telephone"
+  - "Input URL"
+  - "Multiselect"
+  - "Select"
+  - "Select Cascade"
+  - "Text Area"
+  - "Progress"
+  - "Table / TD Text"
+  - "Table / TD Link"
+  - "Table / TD Boolean"
+  - "Table / TD Tags"
+  - "Table / TD Person"
+  - "Table / TD Image"
+  - "Table / TH Text"
+  - "Tabs / Tab Item"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
+flow_behavior:
+  - "fixed"
+a11y:
+  -
+    status: "requires"
+    note: "Colour is the only thing that differs between values, so the indicator alone can never carry the meaning — WCAG 2.2 SC 1.4.1 Use of Color, Level A. Whatever it marks must also state the condition without colour: a label, a value, tooltip text, or a distinct shape. The component's own description already says to pair it; this is that instruction as a requirement."
+sizing_model:
+  horizontal: "fixed"
+  vertical: "fixed"
+  adjustable: true
+  intent: "Each size ships a minimum footprint, and the dot is the part that does not follow it: centred, with its own fixed dimension, it keeps its size whatever the footprint is set to. That decoupling is the entire reason two runs exist — `size` is chosen for the mark, and the footprint is adjusted around it. The dot advances only every other size, so a larger nominal size reads as a slightly larger dot rather than a circle: the footprint doubles from 8 to 16 while the mark grows only from 8 to 12. Neither run is derived from the other, and moving one does not move the other. For what fixed and adjustable mean together, see sizing.md."
+  ring: "width/normal"
+  sizes:
+    -
+      size: "extra small"
+      footprint: "size/s-1_000"
+      dot: "size/s-1_000"
+    -
+      size: "small"
+      footprint: "size/s-1_250"
+      dot: "size/s-1_000"
+    -
+      size: "medium"
+      footprint: "size/s-1_500"
+      dot: "size/s-1_250"
+    -
+      size: "large"
+      footprint: "size/s-1_750"
+      dot: "size/s-1_250"
+    -
+      size: "extra large"
+      footprint: "size/s-2_000"
+      dot: "size/s-1_500"
+variants:
+  count: 40
+  complete_cross_product: true
+api:
+  -
+    name: "tone"
+    kind: "variant"
+    default: "primary"
+    description: "Which text colour role the dot takes. As with Badge, the list is a mirror of a role family rather than a selection from the tone vocabulary — tone X paints the dot with `text/X` — and here the family is the semantic and neutral text roles. That is the whole difference from Indicator Special, which mirrors `text/special/*` instead."
+    values:
+      -
+        value: "base"
+      -
+        value: "danger"
+      -
+        value: "primary"
+      -
+        value: "secondary"
+      -
+        value: "success"
+      -
+        value: "tertiary"
+        note: "Measured at 4.76:1 against a white surface — the lowest of the seven that pass."
+      -
+        value: "warning"
+      -
+        value: "disabled"
+        rationale: "Present because the list mirrors the text roles one for one and `text/disabled` is one of them. It is the tone an indicator takes when whatever it marks is unavailable, so the dot fades with its context instead of continuing to report a live condition."
+        a11y:
+          status: "warning"
+          criterion: "WCAG 2.2 SC 1.4.11"
+          note: "Measured at 1.81:1 against a white surface, against a required 3:1 for a graphical object that carries meaning. Exempt only under the inactive-component exception, and only where the indicator genuinely marks something disabled. Used as a muted tone on live content it is a plain failure."
+  -
+    name: "size"
+    kind: "variant"
+    default: "medium"
+    description: "Picks the mark, and ships a minimum footprint to go with it. The footprint is a starting value a layout may set to something else; the dot keeps its size when it does. Because the dot advances only every other size, two adjacent sizes can reserve different space and paint the same mark."
+    values:
+      -
+        value: "extra small"
+        note: "The smallest the component goes, and the only size where the dot fills the footprint exactly."
+      -
+        value: "small"
+        note: "Same dot as extra small, with room around it."
+      -
+        value: "medium"
+      -
+        value: "large"
+        note: "Same dot as medium, with room around it."
+      -
+        value: "extra large"
+limitations:
+  - "The 1px ring is decorative. `border/secondary` measures 1.23:1 against a white surface, so it separates the dot from a busy background optically but carries no contrast and does not rescue a low-contrast fill."
+  - "No state property. The indicator is not interactive and reports rather than responds."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4977-20602"
+  last_verified: "2026-08-27"

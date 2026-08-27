@@ -154,6 +154,8 @@ sizing_model:
       line_height: "line height/string/0_750"
 ```
 
+**The four axis values are defined in [sizing.md](../../foundations/sizing.md), and `adjustable` is orthogonal to them.** `horizontal` and `vertical` say how the dimension is arrived at; `adjustable` says who names it. A component that is `fixed` and `adjustable` ships a value that a layout may replace with another value — that is not `fill`, which surrenders the dimension to the container.
+
 **Every dimension and every type measure is a token name. Never a number.** `box: 16` would be a transcription of a value that lives in `tokens/`, and it rots the first time the scale moves. The generated page resolves these names against `tokens/` at build time and shows the value with the name beside it — a build-time join, not a second copy.
 
 The field name says which collection to resolve against: `box` and `gap` are dimensions, `font_size` and `line_height` are font measures. Both collections have a `size/` group, so the names alone would be ambiguous.
