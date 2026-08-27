@@ -8,11 +8,14 @@ level: "primitive"
 role: "content"
 status: "draft"
 version: "0.1"
-summary: "A compact numeric counter attached to another element."
-purpose: "A count has to sit on the thing it counts — the tab, the menu item, the filter — and it must not introduce a second colour language while doing so. Badge is built as a visual extension of text rather than as a control: its surface takes the text colour roles, so it reads as part of the parent's typography instead of as an object stuck onto it, and it picks up whatever tone the surrounding text already carries."
+summary: "A compact numeric counter that takes its meaning from what it sits with."
+purpose: "A count is never about itself: \"3\" means nothing until something nearby says three of what. Badge exists so a number can be placed where that subject is already stated, without introducing a second colour language to do it. It is drawn as a visual extension of text rather than as an object of its own — its surface takes the text colour roles, so it continues the typography around it instead of sitting on top of it."
 use_when:
-  - "A small number supports the meaning of a parent element — a navigation item, tab, button, menu item, list row, filter, or notification entry point."
+  - "A number belongs to something whose meaning is already established where the badge appears — a navigation item, tab, button, menu item, list row, filter, notification entry point, or a heading it sits beside. Being nested inside that component is not required; sharing its context is."
 do_not_use_when:
+  -
+    text: "Nothing around the badge says what is being counted. The number is not required to have a parent component, but it is required to have a subject, and the surroundings are the only place it can come from."
+    instead: null
   -
     text: "The content is a word rather than a number — a label, category, or piece of descriptive metadata."
     instead: "Tag"
@@ -80,7 +83,7 @@ flow_behavior:
 a11y:
   -
     status: "requires"
-    note: "Badge has no accessible name of its own and cannot have one — \"3\" says nothing about what there are three of. The parent must name it: an accessible name on the parent that includes the count, or a visually hidden noun beside the number."
+    note: "Badge has no accessible name of its own and cannot have one — \"3\" says nothing about what there are three of. Whatever supplies its context must supply the name too: an accessible name on the surrounding control that includes the count, or a visually hidden noun beside the number. Visual proximity does not carry over to a screen reader, so a badge that reads correctly on screen can still arrive as a bare digit."
   -
     status: "requires"
     note: "A count that changes without a page change must be announced. Unless the badge sits in a live region, a screen-reader user never learns the number moved, which is the whole point of a counter."
@@ -216,7 +219,6 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "287-51411"
   last_verified: "2026-08-27"
-notes: "The previous figma.node_id on this entry was 4479-13507, which addresses `Button / Button Basic`, not Badge. Corrected 2026-08-27. children absent: Badge is composed of a surface and a text layer, with no nested components."
 import:
   batch: 1
   ready: true
