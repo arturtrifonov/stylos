@@ -148,14 +148,21 @@ sizing_model:
   sizes:
     -
       size: "extra small"
-      height: 16
-      box: 16
-      gap: 4
-      measure: "0_750"
-      line_height_family: "string"   # text | string | heading | code
+      box: "size/s-2_000"
+      gap: "gap/g-0_500"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
 ```
 
-**`intent` is not decoration.** It is where the fact that a height run is authored — rather than a by-product of hugging something else — survives into the generated page. Without it the page says "hug" and the deliberateness is gone.
+**Every dimension and every type measure is a token name. Never a number.** `box: 16` would be a transcription of a value that lives in `tokens/`, and it rots the first time the scale moves. The generated page resolves these names against `tokens/` at build time and shows the value with the name beside it — a build-time join, not a second copy.
+
+The field name says which collection to resolve against: `box` and `gap` are dimensions, `font_size` and `line_height` are font measures. Both collections have a `size/` group, so the names alone would be ambiguous.
+
+**Do not record a height.** It is either equal to `box` or derived from the box and the line box. `intent` says which.
+
+**`intent` is not decoration.** It is where the fact that a run is authored — rather than a by-product of hugging something else — survives into the generated page. Without it the page says "hug" and the deliberateness is gone.
+
+Typography has no separate block. Size, gap, font size and line height change together, and a reader comparing them across sizes needs them on one row.
 
 `flow_behavior` predates this block and remains on the 96 legacy entries as a coarse whole-component value. Where `sizing_model` is present it is authoritative, being per-axis. Folding the two is open.
 

@@ -1,6 +1,6 @@
 # SPEC 0003 — Component page
 
-**Status:** Built — 2026-08-27
+**Status:** Not started
 **Date:** 2026-08-26
 
 A work order. The component contract became data ([`STANDARD.md`](../components/STANDARD.md), [`registry/README.md`](../components/registry/README.md)); this builds the page that makes it readable, extends the validator to enforce the new schema, and sweeps the repository for what the change left stale.
@@ -50,6 +50,8 @@ Add to `tools/lint-registry.mjs`. Each fails the run with exit 1.
 | `api[].controls` on a property whose `kind` is not `boolean` |
 | a property named in `controls` that does not immediately follow its boolean in `api` order ([naming.md](../foundations/naming.md) §9) |
 | `sizing_model.sizes[]` whose `size` values do not match the `size` property's values exactly, in order |
+| a `sizing_model.sizes[]` dimension or typography field holding a number rather than a token name |
+| a token name in `sizing_model` that does not resolve against `tokens/` |
 | `sizing_model.horizontal` / `vertical` outside `hug` \| `fixed` \| `fill` \| `absolute` |
 | `line_height_family` outside `text` \| `string` \| `heading` \| `code` |
 
@@ -83,16 +85,18 @@ Same constraints as [0002](0002-registry-viewer.md): self-contained files, no ne
 
 `build/registry.html` gains a link from each row to that component's page. Where no page exists — a legacy entry — link anyway; the page renders the entry as it is.
 
-### 4.1 Page structure
+### 4.1 What the page must carry
 
-Follow the reference layout: Figma `WUc07ZBtjRvypXtsOlbVut`, node `4963-7009`. In order:
+**There is no reference design.** A rough sketch exists at Figma `WUc07ZBtjRvypXtsOlbVut`, node `4963-7009`; it is an early draft made to work out *which information belongs next to which*, and nothing about its appearance is a target. Do not reproduce it, do not treat it as an acceptance criterion, and do not take its typography, spacing or colour from it. The visual design of this page is yours to make well.
+
+What is fixed is the information and its grouping, in this order:
 
 1. **Header** — `name` as the title, `summary` beneath it, then a row of small caps badges: `level`, `status`, `version`. A `family` with siblings adds a link to each sibling.
 2. **Purpose** — `purpose`.
 3. **Use when / do not use when** — one list. `use_when` entries marked affirmative, `do_not_use_when` entries marked negative. Where `instead` is present, append the component name as a link to its page. Where it is `null`, append nothing.
 4. **Requirements** — the component-level `a11y` sequence, if present. `requires` entries read as obligations on the consumer and belong above the API, not buried under it.
 5. **Public API** — one card per `api` entry, in file order. See §4.2.
-6. **Sizing model** — `intent` as prose, then `sizes[]` as a table with a column per key present. `horizontal`, `vertical` and `adjustable` above it as a short definition list.
+6. **Sizing model** — `horizontal`, `vertical` and `adjustable` as a short definition list, `intent` as prose, then `sizes[]` as a table with a column per key present. This is also where typography lives; there is no separate typography section, because size, gap, font size and line height move together and a reader comparing them across sizes needs them on one row. See §4.3 on resolving the token names — a table of bare token names is unreadable and fails this spec.
 7. **Limitations** — `limitations` as a list.
 8. **Footer** — the Figma link built from `figma.file_key` and `figma.node_id`, `last_verified`, `uses` / `used_by` and `children` / `parents` as links, and `notes`.
 
@@ -110,7 +114,7 @@ Two columns.
 [ preview slot ]   size: extra small   [ A11Y WARNING ]
 ```
 
-- **Preview slot** — a fixed-size bordered placeholder carrying the variant assignment as text, e.g. `size=extra small, state=default, is checked=false`. Give it the dimensions a real render would take, from `sizing_model.sizes[]` where the property is `size`, and a sensible constant otherwise. This is the only thing in the page that is deliberately unfinished; make the swap a one-function change.
+- **Preview slot** — a fixed-size bordered placeholder carrying the variant assignment as text, e.g. `size=extra small, state=default, is checked=false`. Give it the dimensions a real render would take: for the `size` property, resolve `sizing_model.sizes[].box` through `tokens/` (§4.3); otherwise a sensible constant. This is the only thing in the page that is deliberately unfinished; make the swap a one-function change.
 - **Label** — `name: value` in a monospace face, as in the reference.
 - **Badge** — present only where the value carries an `a11y` block, coloured by status. `note`, `criterion` and `rationale` render beneath the row or in a disclosure — the reader must be able to reach them without leaving the page, and must not have them shouting on first read.
 - **`note` without an `a11y` block** renders beneath the row as plain text.
@@ -119,16 +123,37 @@ For `kind: "text"` and `kind: "instance"` there are no values. Render the `defau
 
 **Examples**, where present, render as a Do / Do not pair at the foot of the card: the preview slot with the `props` assignment printed in it, the verdict, and the `caption`.
 
-### 4.3 Rendering rules
+### 4.3 Token names must be resolved, not printed
+
+`sizing_model.sizes[]` carries **token names, never numbers** — `box: "size/s-2_000"`, `gap: "gap/g-0_500"`, `font_size: "size/0_750"`, `line_height: "line height/string/0_750"`. That is deliberate: the scale is the system, and a contract that recorded `16` would be a transcription that rots (`docs/foundations/`).
+
+A page that prints those strings and stops is unreadable, and is the failure this section exists to prevent. **Resolve every one against `tokens/` at build time and show both** — the value as the primary reading, the token name beside or beneath it as the address. `12 px` alone loses the scale; `size/s-2_000` alone loses the size. The reader needs to see the run 16 · 20 · 24 · 28 · 32 as a run, and see that it is `s-2_000` through `s-4_000`.
+
+This is a build-time join, not a transcription: the numbers live in `tokens/` and are read from there on every build.
+
+A name that does not resolve is a FAIL in the validator (§3.1), not a blank cell on the page.
+
+### 4.4 Other rendering rules
 
 - Escape every string from YAML. No field is trusted markup.
 - Prose fields are one line in the file by necessity; render them as paragraphs, not as `<pre>`.
 - Do not invent copy. If a field is absent, the page says nothing about it — no "not specified", no placeholder prose. An absent `intent` is a REPORT, not a sentence on the page.
-- No values from `tokens/` appear anywhere. The contract does not carry them and the page must not fetch them.
+- Never write a number into the HTML that did not come from `tokens/` or from a contract field.
 
-### 4.4 Presentation
+### 4.5 The design is part of the deliverable
 
-The page is opened by one person, from disk, to read a contract. Dense, quiet, and legible at a glance beats decorative. System font stack, generous measure limits on prose, monospace for property and value names, one accent colour, and enough whitespace that the property cards read as separate objects. It should survive being printed to PDF.
+This page is what a designer and an agent will open every time they need to know what a component is. It is read, not skimmed, and it will exist for a hundred components. A bare stack of definition lists technically carries the data and fails the job.
+
+The brief:
+
+- **One person, from disk, on a wide screen.** No responsive breakpoints beyond not breaking at a narrow window. No navigation chrome beyond a link back to the index.
+- **Dense but not cramped.** The contract is long; the reader is looking for one thing at a time. Clear section boundaries, a scannable property list, prose held to a comfortable measure rather than the full window width.
+- **Typographic hierarchy does the work, not boxes and borders.** One accent colour. Monospace for property names, values, and token names — they are identifiers and should read as identifiers.
+- **Accessibility findings must be visible without shouting.** A reader scanning the property list should see at a glance which values carry one; a reader reading straight through should not be interrupted by them. The `note`, `criterion` and `rationale` belong within reach — a disclosure, a sidenote — not behind a click to another page and not shouting in red at the top.
+- **It should survive being printed to PDF**, because it will be.
+- **Dark and light both.** Follow the system preference; do not build a toggle.
+
+Judge the result by opening it and reading the Checkbox Input contract end to end. If any part of it is easier to understand by opening the YAML, the page is not finished.
 
 ## 5. Tests
 
@@ -167,84 +192,10 @@ These need the owner's judgement:
 ## 7. Acceptance
 
 - `npm run components:view` writes `build/components/index.html` and a page per entry, with no network access.
-- The three Checkbox contracts render every field they carry, in the order of §4.1, matching the reference layout closely enough that the difference is styling rather than structure.
+- The three Checkbox contracts render every field they carry, grouped and ordered as §4.1 requires.
+- Every token name in `sizing_model` appears resolved to its value, with the name alongside it (§4.3). No bare token name and no orphan number anywhere on the page.
+- The page meets the brief in §4.5 on its own terms. It is not measured against the Figma sketch.
 - A legacy entry renders without error and without invented copy.
 - `npm run validate:registry` enforces every FAIL in §3.1 and emits every REPORT in §3.2, and passes on the three Checkbox contracts.
 - `npm test` passes, including the new tests in §5.
 - §6.1 and §6.2 are done; §6.3 is a written report and nothing more.
-
----
-
-## 8. Report — §6.3, and what §6.2 found
-
-Written 2026-08-27, on completing the work above. Nothing in this section was acted on; each item needs the owner's judgement.
-
-### 8.1 `checkbox.yaml` still exists, and thirteen entries name `"Checkbox"` as a child
-
-`docs/components/registry/checkbox.yaml` carries `id: "Checkbox"`, `level: element`, `role: input`, `flow_behavior: hug`, `import: { batch: 1, ready: true }`, and no `figma:` block. No component of that name exists on the Checkbox page in Figma. It records:
-
-- `children` — `Label`, `Icon`, `Badge`, `Loader`. The allowed-composition set, not the implemented one.
-- `parents` — the thirteen below.
-
-**The thirteen, each naming `"Checkbox"` in `children`:**
-
-| File | Entry | Level |
-| --- | --- | --- |
-| `accordion/container.yaml` | Accordion / Container | object |
-| `alert.yaml` | Alert | widget |
-| `asset.yaml` | Asset | object |
-| `bottom-sheet.yaml` | Bottom Sheet | layout |
-| `flex-layout.yaml` | Flex Layout | layout |
-| `header.yaml` | Header | layout |
-| `hero.yaml` | Hero | layout |
-| `modal.yaml` | Modal | layout |
-| `side-panel.yaml` | Side Panel | layout |
-| `side-panel-menu.yaml` | Side Panel Menu | layout |
-| `table/td-checkbox.yaml` | Table / TD Checkbox | object |
-| `table/th-checkbox.yaml` | Table / TH Checkbox | object |
-| `toast.yaml` | Toast | widget |
-
-**And four more name it as a parent** — the other side of `checkbox.yaml`'s own `children`: `badge.yaml`, `icon.yaml`, `label.yaml`, `loader.yaml`, each listing `"Checkbox"` in `parents`. Seventeen files in total refer to the id; deleting `checkbox.yaml` without settling them breaks seventeen references and fails the validator.
-
-**Why it is a judgement.** Which of the three family members each context allows is a decision about composition, not a transcription. `Table / TD Checkbox` and `Table / TH Checkbox` almost certainly want `Checkbox Input` — the cell supplies the name and the hit area, which is exactly what that component's two `requires` findings say. The layouts are less obvious: `Modal` and `Side Panel` plausibly allow all three. And the four primitives listing `Checkbox` as a parent describe the old entry's *allowed* children, of which only `Icon` appears in the new contracts' `uses`.
-
-### 8.2 `toggle.yaml` has `id: "Toggle"`; Figma has the same three-way family
-
-Confirmed against Figma (`Stylos: Components`, read 2026-08-27): the library holds **`Toggle Input`, `Toggle Label` and `Toggle Text`** as three component sets, each with an authored description, and **no `Toggle`**. The three other `Toggle` components the search returns belong to `Minimax UI Kit`, `Stylos Prototype Kit` and `Hidden UI Kit` — none of them Stylos Components.
-
-So Toggle has exactly the shape Checkbox has, and `toggle.yaml` is in exactly the position `checkbox.yaml` was in: one entry standing in for three components, with `children` (`Label`, `Icon`, `Badge`, `Loader`) and thirteen `parents` that would have to be split the same way.
-
-**This is what fails the validator today.** `Checkbox Input` and `Checkbox Label` both name `"Toggle Label"` as the `instead` for "the change takes effect on click", and no entry has that id, so `npm run validate:registry` exits 1 with two FAILs. The check is behaving correctly — a named alternative that resolves to nothing is what it exists to catch. Splitting `toggle.yaml`, or renaming it, clears both; neither is a transcription and neither was done here.
-
-### 8.3 `flow_behavior` and `sizing_model` overlap
-
-`flow_behavior` is on all 96 entries as a coarse whole-component value; `sizing_model` is on the three contracts and is per-axis. **All three that carry both agree**, so nothing is in conflict today:
-
-| Entry | `flow_behavior` | `sizing_model` |
-| --- | --- | --- |
-| Checkbox Input | `fixed` | `horizontal: fixed`, `vertical: fixed`, `adjustable: false` |
-| Checkbox Label | `hug` | `horizontal: hug`, `vertical: hug`, `adjustable: false` |
-| Checkbox Text | `fill`, `hug` | `horizontal: fill`, `vertical: hug`, `adjustable: true` |
-
-What the agreement hides is that `flow_behavior` **cannot** express `Checkbox Text` correctly: the sequence `fill, hug` says the component does both without saying which axis does which, and the answer — width fills, height hugs — is only recoverable from `sizing_model`. Where the two ever disagree, the coarse value is the one that cannot be right.
-
-Folding them means either deriving `flow_behavior` from `sizing_model` at build time for the entries that have one, or dropping it as each contract is written and accepting that 93 entries keep it as inventory history. Both are cheap; which is right depends on whether anything outside this repository still reads `flow_behavior`. Nothing here does, beyond displaying it.
-
-### 8.4 `PLAN.md` Stage 4 still reserves the documentation-boundary decision
-
-Two references, both left exactly as they are:
-
-- **`PLAN.md:81`** — "**First**, settle the documentation boundary — which of `STANDARD.md`'s twenty points live in Figma and which in Markdown. Writing twenty documents before that rule exists guarantees rewriting them."
-- **`PLAN.md:172`** — the open-questions table, row "Figma / Markdown documentation boundary | 4".
-
-That decision is made. The boundary is this spec's schema: the contract is the registry entry, Figma holds the values and the spatial documentation (StateDiagrams, PropTables, anatomy), and the readable page is generated from the entry. There are no twenty points and no Markdown documents to place. Both references are stale, and `PLAN.md` Stage 4's ordering — settle the boundary *before* writing — is satisfied rather than pending.
-
-Everything else in Stage 4 that named the retired model was repointed under §6.1: the `_template.md` task is gone, "write the documents" is now "write the contracts", the accessibility bullet no longer asks for a section per component, and the Figma-description bullet points at the derivation rule instead of "points 2 and 3".
-
-### 8.5 §6.2, in full
-
-- **Every `.yaml` under `docs/components/registry/` parses and round-trips.** 99 files, `stringify(parse(x))` re-parses equal for all of them, 0 problems.
-- `npm run tokens:check` — passes. 8 collections, alias contract holds.
-- `npm test` — passes. 117 tests.
-- **`npm run validate:registry` — exits 1**, on the two `"Toggle Label"` references in §8.2 and nothing else. 116 reports, which is the expected noise on the imported relations plus the new contract judgements.
-- **`npm run validate:skills` — fails**, and not because of this work: `skills/src/description-sync/` is a new, uncommitted skill source, and `skills/dist/stylos-figma-agent.md` has not been rebuilt since it appeared. `npm run build:skills` clears it. That is in-progress work by the owner and was left alone.

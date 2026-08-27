@@ -39,43 +39,38 @@ sizing_model:
   horizontal: "fill"
   vertical: "hug"
   adjustable: true
-  intent: "Width is the one dimension a consumer sets — directly, or by filling an auto-layout parent. The 210 the set is authored at is a starting value and carries no meaning. Height is the line count and is never set by hand. The box stays aligned to the first line however many lines appear, which is the whole reason this component is separate from Checkbox Label."
+  intent: "Width is the one dimension a consumer sets — directly, or by filling an auto-layout parent. The 210 the set is authored at is a starting value and carries no meaning, which is why no width token is recorded. Height is the taller of the box and the line box, multiplied by the line count, and is never set by hand. The box stays aligned to the first line however many lines appear, which is the whole reason this component is separate from Checkbox Label. Resolve token values with `npm run tokens:report`."
   sizes:
     -
       size: "extra small"
-      height: 18
-      box: 16
-      gap: 4
-      measure: "0_750"
-      line_height_family: "text"
+      box: "size/s-2_000"
+      gap: "gap/g-0_500"
+      font_size: "size/0_750"
+      line_height: "line height/text/0_750"
     -
       size: "small"
-      height: 22
-      box: 20
-      gap: 5
-      measure: "0_875"
-      line_height_family: "text"
+      box: "size/s-2_500"
+      gap: "gap/g-0_625"
+      font_size: "size/0_875"
+      line_height: "line height/text/0_875"
     -
       size: "medium"
-      height: 24
-      box: 24
-      gap: 6
-      measure: "1_000"
-      line_height_family: "text"
+      box: "size/s-3_000"
+      gap: "gap/g-0_750"
+      font_size: "size/1_000"
+      line_height: "line height/text/1_000"
     -
       size: "large"
-      height: 30
-      box: 28
-      gap: 7
-      measure: "1_250"
-      line_height_family: "text"
+      box: "size/s-3_500"
+      gap: "gap/g-0_875"
+      font_size: "size/1_250"
+      line_height: "line height/text/1_250"
     -
       size: "extra large"
-      height: 36
-      box: 32
-      gap: 8
-      measure: "1_500"
-      line_height_family: "text"
+      box: "size/s-4_000"
+      gap: "gap/g-1_000"
+      font_size: "size/1_500"
+      line_height: "line height/text/1_500"
 variants:
   count: 60
   complete_cross_product: true

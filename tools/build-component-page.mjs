@@ -11,257 +11,272 @@
 //
 // This renders; it does not edit. The YAML is edited in an editor.
 //
-// The one thing here that is deliberately unfinished is the preview slot: every
-// place a rendered sample belongs gets a placeholder of the size and position
-// the real render will take. Filling them means exporting from Figma, which is
-// a separate piece of work — see docs/specs/0003-component-page.md §2. When it
-// happens, `previewSlot` below is the only function that changes.
+// Two things are worth knowing before changing anything here.
+//
+// **Token names are resolved, not printed.** `sizing_model` carries addresses
+// into tokens/ — `box: "size/s-2_000"` — and the page shows the value with the
+// name beside it. A table of bare names is unreadable and a table of bare
+// numbers loses the scale; the reader needs to see 16 · 20 · 24 · 28 · 32 as a
+// run *and* see that it is s-2_000 through s-4_000. The join happens here, on
+// every build; nothing is transcribed. See docs/specs/0003-component-page.md §4.3.
+//
+// **The preview slot is the one deliberately unfinished thing.** Every place a
+// rendered sample belongs gets a placeholder at the size the real render will
+// take, measured from the same resolved tokens. Filling them means exporting
+// from Figma, which is separate work; `previewSlot` is the only function that
+// changes when it happens, and nothing structural moves.
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import {
-  loadRegistry,
-  derive,
-  pagePathFor,
-  figmaUrl,
-  slugPath,
-  LEVELS,
-} from "./lib/registry.mjs";
+import { loadRegistry, derive, pagePathFor, figmaUrl, slugPath, LEVELS } from "./lib/registry.mjs";
+import { SIZING_TOKEN_FIELDS, createTokenResolver } from "./lib/sizing.mjs";
 
-// Dense, quiet and legible at a glance. One accent, a system stack, monospace
-// for anything that is a name in the API rather than prose, and a measure limit
-// so paragraphs do not run the width of a monitor. It prints: the colours have
-// print overrides and nothing is hidden behind an interaction.
+// The page is opened by one person, from disk, on a wide screen, to read one
+// contract end to end. So: hierarchy carried by type rather than by boxes, a
+// single rail down the left for whatever names the thing beside it, one accent,
+// monospace wherever a string is an identifier rather than prose, and
+// accessibility findings set in the outer column where they can be seen while
+// scanning and stepped over while reading. Every colour is declared for both
+// schemes and again for print. Nothing is behind an interaction, because it
+// will be printed. See docs/specs/0003-component-page.md §4.5.
 const CSS = `
 :root {
   color-scheme: light dark;
   --bg: #ffffff;
-  --bg-sunken: #f6f6f7;
-  --fg: #18181b;
-  --fg-muted: #71717a;
-  --line: #e4e4e7;
-  --accent: #4338ca;
-  --do: #15803d;
-  --dont: #b91c1c;
-  --warn-fg: #92400e;
-  --warn-bg: #fef3c7;
-  --warn-line: #fcd34d;
-  --fail-fg: #991b1b;
-  --fail-bg: #fee2e2;
-  --fail-line: #fca5a5;
-  --open-fg: #3730a3;
-  --open-bg: #e0e7ff;
-  --open-line: #a5b4fc;
-  --requires-fg: #155e75;
-  --requires-bg: #cffafe;
-  --requires-line: #67e8f9;
-  --measure: 68ch;
+  --fg: #16161a;
+  --fg-quiet: #5c5c66;
+  --fg-faint: #8b8b96;
+  --rule: #e6e6ea;
+  --rule-strong: #c9c9d1;
+  --accent: #3538cd;
+  --do: #17683a;
+  --dont: #a51c1c;
+  --warning: #8a5300;
+  --fail: #a51c1c;
+  --open: #3538cd;
+  --requires: #0f5f73;
+  --rail: 15rem;
+  --measure: 66ch;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #18181b;
-    --bg-sunken: #202023;
-    --fg: #f4f4f5;
-    --fg-muted: #a1a1aa;
-    --line: #34343a;
-    --accent: #a5b4fc;
-    --do: #4ade80;
-    --dont: #f87171;
-    --warn-fg: #fde68a;
-    --warn-bg: #3b2f0b;
-    --warn-line: #78621a;
-    --fail-fg: #fecaca;
-    --fail-bg: #3f1415;
-    --fail-line: #7f2426;
-    --open-fg: #c7d2fe;
-    --open-bg: #1e1b4b;
-    --open-line: #4338ca;
-    --requires-fg: #a5f3fc;
-    --requires-bg: #082f36;
-    --requires-line: #155e75;
+    --bg: #131316;
+    --fg: #ececed;
+    --fg-quiet: #a3a3ad;
+    --fg-faint: #74747f;
+    --rule: #2a2a30;
+    --rule-strong: #43434c;
+    --accent: #a3b0ff;
+    --do: #5cc98a;
+    --dont: #f28b8b;
+    --warning: #e0b062;
+    --fail: #f28b8b;
+    --open: #a3b0ff;
+    --requires: #63c8dc;
   }
 }
+
 * { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0 auto;
-  padding: 24px 28px 64px;
-  max-width: 1000px;
-  font: 14px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  padding: 2.5rem 3rem 6rem;
+  max-width: 78rem;
   background: var(--bg);
   color: var(--fg);
+  font: 400 15px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-feature-settings: "kern", "liga";
 }
-p, li { max-width: var(--measure); }
-.crumbs { font-size: 12px; color: var(--fg-muted); margin: 0 0 20px; }
-.crumbs a { color: var(--fg-muted); }
-a { color: var(--accent); text-underline-offset: 2px; }
-h1 { font-size: 30px; line-height: 1.15; margin: 0 0 6px; letter-spacing: -0.01em; }
-h2 { font-size: 20px; margin: 34px 0 10px; letter-spacing: -0.01em; }
-h3 { font-size: 13px; margin: 20px 0 6px; }
-header { border-bottom: 1px solid var(--line); padding-bottom: 16px; }
-.summary { color: var(--fg-muted); margin: 0 0 12px; font-size: 15px; }
-.badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
-.badge {
-  font-size: 10px;
-  letter-spacing: .08em;
+p { margin: 0 0 .7em; max-width: var(--measure); }
+p:last-child { margin-bottom: 0; }
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .18em; }
+ul { margin: 0; padding-left: 1.1em; max-width: var(--measure); }
+li { margin-bottom: .3em; }
+
+.mono, code {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: .86em;
+  font-variant-ligatures: none;
+}
+.quiet { color: var(--fg-quiet); }
+.faint { color: var(--fg-faint); }
+.caps {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: .1em;
   text-transform: uppercase;
-  padding: 2px 7px;
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  color: var(--fg-muted);
-  white-space: nowrap;
 }
-.family { font-size: 13px; color: var(--fg-muted); margin: 12px 0 0; }
-.mono, code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
-.muted { color: var(--fg-muted); }
-.verdicts { list-style: none; padding: 0; margin: 0; max-width: none; }
-.verdicts li {
+
+/* One rail down the left names whatever sits beside it — a section, a
+   property. Everything on the page hangs off the same two columns. */
+.band {
   display: grid;
-  grid-template-columns: 18px minmax(0, var(--measure));
-  gap: 8px;
-  margin-bottom: 8px;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  column-gap: 2.5rem;
+  padding-top: 1.6rem;
+  margin-top: 1.6rem;
+  border-top: 1px solid var(--rule);
 }
-.verdicts .mark { font-weight: 700; text-align: center; }
-.verdicts .do .mark { color: var(--do); }
-.verdicts .dont .mark { color: var(--dont); }
+.band > .label { margin: 0; }
+.band > .label .name { display: block; }
+
+.back { display: inline-block; margin-bottom: 2.2rem; font-size: 13px; color: var(--fg-quiet); }
+
+.masthead { margin-bottom: .5rem; }
+h1 {
+  margin: 0 0 .25rem;
+  font-size: 2.6rem;
+  font-weight: 650;
+  line-height: 1.08;
+  letter-spacing: -.022em;
+}
+.summary {
+  font-size: 1.15rem;
+  line-height: 1.45;
+  color: var(--fg-quiet);
+  max-width: 46ch;
+  margin-bottom: 1rem;
+}
+.badges { display: flex; flex-wrap: wrap; align-items: baseline; gap: .55rem; color: var(--fg-faint); }
+.badges .sep { color: var(--rule-strong); }
+.family { font-size: 13.5px; color: var(--fg-quiet); margin-top: .8rem; }
+
+h2 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-quiet); }
+
+/* Use when / do not use when. The mark is the scannable part; the verdict word
+   carries the colour so the list reads as two kinds of statement. */
+.verdicts { list-style: none; padding: 0; max-width: none; }
+.verdicts li { display: grid; grid-template-columns: 1.4em minmax(0, var(--measure)); margin-bottom: .55em; }
+.verdicts .mark { font-weight: 700; }
 .verdicts .lead { font-weight: 600; }
-.verdicts .do .lead { color: var(--do); }
-.verdicts .dont .lead { color: var(--dont); }
-.finding {
-  border-left: 2px solid var(--line);
-  padding: 2px 0 2px 12px;
-  margin: 0 0 10px;
-  max-width: var(--measure);
-}
-.finding .status {
-  font-size: 10px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-.finding p { margin: 2px 0 0; }
-.a11y-warning { --tag-fg: var(--warn-fg); --tag-bg: var(--warn-bg); --tag-line: var(--warn-line); }
-.a11y-fail { --tag-fg: var(--fail-fg); --tag-bg: var(--fail-bg); --tag-line: var(--fail-line); }
-.a11y-open { --tag-fg: var(--open-fg); --tag-bg: var(--open-bg); --tag-line: var(--open-line); }
-.a11y-requires { --tag-fg: var(--requires-fg); --tag-bg: var(--requires-bg); --tag-line: var(--requires-line); }
-.finding .status { color: var(--tag-fg); }
-.finding { border-left-color: var(--tag-line); }
-.tag {
-  font-size: 9px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 3px;
-  white-space: nowrap;
-  color: var(--tag-fg);
-  background: var(--tag-bg);
-  border: 1px solid var(--tag-line);
-}
-.card {
+.verdicts .do .mark, .verdicts .do .lead { color: var(--do); }
+.verdicts .dont .mark, .verdicts .dont .lead { color: var(--dont); }
+
+/* A finding is set quietly: a coloured status word, a criterion in monospace,
+   the note as ordinary text. No fill, no border, no shouting. */
+.finding { margin-bottom: 1rem; max-width: var(--measure); }
+.finding:last-child { margin-bottom: 0; }
+.finding .status { color: var(--tone, var(--fg-quiet)); margin-right: .5rem; }
+.finding .criterion { color: var(--fg-faint); }
+.finding p { margin: .15em 0 0; }
+.t-warning { --tone: var(--warning); }
+.t-fail { --tone: var(--fail); }
+.t-open { --tone: var(--open); }
+.t-requires { --tone: var(--requires); }
+
+/* One property. Identity in the rail, values beside it, and each value's
+   finding in a third column that a reader going straight down the value list
+   never has to cross. */
+.property { border-top: 1px solid var(--rule); padding-top: 1.3rem; margin-top: 1.3rem; }
+.property.first { border-top: 0; }
+.property > .label .name { font-size: 1.05rem; font-weight: 600; letter-spacing: -.01em; }
+.property > .label .kind { color: var(--fg-faint); margin-top: .15rem; }
+.property > .label .default { font-size: 13px; color: var(--fg-quiet); margin-top: .5rem; }
+.property > .label .controls { font-size: 12.5px; color: var(--fg-quiet); margin-top: .5rem; }
+.property > .label .desc { font-size: 13.5px; line-height: 1.5; color: var(--fg-quiet); margin-top: .7rem; }
+.property > .label .finding { margin-top: .9rem; font-size: 13px; }
+
+.value {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  margin-bottom: 14px;
-  overflow: hidden;
-  break-inside: avoid;
-}
-@media (max-width: 720px) { .card { grid-template-columns: minmax(0, 1fr); } }
-.card > .about {
-  background: var(--bg-sunken);
-  border-right: 1px solid var(--line);
-  padding: 14px 16px;
-}
-@media (max-width: 720px) { .card > .about { border-right: 0; border-bottom: 1px solid var(--line); } }
-.card > .values { padding: 14px 16px; }
-.property-name { font-size: 15px; font-weight: 600; margin: 0; display: flex; gap: 7px; align-items: baseline; }
-.property-name .glyph { color: var(--fg-muted); font-size: 12px; }
-.about p { font-size: 12.5px; color: var(--fg-muted); margin: 8px 0 0; }
-.about .default { font-size: 12px; margin-top: 8px; }
-.about .finding { border-left-width: 2px; margin-top: 12px; margin-bottom: 0; }
-.value-row {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 16px;
+  grid-template-columns: auto minmax(0, 20ch) minmax(0, 1fr);
+  column-gap: 1.5rem;
   align-items: center;
-  padding: 6px 0;
+  padding: .42rem 0;
+  border-bottom: 1px solid var(--rule);
 }
-.value-row + .value-note { margin: -2px 0 8px; }
-.value-note { font-size: 12.5px; color: var(--fg-muted); max-width: var(--measure); }
-details.value-note { margin: -2px 0 10px; }
-details.value-note summary {
-  cursor: pointer;
-  font-size: 11px;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  color: var(--tag-fg, var(--fg-muted));
-}
-details.value-note dl { margin: 4px 0 0; }
-.value-note .criterion { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
-.value-note dt {
-  font-size: 10px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
-  margin-top: 4px;
-}
-.value-note dd { margin: 0; }
-.assignment { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+.value:last-of-type { border-bottom: 0; }
+.value .assign { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+.value .assign .val { font-weight: 600; }
+.value .aside { font-size: 12.5px; line-height: 1.45; color: var(--fg-quiet); padding: .15rem 0; }
+.value .aside .status { color: var(--tone, var(--fg-quiet)); margin-right: .4rem; }
+.value .aside .criterion { color: var(--fg-faint); }
+.value .aside dl { margin: .2em 0 0; }
+.value .aside dt { display: none; }
+.value .aside dd { margin: .25em 0 0; }
+.value .aside dd::before { content: attr(data-label); color: var(--fg-faint); margin-right: .35em; }
+
+/* The placeholder a rendered sample will replace. Dimensions come from the
+   contract's own tokens, so nothing about the layout moves when it does. */
 .slot {
   display: flex;
   align-items: center;
-  border: 1px dashed var(--line);
+  overflow: hidden;
+  padding: 0 2px;
+  border: 1px dashed var(--rule-strong);
   border-radius: 2px;
-  background: var(--bg-sunken);
-  color: var(--fg-muted);
+  color: var(--fg-faint);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 9px;
+  font-size: 8.5px;
   line-height: 1;
-  padding: 0 3px;
   flex: none;
 }
-/* The assignment is the whole of what the slot says, and the slot is only as
-   wide as the render will be — so it truncates deliberately rather than
-   wrapping into a shape the real render will not have. The full text is the
-   title, and is on the row beside it in any case. */
-.slot span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.examples { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 12px; }
-.example-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-.example .verdict { font-weight: 600; font-size: 12px; margin: 0 0 6px; }
+.slot span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.examples { margin-top: 1.2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1.2rem; }
+.example .verdict { font-weight: 600; font-size: 12.5px; margin-bottom: .45rem; }
 .example.do .verdict { color: var(--do); }
 .example.dont .verdict { color: var(--dont); }
-.example .caption { font-size: 12.5px; color: var(--fg-muted); margin: 6px 0 0; }
-table { border-collapse: collapse; margin: 8px 0 0; font-size: 13px; }
-th, td { text-align: left; padding: 4px 14px 4px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
-th { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-muted); font-weight: 600; }
-td.num { text-align: right; font-variant-numeric: tabular-nums; padding-right: 24px; }
-dl.facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 16px; margin: 8px 0 0; font-size: 13px; }
-dl.facts dt { color: var(--fg-muted); }
+.example .caption { font-size: 12.5px; line-height: 1.45; color: var(--fg-quiet); margin-top: .45rem; }
+
+/* The sizing run. The resolved value leads and the token name sits under it:
+   the numbers make the run legible as a run, the names say where they came
+   from. Neither reads on its own. */
+.axes { display: flex; flex-wrap: wrap; gap: 0 2rem; margin-bottom: .9rem; }
+.axes div { font-size: 13px; }
+.axes .k { color: var(--fg-faint); margin-right: .4em; }
+.axes .v { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; }
+.scroll { overflow-x: auto; margin-top: 1.1rem; }
+table.run { border-collapse: collapse; }
+table.run th, table.run td { text-align: left; padding: .5rem 2rem .5rem 0; vertical-align: baseline; white-space: nowrap; }
+table.run thead th { border-bottom: 1px solid var(--rule-strong); padding-bottom: .35rem; }
+table.run thead .col { display: block; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-quiet); }
+table.run thead .from { display: block; font-size: 10.5px; letter-spacing: .02em; color: var(--fg-faint); font-weight: 400; text-transform: none; }
+table.run tbody td { border-bottom: 1px solid var(--rule); }
+table.run tbody tr:last-child td { border-bottom: 0; }
+table.run .size { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+table.run .value-px { display: block; font-size: 15px; font-variant-numeric: tabular-nums; }
+table.run .token { display: block; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10.5px; color: var(--fg-faint); margin-top: .1rem; }
+
+dl.facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .2rem 1.5rem; margin: 0; font-size: 13.5px; }
+dl.facts dt { color: var(--fg-faint); }
 dl.facts dd { margin: 0; }
-footer { border-top: 1px solid var(--line); margin-top: 40px; padding-top: 16px; font-size: 13px; }
-footer h2 { font-size: 15px; margin-top: 20px; }
-ul.plain { list-style: none; padding: 0; margin: 0; }
-ul.inline { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 4px 12px; }
-.unwritten { color: var(--fg-muted); max-width: var(--measure); }
-.index-group { margin-bottom: 24px; break-inside: avoid; }
-.index-group h2 { margin-bottom: 6px; }
-.index-list { list-style: none; padding: 0; margin: 0; }
-.index-list li { display: grid; grid-template-columns: minmax(0, 300px) auto minmax(0, 1fr); gap: 12px; padding: 2px 0; max-width: none; }
+ul.inline { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .1rem 1rem; }
+ul.inline li { margin: 0; }
+.unwritten { color: var(--fg-quiet); }
+.notes { margin-top: 1rem; font-size: 13.5px; color: var(--fg-quiet); }
+
+.index-list { list-style: none; padding: 0; max-width: none; }
+.index-list li { display: grid; grid-template-columns: minmax(0, 18rem) 6rem minmax(0, 1fr); column-gap: 1.5rem; padding: .18rem 0; }
+.index-list .role { font-size: 12.5px; color: var(--fg-faint); }
+.index-list .blurb { font-size: 13px; color: var(--fg-quiet); }
+
+/* One breakpoint, and only so a narrow window does not break: the rail becomes
+   a heading above what it named. */
+@media (max-width: 60rem) {
+  body { padding: 1.5rem 1.25rem 4rem; }
+  .band { grid-template-columns: minmax(0, 1fr); }
+  .band > .label { margin-bottom: .8rem; }
+  .value { grid-template-columns: auto minmax(0, 1fr); row-gap: .3rem; }
+  .value .aside { grid-column: 1 / -1; }
+  h1 { font-size: 2rem; }
+}
+
 @media print {
-  :root { --bg: #ffffff; --bg-sunken: #f6f6f7; --fg: #000000; --fg-muted: #444444; --line: #cccccc; }
-  body { max-width: none; padding: 0; font-size: 11pt; }
-  a { color: inherit; text-decoration: none; }
-  .card, .index-group, section { break-inside: avoid; }
-  /* Nothing on a printed page can be unfolded, so everything is open. Two
-     rules because two engines hide the closed part differently. */
-  details > *:not(summary) { display: block !important; }
-  details::details-content { content-visibility: visible !important; block-size: auto !important; }
+  :root {
+    --bg: #ffffff; --fg: #000000; --fg-quiet: #333333; --fg-faint: #555555;
+    --rule: #d0d0d0; --rule-strong: #909090; --accent: #000000;
+    --do: #14532d; --dont: #7f1d1d; --warning: #713f12; --fail: #7f1d1d;
+    --open: #1e1b4b; --requires: #164e63;
+  }
+  body { max-width: none; padding: 0; font-size: 10.5pt; }
+  a { text-decoration: none; }
+  .back { display: none; }
+  /* A band can be a page long, so only the things that must not be split are
+     kept whole: one property, one example, one row of the run. */
+  .property, .example, table.run tr, .value { break-inside: avoid; }
+  h1, h2 { break-after: avoid; }
 }
 `;
 
@@ -272,12 +287,24 @@ const KIND_GLYPHS = {
   instance: "▣",
 };
 
-// What a rendered sample takes up where the contract does not say. A checkbox
-// is the smallest thing in the library and the widest element card is a text
-// property, so these are chosen to look right rather than derived from
-// anything; they are only ever used when `sizing_model.sizes` cannot answer.
-const FALLBACK_SLOT = { width: 160, height: 24 };
-const SLOT_WIDTH_WHEN_NOT_FIXED = 160;
+// What a rendered sample takes where the contract cannot say: a property that
+// is not `size` has no run behind it, and neither does an entry with no
+// sizing model. Only ever used when the tokens cannot answer.
+const FALLBACK_SLOT = { width: 168, height: 22 };
+const SLOT_WIDTH_WHEN_NOT_FIXED = 168;
+
+// A column per key the rows carry, in the order a reader compares them: the
+// box first because it is the component, then the gap, then the type. The
+// second line names the collection each is resolved against — `size/s-2_000`
+// is a dimension and `size/0_750` is a font measure, and the field is the only
+// thing that says which.
+const RUN_COLUMNS = [
+  ["size", "Size"],
+  ["box", "Box"],
+  ["gap", "Gap"],
+  ["font_size", "Font size"],
+  ["line_height", "Line height"],
+];
 
 const ESCAPES = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 
@@ -294,13 +321,13 @@ function paragraph(text, className) {
 /**
  * The placeholder that stands where a rendered sample belongs.
  *
- * It carries the assignment it would render, and takes the dimensions the real
+ * It carries the assignment it would render and takes the dimensions the real
  * render would take, so that swapping in an exported image changes nothing
  * structural. This is the only unfinished thing on the page and the only
  * function that has to change when it is finished.
  */
-export function previewSlot(entry, assignment) {
-  const { width, height } = slotSize(entry, assignment.size);
+export function previewSlot(entry, assignment, resolveToken) {
+  const { width, height } = slotSize(entry, assignment.size, resolveToken);
   const text = Object.entries(assignment)
     .map(([name, value]) => `${name}=${value}`)
     .join(", ");
@@ -311,40 +338,52 @@ export function previewSlot(entry, assignment) {
 }
 
 /**
- * What one render measures. `sizing_model.sizes` is the authority where it has
- * a row for the size in play — that is what the run is authored for. An axis
- * that is not fixed has no width in the contract, because the layout sets it.
+ * What one render measures, from the contract's own tokens.
+ *
+ * Height is the taller of the box and the line box — which is what the
+ * contracts' `intent` fields say, and why no height is recorded: `Checkbox
+ * Text` at extra small is 18 because its line box is, while `Checkbox Label`
+ * at extra small is 16 because its box is. Width is the box only where the
+ * horizontal axis is fixed; anything hugging or filling is sized by its
+ * content or its parent, and the contract does not know either.
  */
-function slotSize(entry, sizeValue) {
+function slotSize(entry, sizeValue, resolveToken) {
   const rows = Array.isArray(entry.sizingModel?.sizes) ? entry.sizingModel.sizes : [];
   const row = rows.find((candidate) => candidate?.size === sizeValue) ?? rows[0];
   if (!row) return { ...FALLBACK_SLOT };
 
-  const height = row.height ?? row.box ?? FALLBACK_SLOT.height;
+  const box = number(resolveToken("box", row.box));
+  const lineBox = number(resolveToken("line_height", row.line_height));
+  const height = Math.max(box ?? 0, lineBox ?? 0) || FALLBACK_SLOT.height;
   const width =
-    entry.sizingModel?.horizontal === "fixed"
-      ? (row.box ?? row.height ?? FALLBACK_SLOT.width)
-      : SLOT_WIDTH_WHEN_NOT_FIXED;
+    entry.sizingModel?.horizontal === "fixed" ? (box ?? FALLBACK_SLOT.width) : SLOT_WIDTH_WHEN_NOT_FIXED;
   return { width, height };
 }
 
-/** The assignment a value row stands for: every property at its default, bar one. */
+function number(value) {
+  return typeof value === "number" ? value : null;
+}
+
+/**
+ * The assignment a value row stands for: this property at this value, and
+ * every other at its default. The varied property comes first because it is
+ * what the row is about, and the slot is narrow enough that whatever comes
+ * last is what gets cut.
+ */
 function assignmentFor(entry, property, value) {
-  const assignment = {};
+  const assignment = { [property.name]: value };
   for (const other of entry.api) {
-    if (other?.kind !== "variant") continue;
-    if (other.name === property.name) assignment[other.name] = value;
-    else if (other.default !== undefined) assignment[other.name] = other.default;
+    if (other?.kind !== "variant" || other.name === property.name) continue;
+    if (other.default !== undefined) assignment[other.name] = other.default;
   }
-  if (!(property.name in assignment)) assignment[property.name] = value;
   return assignment;
 }
 
-function findingBlock(finding, { heading = null } = {}) {
+function findingBlock(finding, className = "finding") {
   const status = finding?.status ?? "open";
-  const parts = [`<div class="finding a11y-${esc(status)}">`];
-  parts.push(`<span class="status">${esc(heading ?? status)}</span>`);
-  if (finding?.criterion) parts.push(` <span class="mono muted">${esc(finding.criterion)}</span>`);
+  const parts = [`<div class="${className} t-${esc(status)}">`];
+  parts.push(`<span class="status caps">${esc(status)}</span>`);
+  if (finding?.criterion) parts.push(`<span class="criterion mono">${esc(finding.criterion)}</span>`);
   if (finding?.note) parts.push(paragraph(finding.note));
   parts.push("</div>");
   return parts.join("");
@@ -352,19 +391,20 @@ function findingBlock(finding, { heading = null } = {}) {
 
 /** `Checkbox Input` → `../checkbox-input.html`, from a page one directory deep. */
 function linkTo(fromId, toId) {
-  const depth = slugPath(fromId).split("/").length - 1;
-  return "../".repeat(depth) + pagePathFor(toId);
+  return "../".repeat(slugPath(fromId).split("/").length - 1) + pagePathFor(toId);
 }
 
 function componentLink(fromId, toId, known) {
-  if (!known.has(toId)) return `<span class="muted">${esc(toId)}</span>`;
+  if (!known.has(toId)) return `<span class="faint">${esc(toId)}</span>`;
   return `<a href="${esc(linkTo(fromId, toId))}">${esc(toId)}</a>`;
 }
 
-function relationList(fromId, ids, known) {
-  return `<ul class="inline">${ids
-    .map((id) => `<li>${componentLink(fromId, id, known)}</li>`)
-    .join("")}</ul>`;
+/** One row of the page's two columns: what it is, and the thing itself. */
+function band(label, body, className = "") {
+  return `<section class="band ${className}">
+<div class="label"><h2>${esc(label)}</h2></div>
+<div class="body">${body}</div>
+</section>`;
 }
 
 // --- Sections --------------------------------------------------------------
@@ -373,10 +413,10 @@ function relationList(fromId, ids, known) {
 // nothing in it is not a heading over a blank space; it is not there.
 
 function renderHeader(entry, context) {
-  const badges = [entry.level, entry.status, entry.version && `v ${entry.version}`]
-    .filter(Boolean)
-    .map((badge) => `<span class="badge">${esc(badge)}</span>`)
-    .join("");
+  const badges = [entry.level, entry.status, entry.version && `v ${entry.version}`].filter(Boolean);
+  const row = badges
+    .map((badge) => `<span class="caps">${esc(badge)}</span>`)
+    .join('<span class="sep">·</span>');
 
   const siblings = context.family.get(entry.family)?.filter((id) => id !== entry.id) ?? [];
   const family =
@@ -386,17 +426,17 @@ function renderHeader(entry, context) {
           .join(", ")}</p>`
       : "";
 
-  return `<header>
+  return `<header class="masthead">
 <h1>${esc(entry.name)}</h1>
 ${entry.summary ? paragraph(entry.summary, "summary") : ""}
-<p class="badges">${badges}</p>
+<div class="badges">${row}</div>
 ${family}
 </header>`;
 }
 
 function renderPurpose(entry) {
   if (!entry.purpose) return "";
-  return `<section><h2>Purpose</h2>${paragraph(entry.purpose)}</section>`;
+  return band("Purpose", paragraph(entry.purpose));
 }
 
 function renderUseWhen(entry, context) {
@@ -411,7 +451,7 @@ function renderUseWhen(entry, context) {
     ),
     ...entry.doNotUseWhen.map((avoid) => {
       const instead = avoid?.instead
-        ? ` <span class="muted">Instead:</span> ${componentLink(entry.id, avoid.instead, context.known)}`
+        ? ` <span class="faint">Instead:</span> ${componentLink(entry.id, avoid.instead, context.known)}`
         : "";
       return `<li class="dont"><span class="mark">✕</span><span><span class="lead">Do not use when</span> ${esc(
         avoid?.text
@@ -419,9 +459,7 @@ function renderUseWhen(entry, context) {
     }),
   ];
 
-  return `<section><h2>Use when / do not use when</h2><ul class="verdicts">${rows.join(
-    ""
-  )}</ul></section>`;
+  return band("Use when / do not use when", `<ul class="verdicts">${rows.join("")}</ul>`);
 }
 
 // Above the API rather than below it: a `requires` is an obligation on whoever
@@ -429,134 +467,171 @@ function renderUseWhen(entry, context) {
 // nobody read.
 function renderRequirements(entry) {
   if (entry.a11y.length === 0) return "";
-  return `<section><h2>Requirements</h2>${entry.a11y
-    .map((finding) => findingBlock(finding))
-    .join("")}</section>`;
+  return band("Requirements", entry.a11y.map((finding) => findingBlock(finding)).join(""));
 }
 
-function renderValueRow(entry, property, value) {
-  const label = `<span class="assignment">${esc(property.name)}: ${esc(value.value)}</span>`;
-  const badge = value.a11y
-    ? `<span class="tag a11y-${esc(value.a11y.status)}">a11y ${esc(value.a11y.status)}</span>`
-    : "<span></span>";
+function renderValueRow(entry, property, value, resolveToken) {
+  const slot = previewSlot(entry, assignmentFor(entry, property, value.value), resolveToken);
+  const label =
+    `<span class="assign"><span class="faint">${esc(property.name)}:</span> ` +
+    `<span class="val">${esc(value.value)}</span></span>`;
 
-  const row =
-    `<div class="value-row">${previewSlot(entry, assignmentFor(entry, property, value.value))}` +
-    `${label}${badge}</div>`;
-
-  // A note with no finding behind it is just what the value means: it belongs
-  // under the row, in plain sight. A finding is three or four lines of
-  // exception, and a reader scanning five sizes should not be shouted at by all
-  // of them at once — so it folds, and unfolds without leaving the page.
-  const note = value.note ? `<p class="value-note">${esc(value.note)}</p>` : "";
-  if (!value.a11y) return row + note;
-
-  const detail = [];
-  if (value.a11y.criterion) {
-    detail.push(`<dt>Criterion</dt><dd class="criterion">${esc(value.a11y.criterion)}</dd>`);
+  // Set in the outer column: a reader scanning the value list sees at a glance
+  // which values carry a finding, and a reader going down the list never has to
+  // read through one.
+  const aside = [];
+  if (value.a11y) {
+    aside.push(`<span class="status caps">a11y ${esc(value.a11y.status)}</span>`);
+    if (value.a11y.criterion) aside.push(`<span class="criterion mono">${esc(value.a11y.criterion)}</span>`);
   }
-  if (value.a11y.note) detail.push(`<dt>Finding</dt><dd>${esc(value.a11y.note)}</dd>`);
-  if (value.rationale) detail.push(`<dt>Why it ships</dt><dd>${esc(value.rationale)}</dd>`);
+  const detail = [];
+  if (value.note) detail.push(["", value.note]);
+  if (value.a11y?.note) detail.push(["", value.a11y.note]);
+  if (value.rationale) detail.push(["Why it ships", value.rationale]);
+  if (detail.length > 0) {
+    aside.push(
+      `<dl>${detail
+        .map(
+          ([label_, text]) =>
+            `<dt>${esc(label_ || "Note")}</dt><dd${
+              label_ ? ` data-label="${esc(label_)} —"` : ""
+            }>${esc(text)}</dd>`
+        )
+        .join("")}</dl>`
+    );
+  }
 
-  return (
-    row +
-    note +
-    `<details class="value-note a11y-${esc(value.a11y.status)}"><summary>${esc(
-      value.a11y.status
-    )}${value.a11y.criterion ? ` · ${esc(value.a11y.criterion)}` : ""}</summary><dl>${detail.join(
-      ""
-    )}</dl></details>`
-  );
+  const tone = value.a11y ? ` t-${esc(value.a11y.status)}` : "";
+  return `<div class="value${tone}">${slot}${label}<div class="aside">${aside.join(" ")}</div></div>`;
 }
 
-function renderExamples(entry, property) {
+function renderExamples(entry, property, resolveToken) {
   const examples = Array.isArray(property.examples) ? property.examples : [];
   if (examples.length === 0) return "";
 
   const blocks = examples.map((example) => {
     const props = example.props ?? {};
-    // The example is an assignment against the component: every other property
-    // at its default, and whatever the example itself sets.
     // What the example sets comes first: it is the point of the example, and
     // the slot is narrow enough that what comes last is what gets cut.
     const assignment = { ...props, ...assignmentFor(entry, property, property.default ?? "") };
     for (const name of Object.keys(props)) assignment[name] = props[name];
-    const verdict = example.verdict === "dont" ? "Do not" : "Do";
-    return `<div class="example ${example.verdict === "dont" ? "dont" : "do"}">
-<p class="verdict">${example.verdict === "dont" ? "✕" : "✓"} ${verdict}</p>
-${previewSlot(entry, assignment)}
+
+    const dont = example.verdict === "dont";
+    return `<div class="example ${dont ? "dont" : "do"}">
+<p class="verdict">${dont ? "✕ Do not" : "✓ Do"}</p>
+${previewSlot(entry, assignment, resolveToken)}
 ${example.caption ? paragraph(example.caption, "caption") : ""}
 </div>`;
   });
 
-  return `<div class="examples"><div class="example-pair">${blocks.join("")}</div></div>`;
+  return `<div class="examples">${blocks.join("")}</div>`;
 }
 
-function renderPropertyCard(entry, property) {
-  const glyph = KIND_GLYPHS[property.kind] ?? "·";
-  const about = [
-    `<p class="property-name"><span class="glyph" title="${esc(property.kind ?? "")}">${esc(
-      glyph
-    )}</span> <span class="mono">${esc(property.name)}</span></p>`,
+function renderProperty(entry, property, resolveToken, first = false) {
+  const label = [
+    `<span class="name mono">${esc(property.name)}</span>`,
+    `<div class="kind caps">${esc(KIND_GLYPHS[property.kind] ?? "·")} ${esc(property.kind ?? "")}</div>`,
   ];
   if (property.default !== undefined) {
-    about.push(
-      `<p class="default muted">Default <span class="mono">${esc(property.default)}</span></p>`
-    );
+    label.push(`<div class="default">Default <span class="mono">${esc(property.default)}</span></div>`);
   }
-  if (property.description) about.push(paragraph(property.description));
-  if (property.a11y) about.push(findingBlock(property.a11y));
   if (Array.isArray(property.controls) && property.controls.length > 0) {
-    about.push(
-      `<p class="default muted">Controls ${property.controls
+    label.push(
+      `<div class="controls">Controls ${property.controls
         .map((name) => `<span class="mono">${esc(name)}</span>`)
-        .join(", ")}</p>`
+        .join(", ")}</div>`
     );
   }
+  if (property.description) label.push(`<div class="desc">${esc(property.description)}</div>`);
+  if (property.a11y) label.push(findingBlock(property.a11y));
 
   const values = Array.isArray(property.values) ? property.values : [];
   const body =
     values.length > 0
-      ? values.map((value) => renderValueRow(entry, property, value)).join("")
+      ? values.map((value) => renderValueRow(entry, property, value, resolveToken)).join("")
       : // text and instance properties have no values: what there is to show is
         // the default, and then whatever examples were chosen.
         (property.default !== undefined
-          ? `<div class="value-row">${previewSlot(entry, {
-              ...assignmentFor(entry, property, property.default),
-              [property.name]: property.default,
-            })}<span class="assignment">${esc(property.name)}: ${esc(
-              property.default
-            )}</span><span></span></div>`
+          ? renderValueRow(entry, property, { value: property.default }, resolveToken)
           : "");
 
-  return `<div class="card">
-<div class="about">${about.join("")}</div>
-<div class="values">${body}${renderExamples(entry, property)}</div>
+  return `<div class="band property${first ? " first" : ""}">
+<div class="label">${label.join("")}</div>
+<div class="body">${body}${renderExamples(entry, property, resolveToken)}</div>
 </div>`;
 }
 
-function renderApi(entry) {
+function renderApi(entry, resolveToken) {
   if (entry.api.length === 0) return "";
-  const cards = entry.api.map((property) => renderPropertyCard(entry, property)).join("");
+
   const count =
     entry.variants && typeof entry.variants.count === "number"
-      ? `<p class="muted">${esc(entry.variants.count)} variants${
+      ? `<p class="quiet">${esc(entry.variants.count)} variants${
           entry.variants.complete_cross_product === true ? ", a complete cross product" : ""
-        }.</p>`
-      : "";
-  return `<section><h2>Public API</h2>${count}${cards}</section>`;
+        } across ${entry.api.length} propert${entry.api.length === 1 ? "y" : "ies"}.</p>`
+      : `<p class="quiet">${entry.api.length} propert${
+          entry.api.length === 1 ? "y" : "ies"
+        }, in the order the component exposes them.</p>`;
+
+  return (
+    band("Public API", count) +
+    entry.api
+      .map((property, index) => renderProperty(entry, property, resolveToken, index === 0))
+      .join("")
+  );
 }
 
-const SIZE_COLUMNS = [
-  ["size", "Size"],
-  ["height", "Height"],
-  ["box", "Box"],
-  ["gap", "Gap"],
-  ["measure", "Measure"],
-  ["line_height_family", "Line height"],
-];
+/**
+ * `sizes[]` as a run. The resolved value is the primary reading and the token
+ * name is the address beneath it — bare names are unreadable and bare numbers
+ * lose the scale (docs/specs/0003-component-page.md §4.3).
+ */
+function renderRun(rows, resolveToken) {
+  const present = new Set(rows.flatMap((row) => Object.keys(row ?? {})));
+  const columns = [
+    ...RUN_COLUMNS.filter(([key]) => present.has(key)),
+    // A key the schema has grown since this file was written still gets a
+    // column rather than being dropped silently.
+    ...[...present]
+      .filter((key) => !RUN_COLUMNS.some(([known]) => known === key))
+      .map((key) => [key, key.replace(/_/g, " ")]),
+  ];
 
-function renderSizing(entry) {
+  const head = columns
+    .map(([key, label]) => {
+      const from = SIZING_TOKEN_FIELDS.get(key);
+      return `<th scope="col"><span class="col">${esc(label)}</span>${
+        from ? `<span class="from">${esc(from)}</span>` : ""
+      }</th>`;
+    })
+    .join("");
+
+  const body = rows
+    .map((row) => {
+      const cells = columns
+        .map(([key]) => {
+          const raw = row?.[key];
+          if (raw === undefined) return "<td></td>";
+          if (key === "size") return `<td class="size">${esc(raw)}</td>`;
+          if (!SIZING_TOKEN_FIELDS.has(key)) return `<td class="mono">${esc(raw)}</td>`;
+
+          const value = resolveToken(key, raw);
+          return `<td><span class="value-px">${
+            value === undefined ? "—" : `${esc(value)}<span class="faint"> px</span>`
+          }</span><span class="token">${esc(raw)}</span></td>`;
+        })
+        .join("");
+      return `<tr>${cells}</tr>`;
+    })
+    .join("");
+
+  return `<div class="scroll"><table class="run">
+<thead><tr>${head}</tr></thead>
+<tbody>${body}</tbody>
+</table></div>`;
+}
+
+function renderSizing(entry, resolveToken) {
   const sizing = entry.sizingModel;
   if (!sizing) return "";
 
@@ -566,104 +641,87 @@ function renderSizing(entry) {
     ["Adjustable", sizing.adjustable === undefined ? undefined : String(sizing.adjustable)],
   ].filter(([, value]) => value !== undefined);
 
-  const facts =
-    axes.length > 0
-      ? `<dl class="facts">${axes
-          .map(([term, value]) => `<dt>${esc(term)}</dt><dd class="mono">${esc(value)}</dd>`)
-          .join("")}</dl>`
-      : "";
+  const parts = [];
+  if (axes.length > 0) {
+    parts.push(
+      `<div class="axes">${axes
+        .map(([term, value]) => `<div><span class="k">${esc(term)}</span><span class="v">${esc(value)}</span></div>`)
+        .join("")}</div>`
+    );
+  }
+  if (sizing.intent) parts.push(paragraph(sizing.intent));
 
   const rows = Array.isArray(sizing.sizes) ? sizing.sizes : [];
-  let table = "";
-  if (rows.length > 0) {
-    const columns = SIZE_COLUMNS.filter(([key]) => rows.some((row) => row?.[key] !== undefined));
-    table = `<table>
-<thead><tr>${columns.map(([, label]) => `<th>${esc(label)}</th>`).join("")}</tr></thead>
-<tbody>${rows
-      .map(
-        (row) =>
-          `<tr>${columns
-            .map(([key]) => {
-              const value = row?.[key];
-              const numeric = typeof value === "number";
-              return `<td class="${numeric ? "num" : "mono"}">${
-                value === undefined ? "" : esc(value)
-              }</td>`;
-            })
-            .join("")}</tr>`
-      )
-      .join("")}</tbody>
-</table>`;
-  }
+  if (rows.length > 0) parts.push(renderRun(rows, resolveToken));
 
-  return `<section><h2>Sizing model</h2>${facts}${
-    sizing.intent ? paragraph(sizing.intent) : ""
-  }${table}</section>`;
+  return band("Sizing and type", parts.join(""));
 }
 
 function renderLimitations(entry) {
   if (entry.limitations.length === 0) return "";
-  return `<section><h2>Limitations</h2><ul>${entry.limitations
-    .map((text) => `<li>${esc(text)}</li>`)
-    .join("")}</ul></section>`;
+  return band("Limitations", `<ul>${entry.limitations.map((text) => `<li>${esc(text)}</li>`).join("")}</ul>`);
 }
 
-function renderFooter(entry, context) {
-  const parts = [];
-
-  const url = figmaUrl(entry.figma);
-  if (url) {
-    parts.push(`<h2>Figma</h2><p><a href="${esc(url)}" rel="noreferrer">node ${esc(
-      entry.figma.node_id
-    )}</a>${
-      entry.figma.last_verified
-        ? ` <span class="muted">· last verified ${esc(entry.figma.last_verified)}</span>`
-        : ""
-    }</p>`);
-  }
-
+function renderRelations(entry, context) {
   const relations = [
     ["Composed from", entry.children],
     ["Used inside", entry.parents],
     ["Uses, in Figma", entry.uses],
     ["Used by, in Figma", entry.usedBy],
   ].filter(([, ids]) => ids.length > 0);
-  if (relations.length > 0) {
-    parts.push(
-      `<h2>Relations</h2><dl class="facts">${relations
-        .map(
-          ([term, ids]) => `<dt>${esc(term)}</dt><dd>${relationList(entry.id, ids, context.known)}</dd>`
-        )
-        .join("")}</dl>`
-    );
-  }
+  if (relations.length === 0) return "";
 
-  const record = [
-    ["Id", entry.id],
-    ["Role", entry.role],
-    ["Family", entry.family],
-    ["Flow behaviour", entry.flowBehavior.join(", ") || null],
-    ["Entry", entry.file],
-  ].filter(([, value]) => value);
-  parts.push(
-    `<h2>Record</h2><dl class="facts">${record
-      .map(([term, value]) => `<dt>${esc(term)}</dt><dd class="mono">${esc(value)}</dd>`)
+  return band(
+    "Relations",
+    `<dl class="facts">${relations
+      .map(
+        ([term, ids]) =>
+          `<dt>${esc(term)}</dt><dd><ul class="inline">${ids
+            .map((id) => `<li>${componentLink(entry.id, id, context.known)}</li>`)
+            .join("")}</ul></dd>`
+      )
       .join("")}</dl>`
   );
+}
 
-  if (entry.notes) parts.push(`<h2>Notes</h2>${paragraph(entry.notes)}`);
+function renderRecord(entry, context) {
+  const url = figmaUrl(entry.figma);
+  const facts = [
+    [
+      "Figma",
+      url
+        ? `<a href="${esc(url)}" rel="noreferrer">node ${esc(entry.figma.node_id)}</a>${
+            entry.figma.last_verified
+              ? ` <span class="faint">· last verified ${esc(entry.figma.last_verified)}</span>`
+              : ""
+          }`
+        : null,
+    ],
+    ["Id", entry.id && `<span class="mono">${esc(entry.id)}</span>`],
+    ["Role", entry.role && `<span class="mono">${esc(entry.role)}</span>`],
+    ["Family", entry.family && `<span class="mono">${esc(entry.family)}</span>`],
+    [
+      "Flow behaviour",
+      entry.flowBehavior.length > 0 ? `<span class="mono">${esc(entry.flowBehavior.join(", "))}</span>` : null,
+    ],
+    ["Entry", `<span class="mono">${esc(entry.file)}</span>`],
+  ].filter(([, value]) => value);
+
+  const parts = [`<dl class="facts">${facts.map(([term, value]) => `<dt>${esc(term)}</dt><dd>${value}</dd>`).join("")}</dl>`];
+
+  if (entry.notes) parts.push(`<p class="notes">${esc(entry.notes)}</p>`);
 
   if (entry.import) {
     parts.push(
-      `<h2>Airtable import, ${esc(context.importDate)} — history, not status</h2><dl class="facts">${Object.entries(
-        entry.import
-      )
+      `<p class="faint" style="margin-top:1rem">Airtable import, ${esc(
+        context.importDate
+      )} — history, not status</p><dl class="facts">${Object.entries(entry.import)
         .map(([key, value]) => `<dt>${esc(key)}</dt><dd class="mono">${esc(value)}</dd>`)
         .join("")}</dl>`
     );
   }
 
-  return `<footer>${parts.join("")}</footer>`;
+  return band("Record", parts.join(""));
 }
 
 // 93 entries carry the inventory record and nothing else. The page says so
@@ -671,12 +729,16 @@ function renderFooter(entry, context) {
 // with "not specified".
 function renderUnwritten(entry) {
   if (entry.api.length > 0 || entry.summary || entry.purpose) return "";
-  return `<section><p class="unwritten">No contract is written for this component. What follows is the inventory record it was imported with; the contract is authored in <span class="mono">${esc(
-    entry.file
-  )}</span> against the schema in <span class="mono">docs/components/registry/README.md</span>.</p></section>`;
+  return band(
+    "Contract",
+    `<p class="unwritten">No contract is written for this component. What follows is the inventory record it was imported with; the contract is authored in <span class="mono">${esc(
+      entry.file
+    )}</span> against the schema in <span class="mono">docs/components/registry/README.md</span>.</p>`
+  );
 }
 
 export function renderComponentPage(entry, context) {
+  const up = "../".repeat(slugPath(entry.id).split("/").length - 1);
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -686,18 +748,17 @@ export function renderComponentPage(entry, context) {
 <style>${CSS}</style>
 </head>
 <body>
-<p class="crumbs"><a href="${esc(
-    "../".repeat(slugPath(entry.id).split("/").length - 1) + "index.html"
-  )}">All components</a></p>
+<a class="back" href="${esc(`${up}index.html`)}">← All components</a>
 ${renderHeader(entry, context)}
 ${renderUnwritten(entry)}
 ${renderPurpose(entry)}
 ${renderUseWhen(entry, context)}
 ${renderRequirements(entry)}
-${renderApi(entry)}
-${renderSizing(entry)}
+${renderApi(entry, context.resolveToken)}
+${renderSizing(entry, context.resolveToken)}
 ${renderLimitations(entry)}
-${renderFooter(entry, context)}
+${renderRelations(entry, context)}
+${renderRecord(entry, context)}
 </body>
 </html>
 `;
@@ -716,19 +777,19 @@ export function renderIndex(entries, context) {
   const written = entries.filter((entry) => derive(entry).documented).length;
 
   const body = groups
-    .map(
-      (group) => `<div class="index-group">
-<h2>${esc(group.level ?? "no level")} <span class="muted">${group.rows.length}</span></h2>
-<ul class="index-list">${group.rows
-        .map(
-          (entry) => `<li>
+    .map((group) =>
+      band(
+        `${group.level ?? "no level"} · ${group.rows.length}`,
+        `<ul class="index-list">${group.rows
+          .map(
+            (entry) => `<li>
 <a href="${esc(pagePathFor(entry.id))}">${esc(entry.name)}</a>
-<span class="muted">${esc(entry.role ?? "")}</span>
-<span class="muted">${esc(entry.summary ?? "")}</span>
+<span class="role">${esc(entry.role ?? "")}</span>
+<span class="blurb">${esc(entry.summary ?? "")}</span>
 </li>`
-        )
-        .join("")}</ul>
-</div>`
+          )
+          .join("")}</ul>`
+      )
     )
     .join("");
 
@@ -741,14 +802,12 @@ export function renderIndex(entries, context) {
 <style>${CSS}</style>
 </head>
 <body>
-<header>
+<header class="masthead">
 <h1>Stylos components</h1>
-<p class="summary">${entries.length} entries, ${written} of them with a contract written, generated from <span class="mono">docs/components/registry/</span> on ${esc(
-    context.generated
-  )}.</p>
-<p class="badges"><span class="badge">derived — edit the YAML, then rebuild with npm run components:view</span></p>
+<p class="summary">${entries.length} entries, ${written} of them with a contract written.</p>
+<div class="badges"><span class="caps">generated ${esc(context.generated)}</span><span class="sep">·</span><span class="caps">npm run components:view</span></div>
+<p class="family">The filterable index over the same data, with relations and Airtable history, is <a href="../registry.html">registry.html</a>.</p>
 </header>
-<p class="muted">The filterable index over the same data, with relations and Airtable history, is <a href="../registry.html">registry.html</a> — built by <span class="mono">npm run registry:view</span>.</p>
 ${body}
 </body>
 </html>
@@ -756,7 +815,10 @@ ${body}
 }
 
 /** What every page needs about the rest of the registry: who exists, who is kin. */
-export function pageContext(entries, { generated = new Date().toISOString().slice(0, 10) } = {}) {
+export function pageContext(
+  entries,
+  { generated = new Date().toISOString().slice(0, 10), resolveToken = () => undefined } = {}
+) {
   const family = new Map();
   for (const entry of entries) {
     if (!entry.family) continue;
@@ -767,6 +829,7 @@ export function pageContext(entries, { generated = new Date().toISOString().slic
     known: new Set(entries.map((entry) => entry.id)),
     family,
     generated,
+    resolveToken,
     importDate: "2026-08-20",
   };
 }
@@ -786,7 +849,7 @@ const isMain = process.argv[1] && fileURLToPath(import.meta.url) === path.resolv
 if (isMain) {
   const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
   const entries = loadRegistry(root);
-  const pages = buildPages(entries);
+  const pages = buildPages(entries, { resolveToken: createTokenResolver(root) });
 
   const out = path.join(root, "build/components");
   for (const [relative, html] of pages) {

@@ -35,43 +35,38 @@ sizing_model:
   horizontal: "hug"
   vertical: "hug"
   adjustable: false
-  intent: "The height run is authored per size, not inherited from the box. The box happens to be the taller element at every size, but the run is a decision and can move independently of Checkbox Input. Neither axis is adjustable: a fixed width is what Checkbox Text is for."
+  intent: "The run is authored per size, not inherited from the box. The box happens to be the tallest element at every size, so the component height follows it — but that is a consequence, not the rule, and the run can move independently of Checkbox Input. Neither axis is adjustable: a fixed width is what Checkbox Text is for. Every dimension is a token name; the component height is not recorded because it is derived from the box and the line box. Resolve values with `npm run tokens:report`."
   sizes:
     -
       size: "extra small"
-      height: 16
-      box: 16
-      gap: 4
-      measure: "0_750"
-      line_height_family: "string"
+      box: "size/s-2_000"
+      gap: "gap/g-0_500"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
     -
       size: "small"
-      height: 20
-      box: 20
-      gap: 5
-      measure: "0_875"
-      line_height_family: "string"
+      box: "size/s-2_500"
+      gap: "gap/g-0_625"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
     -
       size: "medium"
-      height: 24
-      box: 24
-      gap: 6
-      measure: "1_000"
-      line_height_family: "string"
+      box: "size/s-3_000"
+      gap: "gap/g-0_750"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
     -
       size: "large"
-      height: 28
-      box: 28
-      gap: 7
-      measure: "1_250"
-      line_height_family: "string"
+      box: "size/s-3_500"
+      gap: "gap/g-0_875"
+      font_size: "size/1_250"
+      line_height: "line height/string/1_250"
     -
       size: "extra large"
-      height: 32
-      box: 32
-      gap: 8
-      measure: "1_500"
-      line_height_family: "string"
+      box: "size/s-4_000"
+      gap: "gap/g-1_000"
+      font_size: "size/1_500"
+      line_height: "line height/string/1_500"
 variants:
   count: 60
   complete_cross_product: true

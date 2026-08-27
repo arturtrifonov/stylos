@@ -37,6 +37,7 @@ import {
   LINE_HEIGHT_FAMILIES,
   COMPONENT_FILE_KEYS,
 } from "./lib/registry.mjs";
+import { SIZING_TOKEN_FIELDS, createTokenResolver } from "./lib/sizing.mjs";
 
 // 93 of the 96 entries carry none of the contract fields — they are the
 // Airtable inventory and nothing more. Absence is never a failure: every check
@@ -58,7 +59,7 @@ function daysSince(date, today) {
   return Math.floor((today.getTime() - then) / 86400000);
 }
 
-export function checkRegistry(entries, { today = new Date() } = {}) {
+export function checkRegistry(entries, { today = new Date(), resolveToken = null } = {}) {
   const errors = [];
   const reports = [];
 
@@ -171,7 +172,7 @@ export function checkRegistry(entries, { today = new Date() } = {}) {
 
   for (const entry of entries) {
     if (!entry.id) continue;
-    checkContract(entry, byId, errors);
+    checkContract(entry, byId, errors, resolveToken);
     reportContract(entry, entries, reports, today);
   }
 
@@ -184,7 +185,7 @@ export function checkRegistry(entries, { today = new Date() } = {}) {
 // 93 legacy entries carry none of them and must pass; a contract that carries
 // a field carries it correctly or fails.
 
-function checkContract(entry, byId, errors) {
+function checkContract(entry, byId, errors, resolveToken) {
   const file = entry.file;
   const api = properties(entry);
 
@@ -317,6 +318,29 @@ function checkContract(entry, byId, errors) {
         );
       }
       for (const row of sizes) {
+        for (const [field, collection] of SIZING_TOKEN_FIELDS) {
+          const value = row?.[field];
+          if (value === undefined) continue;
+
+          // A number here is a transcription of something that lives in
+          // tokens/, and it is wrong the first time the scale moves.
+          if (typeof value !== "string") {
+            errors.push(
+              `${file}: sizing_model.sizes "${row.size}" has ${field}: ${JSON.stringify(value)} — ` +
+                `every dimension and type measure is a token name, never a number`
+            );
+            continue;
+          }
+          // Resolved on every build, so a name that addresses nothing has to
+          // break here rather than leave a blank cell on the page.
+          if (resolveToken && resolveToken(field, value) === undefined) {
+            errors.push(
+              `${file}: sizing_model.sizes "${row.size}" has ${field}: "${value}", ` +
+                `which does not resolve against tokens/${collection}.yaml`
+            );
+          }
+        }
+
         const family = row?.line_height_family;
         if (family !== undefined && !LINE_HEIGHT_FAMILIES.includes(family)) {
           errors.push(
@@ -413,7 +437,7 @@ const isMain = process.argv[1] && fileURLToPath(import.meta.url) === path.resolv
 if (isMain) {
   const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
   const entries = loadRegistry(root);
-  const { ok, errors, reports } = checkRegistry(entries);
+  const { ok, errors, reports } = checkRegistry(entries, { resolveToken: createTokenResolver(root) });
 
   for (const report of reports) console.error(`REPORT  ${report}`);
   for (const error of errors) console.error(`FAIL    ${error}`);

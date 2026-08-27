@@ -38,23 +38,23 @@ sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
   adjustable: false
-  intent: "Square at every size, and the run is authored rather than derived from anything. Both axes are intrinsic — sizing.md names checkbox indicators among the dimensions never adjusted by hand. The 1px inside stroke does not scale with the box."
+  intent: "Square at every size, and the run is authored rather than derived from anything. Both axes are intrinsic — sizing.md names checkbox indicators among the dimensions never adjusted by hand. The 1px inside stroke does not scale with the box. Sizes are recorded as token names, never as numbers: run `npm run tokens:report dimension` to resolve them."
   sizes:
     -
       size: "extra small"
-      box: 16
+      box: "size/s-2_000"
     -
       size: "small"
-      box: 20
+      box: "size/s-2_500"
     -
       size: "medium"
-      box: 24
+      box: "size/s-3_000"
     -
       size: "large"
-      box: 28
+      box: "size/s-3_500"
     -
       size: "extra large"
-      box: 32
+      box: "size/s-4_000"
 variants:
   count: 60
   complete_cross_product: true

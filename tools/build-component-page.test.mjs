@@ -5,6 +5,18 @@ import { buildPages, pageContext, renderComponentPage } from "./build-component-
 import { checkRegistry } from "./lint-registry.mjs";
 import { composeFigmaDescription, registryPathFor } from "./lib/registry.mjs";
 
+// A stand-in for tokens/. The real resolver reads the canonical set; a test
+// says which names exist and nothing else, so a token renamed in tokens/ does
+// not break a test that is about the contract.
+const TOKENS = new Map([
+  ["box:size/s-2_000", 16],
+  ["box:size/s-3_000", 24],
+  ["gap:gap/g-0_500", 4],
+  ["font_size:size/0_750", 12],
+  ["line_height:line height/string/0_750", 12],
+]);
+const resolveToken = (field, name) => TOKENS.get(`${field}:${name}`);
+
 // An entry in the shape lib/registry.mjs produces. Two builders, because the
 // registry holds two kinds of thing: 93 inventory rows with no contract at all,
 // and the contracts. A test says only what it is about; everything else is
@@ -58,8 +70,14 @@ function contract(fields = {}) {
       adjustable: false,
       intent: "Square at every size, and the run is authored.",
       sizes: [
-        { size: "extra small", box: 16, line_height_family: "string" },
-        { size: "medium", box: 24, line_height_family: "string" },
+        {
+          size: "extra small",
+          box: "size/s-2_000",
+          gap: "gap/g-0_500",
+          font_size: "size/0_750",
+          line_height: "line height/string/0_750",
+        },
+        { size: "medium", box: "size/s-3_000" },
       ],
     },
     variants: { count: 4, complete_cross_product: true },
@@ -101,7 +119,7 @@ function contract(fields = {}) {
 const alternative = legacy("Checkbox Label", { family: "Checkbox" });
 
 function check(entry, options) {
-  return checkRegistry([entry, alternative], options);
+  return checkRegistry([entry, alternative], { resolveToken, ...options });
 }
 
 /** Apply a change to one property of the contract, leaving the rest valid. */
@@ -241,7 +259,7 @@ test("fails a sizing run that does not match the size property, value for value"
   const entry = contract();
   entry.sizingModel = {
     ...entry.sizingModel,
-    sizes: [{ size: "medium", box: 24 }, { size: "extra small", box: 16 }],
+    sizes: [{ size: "medium", box: "size/s-3_000" }, { size: "extra small", box: "size/s-2_000" }],
   };
   assert.match(
     check(entry).errors.join("\n"),
@@ -258,13 +276,55 @@ test("fails a sizing axis outside the four", () => {
   );
 });
 
+test("fails a dimension or type measure written as a number", () => {
+  const entry = contract();
+  entry.sizingModel = {
+    ...entry.sizingModel,
+    sizes: [
+      { size: "extra small", box: 16, gap: "gap/g-0_500" },
+      { size: "medium", box: "size/s-3_000" },
+    ],
+  };
+  assert.match(
+    check(entry).errors.join("\n"),
+    /has box: 16 — every dimension and type measure is a token name, never a number/
+  );
+});
+
+test("fails a token name that addresses nothing in tokens/", () => {
+  const entry = contract();
+  entry.sizingModel = {
+    ...entry.sizingModel,
+    sizes: [
+      { size: "extra small", box: "size/s-2_000", font_size: "size/9_999" },
+      { size: "medium", box: "size/s-3_000" },
+    ],
+  };
+  assert.match(
+    check(entry).errors.join("\n"),
+    /has font_size: "size\/9_999", which does not resolve against tokens\/font\.yaml/
+  );
+});
+
+test("says nothing about token names where no resolver was handed in", () => {
+  const entry = contract();
+  entry.sizingModel = {
+    ...entry.sizingModel,
+    sizes: [
+      { size: "extra small", box: "size/s-2_000", font_size: "size/9_999" },
+      { size: "medium", box: "size/s-3_000" },
+    ],
+  };
+  assert.deepEqual(checkRegistry([entry, alternative]).errors, []);
+});
+
 test("fails a line height family outside the four", () => {
   const entry = contract();
   entry.sizingModel = {
     ...entry.sizingModel,
     sizes: [
-      { size: "extra small", box: 16, line_height_family: "label" },
-      { size: "medium", box: 24 },
+      { size: "extra small", box: "size/s-2_000", line_height_family: "label" },
+      { size: "medium", box: "size/s-3_000" },
     ],
   };
   assert.match(
@@ -326,7 +386,7 @@ test("a legacy entry with no contract fields fails nothing and still gets a page
   const result = checkRegistry(entries);
   assert.deepEqual(result.errors, []);
 
-  const pages = buildPages(entries, { generated: "2026-08-27" });
+  const pages = buildPages(entries, { generated: "2026-08-27", resolveToken });
   const html = pages.get("table/td-text.html");
   assert.ok(html, "no page was written for the legacy entry");
   assert.match(html, /Table \/ TD Text/);
@@ -334,36 +394,88 @@ test("a legacy entry with no contract fields fails nothing and still gets a page
 });
 
 test("invents no copy for a field that is absent", () => {
-  const html = buildPages([legacy("Popover")], { generated: "2026-08-27" }).get("popover.html");
+  const html = buildPages([legacy("Popover")], { generated: "2026-08-27", resolveToken }).get(
+    "popover.html"
+  );
   assert.doesNotMatch(html, /not specified|none recorded|TBD|Purpose|Public API|Sizing model/);
 });
 
-test("renders the contract's sections in the order the reference lays them out", () => {
+test("groups and orders the sections as §4.1 fixes them", () => {
   const entry = contract();
-  const html = renderComponentPage(entry, pageContext([entry, alternative]));
+  const html = renderComponentPage(entry, pageContext([entry, alternative], { resolveToken }));
   const headings = [...html.matchAll(/<h2>([^<]+)<\/h2>/g)].map((match) => match[1]);
-  assert.deepEqual(headings.slice(0, 6), [
+  assert.deepEqual(headings, [
     "Purpose",
     "Use when / do not use when",
     "Requirements",
     "Public API",
-    "Sizing model",
+    "Sizing and type",
     "Limitations",
+    "Record",
   ]);
+});
+
+test("resolves every token name and prints the value with the name", () => {
+  const entry = contract();
+  const html = renderComponentPage(entry, pageContext([entry, alternative], { resolveToken }));
+
+  // The value leads, the address follows. Neither reads on its own.
+  assert.match(html, /<span class="value-px">16<span class="faint"> px<\/span><\/span>/);
+  assert.match(html, /<span class="token">size\/s-2_000<\/span>/);
+  assert.match(html, /<span class="value-px">4<span class="faint"> px<\/span><\/span>/);
+  assert.match(html, /<span class="token">gap\/g-0_500<\/span>/);
+
+  // Font size and line height are on the same rows, not in a section of their
+  // own: they move with the box and are compared against it.
+  assert.match(html, /<span class="token">line height\/string\/0_750<\/span>/);
+  assert.doesNotMatch(html, /<h2>Typography<\/h2>/);
+
+  // The field says which collection answers for it.
+  assert.match(html, /<span class="from">dimension<\/span>/);
+  assert.match(html, /<span class="from">font<\/span>/);
+});
+
+test("leaves no bare token name anywhere on the page", () => {
+  const entry = contract();
+  const html = renderComponentPage(entry, pageContext([entry, alternative], { resolveToken }));
+  for (const match of html.matchAll(/<span class="token">([^<]+)<\/span>/g)) {
+    assert.notEqual(resolveToken("box", match[1]) ?? resolveToken("gap", match[1]) ??
+      resolveToken("font_size", match[1]) ?? resolveToken("line_height", match[1]), undefined,
+      `${match[1]} is printed without a value`);
+  }
 });
 
 test("gives every value a preview slot at the size a real render would take", () => {
   const entry = contract();
-  const html = renderComponentPage(entry, pageContext([entry, alternative]));
-  // extra small is a 16px box and medium a 24px one, from sizing_model.sizes.
+  const html = renderComponentPage(entry, pageContext([entry, alternative], { resolveToken }));
+  // extra small resolves to a 16px box and medium to a 24px one, through
+  // tokens/ — the slot is measured, not guessed.
   assert.match(html, /class="slot" style="width:16px;height:16px"/);
   assert.match(html, /class="slot" style="width:24px;height:24px"/);
   assert.match(html, /title="size=extra small, is checked=false"/);
 });
 
+test("takes the slot height from the taller of the box and the line box", () => {
+  // Which is why no height is recorded: at extra small this component's line
+  // box is 18 and its box is 16, so the render is 18 tall.
+  const entry = contract({
+    sizingModel: {
+      horizontal: "hug",
+      vertical: "hug",
+      intent: "Height follows the line box where the copy wraps.",
+      sizes: [{ size: "extra small", box: "size/s-2_000", line_height: "line height/text/0_750" }],
+    },
+  });
+  const context = pageContext([entry, alternative], {
+    resolveToken: (field, name) =>
+      name === "line height/text/0_750" ? 18 : resolveToken(field, name),
+  });
+  assert.match(renderComponentPage(entry, context), /class="slot" style="width:168px;height:18px"/);
+});
+
 test("escapes every string out of the YAML — no field is trusted markup", () => {
   const entry = contract({ summary: '</style><script>alert(1)</script>' });
-  const html = renderComponentPage(entry, pageContext([entry, alternative]));
+  const html = renderComponentPage(entry, pageContext([entry, alternative], { resolveToken }));
   assert.doesNotMatch(html, /<script>alert/);
   assert.match(html, /&lt;script&gt;alert\(1\)/);
 });
@@ -381,7 +493,7 @@ test("composes the Figma description to exactly three lines", () => {
 
 test("reaches nothing over the network — no CDN, no font, no fetch", () => {
   const entry = contract();
-  const pages = buildPages([entry, alternative], { generated: "2026-08-27" });
+  const pages = buildPages([entry, alternative], { generated: "2026-08-27", resolveToken });
   for (const [name, html] of pages) {
     const remote = [...html.matchAll(/(https?:)?\/\/[^"'\s)]+/g)].map((match) => match[0]);
     assert.ok(
@@ -398,7 +510,7 @@ test("links between pages relatively, from wherever the page sits in the tree", 
     level: "object",
     children: ["Checkbox Label"],
   });
-  const pages = buildPages([nested, alternative], { generated: "2026-08-27" });
+  const pages = buildPages([nested, alternative], { generated: "2026-08-27", resolveToken });
   assert.match(pages.get("table/td-text.html"), /href="\.\.\/checkbox-label\.html"/);
   assert.match(pages.get("table/td-text.html"), /href="\.\.\/index\.html"/);
   assert.match(pages.get("checkbox-label.html"), /href="index\.html"/);
@@ -406,14 +518,14 @@ test("links between pages relatively, from wherever the page sits in the tree", 
 
 test("links a family member to its siblings and nothing else", () => {
   const entry = contract();
-  const html = renderComponentPage(entry, pageContext([entry, alternative]));
+  const html = renderComponentPage(entry, pageContext([entry, alternative], { resolveToken }));
   assert.match(html, /Checkbox family: <a href="checkbox-label\.html">Checkbox Label<\/a>/);
   assert.doesNotMatch(html, /checkbox-input\.html">Checkbox Input/);
 });
 
 test("carries no token value onto the page", () => {
   const entry = contract();
-  const html = renderComponentPage(entry, pageContext([entry, alternative]));
+  const html = renderComponentPage(entry, pageContext([entry, alternative], { resolveToken }));
   // The contract holds no token names and the page must not go looking for
   // any: every colour on the page is the viewer's own.
   assert.doesNotMatch(html, /--stylos|tokens\//);
