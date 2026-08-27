@@ -4,6 +4,15 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-08-27 (readiness, so the registry reads at a glance)
+
+`build/registry.html` is a table of 99 rows in which the two facts that say how far a component has been taken — `documented` and `linked` — sat at the far right as two words reading "yes" or "—". Reading which components are ready meant reading two columns and doing the AND in your head, row by row.
+
+- **One derived word, second column, in colour.** `readiness()` in `tools/lib/registry.mjs` reads the two flags as `ready` · `in progress` · `not started`, and the view carries it as a sortable and filterable column beside the component name. Today it says 4 ready and 95 not started, which is the true picture.
+- **Still derived, never authored** ([SPEC 0002](docs/specs/0002-registry-viewer.md) §3.2). `derive()` keeps its shape and readiness is composed from it, so there is no third fact to keep in step and nothing to tick by hand.
+- **Colour is the second cue, never the only one.** The cell carries the word; the tone and the dot only make the column scannable, and the two tones are the ones the generated component page already uses — green for done, amber for partway, muted for neither. No Stylos colour is hand-copied in, so the migration to generated custom properties is still the same swap.
+- **The authored lifecycle is shown apart from it.** `status` — `draft` / `published` / `deprecated` — was a known field that the view dropped on the floor; it now sits in the detail panel beside level and role. A complete record of a draft component is a real state, and conflating it with readiness would have made the new column lie.
+
 ### Added — 2026-08-27 (the component page, and a validator that reads the contract)
 
 Built to [SPEC 0003](docs/specs/0003-component-page.md). The contract became data on 2026-08-26; this is what reads it.

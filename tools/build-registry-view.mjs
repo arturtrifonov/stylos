@@ -18,7 +18,16 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { loadRegistry, derive, pagePathFor, figmaUrl, LEVELS, ROLES } from "./lib/registry.mjs";
+import {
+  loadRegistry,
+  derive,
+  readiness,
+  pagePathFor,
+  figmaUrl,
+  LEVELS,
+  ROLES,
+  READINESS,
+} from "./lib/registry.mjs";
 
 // Neutral and plain on purpose: this is a tool, not a showcase. No Stylos
 // colour is hand-copied in — once the CSS build exists (PLAN.md Stage 3) this
@@ -34,6 +43,8 @@ const CSS = `
   --line: #e4e4e7;
   --accent: #3f3f46;
   --selected: #eef2ff;
+  --ready: #17683a;
+  --progress: #8a5300;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -44,6 +55,8 @@ const CSS = `
     --line: #34343a;
     --accent: #d4d4d8;
     --selected: #2a2a44;
+    --ready: #5cc98a;
+    --progress: #e0b062;
   }
 }
 * { box-sizing: border-box; }
@@ -112,7 +125,21 @@ tbody tr { cursor: pointer; }
 tbody tr:hover { background: var(--bg-sunken); }
 tbody tr[aria-selected="true"] { background: var(--selected); }
 td.flag { text-align: center; color: var(--fg-muted); }
-td.flag[data-on="true"] { color: var(--fg); }
+td.flag[data-on="true"] { color: var(--ready); }
+/* Colour is the second cue, never the only one: the word is the answer and the
+   dot only makes the column scannable. Two tones plus the muted foreground —
+   the same three the generated component page uses for its verdicts. */
+.status[data-status="ready"] { color: var(--ready); }
+.status[data-status="in progress"] { color: var(--progress); }
+.status[data-status="not started"] { color: var(--fg-muted); }
+.status .dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  margin-right: 6px;
+}
 td.batch { text-align: right; font-variant-numeric: tabular-nums; }
 tbody tr.group-row { cursor: default; }
 tbody tr.group-row:hover { background: none; }
@@ -173,12 +200,14 @@ const APP = `
 var DATA = window.__REGISTRY__;
 var LEVELS = DATA.levels;
 var ROLES = DATA.roles;
+var READINESS = DATA.readiness;
 var entries = DATA.entries;
 var byId = new Map(entries.map(function (e) { return [e.id, e]; }));
 
 var state = {
   levels: new Set(),
   roles: new Set(),
+  readiness: new Set(),
   batches: new Set(),
   query: "",
   sort: "name",
@@ -204,6 +233,7 @@ function el(tag, props, children) {
 function clearFilters() {
   state.levels.clear();
   state.roles.clear();
+  state.readiness.clear();
   state.batches.clear();
   state.query = "";
 }
@@ -211,6 +241,7 @@ function clearFilters() {
 function matches(entry) {
   if (state.levels.size > 0 && !state.levels.has(entry.level)) return false;
   if (state.roles.size > 0 && !state.roles.has(entry.role)) return false;
+  if (state.readiness.size > 0 && !state.readiness.has(entry.readiness)) return false;
   if (state.batches.size > 0 && !state.batches.has(entry.batch)) return false;
   if (state.query && entry.name.toLowerCase().indexOf(state.query) === -1) return false;
   return true;
@@ -222,6 +253,7 @@ function matches(entry) {
 function sortKey(entry) {
   if (state.sort === "level") return String(LEVELS.indexOf(entry.level));
   if (state.sort === "role") return entry.role || "";
+  if (state.sort === "readiness") return String(READINESS.indexOf(entry.readiness));
   if (state.sort === "flow") return entry.flow_behavior.join(", ");
   if (state.sort === "batch") return entry.batch === null ? "zzz" : String(entry.batch).padStart(3, "0");
   if (state.sort === "documented") return entry.documented ? "1" : "0";
@@ -263,6 +295,11 @@ function visible() {
 
 var COLUMNS = [
   { key: "name", label: "Component" },
+  {
+    key: "readiness",
+    label: "Readiness",
+    title: "Derived from the two columns on the right: ready = the contract is written and the entry is linked to Figma. Not the component's lifecycle — that is Status, in the panel",
+  },
   { key: "level", label: "Level" },
   { key: "role", label: "Role" },
   { key: "flow", label: "Flow" },
@@ -303,6 +340,11 @@ function renderFilters() {
   host.appendChild(
     group("Role", ROLES, state.roles, function (value) {
       return entries.filter(function (e) { return e.role === value; }).length;
+    })
+  );
+  host.appendChild(
+    group("Readiness", READINESS, state.readiness, function (value) {
+      return entries.filter(function (e) { return e.readiness === value; }).length;
     })
   );
   if (DATA.batches.length > 0) {
@@ -389,6 +431,10 @@ function renderTable() {
         onclick: function () { select(entry.id); },
       });
       tr.appendChild(el("td", { text: entry.name }));
+      tr.appendChild(el("td", { class: "status", "data-status": entry.readiness }, [
+        el("span", { class: "dot" }),
+        el("span", { text: entry.readiness }),
+      ]));
       tr.appendChild(el("td", { text: entry.level || "—" }));
       tr.appendChild(el("td", { text: entry.role || "—" }));
       tr.appendChild(el("td", { text: entry.flow_behavior.join(", ") || "—" }));
@@ -405,10 +451,21 @@ function renderTable() {
 
 function renderStatus() {
   var shown = visible().length;
+  var ready = entries.filter(function (e) { return e.readiness === "ready"; }).length;
   var documented = entries.filter(function (e) { return e.documented; }).length;
   var linked = entries.filter(function (e) { return e.linked; }).length;
   document.getElementById("status").textContent =
-    shown + " of " + entries.length + " shown · " + documented + " with a contract · " + linked + " linked to Figma";
+    shown + " of " + entries.length + " shown · " + ready + " ready · " +
+    documented + " with a contract · " + linked + " linked to Figma";
+}
+
+// The same word and colour the row carries, so the panel cannot read as a
+// second opinion about the same entry.
+function readinessTag(value) {
+  return el("span", { class: "status", "data-status": value }, [
+    el("span", { class: "dot" }),
+    el("span", { text: value }),
+  ]);
 }
 
 function relationList(ids) {
@@ -463,6 +520,8 @@ function renderDetail() {
     ["Level", entry.level || "—"],
     ["Role", entry.role || "—"],
     ["Flow", entry.flow_behavior.join(", ") || "—"],
+    // Authored lifecycle, not the derived readiness above it in the table.
+    ["Status", entry.status || "—"],
   ].forEach(function (pair) {
     facts.appendChild(el("dt", { text: pair[0] }));
     facts.appendChild(el("dd", { text: pair[1] }));
@@ -471,6 +530,8 @@ function renderDetail() {
 
   host.appendChild(el("h3", { text: "Derived" }));
   var derived = el("dl", {});
+  derived.appendChild(el("dt", { text: "Readiness" }));
+  derived.appendChild(el("dd", {}, [readinessTag(entry.readiness)]));
   derived.appendChild(el("dt", { text: "Contract" }));
   derived.appendChild(
     el("dd", {}, [
@@ -605,6 +666,7 @@ export function buildViewData(root, entries) {
     import_date: "2026-08-20",
     levels: LEVELS,
     roles: ROLES,
+    readiness: READINESS,
     batches,
     entries: entries.map((entry) => {
       const { documented, linked } = derive(entry);
@@ -623,6 +685,8 @@ export function buildViewData(root, entries) {
         import: entry.import,
         batch: typeof entry.import?.batch === "number" ? entry.import.batch : null,
         extra: entry.extra,
+        status: entry.status,
+        readiness: readiness(entry),
         page_path: entry.id ? `components/${pagePathFor(entry.id)}` : null,
         documented,
         linked,

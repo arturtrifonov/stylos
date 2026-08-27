@@ -216,6 +216,21 @@ export function derive(entry) {
   };
 }
 
+// The two flags above, read as one word — how far the *record* has been taken,
+// not where the component is in its life. Lifecycle is the authored `status`
+// field (draft / published / deprecated) and stays separate: an entry can be a
+// complete record of a draft component.
+//
+// Most complete first, so a sort on the index puts what is ready at the top.
+export const READINESS = ["ready", "in progress", "not started"];
+
+export function readiness(entry) {
+  const { documented, linked } = derive(entry);
+  if (documented && linked) return "ready";
+  if (documented || linked) return "in progress";
+  return "not started";
+}
+
 /**
  * The three lines that go into the component's Figma `descriptionMarkdown`,
  * composed from fields that already exist rather than read from a field of
