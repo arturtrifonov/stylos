@@ -61,7 +61,7 @@ reverted in the same call; the text is unchanged but the history entries exist.
 
 ## The GitHub connector
 
-`https://github.com/wrgraff/stylos.git` is connected to Figma as an MCP connector for
+`https://github.com/arturtrifonov/stylos.git` is connected to Figma as an MCP connector for
 the Figma agent. Owner's finding, 2026-08-26: it works, and the agent locates specific
 files in the repository reliably.
 

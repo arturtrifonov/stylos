@@ -1,10 +1,10 @@
 ---
 name: stylos-description-sync
-description: "Fill the Figma description of the selected components from their registry entries in the Stylos repository. For each selected component or component set, derive the registry path from the component's name, read that YAML file over the GitHub connector, compose the description from summary, use_when and do_not_use_when, and write it. Supports several selected components at once. Never authors a description: when no registry entry exists, or a required field is missing, stop for that component and report it."
+description: "Fill the Figma description of the selected components from their registry entries in the Stylos repository. For each selected component or component set, derive the registry path from the component's name, read that YAML file over the GitHub connector, compose the description from summary, use_when and do_not_use_when, write it, and point the component's documentation link at that same file. Supports several selected components at once. Never authors a description: when no registry entry exists, or a required field is missing, stop for that component and report it."
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.1
+  version: 0.2
 ---
 
 # Stylos Description Sync
@@ -32,7 +32,7 @@ If nothing is selected, ask the user to select one or more components. Do not sc
 ## The repository
 
 ```
-repository  wrgraff/stylos
+repository  arturtrifonov/stylos
 branch      master
 directory   docs/components/registry/
 ```
@@ -120,7 +120,21 @@ Three cases:
 | identical to the composed text | **write nothing.** Report as unchanged — a no-op write still lands in the file's version history |
 | non-empty and different | show the current text and the composed text, and **ask before overwriting.** Never replace a hand-written description silently |
 
-Do not touch the component in any other way. No renaming, no property changes, no layer edits, no documentation link.
+Do not touch the component in any other way. No renaming, no property changes, no layer edits.
+
+### 7. Set the documentation link
+
+The component's documentation link points at the contract the description was just built from. Its address is a concatenation — never store it anywhere, derive it:
+
+```
+https://github.com/arturtrifonov/stylos/blob/master/<the path from step 1>
+```
+
+So `Checkbox Input` gets `https://github.com/arturtrifonov/stylos/blob/master/docs/components/registry/checkbox-input.yaml`.
+
+**Pin the branch, never a commit.** A link to a commit reads correctly and points at the past, and it does so silently.
+
+Write it only when the component has no documentation link, or has one that differs. Figma surfaces one link; if several are somehow present, replace the set with this one. As with the description, an unchanged link is not rewritten.
 
 ## Report
 
@@ -129,7 +143,7 @@ One row per selected object, in selection order:
 | Component | Registry path | Result |
 | --- | --- | --- |
 
-Results: `written`, `unchanged`, `awaiting confirmation`, `skipped — no registry entry`, `skipped — id mismatch`, `skipped — missing <field>`, `skipped — instance`, `skipped — not a component`.
+Results: `written`, `link only`, `unchanged`, `awaiting confirmation`, `skipped — no registry entry`, `skipped — id mismatch`, `skipped — missing <field>`, `skipped — instance`, `skipped — not a component`.
 
 Add any findings about the repository below the table: a path that did not follow from an `id`, a field whose text reads badly, an entry whose `id` no longer matches Figma.
 
