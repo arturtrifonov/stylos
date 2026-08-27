@@ -1,13 +1,27 @@
-# Hand-edited. This file is the source for its component's structural data.
-# The CSV import that created it ran once, on 2026-08-20, and will not run
-# again — see docs/components/registry/README.md for the schema and workflow.
+# Contract written 2026-08-27 from the live component set. The parents list and
+# the import block are carried over from the CSV import of 2026-08-20.
+# See docs/components/registry/README.md for the schema.
 
 id: "Badge"
 name: "Badge"
 level: "primitive"
 role: "content"
-flow_behavior:
-  - "hug"
+status: "draft"
+version: "0.1"
+summary: "A compact numeric counter attached to another element."
+purpose: "A count has to sit on the thing it counts — the tab, the menu item, the filter — and it must not introduce a second colour language while doing so. Badge is built as a visual extension of text rather than as a control: its surface takes the text colour roles, so it reads as part of the parent's typography instead of as an object stuck onto it, and it picks up whatever tone the surrounding text already carries."
+use_when:
+  - "A small number supports the meaning of a parent element — a navigation item, tab, button, menu item, list row, filter, or notification entry point."
+do_not_use_when:
+  -
+    text: "The content is a word rather than a number — a label, category, or piece of descriptive metadata."
+    instead: "Tag"
+  -
+    text: "The thing being shown is a status with no count, such as an online dot or a state marker."
+    instead: "Indicator"
+  -
+    text: "The element is meant to be selected, removed or acted on. Badge is not interactive and has no state property."
+    instead: "Chips"
 parents:
   - "Accordion / Container"
   - "Accordion / Header"
@@ -61,11 +75,148 @@ parents:
   - "Modal"
   - "Side Panel"
   - "Side Panel Menu"
+flow_behavior:
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "Badge has no accessible name of its own and cannot have one — \"3\" says nothing about what there are three of. The parent must name it: an accessible name on the parent that includes the count, or a visually hidden noun beside the number."
+  -
+    status: "requires"
+    note: "A count that changes without a page change must be announced. Unless the badge sits in a live region, a screen-reader user never learns the number moved, which is the whole point of a counter."
+sizing_model:
+  horizontal: "hug"
+  vertical: "fixed"
+  adjustable: false
+  intent: "The pill rule is the sizing model: minimum width equals height at every size, so a single digit renders as a circle and two or more digits stretch it into a pill. Height is the Primitive run from sizing.md exactly, unmodified. Corner radius is the `round` token at every size and does not scale, which is what keeps the ends semicircular rather than merely very rounded. Weight is `weight/semibold` at every size — a counter is read at a glance, not in a sentence. Resolve token values with `npm run tokens:report`."
+  type_ramp_intent: "The type ramp is deliberately shorter than the height ramp. Five distinct measures under five heights would put extra small at `size/0_500`, which is not readable, so the ramp bottoms out at `size/0_625` and repeats `size/0_875` across medium and large instead. Height steps at every size; type does not, and the repeat is the decision rather than a gap."
+  sizes:
+    -
+      size: "extra small"
+      height: "size/s-1_500"
+      min_width: "size/s-1_500"
+      padding_x: "gap/g-0_250"
+      padding_y: "gap/g-0_000"
+      font_size: "size/0_625"
+      line_height: "line height/string/0_625"
+    -
+      size: "small"
+      height: "size/s-1_750"
+      min_width: "size/s-1_750"
+      padding_x: "gap/g-0_500"
+      padding_y: "gap/g-0_125"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+    -
+      size: "medium"
+      height: "size/s-2_000"
+      min_width: "size/s-2_000"
+      padding_x: "gap/g-0_625"
+      padding_y: "gap/g-0_125"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+    -
+      size: "large"
+      height: "size/s-2_250"
+      min_width: "size/s-2_250"
+      padding_x: "gap/g-0_750"
+      padding_y: "gap/g-0_250"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+    -
+      size: "extra large"
+      height: "size/s-2_500"
+      min_width: "size/s-2_500"
+      padding_x: "gap/g-0_750"
+      padding_y: "gap/g-0_250"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+variants:
+  count: 55
+  complete_cross_product: true
+api:
+  -
+    name: "number text"
+    kind: "text"
+    default: "1"
+    description: "The count, as digits. Nothing enforces that it is numeric and nothing caps its length: the badge hugs, so a four-digit number simply widens it. Where a cap is wanted, the consumer applies it and passes the capped string."
+    examples:
+      -
+        verdict: "do"
+        props:
+          "number text": "3"
+      -
+        verdict: "do"
+        caption: "Cap long counts in the consumer and pass the result. The badge does not truncate."
+        props:
+          "number text": "99+"
+      -
+        verdict: "dont"
+        caption: "A word is not a count. Use Tag."
+        props:
+          "number text": "New"
+  -
+    name: "tone"
+    kind: "variant"
+    default: "base"
+    description: "Which text colour role the badge takes as its surface. There is one tone per text role and the mapping is exact — tone X paints the surface with `text/X` — which is why the list is as long as it is and why it is not a list of semantic slots. The label takes the opposing role: `text/inverted` against every dark surface, `text/base` against `inverted`, and each static role against the other."
+    values:
+      -
+        value: "base"
+      -
+        value: "secondary"
+      -
+        value: "tertiary"
+        note: "Measured at 4.55:1 against the label — it clears 4.5:1 by 0.05. The margin is inside rounding, so any change to the tertiary text role is a contrast change and must be re-measured."
+      -
+        value: "primary"
+      -
+        value: "warning"
+      -
+        value: "danger"
+      -
+        value: "success"
+      -
+        value: "inverted"
+        note: "The only tone whose label is `text/base` rather than `text/inverted`."
+      -
+        value: "static light"
+        note: "Fixed against the theme: it stays light in both light and dark mode, for a badge sitting on imagery or on a surface that does not follow the theme. Its label is `text/static-dark`."
+      -
+        value: "static dark"
+        note: "The dark counterpart of static light, and the only other tone whose label is not `text/inverted`."
+      -
+        value: "disabled"
+        rationale: "Exists because the tone list mirrors the text colour roles one for one, and `text/disabled` is one of them. It is the tone a badge takes when the element it belongs to is unavailable, so that the badge dims with its parent rather than staying bright beside a greyed-out control. Last in the order because it is the only value whose name is a condition rather than a colour."
+        a11y:
+          status: "warning"
+          criterion: "WCAG 2.2 SC 1.4.3"
+          note: "Measured at 1.73:1 — the worst in the set by a wide margin, and short of both 4.5:1 and 3:1. It is exempt only under the inactive-component exception, which holds when the badge genuinely sits inside a disabled control. Used as a muted tone on an active element it is a plain failure, and the number becomes unreadable rather than merely quiet."
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra large"
+    description: "Height, horizontal padding and text measure together. Width is never set: it follows the number, floored at the height."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+limitations:
+  - "No state property. Badge is not interactive and has no hover, active or focus; `tone = disabled` is the only acknowledgement of unavailability, and it is a colour rather than a state."
+  - "No countless form. A notification dot with no number is not a Badge — there is no empty or dot variant, and Indicator is the component for a status with no count."
+  - "No truncation and no overflow cap. Length is the consumer's problem."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
-  node_id: "4479-13507"
-  last_verified: "2026-08-24"
-notes: ""
+  node_id: "287-51411"
+  last_verified: "2026-08-27"
+notes: "The previous figma.node_id on this entry was 4479-13507, which addresses `Button / Button Basic`, not Badge. Corrected 2026-08-27. children absent: Badge is composed of a surface and a text layer, with no nested components."
 import:
   batch: 1
   ready: true
