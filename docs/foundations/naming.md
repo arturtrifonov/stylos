@@ -71,13 +71,14 @@ An input in the error state takes the `danger` colour: `error` is what happened,
 
 ### What a `tone` value may be
 
-**A `tone` value names a colour role the system has.** There are three kinds, and a component draws on whichever fits what it is:
+**A `tone` value names a colour role the system has.** That is the whole rule. The kinds below are where those roles come from, not a closed list of permitted words:
 
 | Kind | Values | For |
 | --- | --- | --- |
 | semantic slots | `base`, `primary`, `success`, `warning`, `danger` | meaning — a primary action, a destructive one |
 | neutral hierarchy | `secondary`, `tertiary`, `inverted` | rank within neutral structure |
 | palette hues by name | `slate`, `amber`, `violet`, … | categorical colour, per the hue-bound roles in [`color.md`](color.md) |
+| a mirrored role family | that family's role names, all of them | a component drawn as an extension of something that already has a colour, rather than as an object of its own |
 
 **Which of them a component offers is the component's own business**, and a component built for categorical colour legitimately exposes the whole palette. Indicator does; that is not a violation, and no list of tone values anywhere is a whitelist every component must satisfy.
 
@@ -89,6 +90,14 @@ Only two words are wrong as a tone:
 | `info` | the system has no such colour ([`color.md`](color.md)) |
 
 `neutral` is neither: it is a palette hue group like `slate` or `zinc`, and `surface/special/neutral` exists.
+
+#### Mirroring a role family
+
+Some components are not objects with a colour but extensions of something that already has one. Badge is the case: it is drawn as a continuation of text, so its surface takes the **text** roles one for one — `tone = X` paints it with `text/X` — and its tone list is that family's list rather than a selection from the vocabulary above.
+
+Where that is the design, the rule is mechanical: **the values are the family's role names, all of them, unchanged.** A mirror that renames a role, or offers a subset chosen by taste, is not a mirror — it is an ordinary tone list and answers to the vocabulary above. State the mirrored family in the component's contract, because it is the only thing that makes the list legible.
+
+This is also the only way a word that names a condition may be a tone value. `text/disabled` is a colour role; `disabled` names it; a component mirroring the text family therefore carries `tone = disabled` without contradicting *A colour is not a state* above, because the value still names a colour role — the role's own name simply happens to be a condition. It is not licence to invent `tone = hover` on a component with no such role to mirror.
 
 **A component whose `tone` carries both kinds at once is a design question, not a naming one.** Indicator is being split for exactly that reason — `Indicator Status` for the semantic tones, a second component for the categorical hues ([`PLAN.md`](../../PLAN.md) Stage 4).
 
