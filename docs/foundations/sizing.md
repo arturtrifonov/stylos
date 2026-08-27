@@ -28,10 +28,10 @@ Each architectural level has a recommended run of five sizes:
 | Level | XS | S | M | L | XL |
 | --- | --- | --- | --- | --- | --- |
 | Primitive | `s-1_500` | `s-1_750` | `s-2_000` | `s-2_250` | `s-2_500` |
-| Element | `s-2_000` | `s-2_250` | `s-2_500` | `s-2_750` | `s-3_000` |
+| Element | `s-2_000` | `s-2_500` | `s-3_000` | `s-3_500` | `s-4_000` |
 | Object | `s-3_000` | `s-4_000` | `s-5_000` | `s-6_000` | `s-7_000` |
 
-The runs overlap deliberately: the same value serves a large Primitive and a small Element, and a large Element and a small Object.
+The runs overlap deliberately, two steps at each seam: `s-2_000` and `s-2_500` serve both a large Primitive and a small Element, and `s-3_000` and `s-4_000` both a large Element and a small Object.
 
 **This is orientation, not obligation.** It says what a component of that level and size usually is — a medium Object is normally 40px tall — so that a new component built to the recommendation lines up with most of what already exists. That is the whole of its authority.
 

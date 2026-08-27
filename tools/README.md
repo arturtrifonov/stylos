@@ -17,12 +17,27 @@ Fails loudly (not silently) if: the include order references a skill directory t
 
 `import-component-registry.mjs` converts an Airtable component-registry CSV export into one YAML file per component under `docs/components/registry/`. It's a one-time-per-refresh bootstrap tool, not a sync — see [docs/components/registry/README.md](../docs/components/registry/README.md) for why hand-editing YAML directly is the expected long-term workflow rather than re-running this against Airtable repeatedly.
 
-`lint-registry.mjs` validates the generated (or hand-edited) YAML: every `children`/`parents` reference must resolve to a real component `id`, and every `level` must be one of the five confirmed values (primitive, element, object, widget, layout).
+`lint-registry.mjs` validates the generated (or hand-edited) YAML on two levels. The registry as a whole: every `children`/`parents` reference resolves to a real component `id`, ids are unique, each file sits at the path its `id` implies, and every `level` is one of the five confirmed values. And each contract, for the fields it carries: statuses, property kinds, accessibility statuses, sizing axes and line-height families inside their vocabularies; a default among its property's values; a `do_not_use_when` alternative that exists; a variant count matching the product; a controlled group that is adjacent; a sizing run matching the size property value for value; a value with a finding and a reason for shipping it. **Absence is never a failure** — 93 entries carry no contract at all, and every contract check runs only where its field is present. See [SPEC 0003](../docs/specs/0003-component-page.md) §3.
 
 ```bash
 npm run import:registry     # regenerate docs/components/registry/*.yaml from the stored CSV (overwrites hand edits)
-npm run validate:registry   # check registry references and levels are internally consistent
+npm run validate:registry   # check the registry and every contract in it against itself
 ```
+
+## `build-registry-view.mjs` and `build-component-page.mjs`
+
+The two readable views over the same data, both generated from `docs/components/registry/` and neither committed.
+
+```bash
+npm run registry:view       # build/registry.html — the filterable index over every entry
+npm run components:view     # build/components/ — one page per component, plus an index
+```
+
+Self-contained by construction: CSS, script and data are inlined, nothing is fetched at build time or at open time, and the files are opened from disk over `file://` where a sibling `fetch` would be blocked. Links between pages are relative, so the tree can be copied anywhere. The only absolute URLs in either output are the Figma links built from the entries themselves, and a test enforces that.
+
+`build-component-page.mjs` renders the contract as it is: sections whose fields are absent are omitted rather than filled with "not specified", and an entry with no contract says so once and then shows the inventory record it does carry. Every place a rendered sample belongs gets a **preview slot** — a placeholder at the dimensions `sizing_model` says the real render will take. Filling those means exporting from Figma, which is separate work; `previewSlot` is the one function that changes when it happens.
+
+It also holds the composer for a component's Figma description, which is derived from `summary`, the first `use_when` and the first `do_not_use_when` rather than authored. Nothing writes it to Figma from here — the repository does not write to Figma at all ([ARCHITECTURE.md](../ARCHITECTURE.md) §1) — but whatever does will take the text from one place.
 
 Both are deliberately dependency-free — the CSV parser and the YAML reader are small and purpose-built rather than pulling in a real CSV/YAML library, per the "keep tools/ small" rule below. If the registry schema grows meaningfully more complex, that trade-off should be revisited rather than the regexes stretched further.
 

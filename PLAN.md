@@ -79,16 +79,15 @@ The long pole is now **S4**: twenty-three component contracts, each needing judg
 | Layout | Modal, Table, Side Panel |
 
 - **First**, settle the documentation boundary — which of `STANDARD.md`'s twenty points live in Figma and which in Markdown. Writing twenty documents before that rule exists guarantees rewriting them.
-- Decide the accessibility target and browser baseline. `STANDARD.md` requires an accessibility section per component, so it cannot wait for Stage 5.
+- Decide the accessibility target and browser baseline. A contract records accessibility findings against the thing each is about, so the target they are judged by cannot wait for Stage 5.
 - Decide the depth of component-specific tokens.
-- Create `docs/components/_template.md` so each document is mechanical rather than re-derived.
 - **Review the skill set before running any of it**: what each remaining skill is for, what to repair, whether it is detailed enough to be followed. `text-sizing` is already gone; `component-integrity-check` and `naming-cleanup` both carry text that predates `docs/foundations/`. A skill that runs on a stale contract writes the stale contract into the library.
 - Run `stylos-component-integrity-check` over the set and **fix findings in Figma before documenting** — otherwise the defect gets written down as the contract.
 - Move every `tone=error` to `tone=danger` as each set is worked through, and drop `neutral` and `info` where they appear. Which sets carry them is only visible in Figma; recording it per component is part of this stage, not a survey to run ahead of it.
-- Write the documents, starting from each registry entry.
-- **Write each component's Figma description while documenting it** — one line of what it is for, one of what it is not for, and where it normally lives if it is used inside another component. That is points 2 and 3 of `STANDARD.md` compressed to what fits in Figma, and it is the only thing besides the name that an agent searching the library can learn about a component. Whether it measurably improves `reference-reconstruction`'s mapping is untested; the description earns its place for a designer browsing the Assets panel either way.
+- Write the contracts, extending each registry entry rather than starting a second file.
+- **Write each component's Figma description while documenting it** — one line of what it is for, one of what it is not for, and where it normally lives if it is used inside another component. It is composed from `summary`, the first `use_when` and the first `do_not_use_when` rather than authored ([`registry/README.md`](docs/components/registry/README.md)), and it is the only thing besides the name that an agent searching the library can learn about a component. Whether it measurably improves `reference-reconstruction`'s mapping is untested; the description earns its place for a designer browsing the Assets panel either way.
 
-**Gate:** every core component has a document meeting the standard, passes the integrity check, and links to its registry entry and Figma node.
+**Gate:** every core component has a contract meeting the standard, passes the integrity check, and records its Figma node.
 **Estimate:** 6–8 weeks.
 
 ---

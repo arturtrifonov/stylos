@@ -30,10 +30,35 @@ import {
   registryPathFor,
   levelRank,
   LEVELS,
+  STATUSES,
+  PROPERTY_KINDS,
+  A11Y_STATUSES,
+  SIZING_AXES,
+  LINE_HEIGHT_FAMILIES,
   COMPONENT_FILE_KEYS,
 } from "./lib/registry.mjs";
 
-export function checkRegistry(entries) {
+// 93 of the 96 entries carry none of the contract fields — they are the
+// Airtable inventory and nothing more. Absence is never a failure: every check
+// below runs only when the field it is about is present, so a legacy entry
+// passes without being pretended to be a contract.
+const CONTRACT_STALE_DAYS = 90;
+
+function properties(entry) {
+  return Array.isArray(entry.api) ? entry.api : [];
+}
+
+function valuesOf(property) {
+  return Array.isArray(property?.values) ? property.values : [];
+}
+
+function daysSince(date, today) {
+  const then = Date.parse(`${date}T00:00:00Z`);
+  if (Number.isNaN(then)) return null;
+  return Math.floor((today.getTime() - then) / 86400000);
+}
+
+export function checkRegistry(entries, { today = new Date() } = {}) {
   const errors = [];
   const reports = [];
 
@@ -144,8 +169,244 @@ export function checkRegistry(entries) {
     }
   }
 
+  for (const entry of entries) {
+    if (!entry.id) continue;
+    checkContract(entry, byId, errors);
+    reportContract(entry, entries, reports, today);
+  }
+
   return { ok: errors.length === 0, errors, reports };
 }
+
+// --- The contract (docs/specs/0003-component-page.md §3) -------------------
+//
+// Every check here is conditional on the field it is about being present. The
+// 93 legacy entries carry none of them and must pass; a contract that carries
+// a field carries it correctly or fails.
+
+function checkContract(entry, byId, errors) {
+  const file = entry.file;
+  const api = properties(entry);
+
+  if (entry.status !== null && !STATUSES.includes(entry.status)) {
+    errors.push(`${file}: status "${entry.status}" is not one of ${STATUSES.join(", ")}`);
+  }
+
+  for (const finding of entry.a11y) {
+    checkFinding(file, "a11y", finding, errors);
+  }
+
+  // `instead` is an anchor, not a phrase: a renamed alternative has to break
+  // loudly rather than leave a sentence pointing at nothing. A null is the
+  // recorded judgement that no other component is right.
+  for (const avoid of entry.doNotUseWhen) {
+    const instead = avoid?.instead;
+    if (instead && !byId.has(instead)) {
+      errors.push(
+        `${file}: do_not_use_when names "${instead}" as the alternative, ` +
+          `which has no matching component id`
+      );
+    }
+  }
+
+  const names = new Set(api.map((property) => property?.name).filter(Boolean));
+
+  api.forEach((property, index) => {
+    const where = `api "${property?.name ?? index}"`;
+
+    if (property?.kind !== undefined && !PROPERTY_KINDS.includes(property.kind)) {
+      errors.push(
+        `${file}: ${where} has kind "${property.kind}", not one of ${PROPERTY_KINDS.join(", ")}`
+      );
+    }
+
+    if (property?.a11y) checkFinding(file, where, property.a11y, errors);
+
+    const values = valuesOf(property);
+
+    if (property?.kind === "variant" && property.default !== undefined && values.length > 0) {
+      const allowed = values.map((value) => value?.value);
+      if (!allowed.includes(property.default)) {
+        errors.push(
+          `${file}: ${where} defaults to "${property.default}", which is not one of its values ` +
+            `(${allowed.join(", ")})`
+        );
+      }
+    }
+
+    for (const value of values) {
+      if (value?.a11y) {
+        checkFinding(file, `${where} value "${value.value}"`, value.a11y, errors);
+        // A component that ships something failing a criterion has to say why.
+        // Silence there reads as an oversight rather than a decision.
+        if (!value.rationale) {
+          errors.push(
+            `${file}: ${where} value "${value.value}" carries an a11y finding and no rationale`
+          );
+        }
+      }
+    }
+
+    const controls = Array.isArray(property?.controls) ? property.controls : [];
+    if (controls.length > 0) {
+      if (property.kind !== "boolean") {
+        errors.push(
+          `${file}: ${where} has controls but kind "${property.kind}" — only a boolean governs ` +
+            `an element's presence (naming.md §9)`
+        );
+      }
+      for (const controlled of controls) {
+        if (!names.has(controlled)) {
+          errors.push(
+            `${file}: ${where} controls "${controlled}", which is not a property of this component`
+          );
+          continue;
+        }
+        // naming.md §9: recording the group is what makes the adjacency
+        // checkable rather than conventional — the controlled properties
+        // occupy the slots straight after the boolean, and nothing unrelated
+        // splits them.
+        const at = api.findIndex((other) => other?.name === controlled);
+        if (at <= index || at > index + controls.length) {
+          errors.push(
+            `${file}: ${where} controls "${controlled}", which does not immediately follow it in ` +
+              `api order (naming.md §9)`
+          );
+        }
+      }
+    }
+  });
+
+  const variants = entry.variants;
+  if (variants?.complete_cross_product === true && typeof variants.count === "number") {
+    const variantProperties = api.filter((property) => property?.kind === "variant");
+    const product = variantProperties.reduce(
+      (total, property) => total * Math.max(valuesOf(property).length, 1),
+      1
+    );
+    if (variantProperties.length > 0 && product !== variants.count) {
+      errors.push(
+        `${file}: variants.count is ${variants.count}, but the variant properties ` +
+          `(${variantProperties
+            .map((property) => `${property.name} of ${valuesOf(property).length}`)
+            .join(", ")}) multiply to ${product}`
+      );
+    }
+  }
+
+  const sizing = entry.sizingModel;
+  if (sizing) {
+    for (const axis of ["horizontal", "vertical"]) {
+      const value = sizing[axis];
+      if (value !== undefined && !SIZING_AXES.includes(value)) {
+        errors.push(
+          `${file}: sizing_model.${axis} is "${value}", not one of ${SIZING_AXES.join(", ")}`
+        );
+      }
+    }
+
+    const sizes = Array.isArray(sizing.sizes) ? sizing.sizes : [];
+    if (sizes.length > 0) {
+      const sizeProperty = api.find((property) => property?.name === "size");
+      const declared = valuesOf(sizeProperty).map((value) => value?.value);
+      const rows = sizes.map((row) => row?.size);
+      if (declared.join(" ") !== rows.join(" ")) {
+        errors.push(
+          `${file}: sizing_model.sizes is ${rows.join(", ") || "empty"} but the size property is ` +
+            `${declared.join(", ") || "not declared"} — they must match exactly, in order`
+        );
+      }
+      for (const row of sizes) {
+        const family = row?.line_height_family;
+        if (family !== undefined && !LINE_HEIGHT_FAMILIES.includes(family)) {
+          errors.push(
+            `${file}: sizing_model.sizes "${row.size}" has line_height_family "${family}", ` +
+              `not one of ${LINE_HEIGHT_FAMILIES.join(", ")}`
+          );
+        }
+      }
+    }
+  }
+}
+
+function checkFinding(file, where, finding, errors) {
+  const status = finding?.status;
+  if (status !== undefined && !A11Y_STATUSES.includes(status)) {
+    errors.push(
+      `${file}: ${where} has a11y.status "${status}", not one of ${A11Y_STATUSES.join(", ")}`
+    );
+  }
+}
+
+// A finding that fails a criterion should say which one — in the `criterion`
+// field, or in the note where the note is the whole of it.
+function namesCriterion(finding) {
+  if (finding?.criterion) return true;
+  return /WCAG|SC \d/.test(String(finding?.note ?? ""));
+}
+
+function reportContract(entry, entries, reports, today) {
+  const api = properties(entry);
+
+  if (api.length > 0) {
+    const missing = [];
+    if (!entry.summary) missing.push("summary");
+    if (!entry.purpose) missing.push("purpose");
+    if (entry.useWhen.length === 0) missing.push("use_when");
+    if (entry.doNotUseWhen.length === 0) missing.push("do_not_use_when");
+    if (missing.length > 0) {
+      reports.push(`"${entry.id}" has an api but no ${missing.join(", ")}`);
+    }
+
+    if (!entry.sizingModel) {
+      reports.push(`"${entry.id}" has an api but no sizing_model`);
+    } else if (!entry.sizingModel.intent) {
+      // Without it the page says "hug" and the deliberateness is gone.
+      reports.push(`"${entry.id}" has a sizing_model with no intent`);
+    }
+  }
+
+  for (const property of api) {
+    if (!property?.description) {
+      reports.push(`"${entry.id}" property "${property?.name}" has no description`);
+    }
+  }
+
+  const findings = [
+    ...entry.a11y.map((finding) => [finding, "the component"]),
+    ...api.flatMap((property) => [
+      ...(property?.a11y ? [[property.a11y, `property "${property.name}"`]] : []),
+      ...valuesOf(property)
+        .filter((value) => value?.a11y)
+        .map((value) => [value.a11y, `${property.name} = "${value.value}"`]),
+    ]),
+  ];
+  for (const [finding, where] of findings) {
+    if ((finding.status === "warning" || finding.status === "fail") && !namesCriterion(finding)) {
+      reports.push(
+        `"${entry.id}" records an a11y ${finding.status} on ${where} without naming a criterion`
+      );
+    }
+  }
+
+  if (entry.status === "published" && entry.figma?.last_verified) {
+    const age = daysSince(entry.figma.last_verified, today);
+    if (age !== null && age > CONTRACT_STALE_DAYS) {
+      reports.push(
+        `"${entry.id}" is published and was last verified against Figma ${age} days ago ` +
+          `(${entry.figma.last_verified})`
+      );
+    }
+  }
+
+  if (entry.family) {
+    const siblings = entries.filter((other) => other !== entry && other.family === entry.family);
+    if (siblings.length === 0) {
+      reports.push(`"${entry.id}" is the only member of family "${entry.family}"`);
+    }
+  }
+}
+
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
 

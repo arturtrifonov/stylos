@@ -4,6 +4,29 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-08-27 (the component page, and a validator that reads the contract)
+
+Built to [SPEC 0003](docs/specs/0003-component-page.md). The contract became data on 2026-08-26; this is what reads it.
+
+- **`npm run components:view`** writes `build/components/` — one self-contained HTML page per entry, plus an index. Same constraints as the registry viewer: everything inlined, nothing fetched at build time or at open time, output gitignored and rebuilt rather than committed, links between pages relative so the tree can be copied anywhere. Every row in `build/registry.html` now links to its page, legacy entries included.
+- **The page renders what exists and invents nothing.** A section whose fields are absent is not a heading over a blank space; it is not there. An entry with no contract says so once and then shows the inventory record it does carry, which is the state of 93 of the 96 entries.
+- **The preview slot is the one deliberately unfinished thing.** Every place a rendered sample belongs gets a placeholder at the dimensions `sizing_model` says the real render will take. Filling them means exporting from Figma, which is separate work; `previewSlot` is the only function that changes when it happens, and nothing structural moves.
+- **`npm run validate:registry` now enforces the contract**, field by field, where the field is present: statuses, property kinds, accessibility statuses, sizing axes and line-height families inside their vocabularies; a default among its property's values; a `do_not_use_when` alternative that resolves; a variant count matching the product of the value counts; a controlled group adjacent to its boolean ([`naming.md`](docs/foundations/naming.md) §9); a sizing run matching the size property value for value; a value carrying a finding and no reason for shipping it. It reports what only a person can settle — a contract missing narrative, a property with no description, a sizing model with no intent, a `warning` naming no criterion, a published entry verified against Figma more than 90 days ago, a family of one.
+- **Absence is never a failure.** Every contract check runs only where its field is present, so the 93 inventory-only entries pass without being pretended to be contracts. A test asserts it rather than a comment claiming it.
+- **The Figma description is composed, not stored.** `composeFigmaDescription` builds the three lines from `summary`, the first `use_when` and the first `do_not_use_when`. Nothing writes it to Figma — the repository does not write to Figma at all — but whatever does will take the text from one place.
+- `documented` changed meaning with the model. It was "a Markdown document exists at the mirrored path"; it is now "the entry carries a `summary`, a `purpose`, at least one `use_when` and a `description` on every property". Still derived, still nothing to tick by hand.
+
+### Changed — 2026-08-26 (a component's contract is its registry entry)
+
+The per-component Markdown document is withdrawn. `docs/components/_template.md`, `checkbox-input.md`, `checkbox-label.md` and `checkbox-text.md` are deleted, and the registry entry carries the whole contract — [`STANDARD.md`](docs/components/STANDARD.md), schema in [`registry/README.md`](docs/components/registry/README.md).
+
+- **A template is an attempt to formalise prose, and prose only ever looks uniform.** Nothing checked that a section was present, that a value existed, that a named alternative still existed, or that a property list matched Figma. Every one of those is checkable once the contract is data, and none of them was checkable before.
+- **Prose did not disappear — it moved into fields.** `purpose`, `use_when`, `do_not_use_when`, a `description` on every property, `rationale` on a value, `sizing_model.intent`, `limitations`. What disappeared is prose with nowhere to belong.
+- **Accessibility stopped being a section.** A finding attaches to the thing it is about: `size = extra small` is 16 tall, so the finding sits on that value; focus is unmodelled, so the finding sits on `state`; a component with no name of its own carries a `requires` on itself. A value that fails a criterion and ships must say why — the file records the decision, not just the defect.
+- **`instead` is an anchor, not a phrase.** A `do_not_use_when` that names an alternative names a component that exists, and the validator fails otherwise. A renamed alternative breaks loudly rather than leaving a sentence pointing at nothing.
+- **The Figma description gets no field.** It has paragraph breaks, which this YAML subset cannot express, and a second copy of text that already exists in three fields is a second copy that drifts. It is composed at build time from those three.
+- Three contracts were written this way — `Checkbox Input`, `Checkbox Label`, `Checkbox Text` — replacing `checkbox.yaml`, whose `id: "Checkbox"` matches no component in Figma. That file still exists and thirteen entries still name `"Checkbox"` as a child; splitting those references is a judgement about allowed composition and is left open.
+
 ### Changed — 2026-08-24 (a loaded skill names its own version)
 
 - `skills/README.md` and `PLAN.md` Stage 0 gave two different answers to the same question. The plan said the version belongs in `description`; the README said a loaded skill is identified "by comparing the text, not by trusting a number". Comparison is not a workable answer — it means diffing seventy kilobytes by hand at the moment you want a one-word answer.

@@ -1,0 +1,129 @@
+# Hand-written 2026-08-26. Replaces part of checkbox.yaml, whose id "Checkbox"
+# matches no component in Figma. Carries the full component contract; there is
+# no companion Markdown document — the readable page is generated from here.
+
+id: "Checkbox Input"
+name: "Checkbox Input"
+family: "Checkbox"
+level: "element"
+role: "input"
+status: "draft"
+version: "0.1"
+summary: "The checkbox control alone — the box and its selection state, with no label."
+purpose: "Selection has to be shown in places that already explain themselves. A table row, a menu item and a bulk-selection header all carry their own meaning, and a label on the checkbox there would repeat what the row already says. This component exists so those contexts get the control without the explanation, and so the box itself is authored once and reused by every component that needs one."
+use_when:
+  - "The checkbox sits inside a component or layout whose surrounding content already identifies what is being selected — a table cell, a list or menu item, a bulk-selection control, a composed form field."
+do_not_use_when:
+  -
+    text: "The checkbox is a standalone option a person reads and decides on. It needs a label, and the label has to be part of the same component to be clickable and associated."
+    instead: "Checkbox Label"
+  -
+    text: "The option is tied to copy that wraps."
+    instead: "Checkbox Text"
+  -
+    text: "The change takes effect on click. A checkbox is selected now and applied later."
+    instead: "Toggle Label"
+uses:
+  - "Icon"
+flow_behavior:
+  - "fixed"
+a11y:
+  -
+    status: "requires"
+    note: "The component has no accessible name and cannot have one. The parent must supply it — the row's identifying cell, a visually hidden label on a select-all header, an association with surrounding text. A parent that embeds this and supplies no name has a defect, and the defect is the parent's."
+  -
+    status: "requires"
+    note: "The parent supplies the click target. The box is 16 to 32 and is not intended to be the hit area on its own; the cell, row or menu item is."
+sizing_model:
+  horizontal: "fixed"
+  vertical: "fixed"
+  adjustable: false
+  intent: "Square at every size, and the run is authored rather than derived from anything. Both axes are intrinsic — sizing.md names checkbox indicators among the dimensions never adjusted by hand. The 1px inside stroke does not scale with the box."
+  sizes:
+    -
+      size: "extra small"
+      box: 16
+    -
+      size: "small"
+      box: 20
+    -
+      size: "medium"
+      box: 24
+    -
+      size: "large"
+      box: 28
+    -
+      size: "extra large"
+      box: 32
+variants:
+  count: 60
+  complete_cross_product: true
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "The box dimension. Nothing else about the component changes with it."
+    values:
+      -
+        value: "extra small"
+        rationale: "Exists for dense contexts — table rows, menus, toolbars — where the surrounding row already supplies the spacing and the hit area, and a 24px box would break the row rhythm."
+        a11y:
+          status: "warning"
+          criterion: "WCAG 2.2 SC 2.5.8"
+          note: "16 against a required 24 on both dimensions. Conformant only where the parent provides the target, or through the Spacing exception, which needs 24px between the centres of adjacent targets."
+      -
+        value: "small"
+        rationale: "Same dense contexts, one step up where the row can afford it."
+        a11y:
+          status: "warning"
+          criterion: "WCAG 2.2 SC 2.5.8"
+          note: "20 against a required 24. Same conditions as extra small."
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "Pointer interaction and availability. Hover and active change the box surface only; disabled changes the surface, drops the border to the default role and dims the mark."
+    a11y:
+      status: "open"
+      note: "There is no focus value and there will not be one: state is single-select, and focus coexists with hover, active and checked rather than replacing them. Focus becomes a boolean once its treatment is decided. Unresolved system-wide, and it matters most here because this is a keyboard-operable control."
+    values:
+      -
+        value: "default"
+      -
+        value: "hover"
+      -
+        value: "active"
+      -
+        value: "disabled"
+        note: "Not the same as read-only, which the component does not have: read-only means shown but not editable, disabled means not applicable now."
+  -
+    name: "is checked"
+    kind: "variant"
+    default: "false"
+    description: "Selection. The unchecked box is a surface and a border; the checked and mixed box is a filled surface with no border and a mark."
+    values:
+      -
+        value: "false"
+        note: "The component has no children at all in this value — there is no hidden mark layer."
+      -
+        value: "true"
+        note: "Mark is the Check glyph, sized to the full box rather than inset."
+      -
+        value: "mixed"
+        note: "Some but not all of what this checkbox governs is selected. Not unknown, not loading, not inapplicable. Identical to true in every other respect; only the glyph differs, and it is Dash."
+limitations:
+  - "No validation property: a required unticked checkbox cannot show an error."
+  - "No read-only value. Disabled is the only unavailable state."
+  - "The library still resolves a component set literally named Checkbox, with Title Case properties State / Border / Checked and 8 variants, which does not exist on the Checkbox page. It predates this family and collides by name."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4349-1753"
+  last_verified: "2026-08-26"
+notes: "children/parents deliberately absent: the allowed-composition set from checkbox.yaml has not yet been split across the three family members, and that split is a judgement rather than a transcription. used_by needs a whole-file survey that has not been run."

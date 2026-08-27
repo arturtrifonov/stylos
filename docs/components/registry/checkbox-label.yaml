@@ -1,0 +1,164 @@
+# Hand-written 2026-08-26. Replaces part of checkbox.yaml, whose id "Checkbox"
+# matches no component in Figma. Carries the full component contract; there is
+# no companion Markdown document — the readable page is generated from here.
+
+id: "Checkbox Label"
+name: "Checkbox Label"
+family: "Checkbox"
+level: "element"
+role: "input"
+status: "draft"
+version: "0.1"
+summary: "A checkbox with a short single-line label, sized by its text."
+purpose: "Most checkboxes in a product are a box and two or three words. This is that case, authored so the label is part of the same component: clickable, aligned to the box at every size, and programmatically associated without the consumer arranging it."
+use_when:
+  - "The option is a phrase that sits on one line, and the component may take whatever width its text needs."
+do_not_use_when:
+  -
+    text: "The text wraps, or the row must occupy a fixed column width — the label would either force the component wider than its container or truncate."
+    instead: "Checkbox Text"
+  -
+    text: "The control has no visible text of its own because its context supplies the meaning."
+    instead: "Checkbox Input"
+  -
+    text: "The change takes effect on click. A checkbox is selected now and applied later."
+    instead: "Toggle Label"
+uses:
+  - "Checkbox Input"
+flow_behavior:
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "The label is the accessible name and the whole component is the click target, label included. That is the reason to use this rather than assembling a box and a text node; an implementation that makes only the box clickable has thrown away the point of the component."
+sizing_model:
+  horizontal: "hug"
+  vertical: "hug"
+  adjustable: false
+  intent: "The height run is authored per size, not inherited from the box. The box happens to be the taller element at every size, but the run is a decision and can move independently of Checkbox Input. Neither axis is adjustable: a fixed width is what Checkbox Text is for."
+  sizes:
+    -
+      size: "extra small"
+      height: 16
+      box: 16
+      gap: 4
+      measure: "0_750"
+      line_height_family: "string"
+    -
+      size: "small"
+      height: 20
+      box: 20
+      gap: 5
+      measure: "0_875"
+      line_height_family: "string"
+    -
+      size: "medium"
+      height: 24
+      box: 24
+      gap: 6
+      measure: "1_000"
+      line_height_family: "string"
+    -
+      size: "large"
+      height: 28
+      box: 28
+      gap: 7
+      measure: "1_250"
+      line_height_family: "string"
+    -
+      size: "extra large"
+      height: 32
+      box: 32
+      gap: 8
+      measure: "1_500"
+      line_height_family: "string"
+variants:
+  count: 60
+  complete_cross_product: true
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Drives the box, the text measure and the gap together. They are not separately settable."
+    values:
+      -
+        value: "extra small"
+        rationale: "Exists for dense contexts — filter lists, toolbars, menus — where the surrounding layout already supplies the vertical spacing and a taller row would break the rhythm."
+        a11y:
+          status: "warning"
+          criterion: "WCAG 2.2 SC 2.5.8"
+          note: "The whole component is the target and is 16 tall — 72 x 16 for a one-word label. The criterion needs 24 on both dimensions and width does not offset height. Conformant only through the Spacing exception, which needs 24px between the centres of adjacent targets."
+      -
+        value: "small"
+        rationale: "Same dense contexts, one step up where the row can afford it."
+        a11y:
+          status: "warning"
+          criterion: "WCAG 2.2 SC 2.5.8"
+          note: "20 tall against a required 24. Same exception applies."
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "Pointer interaction and availability. The visual change happens in the box; the label follows only on disabled, and selection does not change the label at all."
+    a11y:
+      status: "open"
+      note: "No focus value, and none is planned as a state value: state is single-select and focus coexists with hover, active and checked. Focus becomes a boolean once its treatment is decided. Unresolved system-wide."
+    values:
+      -
+        value: "default"
+      -
+        value: "hover"
+      -
+        value: "active"
+      -
+        value: "disabled"
+        note: "The label takes the disabled text role along with the box. Removes the control from tab order."
+  -
+    name: "is checked"
+    kind: "variant"
+    default: "false"
+    description: "Selection. Does not affect the label."
+    values:
+      -
+        value: "false"
+      -
+        value: "true"
+      -
+        value: "mixed"
+        note: "Some but not all of what this checkbox governs is selected. Not unknown, not loading, not inapplicable."
+  -
+    name: "label text"
+    kind: "text"
+    default: "Checkbox"
+    description: "One line, sentence case, no terminal period — it is an option, not a sentence. Wrapping is neither supported nor prevented: long text silently widens the component past its container."
+    examples:
+      -
+        verdict: "do"
+        props:
+          "label text": "Send me release notes"
+      -
+        verdict: "dont"
+        caption: "Phrase the option so that ticking it means yes. An inverted label is read wrongly under time pressure."
+        props:
+          "label text": "Do not send me release notes"
+      -
+        verdict: "dont"
+        caption: "Anything that would wrap belongs in Checkbox Text — here it just grows sideways."
+        props:
+          "label text": "I agree to the processing of my personal data in accordance with the privacy policy"
+limitations:
+  - "No validation property: a required unticked option cannot show an error inline."
+  - "No label-position property. The label is always trailing."
+  - "No text style on the label — every typographic property is bound to a variable directly, so a consumer cannot restyle it by swapping a style."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4327-34970"
+  last_verified: "2026-08-26"
+notes: "children/parents deliberately absent: the allowed-composition set from checkbox.yaml has not yet been split across the three family members, and that split is a judgement rather than a transcription. used_by needs a whole-file survey that has not been run."

@@ -78,20 +78,32 @@ test("resolves the Figma link at build time, so no stored URL can rot", () => {
   assert.equal(data.entries.find((e) => e.id === "Table / TD Text").figma_url, null);
 });
 
-test("derives documented from a document on disk, with no source change", () => {
+test("derives documented from the contract in the entry, with no source change", () => {
   const before = build();
   assert.equal(before.data.entries.find((e) => e.id === "Table / TD Text").documented, false);
 
-  const after = build({ "docs/components/table/td-text.md": "# Table / TD Text\n" });
+  const after = build({
+    "docs/components/registry/table/td-text.yaml": `${tdText}summary: "One cell of text."
+purpose: "Tables need a cell that is only text."
+use_when:
+  - "A table cell holds a string."
+api:
+  -
+    name: "width"
+    kind: "variant"
+    description: "How wide."
+`,
+  });
   assert.equal(after.data.entries.find((e) => e.id === "Table / TD Text").documented, true);
 });
 
-test("names the document path whether or not it exists yet", () => {
+test("links every row to its page, legacy entries included", () => {
   const { data } = build();
   assert.equal(
-    data.entries.find((e) => e.id === "Table / TD Text").document_path,
-    "docs/components/table/td-text.md"
+    data.entries.find((e) => e.id === "Table / TD Text").page_path,
+    "components/table/td-text.html"
   );
+  assert.equal(data.entries.find((e) => e.id === "Badge").page_path, "components/badge.html");
 });
 
 test("reaches nothing over the network — no CDN, no font, no fetch", () => {

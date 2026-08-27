@@ -3,6 +3,8 @@
 **Status:** Built — 2026-08-24
 **Date:** 2026-08-23
 
+> **Superseded in one respect, 2026-08-26.** This spec defines `documented` as "the component's Markdown document exists", and §3.3 fixes where that document lives. There is no such document: the contract became the registry entry itself and the per-component Markdown model was withdrawn ([`STANDARD.md`](../components/STANDARD.md)). `documented` is now derived from the entry's own fields, and the per-component page is generated — [SPEC 0003](0003-component-page.md). The rest of this record stands as written.
+
 A work order. The component registry becomes readable: a generated view over `docs/components/registry/`, a `figma:` field to link each entry to its node, and a handful of checks the current validator does not make.
 
 ---

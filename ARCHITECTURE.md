@@ -56,15 +56,15 @@ The CSS conversion (`tokens:build`) and the package are both planned but unbuilt
 ```
 Components in Figma      ──✗ no link ✗──      docs/components/registry/*.yaml
                                                         │
-                                                        ├──▶ per-component docs (standard defined, not written)
+                                                        ├──▶ build/components/ (generated, gitignored)
                                                         └──▶ published surface (does not exist)
 ```
 
-Components themselves live in Figma. Their metadata — level, role, flow behaviour, children, parents, notes — lives as one YAML file per component under `docs/components/registry/`, with the path mirroring each component's Figma `/` hierarchy. 96 components were imported from an Airtable export on 20 August 2026; Airtable is retired as a source. Hand-editing the YAML is the expected workflow.
+Components themselves live in Figma. Their whole contract — level, role, purpose, boundaries, public API, accessibility findings, sizing model, limitations, relations — lives as one YAML file per component under `docs/components/registry/`, with the path mirroring each component's Figma `/` hierarchy. 96 components were imported from an Airtable export on 20 August 2026; Airtable is retired as a source. Hand-editing the YAML is the expected workflow, and there is no second document: the readable page is generated from the entry ([`docs/components/STANDARD.md`](docs/components/STANDARD.md)).
 
-`npm run validate:registry` checks the registry **against itself**: references resolve, ids are unique, each file sits at the path its id implies, and any `figma:` block could address a real node. It separates contradictions (exit 1) from findings a human has to settle — a one-sided relation, a child at or above its parent's level, an entry with no relations (exit 0). It does not check the registry against Figma.
+`npm run validate:registry` checks the registry **against itself**: references resolve, ids are unique, each file sits at the path its id implies, any `figma:` block could address a real node, and every contract field that is present is internally consistent — a status or kind inside its vocabulary, a default among its property's values, a variant count that matches the product, a controlled group that is adjacent, a value with a finding and a reason for shipping it. It separates contradictions (exit 1) from findings a human has to settle — a one-sided relation, a child at or above its parent's level, a contract missing narrative fields (exit 0). It does not check the registry against Figma.
 
-`npm run registry:view` renders the whole set as one self-contained HTML file under `build/`, where relations are links rather than files to open. Two flags in it are derived at build time and never authored: `documented` (the component's Markdown document exists) and `linked` (a Figma node is recorded). The output is not committed — it is cheap to rebuild and would put a 96-row diff into every registry change.
+`npm run registry:view` renders the whole set as one self-contained HTML file under `build/`, where relations are links rather than files to open, and every row links to that component's page. `npm run components:view` writes those pages — one per entry under `build/components/`, the contract laid out to be read rather than parsed. Two flags are derived at build time and never authored: `documented` (the contract carries a summary, a purpose, a `use_when` and a description on every property) and `linked` (a Figma node is recorded). Neither output is committed — both are cheap to rebuild and would put a 96-row diff into every registry change.
 
 An entry may carry a `figma:` block naming the file and node it is implemented by. That is a hand-recorded address, not a sync: it is filled in when a component is opened in Figma for other reasons.
 
@@ -106,7 +106,7 @@ Stated explicitly so it is never assumed.
 - **CSS token output.** The token pipeline exists and produces the canonical set (`tokens/*.yaml`), but no script converts it into CSS custom properties yet — that is `tokens:build`, a later spec.
 - **Any published documentation surface.** No site, no Storybook, no designer-facing portal. Documentation is Markdown in git, read in an editor.
 - **A link between the registry and Figma.** No shared identifiers in either direction.
-- **Per-component documentation.** The standard exists; the documents do not.
+- **Per-component contracts, beyond the first three.** The standard, the schema, the validator and the page generator exist; 93 of the 96 entries still carry the inventory record only.
 
 ---
 

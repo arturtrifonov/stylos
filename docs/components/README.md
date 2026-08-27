@@ -1,12 +1,22 @@
 # docs/components/
 
-One Markdown file per public component. The path mirrors the registry's: `Icon Button` → `icon-button.md`, `Table / TD Text` → `table/td-text.md`, directly parallel to `registry/table/td-text.yaml`.
+**A component is described by exactly one file: its registry entry.** [`registry/<path>.yaml`](registry/README.md), at the path its `id` implies — `Icon Button` → `registry/icon-button.yaml`, `Table / TD Text` → `registry/table/td-text.yaml`. There is no companion Markdown document and no template for one; that model was withdrawn on 2026-08-26, and [`STANDARD.md`](STANDARD.md) says what replaced it and why.
 
-Every component document must follow the standard in [`STANDARD.md`](STANDARD.md): name/summary, purpose, use-when/do-not-use-when, architectural level, anatomy, public API in canonical order, property definitions, controlled groups, states, sizing, typography roles, token usage, composition, content guidance, accessibility, responsive behavior, examples, anti-examples, known limitations, and lifecycle status.
+Two files here, then, and both are normative:
 
-No prose component documents yet — but a component inventory now exists: [`registry/`](registry/README.md) holds structured level/role/composition data for 96 components, imported from the project owner's Airtable registry on 2026-08-20. The *inventory* exists; the per-component documentation this directory is for is [`PLAN.md`](../../PLAN.md) Stage 4 work. Start each document from its `registry/` entry rather than from scratch — level, role and composition are already filled in.
+- [`STANDARD.md`](STANDARD.md) — what a contract must contain, and when a component is ready to publish.
+- [`registry/README.md`](registry/README.md) — the schema, field by field.
 
-`npm run registry:view` renders the whole inventory as one readable file, which is the fastest way to see what is documented and what is not: a component counts as documented when its Markdown file exists at the mirrored path, and nothing has to be marked by hand for that to show up.
+96 entries exist, imported from the project owner's Airtable registry on 2026-08-20; three of them carry a full contract. Writing the rest is [`PLAN.md`](../../PLAN.md) Stage 4 work, and each starts from its existing entry rather than from scratch — level, role and composition are already filled in.
+
+**The readable page is generated, not written.**
+
+```bash
+npm run components:view    # build/components/ — one page per component, plus an index
+npm run registry:view      # build/registry.html — the filterable index over all 96
+```
+
+Both are derived, gitignored and opened from disk; neither reaches the network. `documented` in the index is derived too — an entry counts as documented when it carries a `summary`, a `purpose`, at least one `use_when` and a `description` on every property, so nothing has to be ticked by hand for it to become true.
 
 ## The contract and its implementations
 
@@ -42,4 +52,4 @@ Related-but-separate components share a name prefix — `Button Base`, `Button H
 
 Figma stays the place for StateDiagrams, PropTables, anatomy diagrams and variant matrices — spatial documentation that text reproduces badly. That is a question of medium, not of authority: the contract those diagrams illustrate is still authored here. Don't duplicate a PropTable that already renders correctly in Figma — link to it.
 
-Which of `STANDARD.md`'s twenty points are authoritative in which medium is still open ([`PLAN.md`](../../PLAN.md) Stage 4).
+Which medium is authoritative for what is settled: the contract is the registry entry, Figma holds the values and the spatial documentation, and the generated page is a rendering of the first ([`STANDARD.md`](STANDARD.md)).

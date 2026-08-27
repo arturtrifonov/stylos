@@ -3,18 +3,33 @@ import assert from "node:assert/strict";
 
 import { checkRegistry } from "./lint-registry.mjs";
 
-// A minimal entry in the shape lib/registry.mjs produces, so a test says only
-// what it is about.
+// A minimal entry in the shape lib/registry.mjs produces, carrying none of the
+// contract fields — the shape of the 93 legacy entries. The contract checks
+// have their own fixtures in build-component-page.test.mjs.
 function entry(id, fields = {}) {
   return {
     file: `docs/components/registry/${id.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.yaml`,
     id,
     name: id,
+    family: null,
     level: "object",
     role: "content",
+    status: null,
+    version: null,
+    summary: null,
+    purpose: null,
+    useWhen: [],
+    doNotUseWhen: [],
     flowBehavior: ["fill"],
     children: [],
     parents: [],
+    uses: [],
+    usedBy: [],
+    a11y: [],
+    sizingModel: null,
+    variants: null,
+    api: [],
+    limitations: [],
     notes: "",
     figma: null,
     import: null,

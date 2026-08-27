@@ -59,5 +59,6 @@ npm install
 npm test                  # tool tests
 npm run build:skills      # skills/src/ → skills/dist/, imported into Figma Agent by hand
 npm run validate:registry # component registry: contradictions fail, judgements are reported
-npm run registry:view     # → build/registry.html, the readable view of the registry
+npm run registry:view     # → build/registry.html, the readable index over the registry
+npm run components:view   # → build/components/, one generated page per component
 ```

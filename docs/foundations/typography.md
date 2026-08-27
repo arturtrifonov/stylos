@@ -67,7 +67,7 @@ A component-specific mapping, where one is documented, always overrides its leve
 | --- | --- |
 | `extra small` | `0_750` |
 | `small` | `0_875` |
-| `medium` | `1_125` |
+| `medium` | `1_000` |
 | `large` | `1_250` |
 | `extra large` | `1_500` |
 

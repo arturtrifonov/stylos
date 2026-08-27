@@ -18,7 +18,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { loadRegistry, derive, documentPathFor, figmaUrl, LEVELS, ROLES } from "./lib/registry.mjs";
+import { loadRegistry, derive, pagePathFor, figmaUrl, LEVELS, ROLES } from "./lib/registry.mjs";
 
 // Neutral and plain on purpose: this is a tool, not a showcase. No Stylos
 // colour is hand-copied in — once the CSS build exists (PLAN.md Stage 3) this
@@ -267,8 +267,9 @@ var COLUMNS = [
   { key: "role", label: "Role" },
   { key: "flow", label: "Flow" },
   { key: "batch", label: "Batch", title: "Airtable's build sequencing, as it stood on " + DATA.import_date },
-  { key: "documented", label: "Doc" },
+  { key: "documented", label: "Contract", title: "The contract is written: summary, purpose, use_when and a description on every property" },
   { key: "linked", label: "Figma" },
+  { key: "page", label: "Page", title: "The generated component page — npm run components:view" },
 ];
 
 function renderFilters() {
@@ -394,6 +395,9 @@ function renderTable() {
       tr.appendChild(el("td", { class: "batch", text: entry.batch === null ? "—" : String(entry.batch) }));
       tr.appendChild(el("td", { class: "flag", "data-on": String(entry.documented), text: entry.documented ? "yes" : "—" }));
       tr.appendChild(el("td", { class: "flag", "data-on": String(entry.linked), text: entry.linked ? "yes" : "—" }));
+      // Linked whether or not a contract is written: the page renders a legacy
+      // entry as what it is rather than 404ing on it.
+      tr.appendChild(el("td", {}, [el("a", { href: entry.page_path, text: "open" })]));
       body.appendChild(tr);
     });
   });
@@ -404,7 +408,7 @@ function renderStatus() {
   var documented = entries.filter(function (e) { return e.documented; }).length;
   var linked = entries.filter(function (e) { return e.linked; }).length;
   document.getElementById("status").textContent =
-    shown + " of " + entries.length + " shown · " + documented + " documented · " + linked + " linked to Figma";
+    shown + " of " + entries.length + " shown · " + documented + " with a contract · " + linked + " linked to Figma";
 }
 
 function relationList(ids) {
@@ -467,14 +471,16 @@ function renderDetail() {
 
   host.appendChild(el("h3", { text: "Derived" }));
   var derived = el("dl", {});
-  derived.appendChild(el("dt", { text: "Document" }));
+  derived.appendChild(el("dt", { text: "Contract" }));
   derived.appendChild(
     el("dd", {}, [
       entry.documented
-        ? el("span", { class: "mono", text: entry.document_path })
-        : el("span", { class: "empty", text: "not written — " + entry.document_path }),
+        ? el("span", { text: "written" })
+        : el("span", { class: "empty", text: "not written" }),
     ])
   );
+  derived.appendChild(el("dt", { text: "Page" }));
+  derived.appendChild(el("dd", {}, [el("a", { href: entry.page_path, text: entry.page_path })]));
   derived.appendChild(el("dt", { text: "Figma" }));
   derived.appendChild(
     el("dd", {}, [
@@ -601,7 +607,7 @@ export function buildViewData(root, entries) {
     roles: ROLES,
     batches,
     entries: entries.map((entry) => {
-      const { documented, linked } = derive(root, entry);
+      const { documented, linked } = derive(entry);
       return {
         id: entry.id,
         name: entry.name,
@@ -617,7 +623,7 @@ export function buildViewData(root, entries) {
         import: entry.import,
         batch: typeof entry.import?.batch === "number" ? entry.import.batch : null,
         extra: entry.extra,
-        document_path: entry.id ? documentPathFor(entry.id) : null,
+        page_path: entry.id ? `components/${pagePathFor(entry.id)}` : null,
         documented,
         linked,
       };

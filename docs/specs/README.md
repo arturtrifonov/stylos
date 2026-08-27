@@ -18,3 +18,4 @@ If a spec finds itself arguing for an approach rather than describing one, that 
 | --- | --- | --- | --- |
 | [0001](0001-token-pipeline.md) | Token pipeline | — | Built |
 | [0002](0002-registry-viewer.md) | Registry viewer | `docs/components/README.md` | Built |
+| [0003](0003-component-page.md) | Component page | `docs/components/STANDARD.md` | Built |

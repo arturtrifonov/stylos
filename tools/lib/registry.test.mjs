@@ -9,9 +9,10 @@ import {
   derive,
   slugPath,
   registryPathFor,
-  documentPathFor,
+  pagePathFor,
   figmaUrl,
   levelRank,
+  composeFigmaDescription,
 } from "./registry.mjs";
 
 function fixture(files) {
@@ -49,11 +50,27 @@ children:
 notes: ""
 `;
 
+// The narrative half of a contract, appended to an inventory entry.
+const contract = `summary: "One cell of text."
+purpose: "Tables need a cell that is only text."
+use_when:
+  - "A table cell holds a string."
+do_not_use_when:
+  -
+    text: "The cell holds a number."
+    instead: "Badge"
+api:
+  -
+    name: "width"
+    kind: "variant"
+    description: "How wide."
+`;
+
 test("slugs a nested name into the path both directories mirror", () => {
   assert.equal(slugPath("Table / TD Text"), "table/td-text");
   assert.equal(slugPath("Button Basic"), "button-basic");
   assert.equal(registryPathFor("Table / TD Text"), "docs/components/registry/table/td-text.yaml");
-  assert.equal(documentPathFor("Table / TD Text"), "docs/components/table/td-text.md");
+  assert.equal(pagePathFor("Table / TD Text"), "table/td-text.html");
 });
 
 test("builds a Figma URL out of the two parts, unchanged", () => {
@@ -123,19 +140,57 @@ test("keeps a field the schema has not been taught yet", () => {
   }
 });
 
-test("derives documented from the document existing, and linked from a node id", () => {
+test("derives documented from the contract's own fields, and linked from a node id", () => {
   const root = fixture({
     "docs/components/registry/badge.yaml": badge,
-    "docs/components/registry/table/td-text.yaml": tdText,
-    "docs/components/table/td-text.md": "# Table / TD Text\n",
+    "docs/components/registry/table/td-text.yaml": `${tdText}${contract}`,
   });
   try {
     const entries = loadRegistry(root);
-    assert.deepEqual(derive(root, entries[0]), { documented: false, linked: false });
-    assert.deepEqual(derive(root, entries[1]), { documented: true, linked: false });
+    assert.deepEqual(derive(entries[0]), { documented: false, linked: false });
+    assert.deepEqual(derive(entries[1]), { documented: true, linked: false });
 
     entries[0].figma = { file_key: "WUc07ZBtjRvypXtsOlbVut", node_id: "4479-13507" };
-    assert.equal(derive(root, entries[0]).linked, true);
+    assert.equal(derive(entries[0]).linked, true);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("a property with no description leaves the contract undocumented", () => {
+  const root = fixture({
+    "docs/components/registry/table/td-text.yaml": `${tdText}${contract.replace(
+      '    description: "How wide."\n',
+      ""
+    )}`,
+  });
+  try {
+    assert.equal(derive(loadRegistry(root)[0]).documented, false);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("composes the Figma description from three fields, never from one of its own", () => {
+  const root = fixture({
+    "docs/components/registry/table/td-text.yaml": `${tdText}${contract}`,
+  });
+  try {
+    const [entry] = loadRegistry(root);
+    assert.deepEqual(composeFigmaDescription(entry).split("\n"), [
+      "One cell of text.",
+      "Use when: A table cell holds a string.",
+      "Do not use when: The cell holds a number. Use Badge instead.",
+    ]);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("composes nothing where one of the three lines is missing", () => {
+  const root = fixture({ "docs/components/registry/badge.yaml": badge });
+  try {
+    assert.equal(composeFigmaDescription(loadRegistry(root)[0]), null);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -147,7 +202,7 @@ test("a figma block with no node id is not a link", () => {
   });
   try {
     const [entry] = loadRegistry(root);
-    assert.equal(derive(root, entry).linked, false);
+    assert.equal(derive(entry).linked, false);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

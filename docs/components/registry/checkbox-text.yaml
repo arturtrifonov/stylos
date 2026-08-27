@@ -1,0 +1,164 @@
+# Hand-written 2026-08-26. Replaces part of checkbox.yaml, whose id "Checkbox"
+# matches no component in Figma. Carries the full component contract; there is
+# no companion Markdown document — the readable page is generated from here.
+
+id: "Checkbox Text"
+name: "Checkbox Text"
+family: "Checkbox"
+level: "element"
+role: "input"
+status: "draft"
+version: "0.1"
+summary: "A checkbox tied to wrapping copy in a column of fixed width, the box aligned to the first line."
+purpose: "Some checkboxes carry a paragraph — a data-processing agreement, a permission with a qualifier, a confirmation that has to state what is being confirmed. That text wraps at a width the layout decides, and the box has to stay where the reader's eye starts rather than float in the vertical middle of four lines. Checkbox Label can do neither, because it hugs and centres."
+use_when:
+  - "The text may run to more than one line, or the row must occupy a width the layout sets rather than a width the text sets."
+do_not_use_when:
+  -
+    text: "The label is a phrase on one line — a fixed width would leave a gap after short text."
+    instead: "Checkbox Label"
+  -
+    text: "The control has no visible text of its own because its context supplies the meaning."
+    instead: "Checkbox Input"
+  -
+    text: "The text is not the checkbox's own but the field's. A helper line describing a group of options belongs to the group, not to one option."
+    instead: null
+uses:
+  - "Checkbox Input"
+flow_behavior:
+  - "fill"
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "Interactive content inside the copy — the usual Terms link — must not toggle the control, and nesting a link inside the label is an HTML validity problem in some structures. This is the most common bug in the pattern and the implementation has to handle it explicitly."
+  -
+    status: "warning"
+    note: "The copy is the accessible name, so a screen reader reads the whole paragraph as the control's name with no pause. Where the copy runs past a sentence or two, give the control a short name and leave the full text as adjacent described-by content."
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable: true
+  intent: "Width is the one dimension a consumer sets — directly, or by filling an auto-layout parent. The 210 the set is authored at is a starting value and carries no meaning. Height is the line count and is never set by hand. The box stays aligned to the first line however many lines appear, which is the whole reason this component is separate from Checkbox Label."
+  sizes:
+    -
+      size: "extra small"
+      height: 18
+      box: 16
+      gap: 4
+      measure: "0_750"
+      line_height_family: "text"
+    -
+      size: "small"
+      height: 22
+      box: 20
+      gap: 5
+      measure: "0_875"
+      line_height_family: "text"
+    -
+      size: "medium"
+      height: 24
+      box: 24
+      gap: 6
+      measure: "1_000"
+      line_height_family: "text"
+    -
+      size: "large"
+      height: 30
+      box: 28
+      gap: 7
+      measure: "1_250"
+      line_height_family: "text"
+    -
+      size: "extra large"
+      height: 36
+      box: 32
+      gap: 8
+      measure: "1_500"
+      line_height_family: "text"
+variants:
+  count: 60
+  complete_cross_product: true
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Drives the box, the text measure and the gap together. It does not set the width."
+    values:
+      -
+        value: "extra small"
+        rationale: "Exists for dense contexts and for secondary consent text inside an already compact panel."
+        a11y:
+          status: "warning"
+          criterion: "WCAG 2.2 SC 2.5.8"
+          note: "Multi-line copy makes the target far larger than 24 x 24 and clears the criterion comfortably. One line at this size is 18 tall and does not — conformant then only through the Spacing exception."
+      -
+        value: "small"
+        rationale: "Same dense contexts, one step up."
+        a11y:
+          status: "warning"
+          criterion: "WCAG 2.2 SC 2.5.8"
+          note: "One line at this size is 22 tall against a required 24. Multi-line copy clears it."
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "Pointer interaction and availability. The visual change happens in the box; the copy follows only on disabled, and selection does not change the copy at all."
+    a11y:
+      status: "open"
+      note: "No focus value, and none is planned as a state value: state is single-select and focus coexists with hover, active and checked. Focus becomes a boolean once its treatment is decided. Unresolved system-wide."
+    values:
+      -
+        value: "default"
+      -
+        value: "hover"
+      -
+        value: "active"
+      -
+        value: "disabled"
+        note: "The copy takes the disabled text role along with the box. Removes the control from tab order."
+  -
+    name: "is checked"
+    kind: "variant"
+    default: "false"
+    description: "Selection. Does not affect the copy."
+    values:
+      -
+        value: "false"
+      -
+        value: "true"
+      -
+        value: "mixed"
+        note: "Some but not all of what this checkbox governs is selected. Not unknown, not loading, not inapplicable."
+  -
+    name: "label text"
+    kind: "text"
+    default: "Checkbox"
+    description: "Prose: sentence case, full sentences, terminal punctuation. Written to wrap — if it never wraps, Checkbox Label is the right component. Ticking must mean assent to exactly what is written, so explanation that is not part of the agreement belongs beneath the field rather than inside the label."
+    examples:
+      -
+        verdict: "do"
+        props:
+          "label text": "I agree to the processing of my personal data in accordance with the privacy policy."
+      -
+        verdict: "dont"
+        caption: "One line leaves a fixed-width gap after the text and gives up the only thing this component does. Use Checkbox Label."
+        props:
+          "label text": "Remember me"
+limitations:
+  - "No validation property, which hurts most here: the required-consent checkbox is the canonical case for an inline error."
+  - "No supporting-text slot. One text role only."
+  - "The box is always leading and always aligned to the first line. No property changes either."
+  - "No text style on the copy — every typographic property is bound to a variable directly."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4349-3554"
+  last_verified: "2026-08-26"
+notes: "children/parents deliberately absent: the allowed-composition set from checkbox.yaml has not yet been split across the three family members, and that split is a judgement rather than a transcription. used_by needs a whole-file survey that has not been run."

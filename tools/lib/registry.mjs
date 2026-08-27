@@ -7,18 +7,28 @@
 // than writing `children: []`. Absent and empty mean the same thing here, and
 // the accessors below flatten that distinction away.
 //
-// Unknown fields are kept. The registry is the seed of the component contract
-// (docs/components/README.md) and will grow fields this file has never heard
-// of; anything not listed in KNOWN_FIELDS survives in `extra` so the view can
-// render it rather than silently drop it.
+// Unknown fields are kept. The registry holds the whole component contract
+// (docs/components/registry/README.md) and will grow fields this file has never
+// heard of; anything not listed in KNOWN_FIELDS survives in `extra` so the view
+// can render it rather than silently drop it.
 
-import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 
 import { parse } from "./yaml.mjs";
 
 export const LEVELS = ["primitive", "element", "object", "widget", "layout"];
 export const ROLES = ["content", "trigger", "input", "toolbar", "output", "container"];
+
+// The closed vocabularies of the contract, from docs/components/registry/README.md.
+// They live here rather than in the linter because the page generator reads
+// them too — a glyph per kind, a colour per a11y status — and a second copy
+// would be a second thing to update when one of them grows.
+export const STATUSES = ["draft", "published", "deprecated"];
+export const PROPERTY_KINDS = ["variant", "text", "boolean", "instance"];
+export const A11Y_STATUSES = ["warning", "fail", "open", "requires"];
+export const SIZING_AXES = ["hug", "fixed", "fill", "absolute"];
+export const LINE_HEIGHT_FAMILIES = ["text", "string", "heading", "code"];
 
 // The two Figma files that hold components, from figma/README.md. A node id
 // recorded against any other file is a mistake — Styles and Playground hold no
@@ -31,11 +41,25 @@ export const COMPONENT_FILE_KEYS = new Map([
 const KNOWN_FIELDS = new Set([
   "id",
   "name",
+  "family",
   "level",
   "role",
-  "flow_behavior",
+  "status",
+  "version",
+  "summary",
+  "purpose",
+  "use_when",
+  "do_not_use_when",
   "children",
   "parents",
+  "uses",
+  "used_by",
+  "flow_behavior",
+  "a11y",
+  "sizing_model",
+  "variants",
+  "api",
+  "limitations",
   "notes",
   "figma",
   "import",
@@ -60,12 +84,16 @@ export function registryPathFor(id) {
 }
 
 /**
- * Where this component's document lives, relative to the repository root. The
- * path mirrors the registry path — see docs/components/README.md; the two
- * directories used to disagree for any name containing a slash.
+ * Where this component's generated page lands, relative to build/components/.
+ * The path mirrors the registry path, so `Table / TD Text` is one directory
+ * deep in both places and a link between two pages is a relative path either
+ * side of the same tree.
+ *
+ * There is no hand-written document to point at any more: the readable page is
+ * generated from the entry (docs/components/STANDARD.md).
  */
-export function documentPathFor(id) {
-  return `docs/components/${slugPath(id)}.md`;
+export function pagePathFor(id) {
+  return `${slugPath(id)}.html`;
 }
 
 /**
@@ -121,16 +149,32 @@ function toEntry(root, file) {
 
   const figma = parsed.get("figma");
   const imported = parsed.get("import");
+  const sizingModel = parsed.get("sizing_model");
+  const variants = parsed.get("variants");
 
   return {
     file: relative,
     id: parsed.get("id") ?? null,
     name: parsed.get("name") ?? parsed.get("id") ?? null,
+    family: parsed.get("family") ?? null,
     level: parsed.get("level") ?? null,
     role: parsed.get("role") ?? null,
+    status: parsed.get("status") ?? null,
+    version: parsed.get("version") ?? null,
+    summary: parsed.get("summary") ?? null,
+    purpose: parsed.get("purpose") ?? null,
+    useWhen: list(parsed, "use_when").map(plain),
+    doNotUseWhen: list(parsed, "do_not_use_when").map(plain),
     flowBehavior: list(parsed, "flow_behavior"),
     children: list(parsed, "children"),
     parents: list(parsed, "parents"),
+    uses: list(parsed, "uses"),
+    usedBy: list(parsed, "used_by"),
+    a11y: list(parsed, "a11y").map(plain),
+    sizingModel: sizingModel instanceof Map ? plain(sizingModel) : null,
+    variants: variants instanceof Map ? plain(variants) : null,
+    api: list(parsed, "api").map(plain),
+    limitations: list(parsed, "limitations"),
     notes: parsed.get("notes") ?? "",
     figma: figma instanceof Map ? plain(figma) : null,
     import: imported instanceof Map ? plain(imported) : null,
@@ -152,14 +196,42 @@ export function loadRegistry(root) {
 }
 
 /**
- * The two derived flags. Neither is authored: `documented` is whether the
- * component's Markdown document exists on disk, `linked` is whether a Figma
- * node has been recorded. See docs/specs/0002-registry-viewer.md §3.2 for why
- * there is no status field to update by hand.
+ * The two derived flags, neither of them authored — see
+ * docs/components/registry/README.md, "Computed, never authored".
+ *
+ * `documented` used to be whether a Markdown document existed on disk. That
+ * model was withdrawn on 2026-08-26: the contract is the entry, so whether it
+ * is written is a question about the entry's own fields.
  */
-export function derive(root, entry) {
+export function derive(entry) {
+  const properties = Array.isArray(entry.api) ? entry.api : [];
   return {
-    documented: entry.id !== null && existsSync(path.join(root, documentPathFor(entry.id))),
+    documented: Boolean(
+      entry.summary &&
+        entry.purpose &&
+        entry.useWhen.length > 0 &&
+        properties.every((property) => property?.description)
+    ),
     linked: Boolean(entry.figma?.node_id),
   };
+}
+
+/**
+ * The three lines that go into the component's Figma `descriptionMarkdown`,
+ * composed from fields that already exist rather than read from a field of
+ * their own — see docs/components/registry/README.md, "The Figma description is
+ * derived, never authored". Returns null where any of the three is missing:
+ * two lines of a three-line description is worse than none.
+ *
+ * Nothing writes this to Figma yet. It is composed here so that whatever does
+ * write it takes the text from one place.
+ */
+export function composeFigmaDescription(entry) {
+  const summary = entry.summary;
+  const first = entry.useWhen[0];
+  const avoid = entry.doNotUseWhen[0];
+  if (!summary || !first || !avoid?.text) return null;
+
+  const instead = avoid.instead ? ` Use ${avoid.instead} instead.` : "";
+  return [`${summary}`, `Use when: ${first}`, `Do not use when: ${avoid.text}${instead}`].join("\n");
 }
