@@ -7,6 +7,7 @@ import path from "node:path";
 import {
   loadRegistry,
   derive,
+  readiness,
   slugPath,
   registryPathFor,
   pagePathFor,
@@ -152,6 +153,23 @@ test("derives documented from the contract's own fields, and linked from a node 
 
     entries[0].figma = { file_key: "WUc07ZBtjRvypXtsOlbVut", node_id: "4479-13507" };
     assert.equal(derive(entries[0]).linked, true);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test("reads the two flags as one word — ready needs both", () => {
+  const root = fixture({
+    "docs/components/registry/badge.yaml": badge,
+    "docs/components/registry/table/td-text.yaml": `${tdText}${contract}`,
+  });
+  try {
+    const entries = loadRegistry(root);
+    assert.equal(readiness(entries[0]), "not started");
+    assert.equal(readiness(entries[1]), "in progress");
+
+    entries[1].figma = { file_key: "WUc07ZBtjRvypXtsOlbVut", node_id: "4479-13507" };
+    assert.equal(readiness(entries[1]), "ready");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

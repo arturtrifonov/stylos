@@ -167,6 +167,47 @@ test("says nothing about batches when nothing carries one", () => {
   assert.equal(data.entries.every((e) => e.batch === null), true);
 });
 
+test("reads the two derived flags as one word, so ready rows can be spotted", () => {
+  const { data } = build();
+  // Badge is linked to Figma but has no contract; TD Text has neither.
+  assert.equal(data.entries.find((e) => e.id === "Badge").readiness, "in progress");
+  assert.equal(data.entries.find((e) => e.id === "Table / TD Text").readiness, "not started");
+
+  const after = build({
+    "docs/components/registry/badge.yaml": `${badge}summary: "A small label."
+purpose: "Short states need a label that is not a sentence."
+use_when:
+  - "A row carries a short state."
+`,
+  });
+  assert.equal(after.data.entries.find((e) => e.id === "Badge").readiness, "ready");
+});
+
+test("offers readiness as its own vocabulary, most complete first", () => {
+  const { data, html } = build();
+  assert.deepEqual(data.readiness, ["ready", "in progress", "not started"]);
+  assert.match(html, /text: "Readiness"/);
+});
+
+test("colours readiness in both themes, and never by colour alone", () => {
+  const { html } = build();
+  // The word is in the cell; the colour and the dot only make it scannable.
+  assert.match(html, /--ready: #17683a;/);
+  assert.match(html, /--ready: #5cc98a;/);
+  assert.match(html, /\.status\[data-status="ready"\] \{ color: var\(--ready\); \}/);
+  assert.match(html, /el\("span", \{ text: entry\.readiness \}\)/);
+});
+
+test("keeps the authored lifecycle apart from the derived readiness", () => {
+  const { data } = build({
+    "docs/components/registry/badge.yaml": badge.replace('name: "Badge"', 'name: "Badge"\nstatus: "draft"'),
+  });
+  const badgeEntry = data.entries.find((e) => e.id === "Badge");
+  assert.equal(badgeEntry.status, "draft");
+  assert.equal(badgeEntry.readiness, "in progress");
+  assert.equal(data.entries.find((e) => e.id === "Table / TD Text").status, null);
+});
+
 test("groups by level, on by default, and by nothing else", () => {
   const { html } = build();
   assert.match(html, /group: true,/);
