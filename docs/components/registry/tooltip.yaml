@@ -11,7 +11,8 @@ flow_behavior:
   - "hug"
 children:
   - "Icon"
-  - "Indicator"
+  - "Indicator Status"
+  - "Indicator Special"
   - "Badge"
   - "Button Inner"
   - "Loader"

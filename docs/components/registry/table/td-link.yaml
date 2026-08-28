@@ -14,7 +14,8 @@ children:
   - "Button Inner"
   - "Icon"
   - "Image"
-  - "Indicator"
+  - "Indicator Status"
+  - "Indicator Special"
   - "Loader"
   - "Link"
 parents:

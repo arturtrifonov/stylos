@@ -21,7 +21,7 @@ do_not_use_when:
     instead: "Tag"
   -
     text: "The thing being shown is a status with no count, such as an online dot or a state marker."
-    instead: "Indicator"
+    instead: "Indicator Status"
   -
     text: "The element is meant to be selected, removed or acted on. Badge is not interactive and has no state property."
     instead: "Chips"
@@ -29,7 +29,9 @@ parents:
   - "Accordion / Container"
   - "Accordion / Header"
   - "Avatar"
-  - "Checkbox"
+  - "Checkbox Input"
+  - "Checkbox Label"
+  - "Checkbox Text"
   - "Chips"
   - "Link"
   - "Radio"
