@@ -1,14 +1,24 @@
-# Hand-edited. This file is the source for its component's structural data.
-# The CSV import that created it ran once, on 2026-08-20, and will not run
-# again — see docs/components/registry/README.md for the schema and workflow.
+# Contract written 2026-08-28 from the live component set. The relations and the
+# import block are carried over from the CSV import of 2026-08-20.
+# See docs/components/registry/README.md for the schema.
 
 id: "Label"
 name: "Label"
 level: "primitive"
-role: "trigger"
-flow_behavior:
-  - "hug"
-  - "fill"
+role: "content"
+status: "draft"
+version: "0.1"
+summary: "The name of a control, with room for one line of supporting text under it."
+purpose: "A field without a name is a box. Label is that name, authored once so every form in the product spells the relationship the same way: a bold line that names the thing, an optional marker saying it must be filled, and an optional quieter line underneath for the qualification the name alone cannot carry — a format, a limit, a hint."
+use_when:
+  - "A control, custom component or data object needs a short text name beside or above it, and that name may need one line of qualification under it."
+do_not_use_when:
+  -
+    text: "The text is an explanation rather than a name — a paragraph, a description, standalone helper content that would stand on its own away from any control."
+    instead: null
+  -
+    text: "The text names a category or state rather than a control."
+    instead: "Tag"
 children:
   - "Icon"
 parents:
@@ -41,7 +51,144 @@ parents:
   - "Modal"
   - "Side Panel"
   - "Side Panel Menu"
-notes: ""
+flow_behavior:
+  - "hug"
+  - "fill"
+a11y:
+  -
+    status: "requires"
+    note: "Placing this next to a control does not name it. The label must be programmatically associated with what it names — without that association the control is unnamed and this component is decoration that happens to read like a name."
+  -
+    status: "requires"
+    note: "`is required` draws the marker and does nothing else. The control itself must also be marked required, and the asterisk convention has to be explained once somewhere on the form."
+  -
+    status: "requires"
+    note: "`validation` changes the colour of the supporting line and nothing else. The message must also be tied to the control it concerns and the control marked invalid, or a screen reader reaches the field with no idea that the text below it is about that field — and colour alone never carries the distinction between a hint and an error."
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable: true
+  intent: "Width is the field's, not the label's: the 200 the set is authored at is a placeholder, the supporting line fills whatever it is given, and a form sets its own. Height is the sum of what is switched on — one line, or two with the gap between them — and is never set by hand. The name and the supporting line are separate type runs stepping at different rates; see the `size` property."
+  sizes:
+    -
+      size: "extra small"
+      height: "size/s-1_500"
+      gap: "gap/g-0_125"
+      label_font_size: "size/0_750"
+      label_line_height: "line height/string/0_750"
+      additional_font_size: "size/0_625"
+      additional_line_height: "line height/string/0_625"
+    -
+      size: "small"
+      height: "size/s-1_750"
+      gap: "gap/g-0_250"
+      label_font_size: "size/0_875"
+      label_line_height: "line height/string/0_875"
+      additional_font_size: "size/0_625"
+      additional_line_height: "line height/string/0_625"
+    -
+      size: "medium"
+      height: "size/s-2_000"
+      gap: "gap/g-0_375"
+      label_font_size: "size/1_000"
+      label_line_height: "line height/string/1_000"
+      additional_font_size: "size/0_750"
+      additional_line_height: "line height/string/0_750"
+    -
+      size: "large"
+      height: "size/s-2_250"
+      gap: "gap/g-0_500"
+      label_font_size: "size/1_125"
+      label_line_height: "line height/string/1_125"
+      additional_font_size: "size/0_750"
+      additional_line_height: "line height/string/0_750"
+    -
+      size: "extra large"
+      height: "size/s-2_500"
+      gap: "gap/g-0_500"
+      label_font_size: "size/1_250"
+      label_line_height: "line height/string/1_250"
+      additional_font_size: "size/0_875"
+      additional_line_height: "line height/string/0_875"
+variants:
+  count: 20
+  complete_cross_product: true
+api:
+  -
+    name: "label text"
+    kind: "text"
+    default: "Label"
+    description: "The name of the control. A noun or noun phrase, sentence case, no terminal colon — the relationship is structural, not punctuational."
+    examples:
+      -
+        verdict: "do"
+        props:
+          "label text": "Delivery address"
+      -
+        verdict: "dont"
+        caption: "A label names; it does not instruct. An imperative belongs in the supporting line or on a button."
+        props:
+          "label text": "Enter your delivery address:"
+  -
+    name: "is required"
+    kind: "boolean"
+    default: false
+    description: "Shows the required marker after the name. A marker and nothing more — it does not make the control required and it does not explain what the asterisk means."
+  -
+    name: "has additional text"
+    kind: "boolean"
+    default: false
+    description: "Whether the supporting line is shown, when there is a choice about it. There is a choice only while `validation` is `off`: a label with validation is a label with a message, so any other validation value brings the line with it and this property has nothing left to decide. The two do not combine, and that is the rule rather than a collision — switching the line off under validation would leave validation with nothing to say."
+    controls:
+      - "additional text"
+  -
+    name: "additional text"
+    kind: "text"
+    default: "Additional text"
+    description: "One quieter line under the name, at a smaller measure than the name. What it is depends on `validation`: with validation off it is a qualification the name cannot carry — a format, a limit, a hint — and with any other value it is that outcome's message, which is why it is not optional there."
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Steps the height, the gap and both type runs together. The name and the supporting line do not step at the same rate: the supporting measure repeats across extra small and small, and again across medium and large, so it never reaches the bottom of the scale while the name keeps climbing."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+        note: "Same supporting measure as extra small."
+      -
+        value: "medium"
+      -
+        value: "large"
+        note: "Same supporting measure as medium."
+      -
+        value: "extra large"
+  -
+    name: "validation"
+    kind: "variant"
+    default: "off"
+    description: "The outcome the supporting line reports. Any value other than `off` requires the line, so it also switches it on; beyond that it recolours the line and does nothing else — the name keeps the base text role at every value. This is also the clearest place in the system to see why `error` is a validation word while `danger` is a colour: the value is named for the outcome, and it paints with `text/danger`."
+    values:
+      -
+        value: "off"
+        note: "No outcome to report. The line is a hint in the secondary text role, and this is the only value where `has additional text` decides whether it appears."
+      -
+        value: "error"
+        note: "`text/danger`. Carries the line with it."
+      -
+        value: "warning"
+        note: "`text/warning`. Carries the line with it."
+      -
+        value: "success"
+        note: "`text/success`. Carries the line with it."
+limitations:
+  - "No state. A label beside a disabled control does not dim with it."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4373-7431"
+  last_verified: "2026-08-28"
+notes: "The api block is ordered as the properties read, not as Figma's API reports them: componentPropertyDefinitions returns a key order that does not match the panel, so the order is not something this contract can transcribe. Confirmed by the owner 2026-08-28."
 import:
   batch: 1
   ready: true

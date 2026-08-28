@@ -1,0 +1,159 @@
+# Hand-written 2026-08-28. Replaces part of radio.yaml, whose id "Radio"
+# matches no component in Figma. Carries the full component contract; there is
+# no companion Markdown document — the readable page is generated from here.
+
+id: "Radio Label"
+name: "Radio Label"
+family: "Radio"
+level: "element"
+role: "input"
+status: "draft"
+version: "0.1"
+summary: "A radio with a short single-line label, sized by its text."
+purpose: "Most radios in a product are a circle and two or three words, stacked into a short list of alternatives. This is that case, authored so the label is part of the same component: clickable, aligned to the circle at every size, and programmatically associated without the consumer arranging it. The list itself is not a component — what this guarantees is that each row of it behaves the same way."
+use_when:
+  - "The option is a phrase that sits on one line, and the component may take whatever width its text needs."
+do_not_use_when:
+  -
+    text: "The text wraps, or the rows must occupy a fixed column width — the label would either force the component wider than its container or truncate."
+    instead: "Radio Text"
+  -
+    text: "The control has no visible text of its own because its context supplies the meaning."
+    instead: "Radio Input"
+  -
+    text: "More than one of the options may be chosen at once."
+    instead: "Checkbox Label"
+uses:
+  - "Radio Input"
+flow_behavior:
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "The label is the accessible name and the whole component is the click target, label included. That is the reason to use this rather than assembling a circle and a text node; an implementation that makes only the circle clickable has thrown away the point of the component."
+  -
+    status: "requires"
+    note: "A radio only means anything inside a group. The implementation has to expose the set as one group with one name, move between members with the arrow keys rather than tab, and keep a single tab stop for the whole set — SC 4.1.2 and SC 2.1.1. The group is not a component here, so nothing in this file expresses it."
+  -
+    status: "open"
+    note: "No focus value, and none is planned as a state value: state is single-select and focus coexists with hover, active and checked. Focus becomes a boolean once its treatment is decided. Unresolved system-wide."
+sizing_model:
+  horizontal: "hug"
+  vertical: "hug"
+  adjustable: false
+  intent: "The run is authored per size, not inherited from the circle. The circle happens to be the taller element at every size, so the component height follows it — but that is a consequence, not the rule, and the run can move independently of Radio Input. Neither axis is adjustable: a fixed width is what Radio Text is for. The line height comes from the string family because the label is one line by definition. Every dimension is a token name; the component height is not recorded because it is derived from the circle and the line box. Resolve values with npm run tokens:report."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-2_000"
+      gap: "gap/g-0_500"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+    -
+      size: "small"
+      box: "size/s-2_500"
+      gap: "gap/g-0_625"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+    -
+      size: "medium"
+      box: "size/s-3_000"
+      gap: "gap/g-0_750"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+    -
+      size: "large"
+      box: "size/s-3_500"
+      gap: "gap/g-0_875"
+      font_size: "size/1_250"
+      line_height: "line height/string/1_250"
+    -
+      size: "extra large"
+      box: "size/s-4_000"
+      gap: "gap/g-1_000"
+      font_size: "size/1_500"
+      line_height: "line height/string/1_500"
+variants:
+  count: 40
+  complete_cross_product: true
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Drives the circle, the text measure and the gap together. They are not separately settable."
+    values:
+      -
+        value: "extra small"
+        rationale: "Exists for dense contexts — filter lists, toolbars, settings panels — where the surrounding layout already supplies the vertical spacing and a taller row would break the rhythm."
+        a11y:
+          status: "warning"
+          criterion: "WCAG 2.2 SC 2.5.8"
+          note: "The whole component is the target and is 16 tall — 50 x 16 for a one-word label. The criterion needs 24 on both dimensions and width does not offset height. Conformant only through the Spacing exception, which needs 24px between the centres of adjacent targets. A stacked list of options makes that exception easy to satisfy, and hard to satisfy accidentally."
+      -
+        value: "small"
+        rationale: "Same dense contexts, one step up where the row can afford it."
+        a11y:
+          status: "warning"
+          criterion: "WCAG 2.2 SC 2.5.8"
+          note: "20 tall against a required 24. Same exception applies."
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "Pointer interaction and availability. The visual change happens in the circle; the label follows only on disabled, and selection does not change the label at all."
+    values:
+      -
+        value: "default"
+      -
+        value: "hover"
+      -
+        value: "active"
+      -
+        value: "disabled"
+        note: "The label takes the disabled text role along with the circle. Removes the control from tab order. Disabling one option of a group rather than the whole group is almost always wrong — the choice belongs to the group."
+  -
+    name: "is checked"
+    kind: "variant"
+    default: "false"
+    description: "Selection. Does not affect the label."
+    values:
+      -
+        value: "false"
+      -
+        value: "true"
+  -
+    name: "label text"
+    kind: "text"
+    default: "Radio"
+    description: "One line, sentence case, no terminal period — it is an option, not a sentence. Wrapping is neither supported nor prevented: long text silently widens the component past its container. Options in one group should be phrased in parallel, because a person reads them as a set and compares them by their differences."
+    examples:
+      -
+        verdict: "do"
+        props:
+          "label text": "Every weekday"
+      -
+        verdict: "dont"
+        caption: "Anything that would wrap belongs in Radio Text — here it just grows sideways."
+        props:
+          "label text": "Send a digest every weekday morning at nine, summarising the previous day"
+limitations:
+  - "No validation property: a required group with nothing chosen cannot show an error inline."
+  - "No label-position property. The label is always trailing."
+  - "No text style on the label — every typographic property is bound to a variable directly, so a consumer cannot restyle it by swapping a style."
+  - "No mixed value, correctly: partial selection has no meaning in a mutually exclusive set."
+  - "The component is one option, not the group. Nothing here carries the group's label, its required state, its error, or the fact that the options are alternatives at all; every one of those is the consumer's to supply."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4344-894"
+  last_verified: "2026-08-28"
+notes: "children/parents deliberately absent: the allowed-composition set from radio.yaml has not yet been split across the three family members, and that split is a judgement rather than a transcription. radio.yaml should be deleted once it is done — 15 other entries still name Radio. used_by needs a whole-file survey that has not been run."
+import:
+  batch: 1
+  ready: true
