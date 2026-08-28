@@ -3,9 +3,16 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-import { buildViewData, renderView } from "./build-registry-view.mjs";
+import { buildViewData, renderView, loadChrome } from "./build-registry-view.mjs";
 import { loadRegistry } from "./lib/registry.mjs";
+
+// The registry is a fixture; the theme is the repository's own, because it is
+// resolved from tokens/ and a fixture has none. This is also what the real
+// build does — one theme over whatever entries it is handed.
+const repoRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const chrome = loadChrome(repoRoot);
 
 function fixture(files) {
   const root = mkdtempSync(path.join(tmpdir(), "stylos-view-"));
@@ -53,7 +60,7 @@ function build(extra = {}) {
   });
   try {
     const data = buildViewData(root, loadRegistry(root));
-    return { data, html: renderView(data) };
+    return { data, html: renderView(data, chrome) };
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -106,14 +113,19 @@ test("links every row to its page, legacy entries included", () => {
   assert.equal(data.entries.find((e) => e.id === "Badge").page_path, "components/badge.html");
 });
 
-test("reaches nothing over the network — no CDN, no font, no fetch", () => {
+const ALLOWED_REMOTE = (url) =>
+  // The Figma links, built from the entries themselves...
+  url.startsWith("https://www.figma.com/design/") ||
+  // ...and the SVG namespace on the inlined wordmark, which is an identifier
+  // a parser compares against, not an address anything resolves.
+  url === "http://www.w3.org/2000/svg";
+
+test("reaches nothing over the network — no CDN, no remote font, no fetch", () => {
   const { html } = build();
   const remote = [...html.matchAll(/(https?:)?\/\/[^"'\s)]+/g)].map((m) => m[0]);
-  // The only absolute URLs allowed in the output are the Figma links built
-  // from the entries themselves.
   assert.ok(
-    remote.every((url) => url.startsWith("https://www.figma.com/design/")),
-    `unexpected remote reference: ${remote.filter((u) => !u.startsWith("https://www.figma.com/design/"))}`
+    remote.every(ALLOWED_REMOTE),
+    `unexpected remote reference: ${remote.filter((u) => !ALLOWED_REMOTE(u))}`
   );
   assert.doesNotMatch(html, /<script[^>]+src=/);
   assert.doesNotMatch(html, /<link[^>]+stylesheet/);
@@ -192,10 +204,22 @@ test("offers readiness as its own vocabulary, most complete first", () => {
 test("colours readiness in both themes, and never by colour alone", () => {
   const { html } = build();
   // The word is in the cell; the colour and the dot only make it scannable.
-  assert.match(html, /--ready: #17683a;/);
-  assert.match(html, /--ready: #5cc98a;/);
-  assert.match(html, /\.status\[data-status="ready"\] \{ color: var\(--ready\); \}/);
+  // Both tones come from tokens/ — text/success in each mode — so the pair
+  // asserted here is the pair the token set currently resolves to.
+  assert.match(html, /--ok: #166534;/);
+  assert.match(html, /--ok: #8aeeae;/);
+  assert.match(html, /\.status\[data-status="ready"\] \{ color: var\(--ok\); \}/);
   assert.match(html, /el\("span", \{ text: entry\.readiness \}\)/);
+});
+
+test("dresses the page from tokens/ rather than from a hex written here", () => {
+  const { html } = build();
+  // SPEC 0002 §4.3: no hand-coded Stylos colour. The wordmark takes the theme
+  // through currentColor, and the fonts are the two families font.yaml names.
+  assert.match(html, /--brand: #5752f1;/);
+  assert.match(html, /--font-sans: Georama,/);
+  assert.match(html, /assets\/fonts\/georama-latin\.woff2/);
+  assert.match(html, /<svg class="logo"/);
 });
 
 test("keeps the authored lifecycle apart from the derived readiness", () => {

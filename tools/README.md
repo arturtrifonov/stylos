@@ -24,6 +24,22 @@ npm run import:registry     # regenerate docs/components/registry/*.yaml from th
 npm run validate:registry   # check the registry and every contract in it against itself
 ```
 
+## `build-site.mjs` — the publishable tree
+
+```bash
+npm run build       # → build/
+```
+
+The one command that produces something uploadable. It writes the home page, the registry view and all 101 component pages, and copies `assets/` in beside them; the three renderers stay runnable on their own for the edit loop, but only this one carries the fonts, so only its output is complete.
+
+It calls the renderers rather than spawning them — one process, one read of `tokens/` and of the registry, and an error that stops the build instead of leaving half a tree behind. It clears `build/` first, so a page belonging to a component that has since been renamed cannot survive into a publish.
+
+## `build-home.mjs`
+
+The front door, and deliberately a placeholder: a wordmark, one sentence about what Stylos is, three counts derived from the registry, and a door into each of the two views. It exists so the published tree opens on something other than a 101-row table, and it is the first thing a real documentation surface replaces ([`PLAN.md`](../PLAN.md) Stage 6).
+
+`assets/column.png` is optional. When it is absent the page is built without it and the build says so once.
+
 ## `build-registry-view.mjs` and `build-component-page.mjs`
 
 The two readable views over the same data, both generated from `docs/components/registry/` and neither committed.
@@ -33,7 +49,9 @@ npm run registry:view       # build/registry.html — the filterable index over 
 npm run components:view     # build/components/ — one page per component, plus an index
 ```
 
-Self-contained by construction: CSS, script and data are inlined, nothing is fetched at build time or at open time, and the files are opened from disk over `file://` where a sibling `fetch` would be blocked. Links between pages are relative, so the tree can be copied anywhere. The only absolute URLs in either output are the Figma links built from the entries themselves, and a test enforces that.
+Self-contained by construction: CSS, script and data are inlined, nothing is fetched at build time or at open time, and the files are opened from disk over `file://` where a sibling `fetch` would be blocked. Links between pages are relative, so the tree can be copied anywhere. The only absolute URLs in either output are the Figma links built from the entries themselves and the SVG namespace on the inlined wordmark, and a test enforces that.
+
+The one thing not inlined is the fonts: four woff2 subsets under `build/assets/fonts/`, one shared copy for the whole tree, because 101 pages × 116 KB of base64 is a 12 MB output for four files. They are still local — nothing is fetched over the network, which is what the constraint was for. A page copied out of the tree on its own loses them and falls back to the system stack.
 
 `build-component-page.mjs` renders the contract as it is: sections whose fields are absent are omitted rather than filled with "not specified", and an entry with no contract says so once and then shows the inventory record it does carry. Every place a rendered sample belongs gets a **preview slot** — a placeholder at the dimensions `sizing_model` says the real render will take. Filling those means exporting from Figma, which is separate work; `previewSlot` is the one function that changes when it happens.
 
@@ -68,6 +86,8 @@ Fails loudly on: a reference that does not resolve or that loops; a token with n
 ## `lib/`
 
 Shared, dependency-free modules for the above.
+
+`lib/theme.mjs` dresses the generated pages from `tokens/`. Seventeen colour roles, six radii, a seven-step type scale and both families, each an address into the canonical set, resolved on every build through the same loader `tokens-report.mjs` uses and emitted as custom properties for light and for dark. [SPEC 0002](../docs/specs/0002-registry-viewer.md) §4.3 asked for no hand-coded Stylos colour in the viewer and there is none — the rule it was protecting is that a copied value rots, and a resolved one cannot. It is a theme and not an implementation: the pages are hand-written HTML, no Stylos component is used in them, and this is not the CSS build of [`PLAN.md`](../PLAN.md) Stage 3. A role whose token stops resolving is dropped and named on stderr rather than defaulted, so a page degrades to the browser's own colours instead of to a wrong one.
 
 `lib/yaml.mjs` is a writer and reader for a deliberately restricted subset of YAML, as a matched pair — block collections only, everything non-numeric quoted, no anchors or flow syntax. The reader throws on anything the writer would not have produced, naming the line. This is what keeps `tools/` dependency-free without pretending to implement the YAML spec; if the subset stops being enough, that is the signal to take a dependency in a new decision record, not to stretch the parser.
 

@@ -2,11 +2,17 @@
 // Builds a readable view of the component registry.
 //
 //   npm run registry:view     # writes build/registry.html and prints its path
+//   npm run build             # writes it into the publishable tree, with the fonts
 //
 // One self-contained HTML file: CSS, JavaScript and data inlined. It is opened
 // over file://, where fetching a sibling JSON is blocked — a two-file design
 // would fail silently in exactly the situation this is built for. No CDN, no
-// external font, no dependency; tools/ stays dependency-free and offline.
+// remote font, no dependency; tools/ stays dependency-free and offline.
+//
+// The one thing not inlined is the two font files, which are one shared copy
+// under build/assets/ that npm run build puts there. They are local, so the
+// offline promise holds; a page opened without them falls back to the system
+// stack and loses nothing but the family.
 //
 // The output is derived and cheap to rebuild, so build/ is gitignored rather
 // than committed: committing it would put a 96-row diff into every registry
@@ -14,7 +20,7 @@
 //
 // This renders; it does not edit. The YAML is edited in an editor.
 
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -28,170 +34,211 @@ import {
   ROLES,
   READINESS,
 } from "./lib/registry.mjs";
+import { loadTheme, themeCss } from "./lib/theme.mjs";
 
-// Neutral and plain on purpose: this is a tool, not a showcase. No Stylos
-// colour is hand-copied in — once the CSS build exists (PLAN.md Stage 3) this
-// view is its natural first consumer, and swapping these six variables for
-// generated custom properties is the whole migration.
-const CSS = `
-:root {
-  color-scheme: light dark;
-  --bg: #ffffff;
-  --bg-sunken: #f4f4f5;
-  --fg: #18181b;
-  --fg-muted: #71717a;
-  --line: #e4e4e7;
-  --accent: #3f3f46;
-  --selected: #eef2ff;
-  --ready: #17683a;
-  --progress: #8a5300;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #18181b;
-    --bg-sunken: #232326;
-    --fg: #f4f4f5;
-    --fg-muted: #a1a1aa;
-    --line: #34343a;
-    --accent: #d4d4d8;
-    --selected: #2a2a44;
-    --ready: #5cc98a;
-    --progress: #e0b062;
-  }
-}
+// Plain, but no longer anonymous. The layout is a tool's — a table, a filter
+// bar and a panel — and everything that gives it a colour, a radius, a family
+// or a step of type is resolved from tokens/ at build time by
+// tools/lib/theme.mjs. SPEC 0002 §4.3 asked for no hand-coded Stylos colours
+// here and there are none: the rule it was written for is that a copied value
+// rots, and a resolved one cannot.
+//
+// It was also too small to read. Every size below is a step on the system's own
+// type scale rather than a number chosen by eye, and rows are given room:
+// 101 rows at 13px with 4px of padding is a spreadsheet, not a document.
+const CSS = String.raw`
 * { box-sizing: border-box; }
 body {
   margin: 0;
-  font: 13px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font: 400 var(--text-meta)/1.5 var(--font-sans);
   background: var(--bg);
   color: var(--fg);
+  -webkit-font-smoothing: antialiased;
 }
+
+/* --- Header ------------------------------------------------------------- */
+
 header {
-  padding: 16px 20px 12px;
-  border-bottom: 1px solid var(--line);
+  padding: 24px 28px 18px;
+  border-bottom: 1px solid var(--rule-strong);
+  background: var(--bg-sunken);
 }
-h1 { font-size: 15px; margin: 0 0 4px; font-weight: 600; }
-.meta { color: var(--fg-muted); }
-.controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 12px; }
-.group { display: flex; flex-wrap: wrap; gap: 4px; align-items: baseline; }
+.masthead { display: flex; align-items: flex-start; gap: 20px; justify-content: space-between; flex-wrap: wrap; }
+.identity { display: flex; align-items: center; gap: 14px; }
+.identity .logo-link { display: flex; }
+.identity .logo { display: block; width: 104px; height: auto; color: var(--brand); flex: none; }
+.identity .divider { width: 1px; min-height: 38px; align-self: stretch; background: var(--rule-strong); }
+h1 { font-size: var(--text-lead); margin: 0; font-weight: 600; letter-spacing: -.01em; }
+.meta { color: var(--fg-quiet); font-size: var(--text-small); margin: 2px 0 0; }
+.meta a { color: var(--accent); }
+
+/* Filters and actions are two different things and stop looking alike: the
+   chips select and stay left, the two buttons act and sit out of the way on
+   the right, where they cannot be mistaken for another facet to choose from. */
+.controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  column-gap: 2rem;
+  margin-top: 20px;
+}
+@media (max-width: 1000px) { .controls { grid-template-columns: minmax(0, 1fr); row-gap: 12px; } }
+#filters { display: flex; flex-direction: column; gap: 12px; }
+.group { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .group > .label {
-  color: var(--fg-muted);
+  color: var(--fg-faint);
   text-transform: uppercase;
-  letter-spacing: .06em;
-  font-size: 10px;
-  margin-right: 4px;
+  letter-spacing: .08em;
+  font-size: var(--text-micro);
+  font-weight: 600;
+  width: 74px;
+  flex: none;
 }
 button.chip {
   font: inherit;
-  font-size: 12px;
-  padding: 2px 8px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+  font-size: var(--text-small);
+  line-height: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-round);
   background: var(--bg);
-  color: var(--fg);
+  color: var(--fg-quiet);
   cursor: pointer;
 }
-button.chip[aria-pressed="true"] { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-button.chip .count { color: var(--fg-muted); margin-left: 4px; }
-button.chip[aria-pressed="true"] .count { color: var(--bg); }
-input[type="search"] {
-  font: inherit;
-  padding: 3px 8px;
-  min-width: 200px;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  background: var(--bg);
-  color: var(--fg);
+button.chip:hover { border-color: var(--fg-faint); color: var(--fg); }
+button.chip:focus-visible { outline: 2px solid var(--rule-accent); outline-offset: 2px; }
+button.chip[aria-pressed="true"] {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--fg-on-brand);
+  font-weight: 500;
 }
-main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; align-items: start; }
-@media (max-width: 900px) { main { grid-template-columns: minmax(0, 1fr); } }
+button.chip .count { color: var(--fg-faint); margin-left: 6px; font-variant-numeric: tabular-nums; }
+button.chip[aria-pressed="true"] .count { color: var(--fg-on-brand); opacity: .72; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
+#status { margin: 12px 0 0; font-size: var(--text-small); color: var(--fg-quiet); font-variant-numeric: tabular-nums; }
+#status b { font-weight: 600; color: var(--fg); }
+kbd {
+  font: inherit;
+  font-size: var(--text-micro);
+  font-family: var(--font-mono);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-xs);
+  padding: 1px 4px;
+  color: var(--fg-faint);
+}
+
+/* --- Table -------------------------------------------------------------- */
+
+main { display: grid; grid-template-columns: minmax(0, 1fr) 380px; align-items: start; }
+@media (max-width: 1000px) { main { grid-template-columns: minmax(0, 1fr); } }
 .table-wrap { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; }
-th, td { text-align: left; padding: 4px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th, td { text-align: left; padding: 9px 16px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+/* The last column takes the slack, so every column before it stays next to the
+   one beside it instead of being stretched apart by an empty window. */
+th:last-child, td:last-child { width: 100%; }
 thead th {
   position: sticky;
   top: 0;
+  z-index: 1;
   background: var(--bg-sunken);
   cursor: pointer;
   user-select: none;
   font-weight: 600;
-  font-size: 11px;
+  font-size: var(--text-micro);
   text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--fg-muted);
+  letter-spacing: .08em;
+  color: var(--fg-faint);
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule-strong);
 }
-thead th .arrow { color: var(--fg); }
+thead th:hover { color: var(--fg); }
+thead th[aria-sort]:not([aria-sort="none"]) { color: var(--fg); }
+thead th .arrow { color: var(--brand); }
 tbody tr { cursor: pointer; }
 tbody tr:hover { background: var(--bg-sunken); }
 tbody tr[aria-selected="true"] { background: var(--selected); }
-td.flag { text-align: center; color: var(--fg-muted); }
-td.flag[data-on="true"] { color: var(--ready); }
+tbody tr[aria-selected="true"] td:first-child { box-shadow: inset 3px 0 0 var(--brand); }
+td.name { font-weight: 500; }
+td.flag { color: var(--fg-disabled); }
+td.flag[data-on="true"] { color: var(--ok); }
 /* Colour is the second cue, never the only one: the word is the answer and the
    dot only makes the column scannable. Two tones plus the muted foreground —
    the same three the generated component page uses for its verdicts. */
-.status[data-status="ready"] { color: var(--ready); }
-.status[data-status="in progress"] { color: var(--progress); }
-.status[data-status="not started"] { color: var(--fg-muted); }
+.status[data-status="ready"] { color: var(--ok); }
+.status[data-status="in progress"] { color: var(--warn); }
+.status[data-status="not started"] { color: var(--fg-faint); }
 .status .dot {
   display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-round);
   background: currentColor;
-  margin-right: 6px;
+  margin-right: 8px;
+  vertical-align: baseline;
 }
-td.batch { text-align: right; font-variant-numeric: tabular-nums; }
+td.batch { text-align: right; font-variant-numeric: tabular-nums; color: var(--fg-quiet); }
+td.page a { color: var(--accent); text-decoration: none; }
+td.page a:hover { text-decoration: underline; }
 tbody tr.group-row { cursor: default; }
 tbody tr.group-row:hover { background: none; }
 tbody tr.group-row td {
-  background: var(--bg-sunken);
-  font-size: 10px;
-  font-weight: 600;
+  background: var(--bg-raised);
+  font-size: var(--text-micro);
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--fg-muted);
-  padding-top: 8px;
-  padding-bottom: 3px;
+  letter-spacing: .1em;
+  color: var(--fg-quiet);
+  padding-top: 9px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--rule-strong);
+  width: auto;
 }
-tbody tr.group-row td .count { margin-left: 6px; opacity: .7; }
+tbody tr.group-row td .count { margin-left: 8px; font-weight: 400; color: var(--fg-faint); }
+
+/* --- Detail panel ------------------------------------------------------- */
+
 aside {
   position: sticky;
   top: 0;
-  padding: 16px 20px;
-  border-left: 1px solid var(--line);
+  padding: 22px 26px 40px;
+  border-left: 1px solid var(--rule-strong);
+  background: var(--bg-sunken);
   max-height: 100vh;
   overflow-y: auto;
 }
-@media (max-width: 900px) { aside { position: static; border-left: 0; border-top: 1px solid var(--line); max-height: none; } }
-aside h2 { font-size: 14px; margin: 0 0 2px; }
+@media (max-width: 1000px) { aside { position: static; border-left: 0; border-top: 1px solid var(--rule-strong); max-height: none; } }
+aside h2 { font-size: var(--text-section); margin: 0 0 4px; font-weight: 600; letter-spacing: -.015em; line-height: 1.15; }
 aside h3 {
-  font-size: 10px;
+  font-size: var(--text-micro);
   text-transform: uppercase;
-  letter-spacing: .06em;
-  color: var(--fg-muted);
-  margin: 16px 0 4px;
-  font-weight: 600;
+  letter-spacing: .1em;
+  color: var(--fg-faint);
+  margin: 22px 0 6px;
+  font-weight: 700;
 }
-aside dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 12px; margin: 0; }
-aside dt { color: var(--fg-muted); }
+aside dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 16px; margin: 0; }
+aside dt { color: var(--fg-faint); }
 aside dd { margin: 0; overflow-wrap: anywhere; }
 aside ul { margin: 0; padding: 0; list-style: none; }
+aside li { padding: 1px 0; }
 button.link {
   font: inherit;
   background: none;
   border: 0;
   padding: 0;
-  color: var(--fg);
+  color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
   text-align: left;
 }
-a { color: var(--fg); overflow-wrap: anywhere; }
-code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
-.empty { color: var(--fg-muted); }
-.hint { color: var(--fg-muted); margin-top: 8px; }
-.note { white-space: pre-wrap; }
+a { color: var(--accent); overflow-wrap: anywhere; }
+code, .mono { font-family: var(--font-mono); font-size: var(--text-small); }
+.empty { color: var(--fg-faint); }
+.note { white-space: pre-wrap; color: var(--fg-quiet); }
 `;
 
 // Written without template literals so it can live inside one here in Node.
@@ -209,7 +256,6 @@ var state = {
   roles: new Set(),
   readiness: new Set(),
   batches: new Set(),
-  query: "",
   sort: "name",
   direction: 1,
   group: true,
@@ -235,7 +281,6 @@ function clearFilters() {
   state.roles.clear();
   state.readiness.clear();
   state.batches.clear();
-  state.query = "";
 }
 
 function matches(entry) {
@@ -243,7 +288,6 @@ function matches(entry) {
   if (state.roles.size > 0 && !state.roles.has(entry.role)) return false;
   if (state.readiness.size > 0 && !state.readiness.has(entry.readiness)) return false;
   if (state.batches.size > 0 && !state.batches.has(entry.batch)) return false;
-  if (state.query && entry.name.toLowerCase().indexOf(state.query) === -1) return false;
   return true;
 }
 
@@ -332,34 +376,35 @@ function renderFilters() {
     return el("div", { class: "group" }, [el("span", { class: "label", text: label })].concat(chips));
   }
 
-  host.appendChild(
-    group("Level", LEVELS, state.levels, function (value) {
-      return entries.filter(function (e) { return e.level === value; }).length;
-    })
-  );
-  host.appendChild(
-    group("Role", ROLES, state.roles, function (value) {
-      return entries.filter(function (e) { return e.role === value; }).length;
-    })
-  );
-  host.appendChild(
-    group("Readiness", READINESS, state.readiness, function (value) {
-      return entries.filter(function (e) { return e.readiness === value; }).length;
-    })
-  );
-  if (DATA.batches.length > 0) {
-    host.appendChild(
-      group("Batch", DATA.batches, state.batches, function (value) {
-        return entries.filter(function (e) { return e.batch === value; }).length;
-      })
-    );
+  function countBy(key) {
+    return function (value) {
+      return entries.filter(function (e) { return e[key] === value; }).length;
+    };
   }
+
+  host.appendChild(group("Level", LEVELS, state.levels, countBy("level")));
+  host.appendChild(group("Role", ROLES, state.roles, countBy("role")));
+  host.appendChild(group("Readiness", READINESS, state.readiness, countBy("readiness")));
+  if (DATA.batches.length > 0) {
+    host.appendChild(group("Batch", DATA.batches, state.batches, countBy("batch")));
+  }
+}
+
+// The toolbar acts rather than selects, so it is built once and only its
+// pressed state is refreshed.
+//
+// There is no search field. SPEC 0002 §4.3 asked for one and it was built, but
+// every row is in the document — nothing is virtualised — so the browser's own
+// find already searches the names, and better: it searches every other column
+// too. A second, worse search box beside it was one more control to look past.
+function mountToolbar() {
+  var host = document.getElementById("toolbar");
 
   host.appendChild(
     el("button", {
       class: "chip",
       type: "button",
-      "aria-pressed": state.group ? "true" : "false",
+      id: "group-toggle",
       text: "Group by level",
       onclick: function () {
         state.group = !state.group;
@@ -368,25 +413,21 @@ function renderFilters() {
     })
   );
 
-  var search = el("input", { type: "search", placeholder: "Search names…", value: state.query });
-  search.addEventListener("input", function (event) {
-    state.query = event.target.value.trim().toLowerCase();
-    renderTable();
-    renderStatus();
-  });
-  host.appendChild(search);
-
   host.appendChild(
     el("button", {
       class: "chip",
       type: "button",
-      text: "Clear",
+      text: "Clear filters",
       onclick: function () {
         clearFilters();
         render();
       },
     })
   );
+}
+
+function syncToolbar() {
+  document.getElementById("group-toggle").setAttribute("aria-pressed", state.group ? "true" : "false");
 }
 
 function renderHead() {
@@ -430,7 +471,7 @@ function renderTable() {
         "data-id": entry.id,
         onclick: function () { select(entry.id); },
       });
-      tr.appendChild(el("td", { text: entry.name }));
+      tr.appendChild(el("td", { class: "name", text: entry.name }));
       tr.appendChild(el("td", { class: "status", "data-status": entry.readiness }, [
         el("span", { class: "dot" }),
         el("span", { text: entry.readiness }),
@@ -443,7 +484,7 @@ function renderTable() {
       tr.appendChild(el("td", { class: "flag", "data-on": String(entry.linked), text: entry.linked ? "yes" : "—" }));
       // Linked whether or not a contract is written: the page renders a legacy
       // entry as what it is rather than 404ing on it.
-      tr.appendChild(el("td", {}, [el("a", { href: entry.page_path, text: "open" })]));
+      tr.appendChild(el("td", { class: "page" }, [el("a", { href: entry.page_path, text: "open \u2192" })]));
       body.appendChild(tr);
     });
   });
@@ -454,9 +495,23 @@ function renderStatus() {
   var ready = entries.filter(function (e) { return e.readiness === "ready"; }).length;
   var documented = entries.filter(function (e) { return e.documented; }).length;
   var linked = entries.filter(function (e) { return e.linked; }).length;
-  document.getElementById("status").textContent =
-    shown + " of " + entries.length + " shown · " + ready + " ready · " +
-    documented + " with a contract · " + linked + " linked to Figma";
+  var host = document.getElementById("status");
+  host.textContent = "";
+  [
+    [String(shown) + " of " + entries.length, "shown"],
+    [String(ready), "ready"],
+    [String(documented), "with a contract"],
+    [String(linked), "linked to Figma"],
+  ].forEach(function (pair, index) {
+    if (index > 0) host.appendChild(document.createTextNode(" \u00b7 "));
+    host.appendChild(el("b", { text: pair[0] }));
+    host.appendChild(document.createTextNode(" " + pair[1]));
+  });
+  host.appendChild(document.createTextNode(" \u00b7 "));
+  host.appendChild(el("kbd", { text: "\u2191" }));
+  host.appendChild(document.createTextNode(" "));
+  host.appendChild(el("kbd", { text: "\u2193" }));
+  host.appendChild(document.createTextNode(" moves the selection"));
 }
 
 // The same word and colour the row carries, so the panel cannot read as a
@@ -541,7 +596,10 @@ function renderDetail() {
     ])
   );
   derived.appendChild(el("dt", { text: "Page" }));
-  derived.appendChild(el("dd", {}, [el("a", { href: entry.page_path, text: entry.page_path })]));
+  // The extension is how the file is stored, not what the page is called.
+  derived.appendChild(
+    el("dd", {}, [el("a", { href: entry.page_path, text: entry.page_path.replace(/\.html$/, "") })])
+  );
   derived.appendChild(el("dt", { text: "Figma" }));
   derived.appendChild(
     el("dd", {}, [
@@ -625,6 +683,7 @@ function move(step) {
 
 function render() {
   renderFilters();
+  syncToolbar();
   renderHead();
   renderTable();
   renderStatus();
@@ -632,11 +691,11 @@ function render() {
 }
 
 document.addEventListener("keydown", function (event) {
-  if (event.target.tagName === "INPUT") return;
   if (event.key === "ArrowDown") { event.preventDefault(); move(1); }
   if (event.key === "ArrowUp") { event.preventDefault(); move(-1); }
 });
 
+mountToolbar();
 render();
 `;
 
@@ -695,24 +754,50 @@ export function buildViewData(root, entries) {
   };
 }
 
-export function renderView(data) {
+/**
+ * The page.
+ *
+ * `chrome` is what the repository dresses it in — the theme resolved from
+ * tokens/ and the wordmark — and it is a second argument rather than a field on
+ * `data` because `data` is inlined into the page as JSON and a stylesheet has
+ * no business being in it. Both default to empty: a fixture with no tokens/
+ * still renders, in the browser's own colours, which is what a test wants.
+ */
+export function renderView(data, chrome = {}) {
+  const theme = chrome.themeCss ?? "";
+  const logo = chrome.logo ?? "";
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stylos component registry</title>
-<style>${CSS}</style>
+<title>Component registry — Stylos</title>
+<style>${theme}${CSS}</style>
 </head>
 <body>
 <header>
-  <h1>Stylos component registry</h1>
-  <p class="meta">
-    ${data.entries.length} components, generated from <span class="mono">docs/components/registry/</span>
-    on ${data.generated}. Derived view — edit the YAML, then rebuild with
-    <span class="mono">npm run registry:view</span>.
-  </p>
-  <div class="controls" id="filters"></div>
+  <div class="masthead">
+    <div class="identity">
+      ${logo ? `<a href="index.html" class="logo-link">${logo}</a>` : ""}
+      <span class="divider"></span>
+      <div>
+        <h1>Component registry</h1>
+        <p class="meta">
+          ${data.entries.length} entries, generated from <span class="mono">docs/components/registry/</span>
+          on ${data.generated}
+        </p>
+      </div>
+    </div>
+    <p class="meta">
+      A derived view — edit the YAML, then rebuild with <span class="mono">npm run build</span>.
+      <br>Every component also has <a href="components/index.html">a page of its own</a>.
+    </p>
+  </div>
+  <div class="controls">
+    <div id="filters"></div>
+    <div class="toolbar" id="toolbar"></div>
+  </div>
   <p class="meta" id="status"></p>
 </header>
 <main>
@@ -731,12 +816,28 @@ export function renderView(data) {
 `;
 }
 
+/** The theme and the wordmark, read from the repository at build time. */
+export function loadChrome(root, { prefix = "" } = {}) {
+  const theme = loadTheme(root);
+  if (theme.missing.length > 0) {
+    console.warn(`theme: ${theme.missing.length} token(s) did not resolve: ${theme.missing.join(", ")}`);
+  }
+  let logo = "";
+  try {
+    logo = readFileSync(path.join(root, "assets/logo.svg"), "utf8").trim().replace(/^<\?xml[^>]*>\s*/, "");
+    logo = logo.replace("<svg ", '<svg class="logo" ');
+  } catch {
+    // The wordmark is decoration. A build without it is a build without it.
+  }
+  return { themeCss: themeCss(theme, { prefix }), logo };
+}
+
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
 
 if (isMain) {
   const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
   const entries = loadRegistry(root);
-  const html = renderView(buildViewData(root, entries));
+  const html = renderView(buildViewData(root, entries), loadChrome(root));
 
   const out = path.join(root, "build/registry.html");
   mkdirSync(path.dirname(out), { recursive: true });
