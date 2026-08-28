@@ -2,12 +2,14 @@
 // Builds the readable page for every component contract.
 //
 //   npm run components:view     # writes build/components/ and prints the count
+//   npm run build               # writes them into the publishable tree, with the fonts
 //
 // One self-contained HTML file per entry, plus an index. Same constraints as
 // the registry viewer (docs/specs/0002-registry-viewer.md): everything inlined,
 // nothing fetched at build time or at open time, output gitignored and rebuilt
 // rather than committed, opened from disk over file://. Links between pages are
-// relative, so the whole tree can be copied or zipped and still work.
+// relative — including the one shared copy of the fonts under build/assets/ —
+// so the whole tree can be copied or zipped and still work.
 //
 // This renders; it does not edit. The YAML is edited in an editor.
 //
@@ -26,12 +28,13 @@
 // from Figma, which is separate work; `previewSlot` is the only function that
 // changes when it happens, and nothing structural moves.
 
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { loadRegistry, derive, pagePathFor, figmaUrl, slugPath, LEVELS } from "./lib/registry.mjs";
 import { SIZING_TOKEN_FIELDS, createTokenResolver } from "./lib/sizing.mjs";
+import { loadTheme, themeCss } from "./lib/theme.mjs";
 
 // The page is opened by one person, from disk, on a wide screen, to read one
 // contract end to end. So: hierarchy carried by type rather than by boxes, a
@@ -42,52 +45,32 @@ import { SIZING_TOKEN_FIELDS, createTokenResolver } from "./lib/sizing.mjs";
 // schemes and again for print. Nothing is behind an interaction, because it
 // will be printed. See docs/specs/0003-component-page.md §4.5.
 const CSS = `
+/* The palette, the radii, the type scale and the two families are resolved
+   from tokens/ by tools/lib/theme.mjs and emitted above this block. What is
+   left here is the page's own vocabulary — a verdict, a finding, a rail — said
+   in terms of those, so that one name changes in one place. */
 :root {
-  color-scheme: light dark;
-  --bg: #ffffff;
-  --fg: #16161a;
-  --fg-quiet: #5c5c66;
-  --fg-faint: #8b8b96;
-  --rule: #e6e6ea;
-  --rule-strong: #c9c9d1;
-  --accent: #3538cd;
-  --do: #17683a;
-  --dont: #a51c1c;
-  --warning: #8a5300;
-  --fail: #a51c1c;
-  --open: #3538cd;
-  --requires: #0f5f73;
+  --do: var(--ok);
+  --dont: var(--bad);
+  --warning: var(--warn);
+  --fail: var(--bad);
+  --open: var(--accent);
+  --requires: var(--info);
   --rail: 15rem;
-  --measure: 66ch;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #131316;
-    --fg: #ececed;
-    --fg-quiet: #a3a3ad;
-    --fg-faint: #74747f;
-    --rule: #2a2a30;
-    --rule-strong: #43434c;
-    --accent: #a3b0ff;
-    --do: #5cc98a;
-    --dont: #f28b8b;
-    --warning: #e0b062;
-    --fail: #f28b8b;
-    --open: #a3b0ff;
-    --requires: #63c8dc;
-  }
+  --measure: 68ch;
 }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0 auto;
-  padding: 2.5rem 3rem 6rem;
-  max-width: 78rem;
+  padding: 2.75rem 3rem 7rem;
+  max-width: 80rem;
   background: var(--bg);
   color: var(--fg);
-  font: 400 15px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font: 400 var(--text-body)/1.6 var(--font-sans);
   font-feature-settings: "kern", "liga";
+  -webkit-font-smoothing: antialiased;
 }
 p { margin: 0 0 .7em; max-width: var(--measure); }
 p:last-child { margin-bottom: 0; }
@@ -96,14 +79,14 @@ ul { margin: 0; padding-left: 1.1em; max-width: var(--measure); }
 li { margin-bottom: .3em; }
 
 .mono, code {
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
-  font-size: .86em;
+  font-family: var(--font-mono);
+  font-size: .88em;
   font-variant-ligatures: none;
 }
 .quiet { color: var(--fg-quiet); }
 .faint { color: var(--fg-faint); }
 .caps {
-  font-size: 10.5px;
+  font-size: var(--text-micro);
   font-weight: 600;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -122,28 +105,31 @@ li { margin-bottom: .3em; }
 .band > .label { margin: 0; }
 .band > .label .name { display: block; }
 
-.back { display: inline-block; margin-bottom: 2.2rem; font-size: 13px; color: var(--fg-quiet); }
+.back { display: inline-flex; align-items: center; gap: .5rem; margin-bottom: 2.4rem; font-size: var(--text-meta); color: var(--fg-quiet); text-decoration: none; }
+.back:hover { color: var(--accent); }
+.back .logo { display: block; width: 62px; height: auto; color: var(--brand); }
 
 .masthead { margin-bottom: .5rem; }
 h1 {
-  margin: 0 0 .25rem;
-  font-size: 2.6rem;
+  margin: 0 0 .3rem;
+  font-size: var(--text-title);
   font-weight: 650;
   line-height: 1.08;
   letter-spacing: -.022em;
 }
 .summary {
-  font-size: 1.15rem;
-  line-height: 1.45;
+  font-size: var(--text-section);
+  line-height: 1.35;
   color: var(--fg-quiet);
-  max-width: 46ch;
-  margin-bottom: 1rem;
+  max-width: 34ch;
+  margin-bottom: 1.1rem;
+  letter-spacing: -.01em;
 }
-.badges { display: flex; flex-wrap: wrap; align-items: baseline; gap: .55rem; color: var(--fg-faint); }
+.badges { display: flex; flex-wrap: wrap; align-items: baseline; gap: .6rem; color: var(--fg-faint); }
 .badges .sep { color: var(--rule-strong); }
-.family { font-size: 13.5px; color: var(--fg-quiet); margin-top: .8rem; }
+.family { font-size: var(--text-meta); color: var(--fg-quiet); margin-top: .9rem; }
 
-h2 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-quiet); }
+h2 { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-faint); }
 
 /* Use when / do not use when. The mark is the scannable part; the verdict word
    carries the colour so the list reads as two kinds of statement. */
@@ -171,12 +157,12 @@ h2 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: .1em; text-tr
    never has to cross. */
 .property { border-top: 1px solid var(--rule); padding-top: 1.3rem; margin-top: 1.3rem; }
 .property.first { border-top: 0; }
-.property > .label .name { font-size: 1.05rem; font-weight: 600; letter-spacing: -.01em; }
+.property > .label .name { font-size: var(--text-lead); font-weight: 600; letter-spacing: -.01em; }
 .property > .label .kind { color: var(--fg-faint); margin-top: .15rem; }
-.property > .label .default { font-size: 13px; color: var(--fg-quiet); margin-top: .5rem; }
-.property > .label .controls { font-size: 12.5px; color: var(--fg-quiet); margin-top: .5rem; }
-.property > .label .desc { font-size: 13.5px; line-height: 1.5; color: var(--fg-quiet); margin-top: .7rem; }
-.property > .label .finding { margin-top: .9rem; font-size: 13px; }
+.property > .label .default { font-size: var(--text-meta); color: var(--fg-quiet); margin-top: .5rem; }
+.property > .label .controls { font-size: var(--text-meta); color: var(--fg-quiet); margin-top: .5rem; }
+.property > .label .desc { font-size: var(--text-meta); line-height: 1.55; color: var(--fg-quiet); margin-top: .7rem; }
+.property > .label .finding { margin-top: .9rem; font-size: var(--text-meta); }
 
 .value {
   display: grid;
@@ -187,9 +173,9 @@ h2 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: .1em; text-tr
   border-bottom: 1px solid var(--rule);
 }
 .value:last-of-type { border-bottom: 0; }
-.value .assign { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
+.value .assign { font-family: var(--font-mono); font-size: var(--text-meta); }
 .value .assign .val { font-weight: 600; }
-.value .aside { font-size: 12.5px; line-height: 1.45; color: var(--fg-quiet); padding: .15rem 0; }
+.value .aside { font-size: var(--text-meta); line-height: 1.45; color: var(--fg-quiet); padding: .15rem 0; }
 .value .aside .status { color: var(--tone, var(--fg-quiet)); margin-right: .4rem; }
 .value .aside .criterion { color: var(--fg-faint); }
 .value .aside dl { margin: .2em 0 0; }
@@ -205,9 +191,9 @@ h2 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: .1em; text-tr
   overflow: hidden;
   padding: 0 2px;
   border: 1px dashed var(--rule-strong);
-  border-radius: 2px;
+  border-radius: var(--radius-xs);
   color: var(--fg-faint);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-mono);
   font-size: 8.5px;
   line-height: 1;
   flex: none;
@@ -215,60 +201,64 @@ h2 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: .1em; text-tr
 .slot span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .examples { margin-top: 1.2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1.2rem; }
-.example .verdict { font-weight: 600; font-size: 12.5px; margin-bottom: .45rem; }
+.example .verdict { font-weight: 600; font-size: var(--text-meta); margin-bottom: .45rem; }
 .example.do .verdict { color: var(--do); }
 .example.dont .verdict { color: var(--dont); }
-.example .caption { font-size: 12.5px; line-height: 1.45; color: var(--fg-quiet); margin-top: .45rem; }
+.example .caption { font-size: var(--text-meta); line-height: 1.5; color: var(--fg-quiet); margin-top: .45rem; }
 
 /* The sizing run. The resolved value leads and the token name sits under it:
    the numbers make the run legible as a run, the names say where they came
    from. Neither reads on its own. */
 .axes { display: flex; flex-wrap: wrap; gap: 0 2rem; margin-bottom: .9rem; }
-.axes div { font-size: 13px; }
+.axes div { font-size: var(--text-meta); }
 .axes .k { color: var(--fg-faint); margin-right: .4em; }
-.axes .v { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; }
+.axes .v { font-family: var(--font-mono); font-size: var(--text-meta); }
 .scroll { overflow-x: auto; margin-top: 1.1rem; }
 table.run { border-collapse: collapse; }
 table.run th, table.run td { text-align: left; padding: .5rem 2rem .5rem 0; vertical-align: baseline; white-space: nowrap; }
 table.run thead th { border-bottom: 1px solid var(--rule-strong); padding-bottom: .35rem; }
-table.run thead .col { display: block; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-quiet); }
-table.run thead .from { display: block; font-size: 10.5px; letter-spacing: .02em; color: var(--fg-faint); font-weight: 400; text-transform: none; }
+table.run thead .col { display: block; font-size: var(--text-small); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--fg-quiet); }
+table.run thead .from { display: block; font-size: var(--text-micro); letter-spacing: .02em; color: var(--fg-faint); font-weight: 400; text-transform: none; }
 table.run tbody td { border-bottom: 1px solid var(--rule); }
 table.run tbody tr:last-child td { border-bottom: 0; }
-table.run .size { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; }
-table.run .value-px { display: block; font-size: 15px; font-variant-numeric: tabular-nums; }
-table.run .token { display: block; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10.5px; color: var(--fg-faint); margin-top: .1rem; }
+table.run .size { font-family: var(--font-mono); font-size: var(--text-meta); }
+table.run .value-px { display: block; font-size: var(--text-body); font-variant-numeric: tabular-nums; }
+table.run .token { display: block; font-family: var(--font-mono); font-size: var(--text-micro); color: var(--fg-faint); margin-top: .1rem; }
 
-dl.facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .2rem 1.5rem; margin: 0; font-size: 13.5px; }
+dl.facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .3rem 1.5rem; margin: 0; font-size: var(--text-meta); }
 dl.facts dt { color: var(--fg-faint); }
 dl.facts dd { margin: 0; }
 ul.inline { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .1rem 1rem; }
 ul.inline li { margin: 0; }
 .unwritten { color: var(--fg-quiet); }
-.notes { margin-top: 1rem; font-size: 13.5px; color: var(--fg-quiet); }
+.notes { margin-top: 1rem; font-size: var(--text-meta); color: var(--fg-quiet); }
 
 .index-list { list-style: none; padding: 0; max-width: none; }
-.index-list li { display: grid; grid-template-columns: minmax(0, 18rem) 6rem minmax(0, 1fr); column-gap: 1.5rem; padding: .18rem 0; }
-.index-list .role { font-size: 12.5px; color: var(--fg-faint); }
-.index-list .blurb { font-size: 13px; color: var(--fg-quiet); }
+.index-list li { display: grid; grid-template-columns: minmax(0, 18rem) 6rem minmax(0, 1fr); column-gap: 1.5rem; padding: .3rem 0; border-bottom: 1px solid var(--rule); }
+.index-list li:last-child { border-bottom: 0; }
+.index-list a { text-decoration: none; font-weight: 500; }
+.index-list a:hover { text-decoration: underline; }
+.index-list .role { font-size: var(--text-meta); color: var(--fg-faint); }
+.index-list .blurb { font-size: var(--text-meta); color: var(--fg-quiet); }
 
 /* One breakpoint, and only so a narrow window does not break: the rail becomes
    a heading above what it named. */
 @media (max-width: 60rem) {
   body { padding: 1.5rem 1.25rem 4rem; }
+  :root { --measure: none; }
   .band { grid-template-columns: minmax(0, 1fr); }
   .band > .label { margin-bottom: .8rem; }
   .value { grid-template-columns: auto minmax(0, 1fr); row-gap: .3rem; }
   .value .aside { grid-column: 1 / -1; }
-  h1 { font-size: 2rem; }
+  h1 { font-size: var(--text-section); }
 }
 
 @media print {
   :root {
     --bg: #ffffff; --fg: #000000; --fg-quiet: #333333; --fg-faint: #555555;
-    --rule: #d0d0d0; --rule-strong: #909090; --accent: #000000;
-    --do: #14532d; --dont: #7f1d1d; --warning: #713f12; --fail: #7f1d1d;
-    --open: #1e1b4b; --requires: #164e63;
+    --rule: #d0d0d0; --rule-strong: #909090; --accent: #000000; --brand: #000000;
+    --ok: #14532d; --bad: #7f1d1d; --warn: #713f12; --info: #164e63;
+    --open: #1e1b4b;
   }
   body { max-width: none; padding: 0; font-size: 10.5pt; }
   a { text-decoration: none; }
@@ -737,6 +727,18 @@ function renderUnwritten(entry) {
   );
 }
 
+/**
+ * The theme, resolved for a page at this depth.
+ *
+ * The fonts are one shared copy under build/assets/, so a page two directories
+ * down has to say so; everything else in the theme is depth-independent. A
+ * context with no theme — a fixture, a test — gets nothing, and the page falls
+ * back to the browser's own colours rather than failing to build.
+ */
+function chromeFor(context, up) {
+  return context.theme ? themeCss(context.theme, { prefix: `${up}../` }) : "";
+}
+
 export function renderComponentPage(entry, context) {
   const up = "../".repeat(slugPath(entry.id).split("/").length - 1);
   return `<!DOCTYPE html>
@@ -745,10 +747,10 @@ export function renderComponentPage(entry, context) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(entry.name)} — Stylos component</title>
-<style>${CSS}</style>
+<style>${chromeFor(context, up)}${CSS}</style>
 </head>
 <body>
-<a class="back" href="${esc(`${up}index.html`)}">← All components</a>
+<a class="back" href="${esc(`${up}index.html`)}">${context.logo}<span>← All components</span></a>
 ${renderHeader(entry, context)}
 ${renderUnwritten(entry)}
 ${renderPurpose(entry)}
@@ -798,15 +800,16 @@ export function renderIndex(entries, context) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Stylos components</title>
-<style>${CSS}</style>
+<title>Components — Stylos</title>
+<style>${chromeFor(context, "")}${CSS}</style>
 </head>
 <body>
+<a class="back" href="../index.html">${context.logo}<span>← Home</span></a>
 <header class="masthead">
-<h1>Stylos components</h1>
+<h1>Components</h1>
 <p class="summary">${entries.length} entries, ${written} of them with a contract written.</p>
-<div class="badges"><span class="caps">generated ${esc(context.generated)}</span><span class="sep">·</span><span class="caps">npm run components:view</span></div>
-<p class="family">The filterable index over the same data, with relations and Airtable history, is <a href="../registry.html">registry.html</a>.</p>
+<div class="badges"><span class="caps">generated ${esc(context.generated)}</span><span class="sep">·</span><span class="mono">npm run build</span></div>
+<p class="family">The filterable index over the same data — relations, Figma links and the Airtable history — is <a href="../registry.html">the registry</a>.</p>
 </header>
 ${body}
 </body>
@@ -817,7 +820,12 @@ ${body}
 /** What every page needs about the rest of the registry: who exists, who is kin. */
 export function pageContext(
   entries,
-  { generated = new Date().toISOString().slice(0, 10), resolveToken = () => undefined } = {}
+  {
+    generated = new Date().toISOString().slice(0, 10),
+    resolveToken = () => undefined,
+    theme = null,
+    logo = "",
+  } = {}
 ) {
   const family = new Map();
   for (const entry of entries) {
@@ -830,6 +838,8 @@ export function pageContext(
     family,
     generated,
     resolveToken,
+    theme,
+    logo,
     importDate: "2026-08-20",
   };
 }
@@ -844,12 +854,33 @@ export function buildPages(entries, options = {}) {
   return pages;
 }
 
+/** The wordmark, inlined so it takes `--brand` and turns over with the theme. */
+export function readLogo(root) {
+  try {
+    return readFileSync(path.join(root, "assets/logo.svg"), "utf8")
+      .trim()
+      .replace(/^<\?xml[^>]*>\s*/, "")
+      .replace("<svg ", '<svg class="logo" ');
+  } catch {
+    // The wordmark is decoration. A build without it is a build without it.
+    return "";
+  }
+}
+
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
 
 if (isMain) {
   const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
   const entries = loadRegistry(root);
-  const pages = buildPages(entries, { resolveToken: createTokenResolver(root) });
+  const theme = loadTheme(root);
+  if (theme.missing.length > 0) {
+    console.warn(`theme: ${theme.missing.length} token(s) did not resolve: ${theme.missing.join(", ")}`);
+  }
+  const pages = buildPages(entries, {
+    resolveToken: createTokenResolver(root),
+    theme,
+    logo: readLogo(root),
+  });
 
   const out = path.join(root, "build/components");
   for (const [relative, html] of pages) {

@@ -31,6 +31,7 @@ docs/          charter, foundations, component standard and registry, specs
 tokens/        the canonical token set, imported from Figma
 skills/        Figma Agent skills — modular source, compiled to one importable document
 tools/         small dependency-free scripts that build and check the above
+assets/        the wordmark and the two self-hosted families, for the generated site
 figma/         what the Figma library contains; Figma itself stays the source of truth
 ```
 
@@ -59,6 +60,13 @@ npm install
 npm test                  # tool tests
 npm run build:skills      # skills/src/ → skills/dist/, imported into Figma Agent by hand
 npm run validate:registry # component registry: contradictions fail, judgements are reported
-npm run registry:view     # → build/registry.html, the readable index over the registry
-npm run components:view   # → build/components/, one generated page per component
+npm run build             # → build/, the whole publishable site
+npm run registry:view     # → build/registry.html alone, while editing YAML
+npm run components:view   # → build/components/ alone, one page per component
 ```
+
+`npm run build` is the one that produces something uploadable: it writes the
+home page, the registry view and every component page, and copies `assets/` in
+beside them. The other two are the same renderers on their own, for the loop
+where a rebuild of 101 pages is not worth waiting for — they do not copy the
+fonts, so a page built that way falls back to the system stack.

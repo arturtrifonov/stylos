@@ -4,6 +4,7 @@
   "private": true,
   "description": "Stylos Design System — documentation, canonical design tokens, and Figma Agent skill sources.",
   "scripts": {
+    "build": "node tools/build-site.mjs",
     "build:skills": "node tools/build-skills.mjs",
     "validate:skills": "node tools/build-skills.mjs --check",
     "validate:registry": "node tools/lint-registry.mjs",

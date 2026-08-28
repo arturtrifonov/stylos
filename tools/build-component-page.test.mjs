@@ -1,9 +1,17 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { buildPages, pageContext, renderComponentPage } from "./build-component-page.mjs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+import { buildPages, pageContext, readLogo, renderComponentPage } from "./build-component-page.mjs";
+import { loadTheme } from "./lib/theme.mjs";
 import { checkRegistry } from "./lint-registry.mjs";
 import { composeFigmaDescription, registryPathFor } from "./lib/registry.mjs";
+
+// The contracts under test are fixtures; the theme is the repository's own,
+// because it is resolved from tokens/ and a fixture has none.
+const repoRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
 // A stand-in for tokens/. The real resolver reads the canonical set; a test
 // says which names exist and nothing else, so a token renamed in tokens/ does
@@ -491,17 +499,25 @@ test("composes the Figma description to exactly three lines", () => {
   );
 });
 
-test("reaches nothing over the network — no CDN, no font, no fetch", () => {
+test("reaches nothing over the network — no CDN, no remote font, no fetch", () => {
   const entry = contract();
-  const pages = buildPages([entry, alternative], { generated: "2026-08-27", resolveToken });
+  const pages = buildPages([entry, alternative], {
+    generated: "2026-08-27",
+    resolveToken,
+    theme: loadTheme(repoRoot),
+    logo: readLogo(repoRoot),
+  });
   for (const [name, html] of pages) {
     const remote = [...html.matchAll(/(https?:)?\/\/[^"'\s)]+/g)].map((match) => match[0]);
-    assert.ok(
-      remote.every((url) => url.startsWith("https://www.figma.com/design/")),
-      `${name} reaches ${remote.filter((url) => !url.startsWith("https://www.figma.com/design/"))}`
-    );
+    // The Figma links, built from the entries themselves, and the SVG
+    // namespace on the inlined wordmark — an identifier, not an address.
+    const allowed = (url) =>
+      url.startsWith("https://www.figma.com/design/") || url === "http://www.w3.org/2000/svg";
+    assert.ok(remote.every(allowed), `${name} reaches ${remote.filter((url) => !allowed(url))}`);
     assert.doesNotMatch(html, /<script/);
     assert.doesNotMatch(html, /<link[^>]+stylesheet/);
+    // The self-hosted subsets are relative, and stay relative from any depth.
+    assert.match(html, /url\("\.\.\/assets\/fonts\/georama-latin\.woff2"\)/);
   }
 });
 
@@ -526,7 +542,9 @@ test("links a family member to its siblings and nothing else", () => {
 test("carries no token value onto the page", () => {
   const entry = contract();
   const html = renderComponentPage(entry, pageContext([entry, alternative], { resolveToken }));
-  // The contract holds no token names and the page must not go looking for
-  // any: every colour on the page is the viewer's own.
-  assert.doesNotMatch(html, /--stylos|tokens\//);
+  // A contract with no sizing model puts no token name in front of the reader.
+  // The stylesheet is exempt: it is dressed from tokens/ by tools/lib/theme.mjs
+  // and says so, which is a different claim from the contract making one.
+  const body = html.replace(/<style>[\s\S]*?<\/style>/, "");
+  assert.doesNotMatch(body, /--stylos|tokens\//);
 });
