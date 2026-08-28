@@ -1,0 +1,164 @@
+# Hand-written 2026-08-28. Replaces part of radio.yaml, whose id "Radio"
+# matches no component in Figma. Carries the full component contract; there is
+# no companion Markdown document — the readable page is generated from here.
+
+id: "Radio Text"
+name: "Radio Text"
+family: "Radio"
+level: "element"
+role: "input"
+status: "draft"
+version: "0.1"
+summary: "A radio tied to wrapping copy in a column of fixed width, the circle aligned to the first line."
+purpose: "The options a person has to weigh against each other are often a sentence each — a plan with what it includes, a permission with its consequence, a mode with what it changes. That text wraps at a width the layout decides, and the circle has to stay where the reader's eye starts rather than float in the vertical middle of three lines. Radio Label can do neither, because it hugs and centres."
+use_when:
+  - "The option text may run to more than one line, or the rows must occupy a width the layout sets rather than a width the text sets."
+do_not_use_when:
+  -
+    text: "The label is a phrase on one line — a fixed width would leave a gap after short text."
+    instead: "Radio Label"
+  -
+    text: "The control has no visible text of its own because its context supplies the meaning."
+    instead: "Radio Input"
+  -
+    text: "More than one of the options may be chosen at once."
+    instead: "Checkbox Text"
+uses:
+  - "Radio Input"
+flow_behavior:
+  - "fill"
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "Interactive content inside the copy — a link to the plan's terms is the usual case — must not select the option, and nesting a link inside the label is an HTML validity problem in some structures. This is the most common bug in the pattern and the implementation has to handle it explicitly."
+  -
+    status: "requires"
+    note: "A radio only means anything inside a group. The implementation has to expose the set as one group with one name, move between members with the arrow keys rather than tab, and keep a single tab stop for the whole set — SC 4.1.2 and SC 2.1.1. The group is not a component here."
+  -
+    status: "warning"
+    note: "The copy is the accessible name, so a screen reader reads the whole paragraph as the option's name with no pause — and in a group it reads every paragraph in turn while the person arrows through. Where the copy runs past a sentence or two, give the option a short name and leave the full text as adjacent described-by content."
+  -
+    status: "open"
+    note: "No focus value, and none is planned as a state value: state is single-select and focus coexists with hover, active and checked. Focus becomes a boolean once its treatment is decided. Unresolved system-wide."
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable: true
+  intent: "Width is the one dimension a consumer sets — directly, or by filling an auto-layout parent. The 160 the set is authored at is a starting value and carries no meaning, which is why no width token is recorded. Height is the taller of the circle and the line box, multiplied by the line count, and is never set by hand. The circle sits in a container that fills the row and pins it to the top, so it stays on the first line however many lines appear; that is the whole reason this component is separate from Radio Label, and the line height comes from the text family rather than the string family for the same reason. Resolve token values with npm run tokens:report."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-2_000"
+      gap: "gap/g-0_500"
+      font_size: "size/0_750"
+      line_height: "line height/text/0_750"
+    -
+      size: "small"
+      box: "size/s-2_500"
+      gap: "gap/g-0_625"
+      font_size: "size/0_875"
+      line_height: "line height/text/0_875"
+    -
+      size: "medium"
+      box: "size/s-3_000"
+      gap: "gap/g-0_750"
+      font_size: "size/1_000"
+      line_height: "line height/text/1_000"
+    -
+      size: "large"
+      box: "size/s-3_500"
+      gap: "gap/g-0_875"
+      font_size: "size/1_250"
+      line_height: "line height/text/1_250"
+    -
+      size: "extra large"
+      box: "size/s-4_000"
+      gap: "gap/g-1_000"
+      font_size: "size/1_500"
+      line_height: "line height/text/1_500"
+variants:
+  count: 40
+  complete_cross_product: true
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Drives the circle, the text measure and the gap together. It does not set the width."
+    values:
+      -
+        value: "extra small"
+        rationale: "Exists for dense contexts and for secondary option text inside an already compact panel."
+        a11y:
+          status: "warning"
+          criterion: "WCAG 2.2 SC 2.5.8"
+          note: "Multi-line copy makes the target far larger than 24 x 24 and clears the criterion comfortably. One line at this size is 18 tall and does not — conformant then only through the Spacing exception. A component sized for wrapping copy and given one line is the wrong component anyway."
+      -
+        value: "small"
+        rationale: "Same dense contexts, one step up."
+        a11y:
+          status: "warning"
+          criterion: "WCAG 2.2 SC 2.5.8"
+          note: "One line at this size is 22 tall against a required 24. Multi-line copy clears it."
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "Pointer interaction and availability. The visual change happens in the circle; the copy follows only on disabled, and selection does not change the copy at all."
+    values:
+      -
+        value: "default"
+      -
+        value: "hover"
+      -
+        value: "active"
+      -
+        value: "disabled"
+        note: "The copy takes the disabled text role along with the circle. Removes the control from tab order. Disabling one option of a group rather than the whole group is almost always wrong."
+  -
+    name: "is checked"
+    kind: "variant"
+    default: "false"
+    description: "Selection. Does not affect the copy."
+    values:
+      -
+        value: "false"
+      -
+        value: "true"
+  -
+    name: "label text"
+    kind: "text"
+    default: "Radio"
+    description: "Prose: sentence case, full sentences, terminal punctuation. Written to wrap — if it never wraps, Radio Label is the right component. The options in one group have to be comparable, so they want the same shape and roughly the same length; a group where one option is a paragraph and the rest are three words reads as a recommendation rather than a choice."
+    examples:
+      -
+        verdict: "do"
+        props:
+          "label text": "Keep a copy of every version. Storage counts against your plan."
+      -
+        verdict: "dont"
+        caption: "One line leaves a fixed-width gap after the text and gives up the only thing this component does. Use Radio Label."
+        props:
+          "label text": "Weekly"
+limitations:
+  - "No validation property, which hurts most here: a required group of substantial options is the canonical case for an inline error."
+  - "No supporting-text slot. One text role only, so an option and its explanation share a paragraph or the explanation goes outside the control."
+  - "The circle is always leading and always aligned to the first line. No property changes either."
+  - "No text style on the copy — every typographic property is bound to a variable directly."
+  - "No mixed value, correctly: partial selection has no meaning in a mutually exclusive set."
+  - "The component is one option, not the group. Nothing here carries the group's label, its required state, its error, or the fact that the options are alternatives at all."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4333-26184"
+  last_verified: "2026-08-28"
+notes: "children/parents deliberately absent: the allowed-composition set from radio.yaml has not yet been split across the three family members, and that split is a judgement rather than a transcription. radio.yaml should be deleted once it is done — 15 other entries still name Radio. used_by needs a whole-file survey that has not been run."
+import:
+  batch: 1
+  ready: true
