@@ -12,7 +12,8 @@ children:
   - "Badge"
   - "Avatar"
   - "Icon"
-  - "Indicator"
+  - "Indicator Status"
+  - "Indicator Special"
   - "Tag"
   - "Loader"
 parents:

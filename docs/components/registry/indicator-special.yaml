@@ -190,3 +190,6 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "504-140010"
   last_verified: "2026-08-27"
+import:
+  batch: 1
+  ready: true

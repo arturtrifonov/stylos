@@ -9,7 +9,9 @@ role: "output"
 flow_behavior:
   - "fill"
 children:
-  - "Checkbox"
+  - "Checkbox Input"
+  - "Checkbox Label"
+  - "Checkbox Text"
   - "Toggle"
 parents:
   - "Table"

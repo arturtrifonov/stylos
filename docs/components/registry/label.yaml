@@ -13,7 +13,9 @@ children:
   - "Icon"
 parents:
   - "Accordion / Container"
-  - "Checkbox"
+  - "Checkbox Input"
+  - "Checkbox Label"
+  - "Checkbox Text"
   - "Radio"
   - "Toggle"
   - "Edit Mode / Edit"

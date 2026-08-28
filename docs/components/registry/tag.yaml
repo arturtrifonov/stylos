@@ -12,7 +12,8 @@ children:
   - "Icon"
   - "Button Inner"
   - "Badge"
-  - "Indicator"
+  - "Indicator Status"
+  - "Indicator Special"
   - "Loader"
 parents:
   - "Accordion / Container"

@@ -157,3 +157,6 @@ figma:
   node_id: "4327-34970"
   last_verified: "2026-08-26"
 notes: "children/parents deliberately absent: the allowed-composition set from checkbox.yaml has not yet been split across the three family members, and that split is a judgement rather than a transcription. used_by needs a whole-file survey that has not been run."
+import:
+  batch: 1
+  ready: true

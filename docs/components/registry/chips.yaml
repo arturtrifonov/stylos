@@ -11,7 +11,8 @@ flow_behavior:
 children:
   - "Icon"
   - "Button Inner"
-  - "Indicator"
+  - "Indicator Status"
+  - "Indicator Special"
   - "Badge"
   - "Loader"
 parents:
