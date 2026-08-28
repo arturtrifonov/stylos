@@ -38,6 +38,8 @@ It calls the renderers rather than spawning them — one process, one read of `t
 
 The front door, and deliberately a placeholder: a wordmark, one sentence about what Stylos is, three counts derived from the registry, and a door into each of the two views. It exists so the published tree opens on something other than a 101-row table, and it is the first thing a real documentation surface replaces ([`PLAN.md`](../PLAN.md) Stage 6).
 
+It also draws the implementation queue: one bar per `import.batch`, the track proportional to how many components are in that batch and the filled part to how many are ready. `import.batch` is Airtable's build sequencing as it stood on 2026-08-20 — history like the rest of `import:`, and labelled as such on the page rather than promoted to a live plan. Entries carrying no batch get a row of their own instead of being dropped: they are the ones added by hand since the import, and today they hold nearly all the finished work, so a chart that left them out would show six empty bars and call that the state of the system. The count and the percent are written beside every bar, because the bar is the second cue and never the only one.
+
 `assets/column.png` is optional. When it is absent the page is built without it and the build says so once.
 
 ## `build-registry-view.mjs` and `build-component-page.mjs`
