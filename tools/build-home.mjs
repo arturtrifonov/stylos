@@ -84,6 +84,49 @@ a { color: var(--accent); }
 .tally .n { display: block; font-size: var(--text-title); line-height: 1.05; font-weight: 600; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
 .tally .k { font-size: var(--text-small); text-transform: uppercase; letter-spacing: .09em; color: var(--fg-faint); font-weight: 600; }
 
+/* The queue. One row per batch, the track proportional to how many components
+   are in it and the filled part to how many are ready — the shape of the work
+   and the progress through it are the same picture. The count and the percent
+   are written out beside every bar: the bar is the second cue, never the only
+   one, which is how readiness is shown everywhere else in these pages. */
+.queue { margin: 3.5rem 0 0; }
+.queue h2 {
+  font-size: var(--text-small);
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  margin: 0 0 .3rem;
+}
+.queue .caveat { margin: 0 0 1.2rem; font-size: var(--text-meta); color: var(--fg-quiet); max-width: 58ch; }
+.queue ol { list-style: none; margin: 0; padding: 0; }
+.queue li {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr) 4.5rem 3rem;
+  align-items: center;
+  gap: 0 1rem;
+  padding: .3rem 0;
+}
+.queue .label { font-size: var(--text-meta); color: var(--fg-quiet); }
+.queue li.unbatched .label { color: var(--fg-faint); font-style: italic; }
+.queue .track {
+  height: 10px;
+  background: var(--bg-raised);
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  display: flex;
+}
+.queue .fill { background: var(--ok); }
+.queue .fill.progress { background: var(--warn); }
+.queue .of { font-size: var(--text-small); font-family: var(--font-mono); color: var(--fg-faint); font-variant-numeric: tabular-nums; text-align: right; }
+.queue .pct { font-size: var(--text-meta); font-variant-numeric: tabular-nums; text-align: right; font-weight: 600; }
+.queue li[data-done="0"] .pct { color: var(--fg-faint); font-weight: 400; }
+
+@media (max-width: 40rem) {
+  .queue li { grid-template-columns: 4.5rem minmax(0, 1fr) 3rem; }
+  .queue .of { display: none; }
+}
+
 footer { margin-top: auto; padding-top: 3.5rem; color: var(--fg-faint); font-size: var(--text-small); }
 footer p { margin: .2rem 0; }
 
@@ -95,6 +138,9 @@ footer p { margin: .2rem 0; }
 }
 `;
 
+/** The day the batches were exported. The registry viewer prints the same date. */
+const IMPORT_DATE = "2026-08-20";
+
 const ESCAPES = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ESCAPES[c]);
 
@@ -105,10 +151,73 @@ const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ESCAPES[c]
  * @param {string} options.logo         inline SVG, or ""
  * @param {boolean} options.column      whether assets/column.png was found
  */
+/**
+ * The implementation queue, one row per batch.
+ *
+ * `import.batch` is Airtable's build sequencing as it stood on the day of the
+ * import — history, like the rest of `import:`, and labelled as such wherever
+ * it is shown. It is the only ordering the registry carries, so it is what a
+ * queue can be drawn from; nothing here promotes it to a live plan.
+ *
+ * Entries with no batch get a row of their own rather than being dropped. They
+ * are the ones added by hand since the import, and today they are where nearly
+ * all the finished work is — a chart that silently left them out would show
+ * six empty bars and call it the state of the system.
+ */
+export function batchProgress(entries) {
+  const groups = new Map();
+  for (const entry of entries) {
+    const batch = typeof entry.import?.batch === "number" ? entry.import.batch : null;
+    if (!groups.has(batch)) groups.set(batch, []);
+    groups.get(batch).push(entry);
+  }
+
+  return [...groups.entries()]
+    // Numbered batches in order, then whatever carries no batch at all.
+    .sort(([a], [b]) => (a === null) - (b === null) || a - b)
+    .map(([batch, rows]) => {
+      const done = rows.filter((entry) => readiness(entry) === "ready").length;
+      const started = rows.filter((entry) => readiness(entry) === "in progress").length;
+      return {
+        batch,
+        total: rows.length,
+        done,
+        started,
+        percent: Math.round((done / rows.length) * 100),
+      };
+    });
+}
+
+/** `0` only when nothing is ready — a rounded-away fraction says so instead. */
+function percentLabel({ done, percent }) {
+  if (done > 0 && percent === 0) return "&lt;1%";
+  return `${percent}%`;
+}
+
 export function renderHome({ entries, theme = null, logo = "", generated, column = false }) {
   const total = entries.length;
   const ready = entries.filter((entry) => readiness(entry) === "ready").length;
   const documented = entries.filter((entry) => derive(entry).documented).length;
+
+  const queue = batchProgress(entries);
+  const widest = Math.max(...queue.map((row) => row.total), 1);
+  const rows = queue
+    .map((row) => {
+      const label = row.batch === null ? "no batch" : `Batch ${row.batch}`;
+      const share = (row.total / widest) * 100;
+      const segment = (count, className) =>
+        count > 0 ? `<span class="fill ${className}" style="width:${(count / row.total) * 100}%"></span>` : "";
+      return `<li${row.batch === null ? ' class="unbatched"' : ""} data-done="${row.done}">
+<span class="label">${label}</span>
+<span class="track" style="width:${Math.round(share * 100) / 100}%" role="img" aria-label="${row.done} of ${row.total} ready">${segment(
+        row.done,
+        "done"
+      )}${segment(row.started, "progress")}</span>
+<span class="of">${row.done} / ${row.total}</span>
+<span class="pct">${percentLabel(row)}</span>
+</li>`;
+    })
+    .join("");
 
   const figure = column
     ? `<figure class="column-figure"><img src="assets/column.png" alt="" width="510" height="510" loading="lazy"></figure>`
@@ -144,6 +253,16 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
     <div><span class="n">${documented}</span><span class="k">with a contract</span></div>
     <div><span class="n">${ready}</span><span class="k">ready</span></div>
   </div>
+
+  <section class="queue">
+    <h2>Implementation queue</h2>
+    <p class="caveat">
+      Batches are Airtable's build sequencing as it stood on ${esc(IMPORT_DATE)} — history, not a
+      live plan. A component counts as ready when its contract is written and it is linked to
+      Figma. Everything finished since the import carries no batch, and has a row of its own.
+    </p>
+    <ol>${rows}</ol>
+  </section>
 
   <nav class="doors">
     <a class="door" href="registry.html">
