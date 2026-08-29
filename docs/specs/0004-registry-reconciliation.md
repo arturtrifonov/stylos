@@ -1,6 +1,6 @@
 # SPEC 0004 — Registry reconciliation
 
-**Status:** Not started
+**Status:** Built — 2026-08-29
 **Date:** 2026-08-29
 
 A work order. `npm run validate:registry` exits 1 today. This clears every failure, repairs what the three family splits left behind, gives the Button family the structure Figma already has, and removes the copied counts and the Airtable facet that let the registry be read as a plan.
@@ -40,11 +40,9 @@ Three things are true of the registry as it stands.
 
 ## 3. The work, in order
 
-### 3.1 The split rule, and the debris it clears
+### 3.1 The split debris
 
-**Rule, to be recorded in [`registry/README.md`](../components/registry/README.md): when a component is split, every member inherits the old entry's `children` and `parents` in full, and every reference to the old id is replaced by the ids of all its members.**
-
-It is mechanical, so it is checkable, and it does not pretend that an allowed-composition list is evidence about implementation. Where a member genuinely cannot contain something, that is a later judgement recorded against that member — not a reason to leave the field empty.
+The rule is in [`registry/README.md`](../components/registry/README.md), *When a component is split*, and it governs every future split as well as this repair. Apply it here; do not restate it.
 
 **Radio.** Fifteen entries reference `Radio`. Replace that string with `Radio Input`, `Radio Label` and `Radio Text` in each — eleven that name it as a child (`Accordion / Container`, `Alert`, `Asset`, `Bottom Sheet`, `Flex Layout`, `Header`, `Hero`, `Modal`, `Side Panel`, `Side Panel Menu`, `Toast`) and four that name it as a parent (`Badge`, `Icon`, `Label`, `Loader`). The three member files already carry the old entry's four children and eleven parents, so this one operation clears 15 FAIL and 45 REPORT and leaves both sides reciprocal.
 
@@ -54,7 +52,9 @@ It is mechanical, so it is checkable, and it does not pretend that an allowed-co
 
 ### 3.2 The two remaining failures
 
-`checkbox-input.yaml` and `checkbox-label.yaml` name `Toggle Label` as the alternative in `do_not_use_when`. Toggle was never split; there is one entry, `Toggle`. Point both at it.
+`checkbox-input.yaml` and `checkbox-label.yaml` name `Toggle Label` as the alternative in `do_not_use_when`. No such entry exists: Toggle has not been split, and today the only anchor is `Toggle`. Point both at it.
+
+**The anchor is provisional.** `Toggle` was noted earlier as having the same id-versus-Figma mismatch that `Checkbox` and `Radio` had, which would make it three components rather than one — and `Toggle Label` reads as written in anticipation of a member that does not exist yet. That has not been verified against the file; verify it when Toggle is opened. Toggle is wave 2. When it splits, *When a component is split* step 4 rewrites these two references along with every other, and that is the point of doing it by rule rather than by hand.
 
 ### 3.3 The Button family
 

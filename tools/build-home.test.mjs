@@ -1,7 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { batchProgress, renderHome } from "./build-home.mjs";
+import { renderHome } from "./build-home.mjs";
+import { waveProgress } from "./lib/plan.mjs";
 
 const entries = [
   { id: "Badge", name: "Badge", summary: "s", purpose: "p", useWhen: ["u"], api: [], figma: { node_id: "1-2" } },
@@ -40,52 +41,56 @@ test("reaches nothing over the network", () => {
   assert.deepEqual([...home().matchAll(/(https?:)?\/\/[^"'\s)]+/g)].map((m) => m[0]), []);
 });
 
-// --- the implementation queue ------------------------------------------------
+// --- the wave chart ----------------------------------------------------------
+
+// PLAN.md Stage 4 in miniature. Parsing it is lib/plan.test.mjs's subject;
+// what is tested here is what the page does with the result.
+const plan = `## 4. Stages
+
+| # | Wave | Entries | Ends with | Est. |
+| --- | --- | --- | --- | ---: |
+| 1 | Selection controls | Badge, Checkbox Input / Label | a form column | 1 wk |
+| 2 | The table | Table / TD Text | a dense table | 2 wk |
+
+Text after the table.
+`;
 
 const queued = [
-  { id: "A", api: [], summary: "s", purpose: "p", useWhen: ["u"], figma: { node_id: "1-1" }, import: { batch: 1 } },
-  { id: "B", api: [], import: { batch: 1 } },
-  { id: "C", api: [], import: { batch: 2 } },
-  { id: "D", api: [], summary: "s", purpose: "p", useWhen: ["u"], figma: { node_id: "1-2" } },
+  { id: "Badge", api: [], summary: "s", purpose: "p", useWhen: ["u"], figma: { node_id: "1-1" } },
+  { id: "Checkbox Input", family: "Checkbox", api: [] },
+  { id: "Checkbox Label", family: "Checkbox", api: [] },
+  { id: "Table / TD Text", api: [], summary: "s", purpose: "p", useWhen: ["u"], figma: { node_id: "1-2" } },
 ];
 
-test("counts each batch against its own size, in batch order", () => {
-  assert.deepEqual(
-    batchProgress(queued).map(({ batch, total, done, percent }) => ({ batch, total, done, percent })),
-    [
-      { batch: 1, total: 2, done: 1, percent: 50 },
-      { batch: 2, total: 1, done: 0, percent: 0 },
-      { batch: null, total: 1, done: 1, percent: 100 },
-    ]
-  );
-});
-
-test("gives the unbatched entries a row rather than dropping them", () => {
-  // They are where the finished work currently is; leaving them out would show
-  // empty bars and call that the state of the system.
-  const html = renderHome({ entries: queued, generated: "2026-08-28" });
-  assert.match(html, /class="unbatched"/);
-  assert.match(html, /no batch/);
-});
-
 test("writes the count and the percent beside every bar, never the bar alone", () => {
-  const html = renderHome({ entries: queued, generated: "2026-08-28" });
-  assert.match(html, /<span class="of">1 \/ 2<\/span>/);
-  assert.match(html, /<span class="pct">50%<\/span>/);
-  assert.match(html, /aria-label="1 of 2 ready"/);
+  const html = renderHome({ entries: queued, generated: "2026-08-28", plan });
+  assert.match(html, /<span class="of">1 \/ 3<\/span>/);
+  assert.match(html, /<span class="pct">33%<\/span>/);
+  assert.match(html, /aria-label="1 of 3 ready"/);
+});
+
+test("names the waves as the plan's order rather than as a schedule", () => {
+  const html = renderHome({ entries: queued, generated: "2026-08-28", plan });
+  assert.match(html, /Wave 1<\/span>Selection controls/);
+  assert.match(html, /PLAN\.md/);
+  assert.doesNotMatch(html, /Batch/);
 });
 
 test("says less than one percent rather than rounding a finished component to zero", () => {
   const many = [
-    { id: "done", api: [], summary: "s", purpose: "p", useWhen: ["u"], figma: { node_id: "1-1" }, import: { batch: 1 } },
-    ...Array.from({ length: 400 }, (_, i) => ({ id: `x${i}`, api: [], import: { batch: 1 } })),
+    { id: "Badge", api: [], summary: "s", purpose: "p", useWhen: ["u"], figma: { node_id: "1-1" } },
+    ...Array.from({ length: 400 }, (_, i) => ({ id: `x${i}`, api: [] })),
   ];
-  assert.equal(batchProgress(many)[0].percent, 0);
-  assert.match(renderHome({ entries: many, generated: "2026-08-28" }), /<span class="pct">&lt;1%<\/span>/);
+  const wide = `| # | Wave | Entries | Ends with | Est. |
+| --- | --- | --- | --- | ---: |
+| 1 | Everything | ${many.map((entry) => entry.id).join(", ")} | a screen | 1 wk |
+`;
+  assert.equal(waveProgress(wide, many)[0].percent, 0);
+  assert.match(renderHome({ entries: many, generated: "2026-08-28", plan: wide }), /<span class="pct">&lt;1%<\/span>/);
 });
 
-test("names the batches as history rather than as a plan", () => {
-  const html = renderHome({ entries: queued, generated: "2026-08-28" });
-  assert.match(html, /history, not a\s+live plan/);
-  assert.match(html, /2026-08-20/);
+// A fixture with no plan is the ordinary case in these tests, and an empty
+// chart would be worse than no chart.
+test("omits the section entirely when there is no plan to read", () => {
+  assert.doesNotMatch(home(), /class="queue"/);
 });

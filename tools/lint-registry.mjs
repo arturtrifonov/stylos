@@ -28,6 +28,7 @@ import { fileURLToPath } from "node:url";
 import {
   loadRegistry,
   registryPathFor,
+  insteadIds,
   levelRank,
   LEVELS,
   STATUSES,
@@ -39,10 +40,11 @@ import {
 } from "./lib/registry.mjs";
 import { SIZING_TOKEN_FIELDS, createTokenResolver } from "./lib/sizing.mjs";
 
-// 93 of the 96 entries carry none of the contract fields — they are the
-// Airtable inventory and nothing more. Absence is never a failure: every check
-// below runs only when the field it is about is present, so a legacy entry
-// passes without being pretended to be a contract.
+// Most entries carry none of the contract fields — they are the Airtable
+// inventory and nothing more. Absence is never a failure: every check below
+// runs only when the field it is about is present, so a legacy entry passes
+// without being pretended to be a contract. How many is derived, not counted
+// here: it is `documented` in the registry view.
 const CONTRACT_STALE_DAYS = 90;
 
 function properties(entry) {
@@ -181,9 +183,9 @@ export function checkRegistry(entries, { today = new Date(), resolveToken = null
 
 // --- The contract (docs/specs/0003-component-page.md §3) -------------------
 //
-// Every check here is conditional on the field it is about being present. The
-// 93 legacy entries carry none of them and must pass; a contract that carries
-// a field carries it correctly or fails.
+// Every check here is conditional on the field it is about being present. A
+// legacy entry carries none of them and must pass; a contract that carries a
+// field carries it correctly or fails.
 
 function checkContract(entry, byId, errors, resolveToken) {
   const file = entry.file;
@@ -199,14 +201,16 @@ function checkContract(entry, byId, errors, resolveToken) {
 
   // `instead` is an anchor, not a phrase: a renamed alternative has to break
   // loudly rather than leave a sentence pointing at nothing. A null is the
-  // recorded judgement that no other component is right.
+  // recorded judgement that no other component is right. A list is a family
+  // answering together, and every member of it is an anchor.
   for (const avoid of entry.doNotUseWhen) {
-    const instead = avoid?.instead;
-    if (instead && !byId.has(instead)) {
-      errors.push(
-        `${file}: do_not_use_when names "${instead}" as the alternative, ` +
-          `which has no matching component id`
-      );
+    for (const instead of insteadIds(avoid)) {
+      if (!byId.has(instead)) {
+        errors.push(
+          `${file}: do_not_use_when names "${instead}" as the alternative, ` +
+            `which has no matching component id`
+        );
+      }
     }
   }
 

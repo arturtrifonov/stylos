@@ -80,7 +80,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 | 2 | The remaining small elements | Icon, Tag, Toggle | a filter row | 1 wk |
 | 3 | The table | Table / TH Text, Table / TD Text, Table | a dense table carrying real data | 1–2 wk |
 | 4 | Input | Input Text, Select, Dropdown | a toolbar and filters above that table | 1 wk |
-| 5 | The Button family | Button Basic, Button Outline, Button Ghost, Button Icon | every action on the screen | 2 wk |
+| 5 | The Button family | Button Basic, Button / Button Outline, Button / Button Ghost, Button Icon | every action on the screen | 2 wk |
 | 6 | The shell | Modal, Side Panel, Tooltip | the Stage 6 proof screen, composed | 1 wk |
 
 **Build the proof screen incrementally, as each wave lands** — in Figma, from the library, without waiting for Stage 6. A wave that ends in a rendered fragment finds the gap it opened within days; a wave that ends in a merged YAML file finds it in Stage 6, where it costs a re-cut of the set.
@@ -89,7 +89,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 
 **Wave 5 is not four contracts.** Figma holds three sets of 100 variants under `Button / Button Basic | Outline | Ghost` with an identical API; `tone` carries `error` against [`naming.md`](docs/foundations/naming.md) §4 in all three; two of the three have no registry entry; the ids do not match the Figma names the way `Table / TD Text` does; and the change making `do_not_use_when.instead` take a list is blocked until Outline and Ghost exist to anchor to. It is one reconciliation, done once, across the family.
 
-**Out of v0.1, deliberately:** Toast, Tabs Horizontal and Tabs / Tab Item — the Stage 6 gate names a table, filters, a side panel and a modal, and none of the three appears in it. The remaining 69 entries follow them; they are not scheduled here, because ordering seventy components a year out reproduces the Airtable sort under new numbers.
+**Out of v0.1, deliberately:** Toast, Tabs Horizontal and Tabs / Tab Item — the Stage 6 gate names a table, filters, a side panel and a modal, and none of the three appears in it. Everything else follows them, grouped in §9.
 
 - **First**, settle the documentation boundary — which of `STANDARD.md`'s twenty points live in Figma and which in Markdown. Writing twenty documents before that rule exists guarantees rewriting them.
 - Decide the accessibility target and browser baseline. A contract records accessibility findings against the thing each is about, so the target they are judged by cannot wait for Stage 5.
@@ -211,3 +211,30 @@ Its scope and timing are open, not its existence. It is not on the critical path
 ## 8. Explicitly not in this plan
 
 A native Stylos icon set (Material Symbols stays interim), mobile support, writing to Figma from the repository, an Airtable sync, a public documentation site, and any licensing or commercial work.
+
+---
+
+## 9. After v0.1
+
+The v0.1 core set is 29 entries. The rest of the registry is grouped below by what each group unlocks, in the order it would be worked if nothing external intervened.
+
+**This is grouping, not a schedule.** No dates, no estimates, no waves inside a group, and no claim that the order survives contact with a real product. The first product built on Stylos is expected to pull a group forward because a screen needs it — that is the only reason that should move one. What must not happen again is the whole set being resorted by size or by level: §4's rule holds here too, that a group is defined by what it lets someone build.
+
+| Group | Unlocks | Entries |
+| --- | --- | --- |
+| Forms | any form in the product, not just the one field the proof screen needed | Input Color, Input Date, Input Datetime, Input Email, Input Number, Input Password, Input Search, Input Telephone, Input Time, Input URL, Text Area, Multiselect, Select Cascade, Date Picker, Slider, Chips, Uploader, Queryfield, Progress |
+| The table, fully | a real data grid — selection, row actions, expansion, typed cells, paging | Avatar, Image, Table / TD Actions, Table / TD Boolean, Table / TD Checkbox, Table / TD Expand, Table / TD Image, Table / TD Link, Table / TD Person, Table / TD Tags, Table / TH Checkbox, Table Toolbar, Pagination, Button Group, Button Dropdown |
+| Navigation and shell | a whole application frame rather than one screen | Header, Side Panel Menu, Breadcrumbs, Tabs Horizontal, Tabs / Tab Item, Tabs Vertical, Steps, Switcher, Scrollbar, Accordion, Accordion / Container, Accordion / Header, Flex Layout |
+| Feedback and status | the states a screen has besides "loaded and fine" | Toast, Alert, Popover, Skeleton Loader, Data Info, Metric |
+| Content objects | dashboards and content pages | Card, List, Tree, Person, Event, Asset, Logo, Feature List, Hero, Code Snippet, Charts |
+| Editors | in-place editing and the code surfaces | Code Editor, Code Editor / Text Area, Code Editor / Toolbar, Edit Mode / Edit, Edit Mode / View |
+| Media | media playback and galleries | Audio Player, Video Player, Carousel |
+| Parked | nothing yet — mobile, and mobile is §8 | Bottom Sheet, Pull to Refresh |
+
+**Both tables are read, not copied.** `tools/lib/plan.mjs` parses §4 and this one on every build, so the registry index and the home page show the queue this document states and no other. The `Entries` column is therefore written as full registry ids — the only shorthand either table takes is `Radio Input / Label / Text`, which expands through the entry's `family`. An id named here that the registry does not hold fails the build; an entry named by neither table is reported by `npm run validate:registry`, so the queue cannot quietly cover part of the set.
+
+Three notes on the grouping, so it is not re-derived later:
+
+- **The ten `Input *` entries read as one API repeated with a different type.** If that holds when the family is opened in Figma, the Forms group is much smaller than its count suggests — nine of those entries would be the same contract written once. That is inference from the registry, where the ten entries are identical in level, role and size; it has not been checked against the library.
+- **Avatar and Image sit with the table** because every cell type names them, not because they belong to it. Whichever group runs first pays for them.
+- **Toast, Tabs Horizontal and Tabs / Tab Item were cut from v0.1** rather than never wanted; they are the first things in their groups for that reason.

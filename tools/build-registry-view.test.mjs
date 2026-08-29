@@ -156,27 +156,45 @@ test("adapts to the reader's theme rather than picking one", () => {
   assert.match(html, /prefers-color-scheme: dark/);
 });
 
-test("lifts the Airtable batch onto the row, so it can be filtered and sorted", () => {
+// docs/specs/0004-registry-reconciliation.md §3.4. An index offers facets for
+// the thing you are meant to plan by, and `import.batch` is history — so it is
+// not a facet, not a sort key and not a column. It still reaches the detail
+// panel, under the heading naming its origin and date.
+test("does not lift the Airtable batch onto the row, and offers no batch facet", () => {
+  const { data, html } = build();
+  assert.equal("batch" in data.entries.find((e) => e.id === "Badge"), false);
+  assert.equal("batches" in data, false);
+  assert.equal(html.includes('label: "Batch"'), false);
+  assert.equal(html.includes('state.sort === "batch"'), false);
+});
+
+test("keeps the import block on the row, so the detail panel can date it", () => {
   const { data } = build();
-  assert.equal(data.entries.find((e) => e.id === "Badge").batch, 1);
-  assert.equal(data.entries.find((e) => e.id === "Table / TD Text").batch, null);
+  assert.deepEqual(data.entries.find((e) => e.id === "Badge").import, { batch: 1, ready: false });
+  assert.equal(data.import_date, "2026-08-20");
 });
 
-test("offers only the batch values that occur, in order", () => {
-  const { data } = build({
-    "docs/components/registry/badge.yaml": badge.replace("batch: 1", "batch: 3"),
-    "docs/components/registry/table/td-text.yaml": `${tdText}import:\n  batch: 1\n  ready: false\n`,
-  });
-  assert.deepEqual(data.batches, [1, 3]);
+// What replaced it. The waves are the queue, so the index does offer them —
+// read from PLAN.md on every build rather than stored on the entry.
+const plan = `| # | Wave | Entries | Ends with | Est. |
+| --- | --- | --- | --- | ---: |
+| 1 | Primitives | Badge | a form column | 1 wk |
+`;
+
+test("lifts the wave off PLAN.md onto the row, and offers it as a facet", () => {
+  const { data, html } = build({ "PLAN.md": plan });
+  assert.equal(data.entries.find((e) => e.id === "Badge").wave, 1);
+  assert.equal(data.entries.find((e) => e.id === "Table / TD Text").wave, null);
+  assert.deepEqual(data.waves, [1]);
+  assert.match(html, /label: "Wave"/);
 });
 
-test("says nothing about batches when nothing carries one", () => {
-  const { data } = build({
-    "docs/components/registry/badge.yaml": badge.replace("import:\n  batch: 1\n  ready: false\n", ""),
-    "docs/components/registry/table/td-text.yaml": tdText,
-  });
-  assert.deepEqual(data.batches, []);
-  assert.equal(data.entries.every((e) => e.batch === null), true);
+// A view built somewhere with no plan says nothing about waves rather than
+// falling back to an order of its own.
+test("offers no wave facet when there is no plan to read", () => {
+  const { data } = build();
+  assert.deepEqual(data.waves, []);
+  assert.equal(data.entries.every((e) => e.wave === null), true);
 });
 
 test("reads the two derived flags as one word, so ready rows can be spotted", () => {

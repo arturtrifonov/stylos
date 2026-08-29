@@ -25,6 +25,7 @@ import { loadTheme, themeCss } from "./lib/theme.mjs";
 import { buildViewData, renderView } from "./build-registry-view.mjs";
 import { buildPages, readLogo } from "./build-component-page.mjs";
 import { renderHome, hasColumn } from "./build-home.mjs";
+import { readPlan } from "./lib/plan.mjs";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const out = path.join(root, "build");
@@ -56,7 +57,7 @@ cpSync(path.join(root, "assets"), path.join(out, "assets"), {
   filter: (source) => path.basename(source) !== "README.md",
 });
 
-write("index.html", renderHome({ entries, theme, logo, generated, column: hasColumn(root) }));
+write("index.html", renderHome({ entries, theme, logo, generated, column: hasColumn(root), plan: readPlan(root) }));
 // registry.html sits at the root of build/, so its font URLs need no prefix.
 write("registry.html", renderView(buildViewData(root, entries), { themeCss: themeCss(theme, { prefix: "" }), logo }));
 

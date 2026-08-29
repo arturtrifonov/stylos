@@ -15,8 +15,8 @@
 // stack and loses nothing but the family.
 //
 // The output is derived and cheap to rebuild, so build/ is gitignored rather
-// than committed: committing it would put a 96-row diff into every registry
-// change. See docs/specs/0002-registry-viewer.md §4.
+// than committed: committing it would put a diff the size of the whole registry
+// into every registry change. See docs/specs/0002-registry-viewer.md §4.
 //
 // This renders; it does not edit. The YAML is edited in an editor.
 
@@ -34,6 +34,7 @@ import {
   ROLES,
   READINESS,
 } from "./lib/registry.mjs";
+import { readPlan, waveById } from "./lib/plan.mjs";
 import { loadTheme, themeCss } from "./lib/theme.mjs";
 
 // Plain, but no longer anonymous. The layout is a tool's — a table, a filter
@@ -179,7 +180,7 @@ td.flag[data-on="true"] { color: var(--ok); }
   margin-right: 8px;
   vertical-align: baseline;
 }
-td.batch { text-align: right; font-variant-numeric: tabular-nums; color: var(--fg-quiet); }
+td.wave { text-align: right; font-variant-numeric: tabular-nums; color: var(--fg-quiet); }
 td.page a { color: var(--accent); text-decoration: none; }
 td.page a:hover { text-decoration: underline; }
 tbody tr.group-row { cursor: default; }
@@ -255,7 +256,7 @@ var state = {
   levels: new Set(),
   roles: new Set(),
   readiness: new Set(),
-  batches: new Set(),
+  waves: new Set(),
   sort: "name",
   direction: 1,
   group: true,
@@ -280,26 +281,26 @@ function clearFilters() {
   state.levels.clear();
   state.roles.clear();
   state.readiness.clear();
-  state.batches.clear();
+  state.waves.clear();
 }
 
 function matches(entry) {
   if (state.levels.size > 0 && !state.levels.has(entry.level)) return false;
   if (state.roles.size > 0 && !state.roles.has(entry.role)) return false;
   if (state.readiness.size > 0 && !state.readiness.has(entry.readiness)) return false;
-  if (state.batches.size > 0 && !state.batches.has(entry.batch)) return false;
+  if (state.waves.size > 0 && !state.waves.has(entry.wave)) return false;
   return true;
 }
 
-// One comparable string per row. Numbers are padded rather than compared
-// numerically so every column sorts through the same path; an entry with no
-// batch sorts last either way.
+// One comparable string per row. Every column sorts through the same path,
+// comparing strings, so a numeric column is padded rather than compared
+// numerically; an entry outside the core set has no wave and sorts last.
 function sortKey(entry) {
   if (state.sort === "level") return String(LEVELS.indexOf(entry.level));
   if (state.sort === "role") return entry.role || "";
   if (state.sort === "readiness") return String(READINESS.indexOf(entry.readiness));
   if (state.sort === "flow") return entry.flow_behavior.join(", ");
-  if (state.sort === "batch") return entry.batch === null ? "zzz" : String(entry.batch).padStart(3, "0");
+  if (state.sort === "wave") return entry.wave === null ? "zzz" : String(entry.wave).padStart(3, "0");
   if (state.sort === "documented") return entry.documented ? "1" : "0";
   if (state.sort === "linked") return entry.linked ? "1" : "0";
   return entry.name.toLowerCase();
@@ -344,10 +345,14 @@ var COLUMNS = [
     label: "Readiness",
     title: "Derived from the two columns on the right: ready = the contract is written and the entry is linked to Figma. Not the component's lifecycle — that is Status, in the panel",
   },
+  {
+    key: "wave",
+    label: "Wave",
+    title: "PLAN.md Stage 4 — the order the v0.1 core set is worked in, read from the plan on every build. Blank where the entry is not in that set",
+  },
   { key: "level", label: "Level" },
   { key: "role", label: "Role" },
   { key: "flow", label: "Flow" },
-  { key: "batch", label: "Batch", title: "Airtable's build sequencing, as it stood on " + DATA.import_date },
   { key: "documented", label: "Contract", title: "The contract is written: summary, purpose, use_when and a description on every property" },
   { key: "linked", label: "Figma" },
   { key: "page", label: "Page", title: "The generated component page — npm run components:view" },
@@ -385,8 +390,10 @@ function renderFilters() {
   host.appendChild(group("Level", LEVELS, state.levels, countBy("level")));
   host.appendChild(group("Role", ROLES, state.roles, countBy("role")));
   host.appendChild(group("Readiness", READINESS, state.readiness, countBy("readiness")));
-  if (DATA.batches.length > 0) {
-    host.appendChild(group("Batch", DATA.batches, state.batches, countBy("batch")));
+  // The waves are the queue, so the index offers them. They come from PLAN.md
+  // on every build; a view built without a plan simply has no wave filter.
+  if (DATA.waves.length > 0) {
+    host.appendChild(group("Wave", DATA.waves, state.waves, countBy("wave")));
   }
 }
 
@@ -476,10 +483,10 @@ function renderTable() {
         el("span", { class: "dot" }),
         el("span", { text: entry.readiness }),
       ]));
+      tr.appendChild(el("td", { class: "wave", text: entry.wave === null ? "—" : String(entry.wave) }));
       tr.appendChild(el("td", { text: entry.level || "—" }));
       tr.appendChild(el("td", { text: entry.role || "—" }));
       tr.appendChild(el("td", { text: entry.flow_behavior.join(", ") || "—" }));
-      tr.appendChild(el("td", { class: "batch", text: entry.batch === null ? "—" : String(entry.batch) }));
       tr.appendChild(el("td", { class: "flag", "data-on": String(entry.documented), text: entry.documented ? "yes" : "—" }));
       tr.appendChild(el("td", { class: "flag", "data-on": String(entry.linked), text: entry.linked ? "yes" : "—" }));
       // Linked whether or not a contract is written: the page renders a legacy
@@ -587,6 +594,15 @@ function renderDetail() {
   var derived = el("dl", {});
   derived.appendChild(el("dt", { text: "Readiness" }));
   derived.appendChild(el("dd", {}, [readinessTag(entry.readiness)]));
+  // Where the plan puts it, not a field on the entry — see lib/plan.mjs.
+  derived.appendChild(el("dt", { text: "Wave" }));
+  derived.appendChild(
+    el("dd", {}, [
+      entry.wave === null
+        ? el("span", { class: "empty", text: "not in the v0.1 core set" })
+        : el("span", { text: "PLAN.md Stage 4, wave " + entry.wave }),
+    ])
+  );
   derived.appendChild(el("dt", { text: "Contract" }));
   derived.appendChild(
     el("dd", {}, [
@@ -712,13 +728,11 @@ function inlineJson(value) {
 }
 
 export function buildViewData(root, entries) {
-  // The batch values that actually occur, in order. Airtable's build
-  // sequencing is history like the rest of `import:` — it is filterable and
-  // sortable because it says which components were meant to come first, and it
-  // stays labelled by its origin and date wherever it is shown.
-  const batches = [
-    ...new Set(entries.map((entry) => entry.import?.batch).filter((batch) => typeof batch === "number")),
-  ].sort((a, b) => a - b);
+  // PLAN.md Stage 4, read rather than copied — see lib/plan.mjs. Absent, the
+  // rows carry no wave and the facet and column are not offered.
+  const plan = readPlan(root);
+  const waveOf = plan ? waveById(plan, entries) : new Map();
+  const waves = [...new Set(waveOf.values())].sort((a, b) => a - b);
 
   return {
     generated: new Date().toISOString().slice(0, 10),
@@ -726,7 +740,7 @@ export function buildViewData(root, entries) {
     levels: LEVELS,
     roles: ROLES,
     readiness: READINESS,
-    batches,
+    waves,
     entries: entries.map((entry) => {
       const { documented, linked } = derive(entry);
       return {
@@ -735,6 +749,7 @@ export function buildViewData(root, entries) {
         file: entry.file,
         level: entry.level,
         role: entry.role,
+        wave: waveOf.get(entry.id) ?? null,
         flow_behavior: entry.flowBehavior,
         children: entry.children,
         parents: entry.parents,
@@ -742,7 +757,6 @@ export function buildViewData(root, entries) {
         figma: entry.figma,
         figma_url: figmaUrl(entry.figma),
         import: entry.import,
-        batch: typeof entry.import?.batch === "number" ? entry.import.batch : null,
         extra: entry.extra,
         status: entry.status,
         readiness: readiness(entry),

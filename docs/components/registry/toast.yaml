@@ -13,6 +13,8 @@ children:
   - "Avatar"
   - "Badge"
   - "Button Basic"
+  - "Button / Button Outline"
+  - "Button / Button Ghost"
   - "Button Inner"
   - "Button Dropdown"
   - "Button Group"

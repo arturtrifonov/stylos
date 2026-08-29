@@ -53,11 +53,11 @@ Most of these are what `stylos-component-integrity-check` and `stylos-naming-cle
 
 ## Working rules
 
-- **Start from what is already in the entry.** Level, role and relations are recorded for all 96 components. Transcribing them again is how they drift.
+- **Start from what is already in the entry.** Level, role and relations are recorded for every component. Transcribing them again is how they drift.
 - **Measurements are read from Figma, reasons are authored.** A number nobody measured is a guess with a decimal point. A reason nobody stated is an invention.
 - **Do not record what Figma answers on demand.** Token bindings, layer names, auto-layout settings and stroke positions belong to the implementation of the design library and are read from it when needed. The contract records decisions, not the state of a file.
 - **A missing section is stated, not omitted.** `"None — fixed on both axes"` is documentation. Silence is not. Where the schema has no field for an absence, `notes` does.
 
 ## Status
 
-Three contracts exist — the Checkbox family. The inventory exists: 96 entries under [`registry/`](registry/README.md). The v0.1 core set of 23 components is scheduled in [`PLAN.md`](../../PLAN.md) Stage 4.
+The inventory exists under [`registry/`](registry/README.md); how many of its entries carry a contract is derived rather than restated here — the registry view counts them, under Contract. The v0.1 core set is scheduled in [`PLAN.md`](../../PLAN.md) Stage 4, wave by wave.

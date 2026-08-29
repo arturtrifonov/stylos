@@ -24,6 +24,25 @@ do_not_use_when:
   -
     text: "The text is not the checkbox's own but the field's. A helper line describing a group of options belongs to the group, not to one option."
     instead: null
+children:
+  - "Label"
+  - "Icon"
+  - "Badge"
+  - "Loader"
+parents:
+  - "Accordion / Container"
+  - "Asset"
+  - "Table / TD Checkbox"
+  - "Table / TH Checkbox"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
 uses:
   - "Checkbox Input"
 flow_behavior:

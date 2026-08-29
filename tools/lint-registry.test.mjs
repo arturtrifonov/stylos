@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { checkRegistry } from "./lint-registry.mjs";
 
 // A minimal entry in the shape lib/registry.mjs produces, carrying none of the
-// contract fields — the shape of the 93 legacy entries. The contract checks
+// contract fields — the shape of a legacy entry. The contract checks
 // have their own fixtures in build-component-page.test.mjs.
 function entry(id, fields = {}) {
   return {

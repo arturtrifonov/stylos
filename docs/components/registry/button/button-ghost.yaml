@@ -1,0 +1,31 @@
+# Hand-written 2026-08-29. Created by docs/specs/0004-registry-reconciliation.md
+# §3.3: Figma holds three Button treatments under one slash group and the
+# registry held only one. Structure only — the contract is PLAN.md §4 wave 5.
+
+id: "Button / Button Ghost"
+name: "Button / Button Ghost"
+family: "Button"
+level: "object"
+role: "trigger"
+flow_behavior:
+  - "hug"
+children:
+  - "Badge"
+  - "Avatar"
+  - "Icon"
+  - "Indicator Status"
+  - "Indicator Special"
+  - "Tag"
+  - "Loader"
+parents:
+  - "Accordion / Container"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
+notes: ""

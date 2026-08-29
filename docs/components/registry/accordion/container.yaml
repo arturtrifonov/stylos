@@ -16,6 +16,8 @@ children:
   - "Badge"
   - "Breadcrumbs"
   - "Button Basic"
+  - "Button / Button Outline"
+  - "Button / Button Ghost"
   - "Button Dropdown"
   - "Card"
   - "Button Icon"

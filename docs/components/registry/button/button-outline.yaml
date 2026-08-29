@@ -1,9 +1,10 @@
-# Hand-edited. This file is the source for its component's structural data.
-# The CSV import that created it ran once, on 2026-08-20, and will not run
-# again — see docs/components/registry/README.md for the schema and workflow.
+# Hand-written 2026-08-29. Created by docs/specs/0004-registry-reconciliation.md
+# §3.3: Figma holds three Button treatments under one slash group and the
+# registry held only one. Structure only — the contract is PLAN.md §4 wave 5.
 
-id: "Button Basic"
-name: "Button Basic"
+id: "Button / Button Outline"
+name: "Button / Button Outline"
+family: "Button"
 level: "object"
 role: "trigger"
 flow_behavior:
@@ -28,6 +29,3 @@ parents:
   - "Side Panel"
   - "Side Panel Menu"
 notes: ""
-import:
-  batch: 1
-  ready: true

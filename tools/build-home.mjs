@@ -3,8 +3,8 @@
 //
 // Deliberately a placeholder. The registry viewer and the component pages are
 // working views over real data; this is neither, and it exists so that the
-// published tree opens on something that says what Stylos is instead of on a
-// 101-row table. When there is a documentation surface (PLAN.md Stage 6) this
+// published tree opens on something that says what Stylos is instead of on the
+// registry table. When there is a documentation surface (PLAN.md Stage 6) this
 // page is the first thing it replaces.
 //
 // So: no data of its own beyond three counts derived from the registry, no
@@ -15,6 +15,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 
 import { derive, readiness } from "./lib/registry.mjs";
+import { waveProgress } from "./lib/plan.mjs";
 import { themeCss } from "./lib/theme.mjs";
 
 const CSS = `
@@ -84,7 +85,7 @@ a { color: var(--accent); }
 .tally .n { display: block; font-size: var(--text-title); line-height: 1.05; font-weight: 600; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
 .tally .k { font-size: var(--text-small); text-transform: uppercase; letter-spacing: .09em; color: var(--fg-faint); font-weight: 600; }
 
-/* The queue. One row per batch, the track proportional to how many components
+/* The queue. One row per wave, the track proportional to how many components
    are in it and the filled part to how many are ready — the shape of the work
    and the progress through it are the same picture. The count and the percent
    are written out beside every bar: the bar is the second cue, never the only
@@ -102,13 +103,13 @@ a { color: var(--accent); }
 .queue ol { list-style: none; margin: 0; padding: 0; }
 .queue li {
   display: grid;
-  grid-template-columns: 5.5rem minmax(0, 1fr) 4.5rem 3rem;
+  grid-template-columns: 17rem minmax(0, 1fr) 4.5rem 3rem;
   align-items: center;
   gap: 0 1rem;
   padding: .3rem 0;
 }
 .queue .label { font-size: var(--text-meta); color: var(--fg-quiet); }
-.queue li.unbatched .label { color: var(--fg-faint); font-style: italic; }
+.queue .label .num { color: var(--fg-faint); font-variant-numeric: tabular-nums; margin-right: .5rem; }
 .queue .track {
   height: 10px;
   background: var(--bg-raised);
@@ -122,8 +123,12 @@ a { color: var(--accent); }
 .queue .pct { font-size: var(--text-meta); font-variant-numeric: tabular-nums; text-align: right; font-weight: 600; }
 .queue li[data-done="0"] .pct { color: var(--fg-faint); font-weight: 400; }
 
+@media (max-width: 52rem) {
+  .queue li { grid-template-columns: minmax(0, 1fr) 4.5rem 3rem; }
+  .queue .track { grid-column: 1 / -1; }
+}
 @media (max-width: 40rem) {
-  .queue li { grid-template-columns: 4.5rem minmax(0, 1fr) 3rem; }
+  .queue li { grid-template-columns: minmax(0, 1fr) 3rem; }
   .queue .of { display: none; }
 }
 
@@ -138,9 +143,6 @@ footer p { margin: .2rem 0; }
 }
 `;
 
-/** The day the batches were exported. The registry viewer prints the same date. */
-const IMPORT_DATE = "2026-08-20";
-
 const ESCAPES = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ESCAPES[c]);
 
@@ -150,65 +152,28 @@ const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ESCAPES[c]
  * @param {object|null} options.theme   from loadTheme; omitted in a fixture
  * @param {string} options.logo         inline SVG, or ""
  * @param {boolean} options.column      whether assets/column.png was found
+ * @param {string|null} options.plan    PLAN.md, for the wave table; omitted in a fixture
  */
-/**
- * The implementation queue, one row per batch.
- *
- * `import.batch` is Airtable's build sequencing as it stood on the day of the
- * import — history, like the rest of `import:`, and labelled as such wherever
- * it is shown. It is the only ordering the registry carries, so it is what a
- * queue can be drawn from; nothing here promotes it to a live plan.
- *
- * Entries with no batch get a row of their own rather than being dropped. They
- * are the ones added by hand since the import, and today they are where nearly
- * all the finished work is — a chart that silently left them out would show
- * six empty bars and call it the state of the system.
- */
-export function batchProgress(entries) {
-  const groups = new Map();
-  for (const entry of entries) {
-    const batch = typeof entry.import?.batch === "number" ? entry.import.batch : null;
-    if (!groups.has(batch)) groups.set(batch, []);
-    groups.get(batch).push(entry);
-  }
-
-  return [...groups.entries()]
-    // Numbered batches in order, then whatever carries no batch at all.
-    .sort(([a], [b]) => (a === null) - (b === null) || a - b)
-    .map(([batch, rows]) => {
-      const done = rows.filter((entry) => readiness(entry) === "ready").length;
-      const started = rows.filter((entry) => readiness(entry) === "in progress").length;
-      return {
-        batch,
-        total: rows.length,
-        done,
-        started,
-        percent: Math.round((done / rows.length) * 100),
-      };
-    });
-}
-
 /** `0` only when nothing is ready — a rounded-away fraction says so instead. */
 function percentLabel({ done, percent }) {
   if (done > 0 && percent === 0) return "&lt;1%";
   return `${percent}%`;
 }
 
-export function renderHome({ entries, theme = null, logo = "", generated, column = false }) {
+export function renderHome({ entries, theme = null, logo = "", generated, column = false, plan = null }) {
   const total = entries.length;
   const ready = entries.filter((entry) => readiness(entry) === "ready").length;
   const documented = entries.filter((entry) => derive(entry).documented).length;
 
-  const queue = batchProgress(entries);
+  const queue = plan ? waveProgress(plan, entries) : [];
   const widest = Math.max(...queue.map((row) => row.total), 1);
   const rows = queue
     .map((row) => {
-      const label = row.batch === null ? "no batch" : `Batch ${row.batch}`;
       const share = (row.total / widest) * 100;
       const segment = (count, className) =>
         count > 0 ? `<span class="fill ${className}" style="width:${(count / row.total) * 100}%"></span>` : "";
-      return `<li${row.batch === null ? ' class="unbatched"' : ""} data-done="${row.done}">
-<span class="label">${label}</span>
+      return `<li data-done="${row.done}">
+<span class="label"><span class="num">Wave ${row.number}</span>${esc(row.name)}</span>
 <span class="track" style="width:${Math.round(share * 100) / 100}%" role="img" aria-label="${row.done} of ${row.total} ready">${segment(
         row.done,
         "done"
@@ -218,6 +183,19 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
 </li>`;
     })
     .join("");
+
+  // No plan to read from means no section, rather than an empty chart or a
+  // hardcoded fallback order that would outlive the file it came from.
+  const queueSection = queue.length === 0 ? "" : `<section class="queue">
+    <h2>The core set, wave by wave</h2>
+    <p class="caveat">
+      Stage 4 of the plan, read from <span class="mono">PLAN.md</span> rather than copied — a wave is
+      defined by what it lets you build, and it ends in something that renders. A component counts as
+      ready when its contract is written and it is linked to Figma. This is the order the work is
+      done in; it is not a schedule, and nothing here reports a date.
+    </p>
+    <ol>${rows}</ol>
+  </section>`;
 
   const figure = column
     ? `<figure class="column-figure"><img src="assets/column.png" alt="" width="510" height="510" loading="lazy"></figure>`
@@ -254,20 +232,10 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
     <div><span class="n">${ready}</span><span class="k">ready</span></div>
   </div>
 
-  <section class="queue">
-    <h2>Implementation queue</h2>
-    <p class="caveat">
-      Batches are Airtable's build sequencing as it stood on ${esc(IMPORT_DATE)} — history, not a
-      live plan. A component counts as ready when its contract is written and it is linked to
-      Figma. Everything finished since the import carries no batch, and has a row of its own.
-    </p>
-    <ol>${rows}</ol>
-  </section>
-
   <nav class="doors">
     <a class="door" href="registry.html">
       <h2>Component registry →</h2>
-      <p>Every entry, filterable by level, role and readiness, with what each one is composed from and used inside.</p>
+      <p>Every entry, filterable by level, role, readiness and wave, with what each one is composed from and used inside.</p>
       <span class="count">${total} entries</span>
     </a>
     <a class="door" href="components/index.html">
@@ -276,6 +244,8 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
       <span class="count">${documented} contracts written</span>
     </a>
   </nav>
+
+  ${queueSection}
 
   <footer>
     <p>Generated ${esc(generated)} from <span class="mono">docs/components/registry/</span> and <span class="mono">tokens/</span>.</p>

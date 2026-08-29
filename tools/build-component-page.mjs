@@ -32,7 +32,15 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { loadRegistry, derive, pagePathFor, figmaUrl, slugPath, LEVELS } from "./lib/registry.mjs";
+import {
+  loadRegistry,
+  derive,
+  pagePathFor,
+  figmaUrl,
+  slugPath,
+  insteadIds,
+  LEVELS,
+} from "./lib/registry.mjs";
 import { SIZING_TOKEN_FIELDS, createTokenResolver } from "./lib/sizing.mjs";
 import { loadTheme, themeCss } from "./lib/theme.mjs";
 
@@ -440,9 +448,13 @@ function renderUseWhen(entry, context) {
         )}</span></li>`
     ),
     ...entry.doNotUseWhen.map((avoid) => {
-      const instead = avoid?.instead
-        ? ` <span class="faint">Instead:</span> ${componentLink(entry.id, avoid.instead, context.known)}`
-        : "";
+      const alternatives = insteadIds(avoid);
+      const instead =
+        alternatives.length > 0
+          ? ` <span class="faint">Instead:</span> ${alternatives
+              .map((id) => componentLink(entry.id, id, context.known))
+              .join(", ")}`
+          : "";
       return `<li class="dont"><span class="mark">✕</span><span><span class="lead">Do not use when</span> ${esc(
         avoid?.text
       )}${instead}</span></li>`;
@@ -714,7 +726,7 @@ function renderRecord(entry, context) {
   return band("Record", parts.join(""));
 }
 
-// 93 entries carry the inventory record and nothing else. The page says so
+// Most entries carry the inventory record and nothing else. The page says so
 // once, plainly, and then renders what is there — it does not fill the sections
 // with "not specified".
 function renderUnwritten(entry) {

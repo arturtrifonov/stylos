@@ -38,7 +38,17 @@ It calls the renderers rather than spawning them — one process, one read of `t
 
 The front door, and deliberately a placeholder: a wordmark, one sentence about what Stylos is, three counts derived from the registry, and a door into each of the two views. It exists so the published tree opens on something other than a 101-row table, and it is the first thing a real documentation surface replaces ([`PLAN.md`](../PLAN.md) Stage 6).
 
-It also draws the implementation queue: one bar per `import.batch`, the track proportional to how many components are in that batch and the filled part to how many are ready. `import.batch` is Airtable's build sequencing as it stood on 2026-08-20 — history like the rest of `import:`, and labelled as such on the page rather than promoted to a live plan. Entries carrying no batch get a row of their own instead of being dropped: they are the ones added by hand since the import, and today they hold nearly all the finished work, so a chart that left them out would show six empty bars and call that the state of the system. The count and the percent are written beside every bar, because the bar is the second cue and never the only one.
+It also draws the core set wave by wave: one bar per wave of [`PLAN.md`](../PLAN.md) Stage 4, the track proportional to how many components are in that wave and the filled part to how many are ready. The count and the percent are written beside every bar, because the bar is the second cue and never the only one. Which components a wave is made of is not written here: the bar is the shape of the work, and the registry view is where you filter to a wave and read its members.
+
+It used to draw one bar per `import.batch`; that was Airtable's sequencing from the day of the import, which `PLAN.md` §4 states is history and not the queue — and a chart is the strongest way there is of saying something *is* the queue ([`0004`](../docs/specs/0004-registry-reconciliation.md) §3.4).
+
+### `lib/plan.mjs`
+
+Reads `PLAN.md` Stage 4 — the waves, and which registry entries are in each. Both the home page and the registry view read them through here, so neither holds a copy and neither can claim an order the plan has since changed.
+
+The Entries column is prose written to be read, so two forms are accepted: a full id, and the family shorthand `Radio Input / Label / Text`, where the first part is a full id and each part after it is joined to that entry's `family`. A full id is tried first, so `Table / TD Text` reads as itself — the two use the same punctuation and only the registry can tell them apart. **A token that resolves to nothing throws**: a wave quietly one component short is a wrong percentage nobody would ever catch.
+
+There is deliberately no `wave:` field on the registry entry. It would put the plan's sequence into a hundred files that are edited for entirely different reasons, and the two would part company inside a week.
 
 `assets/column.png` is optional. When it is absent the page is built without it and the build says so once.
 
