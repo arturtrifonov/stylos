@@ -26,7 +26,7 @@ That single gate is chosen because it is the only test that exercises the whole 
 | 6 | Component props map 1:1 onto Figma variant properties | mapping table per component |
 | 7 | The proof screen contains no hardcoded colour, size or spacing | lint rule in the package |
 
-**Not required for v0.1:** a native icon set, mobile support, client-brand themes beyond the contract, a public documentation site, a license, or coverage of all 96 registry components.
+**Not required for v0.1:** a native icon set, mobile support, client-brand themes beyond the contract, a public documentation site, a license, or coverage of all 101 registry entries.
 
 ---
 
@@ -49,7 +49,7 @@ S0 truthful baseline ──▶ S4 contracts ──▶ S5 @stylos/ui ──▶ S6
 
 **Three stages are gone.** The foundations are confirmed and the registry is readable, so S1 and S2 are behind. S3 — tokens to CSS — was a week of output with no reader: custom properties can only be proved by something rendering with them, and that something is the package. It is now the first step of S5. Stage numbers are kept as they were so that references elsewhere still resolve.
 
-The long pole is now **S4**: twenty-three component contracts, each needing judgement that cannot be batched.
+The long pole is now **S4**: twenty-nine component contracts, each needing judgement that cannot be batched — cut into six waves, each ending in something that renders.
 
 ---
 
@@ -68,15 +68,28 @@ The long pole is now **S4**: twenty-three component contracts, each needing judg
 
 ### Stage 4 — Component contracts for the core set
 
-**Scope discipline:** 23 components, not 96 — the set the proof screen needs.
+**Scope discipline:** 29 registry entries, not 101 — the set the proof screen needs. Two of them, `Button Outline` and `Button Ghost`, do not exist in the registry yet and are created here.
 
-| Level | Components |
-| --- | --- |
-| Primitive | Icon, Badge, Indicator, Loader |
-| Element | Checkbox, Radio, Toggle, Link, Tag, Label |
-| Object | Button Basic, Button Icon, Input Text, Select, Table / TD Text, Table / TH Text |
-| Widget | Tooltip, Dropdown, Tabs Horizontal, Toast |
-| Layout | Modal, Table, Side Panel |
+**The Airtable `import.batch` numbers are not this queue.** They are history from the one-time bootstrap of 2026-08-20, and `registry/README.md` keeps them as history for that reason. Read as a plan they mislead: batch 1 held 45 entries spanning all five levels, 18 of them outside this set, while Tooltip, Toast and Side Panel — named by the Stage 6 gate or by this set — sat in batch 2. Nothing below writes back into that field.
+
+**The set, in the order it is worked.** A wave is defined by what it lets you build, not by level or by size, and it is capped at four entries so that it closes.
+
+| # | Wave | Entries | Ends with | Est. |
+| --- | --- | --- | --- | ---: |
+| 1 | Primitives and selection controls | Badge, Label, Loader, Indicator Status, Indicator Special, Button Inner, Link, Checkbox Input / Label / Text, Radio Input / Label / Text | a form column that renders from the library alone | 1 wk |
+| 2 | The remaining small elements | Icon, Tag, Toggle | a filter row | 1 wk |
+| 3 | The table | Table / TH Text, Table / TD Text, Table | a dense table carrying real data | 1–2 wk |
+| 4 | Input | Input Text, Select, Dropdown | a toolbar and filters above that table | 1 wk |
+| 5 | The Button family | Button Basic, Button Outline, Button Ghost, Button Icon | every action on the screen | 2 wk |
+| 6 | The shell | Modal, Side Panel, Tooltip | the Stage 6 proof screen, composed | 1 wk |
+
+**Build the proof screen incrementally, as each wave lands** — in Figma, from the library, without waiting for Stage 6. A wave that ends in a rendered fragment finds the gap it opened within days; a wave that ends in a merged YAML file finds it in Stage 6, where it costs a re-cut of the set.
+
+**Figma readiness is inside the wave, not a precondition of it.** Table, Side Panel and Tooltip are not ready in the library today. That work belongs to waves 3 and 6 and is priced into them; it is not a survey to run ahead of the stage.
+
+**Wave 5 is not four contracts.** Figma holds three sets of 100 variants under `Button / Button Basic | Outline | Ghost` with an identical API; `tone` carries `error` against [`naming.md`](docs/foundations/naming.md) §4 in all three; two of the three have no registry entry; the ids do not match the Figma names the way `Table / TD Text` does; and the change making `do_not_use_when.instead` take a list is blocked until Outline and Ghost exist to anchor to. It is one reconciliation, done once, across the family.
+
+**Out of v0.1, deliberately:** Toast, Tabs Horizontal and Tabs / Tab Item — the Stage 6 gate names a table, filters, a side panel and a modal, and none of the three appears in it. The remaining 69 entries follow them; they are not scheduled here, because ordering seventy components a year out reproduces the Airtable sort under new numbers.
 
 - **First**, settle the documentation boundary — which of `STANDARD.md`'s twenty points live in Figma and which in Markdown. Writing twenty documents before that rule exists guarantees rewriting them.
 - Decide the accessibility target and browser baseline. A contract records accessibility findings against the thing each is about, so the target they are judged by cannot wait for Stage 5.
@@ -153,7 +166,7 @@ At 5–10 h/week:
 
 **Scope levers, in the order to pull them:**
 
-1. Cut the core set from 23 to 12 components — drop Table cells, Side Panel, Tabs, Toast. Saves ~6 weeks across S4 and S5.
+1. Ship wave 5 as `Button Basic` alone, leaving Outline and Ghost undocumented, and drop Tooltip from wave 6. Saves ~2 weeks across S4 and S5. Side Panel, Modal and the table are named by the gate and are not available to cut.
 2. Ship the documentation surface as rendered Markdown instead of Storybook. Saves ~2 weeks in S6.
 3. Defer component-token depth by adopting "no component-specific tokens" as the provisional answer. Saves ~1 week.
 
@@ -187,8 +200,8 @@ Its scope and timing are open, not its existence. It is not on the critical path
 
 | Risk | Signal | Countermeasure |
 | --- | --- | --- |
-| S4 stalls — twenty-three contracts of judgement work with no forcing function | two sessions on the same component | §2.2: adopt what Figma does, write it down as provisional |
-| Completionism against the 96-component registry | documenting outside the core set | the Stage 4 table is the scope |
+| S4 stalls — twenty-nine contracts of judgement work | two sessions on the same component | §2.2: adopt what Figma does, write it down as provisional. The wave's rendered fragment is the forcing function |
+| Completionism against the 101-entry registry | documenting outside the core set | the Stage 4 table is the scope |
 | The registry drifts from Figma unnoticed | `validate:registry` not run for weeks | make it part of the pre-commit habit |
 | Documentation drifts from the built system | a document describing something that no longer exists | keep facts in one place; documents point rather than copy |
 | The proof screen gets skipped as "obvious" | v0.1 tagged without S6 | it is the gate |

@@ -7,13 +7,13 @@ Two files here, then, and both are normative:
 - [`STANDARD.md`](STANDARD.md) — what a contract must contain, and when a component is ready to publish.
 - [`registry/README.md`](registry/README.md) — the schema, field by field.
 
-96 entries exist, imported from the project owner's Airtable registry on 2026-08-20; three of them carry a full contract. Writing the rest is [`PLAN.md`](../../PLAN.md) Stage 4 work, and each starts from its existing entry rather than from scratch — level, role and composition are already filled in.
+The entries were imported from the project owner's Airtable registry on 2026-08-20. How many of them carry a full contract is not stated here: it is derived, and `documented` in the registry view answers it. Writing them is [`PLAN.md`](../../PLAN.md) Stage 4 work, wave by wave, and each starts from its existing entry rather than from scratch — level, role and composition are already filled in.
 
 **The readable page is generated, not written.**
 
 ```bash
 npm run components:view    # build/components/ — one page per component, plus an index
-npm run registry:view      # build/registry.html — the filterable index over all 96
+npm run registry:view      # build/registry.html — the filterable index over every entry
 ```
 
 Both are derived, gitignored and opened from disk; neither reaches the network. `documented` in the index is derived too — an entry counts as documented when it carries a `summary`, a `purpose`, at least one `use_when` and a `description` on every property, so nothing has to be ticked by hand for it to become true.
