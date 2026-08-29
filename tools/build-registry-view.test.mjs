@@ -156,27 +156,66 @@ test("adapts to the reader's theme rather than picking one", () => {
   assert.match(html, /prefers-color-scheme: dark/);
 });
 
-test("lifts the Airtable batch onto the row, so it can be filtered and sorted", () => {
+// docs/specs/0004-registry-reconciliation.md §3.4. An index offers facets for
+// the thing you are meant to plan by, and `import.batch` is history — so it is
+// not a facet, not a sort key and not a column. It still reaches the detail
+// panel, under the heading naming its origin and date.
+test("does not lift the Airtable batch onto the row, and offers no batch facet", () => {
+  const { data, html } = build();
+  assert.equal("batch" in data.entries.find((e) => e.id === "Badge"), false);
+  assert.equal("batches" in data, false);
+  assert.equal(html.includes('label: "Batch"'), false);
+  assert.equal(html.includes('state.sort === "batch"'), false);
+});
+
+test("keeps the import block on the row, so the detail panel can date it", () => {
   const { data } = build();
-  assert.equal(data.entries.find((e) => e.id === "Badge").batch, 1);
-  assert.equal(data.entries.find((e) => e.id === "Table / TD Text").batch, null);
+  assert.deepEqual(data.entries.find((e) => e.id === "Badge").import, { batch: 1, ready: false });
+  assert.equal(data.import_date, "2026-08-20");
 });
 
-test("offers only the batch values that occur, in order", () => {
-  const { data } = build({
-    "docs/components/registry/badge.yaml": badge.replace("batch: 1", "batch: 3"),
-    "docs/components/registry/table/td-text.yaml": `${tdText}import:\n  batch: 1\n  ready: false\n`,
-  });
-  assert.deepEqual(data.batches, [1, 3]);
+// What replaced it. The plan is the queue, so the index offers it — both
+// tables, read from PLAN.md on every build rather than stored on the entry.
+const plan = `| # | Wave | Entries | Ends with | Est. |
+| --- | --- | --- | --- | ---: |
+| 1 | Primitives | Badge | a form column | 1 wk |
+
+| Milestone | The decision it opens | Entries |
+| --- | --- | --- |
+| alpha | a real data grid | Table / TD Text |
+`;
+
+// Two axes, not two values of one. Every entry has a milestone; only the
+// milestone being worked has been cut into waves.
+test("lifts both of the plan's tables onto the row", () => {
+  const { data } = build({ "PLAN.md": plan });
+  const badge = data.entries.find((e) => e.id === "Badge");
+  const cell = data.entries.find((e) => e.id === "Table / TD Text");
+  assert.deepEqual([badge.milestone, badge.wave], ["0.1", 1]);
+  assert.deepEqual([cell.milestone, cell.wave], ["alpha", null]);
 });
 
-test("says nothing about batches when nothing carries one", () => {
-  const { data } = build({
-    "docs/components/registry/badge.yaml": badge.replace("import:\n  batch: 1\n  ready: false\n", ""),
-    "docs/components/registry/table/td-text.yaml": tdText,
-  });
-  assert.deepEqual(data.batches, []);
-  assert.equal(data.entries.every((e) => e.batch === null), true);
+test("offers milestone and wave as separate facets, milestones in the plan's order", () => {
+  const { data, html } = build({ "PLAN.md": plan });
+  assert.deepEqual(data.milestones, ["0.1", "alpha"]);
+  assert.deepEqual(data.waves, [1]);
+  assert.match(html, /group\("Milestone", DATA\.milestones/);
+  assert.match(html, /group\("Wave", DATA\.waves/);
+});
+
+test("shows them as separate columns", () => {
+  const { html } = build({ "PLAN.md": plan });
+  assert.match(html, /label: "Milestone"/);
+  assert.match(html, /label: "Wave"/);
+  assert.doesNotMatch(html, /label: "Queue"/);
+});
+
+// A view built somewhere with no plan says nothing about the queue rather than
+// falling back to an order of its own.
+test("offers no queue facets when there is no plan to read", () => {
+  const { data } = build();
+  assert.deepEqual([data.milestones, data.waves], [[], []]);
+  assert.equal(data.entries.every((e) => e.milestone === null && e.wave === null), true);
 });
 
 test("reads the two derived flags as one word, so ready rows can be spotted", () => {

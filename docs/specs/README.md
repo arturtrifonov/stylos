@@ -19,3 +19,5 @@ If a spec finds itself arguing for an approach rather than describing one, that 
 | [0001](0001-token-pipeline.md) | Token pipeline | — | Built |
 | [0002](0002-registry-viewer.md) | Registry viewer | `docs/components/README.md` | Built |
 | [0003](0003-component-page.md) | Component page | `docs/components/STANDARD.md` | Built |
+| [0004](0004-registry-reconciliation.md) | Registry reconciliation | `docs/components/registry/README.md`, `PLAN.md` §4 | Built |
+| [0005](0005-queue-in-the-views.md) | The queue in the views | `ARCHITECTURE.md` §8 | Built |

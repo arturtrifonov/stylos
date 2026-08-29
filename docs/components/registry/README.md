@@ -67,9 +67,11 @@ html: "<label><input type=\"radio\"> Label text</label>"
 | `summary` | one sentence: what it is, by role. The page title's subtitle |
 | `purpose` | the product or user need, one paragraph on one line |
 | `use_when` | sequence of strings, each a condition under which this is the right component |
-| `do_not_use_when` | sequence of `{ text, instead }`. `instead` names the component that is right instead, or is `null` where none is |
+| `do_not_use_when` | sequence of `{ text, instead }`. `instead` names the component that is right instead — one id, or a sequence of ids — or is `null` where none is |
 
-**`instead` is an anchor, not a phrase.** The named component must exist in the registry; the validator fails otherwise. A renamed alternative breaks loudly rather than leaving a sentence pointing at nothing.
+**`instead` is an anchor, not a phrase.** The named component must exist in the registry; the validator fails otherwise, and it resolves every member of a sequence. A renamed alternative breaks loudly rather than leaving a sentence pointing at nothing.
+
+**A sequence is for a family, not for a shortlist.** `Link` sends an action to all three Button treatments because the judgement behind the sentence is about buttons, and picking one of them arbitrarily would state something narrower than what was decided. Where one component is right, name one; a list of alternatives the reader has to choose between is the sentence failing to reach a conclusion.
 
 ### The Figma description is derived, never authored
 
@@ -94,13 +96,27 @@ These are two different questions and both are worth answering. The Airtable-der
 
 `uses` is never hand-authored. It is filled by reading Figma, on the same policy as the `figma:` block: per component, when it is open for other reasons.
 
-**There is no `used_by` field.** It is the same edge as `uses`, written a second time in the file least likely to be open when the instance is placed — and in 96 entries it was never once filled. The reverse index is computed at build time from every entry's `uses`; see *Computed, never authored*. Deriving it makes a one-sided implemented relation impossible rather than something for the validator to report.
+**There is no `used_by` field.** It is the same edge as `uses`, written a second time in the file least likely to be open when the instance is placed — and on 2026-08-26, across all 96 entries the registry then held, it was never once filled. The reverse index is computed at build time from every entry's `uses`; see *Computed, never authored*. Deriving it makes a one-sided implemented relation impossible rather than something for the validator to report.
 
 #### Families
 
 `family` is a label, not a node. Three components carry `family: "Checkbox"`; no `Checkbox` component exists in Figma or here, and inventing one would create an entity with no properties, variants or instances. No slash group either — `Checkbox / Input` violates [naming.md](../../foundations/naming.md) §2, because `Input` cannot stand alone as an instance name.
 
 **"Variant of" and "sub-component" are not recorded, because they are derived.** A family member that other members name in their `uses` is the family's base — `Checkbox Input`. One that no sibling uses is a sibling form — `Checkbox Label`, `Checkbox Text`. The relations are not mutually exclusive and no field should pretend they are.
+
+#### When a component is split
+
+**Decomposition is expected, not exceptional.** A component that has grown complicated gets divided into two or more, and an existing entry becoming several is a normal event in the life of this registry rather than a correction of a mistake. It has happened three times so far — Checkbox, Radio, Indicator — and two of the three left damage the validator only found weeks later. These steps are fixed so that the next one does not.
+
+1. **Each member is its own entry**, at the path its `id` implies, with `family` set to the shared label. No entry is created for the family itself, and no slash group is introduced — see *Families* above.
+2. **Every member inherits the old entry's `children` and `parents` in full.** The allowed axis states what the system permits; until someone judges otherwise it permits, for each member, what it permitted for the whole. Narrowing it is a later per-member judgement recorded with its reason, not a blank the split leaves behind.
+3. **`uses` is not inherited.** It records an implemented instance, and an instance points at exactly one member. Read it again from Figma; never distribute it across the members.
+4. **Every reference to the old `id` becomes the ids of all the members** — in `children`, `parents` and `do_not_use_when.instead`. Sweep the whole registry, because those references live in files nobody has open at the time.
+5. **`import.batch` and `import.ready` carry over unchanged.** They record where the old entry came from, and the members came from the same place.
+6. **`status` and `version` are not inherited.** A member is a different component from the one that was split, and its readiness is assessed rather than carried.
+7. **The old file is deleted last**, after step 4 and never before. Deleting it first turns every reference into a failure — which is what happened to `Radio`: fifteen entries left pointing at an id that no longer resolved.
+
+`npm run validate:registry` exits 0 before the split is finished. A split that leaves it failing is not done.
 
 ### `api`
 
@@ -193,7 +209,7 @@ The field name says which collection to resolve against: `box` and `gap` are dim
 
 Typography has no separate block. Size, gap, font size and line height change together, and a reader comparing them across sizes needs them on one row.
 
-`flow_behavior` predates this block and remains on the 96 legacy entries as a coarse whole-component value. Where `sizing_model` is present it is authoritative, being per-axis. Folding the two is open.
+`flow_behavior` predates this block and remains on the entries with no contract as a coarse whole-component value. Where `sizing_model` is present it is authoritative, being per-axis. Folding the two is open.
 
 ### `motion`
 
@@ -249,7 +265,7 @@ Lifecycle is `status` and `version` on the entry itself. `import.batch` and `imp
 npm run registry:view
 ```
 
-Writes `build/registry.html` — the index over all entries: filter by level, role and Airtable batch, search, sort, follow relations as links. Open it from disk; it reaches nothing over the network. The output is derived and gitignored, so rebuild it rather than looking for it in a checkout.
+Writes `build/registry.html` — the index over all entries: filter by level, role, readiness, milestone and wave, sort, follow relations as links. **Milestone** and **Wave** are where [`PLAN.md`](../../../PLAN.md) puts the component — §9 the distribution decision its checklist belongs to, §4 the unit of work it is sequenced in. Both are read from the plan on every build and never stored on an entry, so filtering to one is how you see what it is made of, and an entry the plan places nowhere is reported by the validator. Every entry has a milestone; a blank wave means unsequenced, because waves are cut only for the milestone being worked. It is what `import.batch` used to be here: that is Airtable's sequencing from the day of the import, history rather than the queue, so it is no longer a facet, a sort key or a column ([`0004`](../../specs/0004-registry-reconciliation.md) §3.4). Its values stay in the detail panel, under a heading naming their origin and date. Open it from disk; it reaches nothing over the network. The output is derived and gitignored, so rebuild it rather than looking for it in a checkout.
 
 The per-component page is generated by the same tooling — see [`docs/specs/0003-component-page.md`](../../specs/0003-component-page.md).
 

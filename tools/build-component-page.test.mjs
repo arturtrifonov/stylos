@@ -26,7 +26,7 @@ const TOKENS = new Map([
 const resolveToken = (field, name) => TOKENS.get(`${field}:${name}`);
 
 // An entry in the shape lib/registry.mjs produces. Two builders, because the
-// registry holds two kinds of thing: 93 inventory rows with no contract at all,
+// registry holds two kinds of thing: inventory rows with no contract at all,
 // and the contracts. A test says only what it is about; everything else is
 // valid by construction.
 
@@ -193,6 +193,25 @@ test("fails an instead naming a component that is not in the registry", () => {
 test("says nothing about an instead that is deliberately null", () => {
   const entry = contract({ doNotUseWhen: [{ text: "Nothing else is right.", instead: null }] });
   assert.deepEqual(check(entry).errors, []);
+});
+
+test("says nothing about a list of insteads that all resolve", () => {
+  const entry = contract({
+    doNotUseWhen: [{ text: "The control acts.", instead: ["Checkbox Label", "Checkbox Input"] }],
+  });
+  assert.deepEqual(check(entry).errors, []);
+});
+
+// A family named as the alternative is a list, and one broken member of it is
+// as much a dangling anchor as a broken lone id.
+test("fails one member of an instead list that names nothing", () => {
+  const entry = contract({
+    doNotUseWhen: [{ text: "The control acts.", instead: ["Checkbox Label", "Toggle Label"] }],
+  });
+  assert.match(
+    check(entry).errors.join("\n"),
+    /do_not_use_when names "Toggle Label" as the alternative, which has no matching component id/
+  );
 });
 
 test("fails a variant count that does not match the product of the value counts", () => {
@@ -387,7 +406,7 @@ test("reports a family with only one member in it", () => {
   assert.match(result.reports.join("\n"), /is the only member of family "Checkbox"/);
 });
 
-// §3.3 — 93 entries carry none of this, and absence is never a failure.
+// §3.3 — most entries carry none of this, and absence is never a failure.
 
 test("a legacy entry with no contract fields fails nothing and still gets a page", () => {
   const entries = [legacy("Table / TD Text", { level: "object", role: "output" })];

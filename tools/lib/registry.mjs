@@ -111,6 +111,21 @@ export function levelRank(level) {
   return LEVELS.indexOf(level);
 }
 
+/**
+ * The alternatives a `do_not_use_when` entry names, always as a list.
+ *
+ * `instead` is one id where one component is right and a sequence where a
+ * family is — the three Button treatments answer "the control performs an
+ * action" together, and picking one of them arbitrarily would make the
+ * sentence narrower than the judgement behind it. Absent and null both mean
+ * the recorded judgement that nothing else is right, and both give [].
+ */
+export function insteadIds(avoid) {
+  const instead = avoid?.instead;
+  if (instead === undefined || instead === null) return [];
+  return Array.isArray(instead) ? instead : [instead];
+}
+
 function walk(dir) {
   const files = [];
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -231,6 +246,11 @@ export function readiness(entry) {
   return "not started";
 }
 
+function orList(names) {
+  if (names.length < 2) return names.join("");
+  return `${names.slice(0, -1).join(", ")} or ${names[names.length - 1]}`;
+}
+
 /**
  * The three lines that go into the component's Figma `descriptionMarkdown`,
  * composed from fields that already exist rather than read from a field of
@@ -247,6 +267,7 @@ export function composeFigmaDescription(entry) {
   const avoid = entry.doNotUseWhen[0];
   if (!summary || !first || !avoid?.text) return null;
 
-  const instead = avoid.instead ? ` Use ${avoid.instead} instead.` : "";
+  const alternatives = insteadIds(avoid);
+  const instead = alternatives.length > 0 ? ` Use ${orList(alternatives)} instead.` : "";
   return [`${summary}`, `Use when: ${first}`, `Do not use when: ${avoid.text}${instead}`].join("\n");
 }

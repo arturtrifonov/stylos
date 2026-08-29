@@ -205,6 +205,26 @@ test("composes the Figma description from three fields, never from one of its ow
   }
 });
 
+// A family answering together is one sentence, not a list the reader picks
+// from — so the ids are joined into the sentence rather than enumerated.
+test("names every alternative when instead is a list", () => {
+  const root = fixture({
+    "docs/components/registry/table/td-text.yaml": `${tdText}${contract.replace(
+      '    instead: "Badge"\n',
+      '    instead:\n      - "Badge"\n      - "Icon"\n      - "Loader"\n'
+    )}`,
+  });
+  try {
+    const [entry] = loadRegistry(root);
+    assert.equal(
+      composeFigmaDescription(entry).split("\n")[2],
+      "Do not use when: The cell holds a number. Use Badge, Icon or Loader instead."
+    );
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test("composes nothing where one of the three lines is missing", () => {
   const root = fixture({ "docs/components/registry/badge.yaml": badge });
   try {

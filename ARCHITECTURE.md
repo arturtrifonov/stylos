@@ -21,6 +21,7 @@ Every domain has exactly one authoritative source. When two places disagree, the
 | Architectural decisions | Markdown | `docs/decisions/` | by hand, one record per material change |
 | Skill behaviour | Markdown sources | `skills/src/` | by hand, compiled to `skills/dist/` |
 | System structure | this document | `ARCHITECTURE.md` | by hand |
+| The queue — what is worked when | Markdown | `PLAN.md` §4 and §9 | by hand, read by `tools/lib/plan.mjs`, never copied — see §8 |
 | Canonical tokens | *derived* | `tokens/` | `tools/import-tokens.mjs`, from a Figma export plus `tokens/_naming.yaml` |
 | Figma-to-Stylos naming, slots, mode rules | YAML | `tokens/_naming.yaml` | by hand, validated by `npm run tokens:check` |
 | Compiled skill document | *derived* | `skills/dist/` | `tools/build-skills.mjs` |
@@ -64,7 +65,7 @@ Components themselves live in Figma. Their whole contract — level, role, purpo
 
 `npm run validate:registry` checks the registry **against itself**: references resolve, ids are unique, each file sits at the path its id implies, any `figma:` block could address a real node, and every contract field that is present is internally consistent — a status or kind inside its vocabulary, a default among its property's values, a variant count that matches the product, a controlled group that is adjacent, a sizing run written as token names that resolve against `tokens/`, a value with a finding and a reason for shipping it. It separates contradictions (exit 1) from findings a human has to settle — a one-sided relation, a child at or above its parent's level, a contract missing narrative fields (exit 0). It does not check the registry against Figma.
 
-`npm run build` renders the whole set into `build/` — a home page, the registry view, one page per component, and `assets/` beside them — and it is the only command that produces an uploadable tree. `npm run registry:view` renders the registry view alone as one self-contained HTML file, where relations are links rather than files to open, and every row links to that component's page. `npm run components:view` writes those pages — one per entry under `build/components/`, the contract laid out to be read rather than parsed. It is also the one place the two records meet: a contract records dimensions as token names, and the page resolves them against `tokens/` at build time and shows the value with the name, so the scale stays legible without a number ever being copied into a contract. The pages are also the token set's first consumer in the other direction: colour, radius, the type scale and both families are resolved from `tokens/` by `tools/lib/theme.mjs` on every build and emitted as custom properties, so no Stylos value is transcribed into a stylesheet. That is a theme, not the CSS build of [`PLAN.md`](PLAN.md) Stage 3 — the pages are hand-written HTML and use no Stylos component. Two flags are derived at build time and never authored: `documented` (the contract carries a summary, a purpose, a `use_when` and a description on every property) and `linked` (a Figma node is recorded). Neither output is committed — both are cheap to rebuild and would put a 96-row diff into every registry change.
+`npm run build` renders the whole set into `build/` — a home page, the registry view, one page per component, and `assets/` beside them — and it is the only command that produces an uploadable tree. `npm run registry:view` renders the registry view alone as one self-contained HTML file, where relations are links rather than files to open, and every row links to that component's page. `npm run components:view` writes those pages — one per entry under `build/components/`, the contract laid out to be read rather than parsed. It is also the one place the two records meet: a contract records dimensions as token names, and the page resolves them against `tokens/` at build time and shows the value with the name, so the scale stays legible without a number ever being copied into a contract. The pages are also the token set's first consumer in the other direction: colour, radius, the type scale and both families are resolved from `tokens/` by `tools/lib/theme.mjs` on every build and emitted as custom properties, so no Stylos value is transcribed into a stylesheet. That is a theme, not the CSS build of [`PLAN.md`](PLAN.md) Stage 3 — the pages are hand-written HTML and use no Stylos component. Two flags are derived at build time and never authored: `documented` (the contract carries a summary, a purpose, a `use_when` and a description on every property) and `linked` (a Figma node is recorded). Neither output is committed — both are cheap to rebuild and would put a diff the size of the whole registry into every registry change.
 
 An entry may carry a `figma:` block naming the file and node it is implemented by. That is a hand-recorded address, not a sync: it is filled in when a component is opened in Figma for other reasons.
 
@@ -107,7 +108,7 @@ Stated explicitly so it is never assumed.
 - **CSS token output.** The token pipeline exists and produces the canonical set (`tokens/*.yaml`), but no script converts it into CSS custom properties yet — that is `tokens:build`, a later spec.
 - **Any published documentation surface.** No site, no Storybook, no designer-facing portal. Documentation is Markdown in git, read in an editor.
 - **A link between the registry and Figma.** No shared identifiers in either direction.
-- **Per-component contracts, beyond the first three.** The standard, the schema, the validator and the page generator exist; 93 of the 96 entries still carry the inventory record only.
+- **Per-component contracts.** The standard, the schema, the validator and the page generator exist; most entries still carry the inventory record only. How many is derived — `documented` in the registry view — rather than restated here.
 
 ---
 
@@ -147,3 +148,24 @@ An open question is anything not settled by a rule in `docs/foundations/` or by 
 - **Generated output is never edited by hand.** Change the source and rebuild.
 - **Figma exports are not kept.** `npm run tokens:import` reads one and writes `tokens/`; the export itself is discarded. History lives in git.
 - **Figma is never written to from this repository.** Explicit non-goal until a reliable round trip exists.
+
+---
+
+## 8. The queue: milestones, releases, waves
+
+Three words for three different things. "Where are we" is unanswerable when they are used interchangeably, which is how the Airtable batch numbers came to be read as a plan.
+
+**A milestone is a decision about distribution.** `0.1`, `alpha`, `beta`, `1.0`. The list under it is the checklist that decision waits on: everything in it done and the decision is open; anything missing and it is not. A milestone is deliberately **not a size budget** — putting more into one moves the decision later, it does not make the milestone wrong, so including something is cheap and leaving it out is not. Every registry entry carries exactly one, and `Parked` is a real value: work no decision waits on.
+
+**A release is a tag.** A number, chosen in `CHANGELOG.md` at the moment it is cut. How many releases fall between two milestones, and which number a milestone ships under, is not decided in advance and is written nowhere until it happens.
+
+**A wave is a unit of work** — a few components that end in something that renders, small enough to close. Waves are numbered continuously across the whole road and never restart inside a milestone. They exist only where the horizon is close enough to cut them, so an entry with a milestone and no wave is unsequenced work, not a gap.
+
+**Both tables live in [`PLAN.md`](PLAN.md) and nowhere else** — §4 the waves, §9 the milestones — and they are **read, never copied**. `tools/lib/plan.mjs` parses them on every build, so no page can show an order the plan has stopped stating, and nothing holds a second copy of the membership.
+
+**There is no `wave:` or `milestone:` field on a registry entry.** It would put the plan's sequence into a hundred files that are edited for entirely different reasons, and the two would part company within a week. The queue is a fact about the plan, not about the component.
+
+Two invariants, both mechanical:
+
+- **Every entry is placed exactly once.** An id named by neither table is reported by `npm run validate:registry`.
+- **Every name resolves.** An id named by either table that the registry does not hold fails the build rather than being skipped, because a checklist quietly one component short is a wrong answer nobody would catch.

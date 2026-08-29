@@ -18,7 +18,10 @@ use_when:
 do_not_use_when:
   -
     text: "The action is the point of the view rather than a detail inside it. This component has no label, no tone and no emphasis, and a primary action given to a control designed to recede is a primary action that gets missed."
-    instead: "Button Basic"
+    instead:
+      - "Button / Button Basic"
+      - "Button / Button Outline"
+      - "Button / Button Ghost"
   -
     text: "The control is icon-only but stands on its own — a toolbar action, an action in a header. That is an object with its own size run and its own tones, not an element borrowed from the component around it."
     instead: "Button Icon"

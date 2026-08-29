@@ -28,6 +28,7 @@ import { fileURLToPath } from "node:url";
 import {
   loadRegistry,
   registryPathFor,
+  insteadIds,
   levelRank,
   LEVELS,
   STATUSES,
@@ -38,11 +39,13 @@ import {
   COMPONENT_FILE_KEYS,
 } from "./lib/registry.mjs";
 import { SIZING_TOKEN_FIELDS, createTokenResolver } from "./lib/sizing.mjs";
+import { readPlan, plannedIds } from "./lib/plan.mjs";
 
-// 93 of the 96 entries carry none of the contract fields — they are the
-// Airtable inventory and nothing more. Absence is never a failure: every check
-// below runs only when the field it is about is present, so a legacy entry
-// passes without being pretended to be a contract.
+// Most entries carry none of the contract fields — they are the Airtable
+// inventory and nothing more. Absence is never a failure: every check below
+// runs only when the field it is about is present, so a legacy entry passes
+// without being pretended to be a contract. How many is derived, not counted
+// here: it is `documented` in the registry view.
 const CONTRACT_STALE_DAYS = 90;
 
 function properties(entry) {
@@ -59,7 +62,7 @@ function daysSince(date, today) {
   return Math.floor((today.getTime() - then) / 86400000);
 }
 
-export function checkRegistry(entries, { today = new Date(), resolveToken = null } = {}) {
+export function checkRegistry(entries, { today = new Date(), resolveToken = null, planned = null } = {}) {
   const errors = [];
   const reports = [];
 
@@ -161,6 +164,19 @@ export function checkRegistry(entries, { today = new Date(), resolveToken = null
     }
   }
 
+  // Named by neither table in PLAN.md — no milestone, and so no place on the
+  // road at all. Every entry carries exactly one milestone (ARCHITECTURE.md §8),
+  // and a checklist that quietly covers part of the set is the thing both
+  // tables exist to prevent. A run with no plan to check against skips it.
+  if (planned) {
+    for (const entry of entries) {
+      if (!entry.id) continue;
+      if (!planned.has(entry.id)) {
+        reports.push(`"${entry.id}" is named by neither table in PLAN.md — §4 waves nor §9 milestones`);
+      }
+    }
+  }
+
   // Neither composed from anything nor used inside anything. Usually a gap in
   // the import rather than a real island.
   for (const entry of entries) {
@@ -181,9 +197,9 @@ export function checkRegistry(entries, { today = new Date(), resolveToken = null
 
 // --- The contract (docs/specs/0003-component-page.md §3) -------------------
 //
-// Every check here is conditional on the field it is about being present. The
-// 93 legacy entries carry none of them and must pass; a contract that carries
-// a field carries it correctly or fails.
+// Every check here is conditional on the field it is about being present. A
+// legacy entry carries none of them and must pass; a contract that carries a
+// field carries it correctly or fails.
 
 function checkContract(entry, byId, errors, resolveToken) {
   const file = entry.file;
@@ -199,14 +215,16 @@ function checkContract(entry, byId, errors, resolveToken) {
 
   // `instead` is an anchor, not a phrase: a renamed alternative has to break
   // loudly rather than leave a sentence pointing at nothing. A null is the
-  // recorded judgement that no other component is right.
+  // recorded judgement that no other component is right. A list is a family
+  // answering together, and every member of it is an anchor.
   for (const avoid of entry.doNotUseWhen) {
-    const instead = avoid?.instead;
-    if (instead && !byId.has(instead)) {
-      errors.push(
-        `${file}: do_not_use_when names "${instead}" as the alternative, ` +
-          `which has no matching component id`
-      );
+    for (const instead of insteadIds(avoid)) {
+      if (!byId.has(instead)) {
+        errors.push(
+          `${file}: do_not_use_when names "${instead}" as the alternative, ` +
+            `which has no matching component id`
+        );
+      }
     }
   }
 
@@ -437,7 +455,11 @@ const isMain = process.argv[1] && fileURLToPath(import.meta.url) === path.resolv
 if (isMain) {
   const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
   const entries = loadRegistry(root);
-  const { ok, errors, reports } = checkRegistry(entries, { resolveToken: createTokenResolver(root) });
+  const plan = readPlan(root);
+  const { ok, errors, reports } = checkRegistry(entries, {
+    resolveToken: createTokenResolver(root),
+    planned: plan ? plannedIds(plan, entries) : null,
+  });
 
   for (const report of reports) console.error(`REPORT  ${report}`);
   for (const error of errors) console.error(`FAIL    ${error}`);

@@ -2,30 +2,25 @@
 # The CSV import that created it ran once, on 2026-08-20, and will not run
 # again — see docs/components/registry/README.md for the schema and workflow.
 
-id: "Asset"
-name: "Asset"
+id: "Button / Button Basic"
+name: "Button / Button Basic"
+family: "Button"
 level: "object"
-role: "output"
+role: "trigger"
 flow_behavior:
-  - "fill"
+  - "hug"
 children:
-  - "Avatar"
   - "Badge"
-  - "Checkbox Input"
-  - "Checkbox Label"
-  - "Checkbox Text"
+  - "Avatar"
   - "Icon"
-  - "Image"
   - "Indicator Status"
   - "Indicator Special"
-  - "Radio Input"
-  - "Radio Label"
-  - "Radio Text"
   - "Tag"
-  - "Button Inner"
   - "Loader"
 parents:
   - "Accordion / Container"
+  - "Alert"
+  - "Toast"
   - "Bottom Sheet"
   - "Flex Layout"
   - "Header"
@@ -35,5 +30,5 @@ parents:
   - "Side Panel Menu"
 notes: ""
 import:
-  batch: 2
-  ready: false
+  batch: 1
+  ready: true
