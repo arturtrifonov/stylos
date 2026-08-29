@@ -180,34 +180,42 @@ const plan = `| # | Wave | Entries | Ends with | Est. |
 | --- | --- | --- | --- | ---: |
 | 1 | Primitives | Badge | a form column | 1 wk |
 
-| Group | Unlocks | Entries |
+| Milestone | The decision it opens | Entries |
 | --- | --- | --- |
-| The table, fully | a real data grid | Table / TD Text |
+| alpha | a real data grid | Table / TD Text |
 `;
 
+// Two axes, not two values of one. Every entry has a milestone; only the
+// milestone being worked has been cut into waves.
 test("lifts both of the plan's tables onto the row", () => {
   const { data } = build({ "PLAN.md": plan });
   const badge = data.entries.find((e) => e.id === "Badge");
   const cell = data.entries.find((e) => e.id === "Table / TD Text");
-  assert.deepEqual([badge.wave, badge.group], [1, null]);
-  assert.deepEqual([cell.wave, cell.group], [null, "The table, fully"]);
+  assert.deepEqual([badge.milestone, badge.wave], ["0.1", 1]);
+  assert.deepEqual([cell.milestone, cell.wave], ["alpha", null]);
 });
 
-test("offers a wave facet and a group facet, the groups in the plan's order", () => {
+test("offers milestone and wave as separate facets, milestones in the plan's order", () => {
   const { data, html } = build({ "PLAN.md": plan });
+  assert.deepEqual(data.milestones, ["0.1", "alpha"]);
   assert.deepEqual(data.waves, [1]);
-  assert.deepEqual(data.groups, ["The table, fully"]);
+  assert.match(html, /group\("Milestone", DATA\.milestones/);
   assert.match(html, /group\("Wave", DATA\.waves/);
-  assert.match(html, /group\("After v0\.1", DATA\.groups/);
-  assert.match(html, /label: "Queue"/);
+});
+
+test("shows them as separate columns", () => {
+  const { html } = build({ "PLAN.md": plan });
+  assert.match(html, /label: "Milestone"/);
+  assert.match(html, /label: "Wave"/);
+  assert.doesNotMatch(html, /label: "Queue"/);
 });
 
 // A view built somewhere with no plan says nothing about the queue rather than
 // falling back to an order of its own.
 test("offers no queue facets when there is no plan to read", () => {
   const { data } = build();
-  assert.deepEqual([data.waves, data.groups], [[], []]);
-  assert.equal(data.entries.every((e) => e.wave === null && e.group === null), true);
+  assert.deepEqual([data.milestones, data.waves], [[], []]);
+  assert.equal(data.entries.every((e) => e.milestone === null && e.wave === null), true);
 });
 
 test("reads the two derived flags as one word, so ready rows can be spotted", () => {

@@ -11,12 +11,14 @@
 // script, nothing to keep in sync by hand. Same constraints as the other two
 // builders — everything inlined, nothing fetched, opened from disk or served.
 
-import { existsSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-import { derive, readiness } from "./lib/registry.mjs";
-import { waveProgress } from "./lib/plan.mjs";
-import { themeCss } from "./lib/theme.mjs";
+import { derive, loadRegistry, readiness } from "./lib/registry.mjs";
+import { milestoneProgress, readPlan, waveProgress, whereWeAre } from "./lib/plan.mjs";
+import { loadTheme, themeCss } from "./lib/theme.mjs";
+import { readLogo } from "./build-component-page.mjs";
 
 const CSS = `
 * { box-sizing: border-box; }
@@ -90,6 +92,13 @@ a { color: var(--accent); }
    and the progress through it are the same picture. The count and the percent
    are written out beside every bar: the bar is the second cue, never the only
    one, which is how readiness is shown everywhere else in these pages. */
+/* Where the work is, in one sentence. First on the page because it is the
+   question the page exists to answer; the two charts below are the detail
+   behind it. */
+.here { margin: 2.5rem 0 0; font-size: var(--text-lead); line-height: 1.4; letter-spacing: -.01em; }
+.here .to { font-weight: 600; }
+.here .rest { color: var(--fg-quiet); }
+
 .queue { margin: 3.5rem 0 0; }
 .queue h2 {
   font-size: var(--text-small);
@@ -123,6 +132,31 @@ a { color: var(--accent); }
 .queue .pct { font-size: var(--text-meta); font-variant-numeric: tabular-nums; text-align: right; font-weight: 600; }
 .queue li[data-done="0"] .pct { color: var(--fg-faint); font-weight: 400; }
 
+/* A milestone is a checklist, not a quantity of work, so every track is full
+   width and only the fill differs. The wave chart above scales its tracks
+   because waves are comparable units; these are not, and 43 against 8 says
+   nothing worth reading. The difference is deliberate — see
+   docs/specs/0005-queue-in-the-views.md §5. */
+.queue.milestones ol { margin-top: .4rem; }
+.queue.milestones li {
+  grid-template-columns: minmax(0, 1fr) 4.5rem 3rem;
+  row-gap: .4rem;
+  padding: .9rem 0;
+  border-top: 1px solid var(--rule);
+}
+.queue.milestones li:first-child { border-top: 0; }
+.queue.milestones .label .num { color: var(--fg); font-weight: 600; margin-right: 0; font-size: var(--text-body); }
+/* The track and the decision both span the row: the name and the numbers are
+   the line you scan, and the sentence is what you stop on. */
+.queue.milestones .track { grid-column: 1 / -1; }
+.queue.milestones .opens {
+  grid-column: 1 / -1;
+  color: var(--fg-quiet);
+  font-size: var(--text-meta);
+  line-height: 1.5;
+  max-width: 68ch;
+}
+
 @media (max-width: 52rem) {
   .queue li { grid-template-columns: minmax(0, 1fr) 4.5rem 3rem; }
   .queue .track { grid-column: 1 / -1; }
@@ -145,6 +179,17 @@ footer p { margin: .2rem 0; }
 
 const ESCAPES = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ESCAPES[c]);
+
+/**
+ * The little Markdown a PLAN.md table cell actually uses — bold and code, and
+ * nothing else. Escaped first, so the emphasis is the only markup that can come
+ * out of the plan; anything richer than these two belongs in the document
+ * rather than in a chart label.
+ */
+const inline = (value) =>
+  esc(value)
+    .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+    .replace(/`([^`]+)`/g, '<span class="mono">$1</span>');
 
 /**
  * @param {object} options
@@ -197,6 +242,47 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
     <ol>${rows}</ol>
   </section>`;
 
+  // One bar per milestone, in the plan's order. Parked is not charted: nothing
+  // waits on it, and a progress bar would imply something does.
+  const charted = (plan ? milestoneProgress(plan, entries) : []).filter((row) => row.name !== "Parked");
+  const milestoneRows = charted
+    .map((row) => {
+      const segment = (count, className) =>
+        count > 0 ? `<span class="fill ${className}" style="width:${(count / row.total) * 100}%"></span>` : "";
+      return `<li data-done="${row.done}">
+<span class="label"><span class="num">${esc(row.name)}</span></span>
+<span class="of">${row.done} / ${row.total}</span>
+<span class="pct">${percentLabel(row)}</span>
+<span class="track" role="img" aria-label="${row.done} of ${row.total} ready">${segment(
+        row.done,
+        "done"
+      )}${segment(row.started, "progress")}</span>${
+        row.opens ? `\n<span class="opens">${inline(row.opens)}</span>` : ""
+      }
+</li>`;
+    })
+    .join("");
+
+  const milestoneSection = charted.length === 0 ? "" : `<section class="queue milestones">
+    <h2>The road, milestone by milestone</h2>
+    <p class="caveat">
+      §9 of the plan. A milestone is a decision about distribution, and the list under it is the
+      checklist that decision waits on — not a size budget and not a date. Every track is full width
+      because a milestone is a checklist rather than a quantity of work; only the fill compares.
+      <span class="mono">Parked</span> is not charted: no decision waits on it.
+    </p>
+    <ol>${milestoneRows}</ol>
+  </section>`;
+
+  const here = plan ? whereWeAre(plan, entries) : null;
+  const hereLine = !here?.milestone
+    ? ""
+    : `<p class="here"><span class="to">Working towards ${esc(here.milestone.name)}</span><span class="rest"> — ${
+        here.wave
+          ? `wave ${here.wave.number} of ${here.waves}, `
+          : "no wave open, "
+      }${here.milestone.done} of ${here.milestone.total} components ready.</span></p>`;
+
   const figure = column
     ? `<figure class="column-figure"><img src="assets/column.png" alt="" width="510" height="510" loading="lazy"></figure>`
     : "";
@@ -226,6 +312,8 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
     ${figure}
   </div>
 
+  ${hereLine}
+
   <div class="tally">
     <div><span class="n">${total}</span><span class="k">components</span></div>
     <div><span class="n">${documented}</span><span class="k">with a contract</span></div>
@@ -235,7 +323,7 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
   <nav class="doors">
     <a class="door" href="registry.html">
       <h2>Component registry →</h2>
-      <p>Every entry, filterable by level, role, readiness and wave, with what each one is composed from and used inside.</p>
+      <p>Every entry, filterable by level, role, readiness, milestone and wave, with what each one is composed from and used inside.</p>
       <span class="count">${total} entries</span>
     </a>
     <a class="door" href="components/index.html">
@@ -246,6 +334,8 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
   </nav>
 
   ${queueSection}
+
+  ${milestoneSection}
 
   <footer>
     <p>Generated ${esc(generated)} from <span class="mono">docs/components/registry/</span> and <span class="mono">tokens/</span>.</p>
@@ -260,4 +350,29 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
 /** Whether the optional capital is in the repository. Absent is not an error. */
 export function hasColumn(root) {
   return existsSync(path.join(root, "assets/column.png"));
+}
+
+const isMain = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+
+// The front door on its own, the way registry:view and components:view render
+// theirs. It writes into the same build/ and shares its assets, so a tree built
+// only this way has the page and not the fonts — npm run build is the
+// publishable one.
+if (isMain) {
+  const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+  const entries = loadRegistry(root);
+  const html = renderHome({
+    entries,
+    theme: loadTheme(root),
+    logo: readLogo(root),
+    generated: new Date().toISOString().slice(0, 10),
+    column: hasColumn(root),
+    plan: readPlan(root),
+  });
+
+  const out = path.join(root, "build/index.html");
+  mkdirSync(path.dirname(out), { recursive: true });
+  writeFileSync(out, html);
+
+  console.log(`${entries.length} components → ${path.relative(root, out)}`);
 }

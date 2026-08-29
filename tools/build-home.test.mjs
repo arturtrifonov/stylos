@@ -43,8 +43,8 @@ test("reaches nothing over the network", () => {
 
 // --- the wave chart ----------------------------------------------------------
 
-// PLAN.md Stage 4 in miniature. Parsing it is lib/plan.test.mjs's subject;
-// what is tested here is what the page does with the result.
+// PLAN.md in miniature, both tables. Parsing them is lib/plan.test.mjs's
+// subject; what is tested here is what the page does with the result.
 const plan = `## 4. Stages
 
 | # | Wave | Entries | Ends with | Est. |
@@ -53,6 +53,13 @@ const plan = `## 4. Stages
 | 2 | The table | Table / TD Text | a dense table | 2 wk |
 
 Text after the table.
+
+## 9. After v0.1 — the milestones
+
+| Milestone | The decision it opens | Entries |
+| --- | --- | --- |
+| alpha | the decision that it is ready for **internal** use | Tooltip |
+| Parked | no decision waits on these | Chips |
 `;
 
 const queued = [
@@ -60,6 +67,8 @@ const queued = [
   { id: "Checkbox Input", family: "Checkbox", api: [] },
   { id: "Checkbox Label", family: "Checkbox", api: [] },
   { id: "Table / TD Text", api: [], summary: "s", purpose: "p", useWhen: ["u"], figma: { node_id: "1-2" } },
+  { id: "Tooltip", api: [] },
+  { id: "Chips", api: [] },
 ];
 
 test("writes the count and the percent beside every bar, never the bar alone", () => {
@@ -76,6 +85,38 @@ test("names the waves as the plan's order rather than as a schedule", () => {
   assert.doesNotMatch(html, /Batch/);
 });
 
+// --- the milestones ----------------------------------------------------------
+
+// The question the page exists to answer, in one sentence, above everything
+// that details it.
+test("opens with where the work is", () => {
+  const html = renderHome({ entries: queued, generated: "2026-08-28", plan });
+  assert.match(html, /Working towards 0\.1<\/span><span class="rest"> — wave 1 of 2, 2 of 4 components ready\./);
+  assert.ok(html.indexOf('class="here"') < html.indexOf('class="queue"'), "the sentence comes first");
+});
+
+test("draws one bar per milestone, below the waves, with the decision each opens", () => {
+  const html = renderHome({ entries: queued, generated: "2026-08-28", plan });
+  assert.ok(html.indexOf('class="queue milestones"') > html.indexOf("The core set, wave by wave"));
+  assert.match(html, /<span class="num">0\.1<\/span>/);
+  assert.match(html, /<span class="num">alpha<\/span>/);
+  assert.match(html, /ready for <strong>internal<\/strong> use/, "the cell's Markdown is rendered, not printed");
+});
+
+// Nothing waits on Parked, so a progress bar would imply something does.
+test("leaves Parked out of the chart", () => {
+  const html = renderHome({ entries: queued, generated: "2026-08-28", plan });
+  assert.doesNotMatch(html, /<span class="num">Parked<\/span>/);
+});
+
+// A milestone is a checklist, not a quantity of work, so 43 against 8 is not
+// drawn as a wider bar. Only the waves scale their tracks.
+test("gives every milestone track the same width and only varies the fill", () => {
+  const html = renderHome({ entries: queued, generated: "2026-08-28", plan });
+  const chart = html.slice(html.indexOf('class="queue milestones"'));
+  assert.deepEqual([...chart.matchAll(/<span class="track" style=/g)], []);
+});
+
 test("says less than one percent rather than rounding a finished component to zero", () => {
   const many = [
     { id: "Badge", api: [], summary: "s", purpose: "p", useWhen: ["u"], figma: { node_id: "1-1" } },
@@ -84,6 +125,10 @@ test("says less than one percent rather than rounding a finished component to ze
   const wide = `| # | Wave | Entries | Ends with | Est. |
 | --- | --- | --- | --- | ---: |
 | 1 | Everything | ${many.map((entry) => entry.id).join(", ")} | a screen | 1 wk |
+
+| Milestone | The decision it opens | Entries |
+| --- | --- | --- |
+| alpha | nothing left over | ${many[0].id} |
 `;
   assert.equal(waveProgress(wide, many)[0].percent, 0);
   assert.match(renderHome({ entries: many, generated: "2026-08-28", plan: wide }), /<span class="pct">&lt;1%<\/span>/);

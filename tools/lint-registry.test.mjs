@@ -179,7 +179,7 @@ test("reports an entry that neither table in the plan names", () => {
   assert.equal(ok, true, "the plan not naming something is a judgement, not a failure");
   assert.equal(
     reports.filter((report) => /named by neither table/.test(report)).join("\n"),
-    '"Icon" is named by neither table in PLAN.md — §4 waves nor §9 groups'
+    '"Icon" is named by neither table in PLAN.md — §4 waves nor §9 milestones'
   );
 });
 

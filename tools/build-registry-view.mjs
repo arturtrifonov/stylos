@@ -34,7 +34,7 @@ import {
   ROLES,
   READINESS,
 } from "./lib/registry.mjs";
-import { readPlan, waveById, groupById, parseGroups } from "./lib/plan.mjs";
+import { readPlan, waveById, milestoneById, milestoneNames } from "./lib/plan.mjs";
 import { loadTheme, themeCss } from "./lib/theme.mjs";
 
 // Plain, but no longer anonymous. The layout is a tool's — a table, a filter
@@ -180,7 +180,8 @@ td.flag[data-on="true"] { color: var(--ok); }
   margin-right: 8px;
   vertical-align: baseline;
 }
-td.queue { color: var(--fg-quiet); font-variant-numeric: tabular-nums; }
+td.milestone { color: var(--fg-quiet); font-variant-numeric: tabular-nums; }
+td.wave { text-align: right; font-variant-numeric: tabular-nums; color: var(--fg-quiet); }
 td.page a { color: var(--accent); text-decoration: none; }
 td.page a:hover { text-decoration: underline; }
 tbody tr.group-row { cursor: default; }
@@ -257,7 +258,7 @@ var state = {
   roles: new Set(),
   readiness: new Set(),
   waves: new Set(),
-  groups: new Set(),
+  milestones: new Set(),
   sort: "name",
   direction: 1,
   group: true,
@@ -283,7 +284,7 @@ function clearFilters() {
   state.roles.clear();
   state.readiness.clear();
   state.waves.clear();
-  state.groups.clear();
+  state.milestones.clear();
 }
 
 function matches(entry) {
@@ -291,24 +292,27 @@ function matches(entry) {
   if (state.roles.size > 0 && !state.roles.has(entry.role)) return false;
   if (state.readiness.size > 0 && !state.readiness.has(entry.readiness)) return false;
   if (state.waves.size > 0 && !state.waves.has(entry.wave)) return false;
-  if (state.groups.size > 0 && !state.groups.has(entry.group)) return false;
+  if (state.milestones.size > 0 && !state.milestones.has(entry.milestone)) return false;
   return true;
 }
 
-// PLAN.md places every entry exactly once — in a numbered wave of the core set
-// or in a group after it — so one column carries both. They stay two filters,
-// because §9 is explicit that a group is not a wave: it has no order inside it
-// and no estimate, and a chip reading "Wave 7" would say it did.
-function queueLabel(entry) {
-  if (entry.wave !== null) return "Wave " + entry.wave;
-  return entry.group === null ? "—" : entry.group;
+// Two axes, two columns (docs/specs/0005-queue-in-the-views.md §4). A milestone
+// is a decision and every entry has one; a wave is a unit of work and only the
+// milestone being worked has been cut into any. They are not alternatives, and
+// putting a number and a name in one cell made them look like alternatives.
+//
+// Milestone sorts in the plan's order and breaks ties on the wave, so sorting
+// by it lays the road out as the plan states it.
+function milestoneRank(entry) {
+  var at = DATA.milestones.indexOf(entry.milestone);
+  return (
+    (at === -1 ? "z" : String(at).padStart(2, "0")) +
+    (entry.wave === null ? "-zz" : "-" + String(entry.wave).padStart(2, "0"))
+  );
 }
 
-// Waves first, in their own order, then the groups in the plan's order.
-function queueRank(entry) {
-  if (entry.wave !== null) return "1" + String(entry.wave).padStart(3, "0");
-  if (entry.group === null) return "3";
-  return "2" + String(DATA.groups.indexOf(entry.group)).padStart(3, "0");
+function waveRank(entry) {
+  return entry.wave === null ? "zz" : String(entry.wave).padStart(2, "0");
 }
 
 // One comparable string per row. Every column sorts through the same path,
@@ -319,7 +323,8 @@ function sortKey(entry) {
   if (state.sort === "role") return entry.role || "";
   if (state.sort === "readiness") return String(READINESS.indexOf(entry.readiness));
   if (state.sort === "flow") return entry.flow_behavior.join(", ");
-  if (state.sort === "queue") return queueRank(entry);
+  if (state.sort === "milestone") return milestoneRank(entry);
+  if (state.sort === "wave") return waveRank(entry);
   if (state.sort === "documented") return entry.documented ? "1" : "0";
   if (state.sort === "linked") return entry.linked ? "1" : "0";
   return entry.name.toLowerCase();
@@ -365,9 +370,14 @@ var COLUMNS = [
     title: "Derived from the two columns on the right: ready = the contract is written and the entry is linked to Figma. Not the component's lifecycle — that is Status, in the panel",
   },
   {
-    key: "queue",
-    label: "Queue",
-    title: "Where PLAN.md puts this component, read from the plan on every build: a numbered wave of the v0.1 core set (§4), or the group it is worked with afterwards (§9). Every entry has exactly one",
+    key: "milestone",
+    label: "Milestone",
+    title: "The distribution decision this component's checklist belongs to — PLAN.md §9, read from the plan on every build. Every entry has exactly one",
+  },
+  {
+    key: "wave",
+    label: "Wave",
+    title: "The unit of work it is sequenced in — PLAN.md §4. Blank means unsequenced: waves are cut only for the milestone being worked, so most entries have none, and a blank here is not a hole",
   },
   { key: "level", label: "Level" },
   { key: "role", label: "Role" },
@@ -411,11 +421,13 @@ function renderFilters() {
   host.appendChild(group("Readiness", READINESS, state.readiness, countBy("readiness")));
   // The waves are the queue, so the index offers them. They come from PLAN.md
   // on every build; a view built without a plan simply has no wave filter.
+  // Independent of each other on purpose: "wave 3" with no milestone chosen is
+  // a legitimate question, and so is a whole milestone regardless of sequencing.
+  if (DATA.milestones.length > 0) {
+    host.appendChild(group("Milestone", DATA.milestones, state.milestones, countBy("milestone")));
+  }
   if (DATA.waves.length > 0) {
     host.appendChild(group("Wave", DATA.waves, state.waves, countBy("wave")));
-  }
-  if (DATA.groups.length > 0) {
-    host.appendChild(group("After v0.1", DATA.groups, state.groups, countBy("group")));
   }
 }
 
@@ -505,7 +517,8 @@ function renderTable() {
         el("span", { class: "dot" }),
         el("span", { text: entry.readiness }),
       ]));
-      tr.appendChild(el("td", { class: "queue", text: queueLabel(entry) }));
+      tr.appendChild(el("td", { class: "milestone", text: entry.milestone === null ? "—" : entry.milestone }));
+      tr.appendChild(el("td", { class: "wave", text: entry.wave === null ? "—" : String(entry.wave) }));
       tr.appendChild(el("td", { text: entry.level || "—" }));
       tr.appendChild(el("td", { text: entry.role || "—" }));
       tr.appendChild(el("td", { text: entry.flow_behavior.join(", ") || "—" }));
@@ -617,14 +630,20 @@ function renderDetail() {
   derived.appendChild(el("dt", { text: "Readiness" }));
   derived.appendChild(el("dd", {}, [readinessTag(entry.readiness)]));
   // Where the plan puts it, not a field on the entry — see lib/plan.mjs.
-  derived.appendChild(el("dt", { text: "Queue" }));
+  derived.appendChild(el("dt", { text: "Milestone" }));
   derived.appendChild(
     el("dd", {}, [
-      entry.wave !== null
-        ? el("span", { text: "PLAN.md §4, wave " + entry.wave + " of the v0.1 core set" })
-        : entry.group !== null
-          ? el("span", { text: "PLAN.md §9, after v0.1 — " + entry.group })
-          : el("span", { class: "empty", text: "the plan does not place it" }),
+      entry.milestone === null
+        ? el("span", { class: "empty", text: "the plan does not place it" })
+        : el("span", { text: "PLAN.md §9, " + entry.milestone }),
+    ])
+  );
+  derived.appendChild(el("dt", { text: "Wave" }));
+  derived.appendChild(
+    el("dd", {}, [
+      entry.wave === null
+        ? el("span", { class: "empty", text: "not yet cut into waves" })
+        : el("span", { text: "PLAN.md §4, wave " + entry.wave }),
     ])
   );
   derived.appendChild(el("dt", { text: "Contract" }));
@@ -756,10 +775,11 @@ export function buildViewData(root, entries) {
   // rows carry no wave and the facet and column are not offered.
   const plan = readPlan(root);
   const waveOf = plan ? waveById(plan, entries) : new Map();
-  const groupOf = plan ? groupById(plan, entries) : new Map();
+  const milestoneOf = plan ? milestoneById(plan, entries) : new Map();
   const waves = [...new Set(waveOf.values())].sort((a, b) => a - b);
-  // In the plan's order, not sorted: §9 states an order and the facet keeps it.
-  const groups = plan ? parseGroups(plan).map((group) => group.name) : [];
+  // In the plan's order, not sorted: §9 states an order and the facet keeps it,
+  // which is what puts Parked last rather than an alphabet doing it by accident.
+  const milestones = plan ? milestoneNames(plan) : [];
 
   return {
     generated: new Date().toISOString().slice(0, 10),
@@ -767,8 +787,8 @@ export function buildViewData(root, entries) {
     levels: LEVELS,
     roles: ROLES,
     readiness: READINESS,
+    milestones,
     waves,
-    groups,
     entries: entries.map((entry) => {
       const { documented, linked } = derive(entry);
       return {
@@ -778,7 +798,7 @@ export function buildViewData(root, entries) {
         level: entry.level,
         role: entry.role,
         wave: waveOf.get(entry.id) ?? null,
-        group: groupOf.get(entry.id) ?? null,
+        milestone: milestoneOf.get(entry.id) ?? null,
         flow_behavior: entry.flowBehavior,
         children: entry.children,
         parents: entry.parents,

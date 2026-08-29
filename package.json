@@ -8,6 +8,7 @@
     "build:skills": "node tools/build-skills.mjs",
     "validate:skills": "node tools/build-skills.mjs --check",
     "validate:registry": "node tools/lint-registry.mjs",
+    "build:home": "node tools/build-home.mjs",
     "registry:view": "node tools/build-registry-view.mjs",
     "components:view": "node tools/build-component-page.mjs",
     "tokens:import": "node tools/import-tokens.mjs",

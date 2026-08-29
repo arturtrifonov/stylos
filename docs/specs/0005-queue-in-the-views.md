@@ -1,6 +1,6 @@
 # SPEC 0005 — The queue in the views
 
-**Status:** Not started
+**Status:** Built — 2026-08-29
 **Date:** 2026-08-29
 
 A work order. `PLAN.md` §9 stopped being a list of groups and became the milestones — the distribution decisions the library is worked towards ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §8). The reader and the two views still call them groups and still show them on one scale with the waves. This renames the concept through the code and separates the two axes on screen.

@@ -164,15 +164,15 @@ export function checkRegistry(entries, { today = new Date(), resolveToken = null
     }
   }
 
-  // Not named by either table in PLAN.md — neither a wave of the v0.1 core set
-  // nor a group after it. The plan claims to place every entry exactly once
-  // (PLAN.md §9), and a queue that quietly covers part of the set is the thing
-  // both tables exist to prevent. A run with no plan to check against skips it.
+  // Named by neither table in PLAN.md — no milestone, and so no place on the
+  // road at all. Every entry carries exactly one milestone (ARCHITECTURE.md §8),
+  // and a checklist that quietly covers part of the set is the thing both
+  // tables exist to prevent. A run with no plan to check against skips it.
   if (planned) {
     for (const entry of entries) {
       if (!entry.id) continue;
       if (!planned.has(entry.id)) {
-        reports.push(`"${entry.id}" is named by neither table in PLAN.md — §4 waves nor §9 groups`);
+        reports.push(`"${entry.id}" is named by neither table in PLAN.md — §4 waves nor §9 milestones`);
       }
     }
   }
