@@ -7,6 +7,7 @@ name: "Radio Input"
 family: "Radio"
 level: "element"
 role: "input"
+html: "<input type=\"radio\">"
 status: "draft"
 version: "0.1"
 summary: "The radio control alone — the circle and its selection state, with no label."
@@ -23,24 +24,32 @@ do_not_use_when:
   -
     text: "More than one of the options may be chosen at once. Mutual exclusion is the whole meaning of this control, and a radio that does not exclude anything is a checkbox drawn wrongly."
     instead: "Checkbox Input"
+children:
+  - "Label"
+  - "Icon"
+  - "Badge"
+  - "Loader"
+parents:
+  - "Accordion / Container"
+  - "Asset"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
 flow_behavior:
   - "fixed"
 a11y:
   -
     status: "requires"
-    note: "The component has no accessible name and cannot have one. The parent must supply it — the row's identifying cell, the card's heading, an association with surrounding text. A parent that embeds this and supplies no name has a defect, and the defect is the parent's."
+    note: "The component carries no text of its own, so there is nothing in it for an accessible name to be computed from. The name has to come from outside — the row's identifying cell, the card's heading, an association with surrounding text. A parent that embeds this and supplies nothing leaves the control named by nothing, and that is the parent's defect."
   -
     status: "requires"
     note: "A radio only means anything inside a group. The implementation has to expose the set as one group with one name, move between members with the arrow keys rather than tab, and keep a single tab stop for the whole set — SC 4.1.2 and SC 2.1.1. Nothing in this component expresses the group, because the group is not a component here."
-  -
-    status: "requires"
-    note: "The parent supplies the click target. The circle is 16 to 32 and is not intended to be the hit area on its own; the cell, row or card is."
-  -
-    status: "open"
-    note: "There is no focus value and there will not be one: state is single-select, and focus coexists with hover, active and checked rather than replacing them. Focus becomes a boolean once its treatment is decided. Unresolved system-wide, and it matters most here because arrow-key movement through a group is the primary way this control is operated."
-  -
-    status: "open"
-    note: "In the disabled checked value the centre and the surface behind it are both light neutrals, and the selection is only just legible. Disabled controls are exempt from the contrast criteria, so this is not a conformance failure — it is an information failure, because a person looking at a disabled group cannot easily see which option was chosen. The roles were moved once on 2026-08-28 and the reading improved without clearing 3:1. Disabled contrast is being reconsidered across the system rather than patched on this component."
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
@@ -62,9 +71,6 @@ sizing_model:
     -
       size: "extra large"
       box: "size/s-4_000"
-variants:
-  count: 40
-  complete_cross_product: true
 api:
   -
     name: "size"
@@ -106,7 +112,7 @@ api:
         value: "active"
       -
         value: "disabled"
-        note: "Not the same as read-only, which the component does not have: read-only means shown but not editable, disabled means not applicable now. Applying it to one member of a group rather than the whole group is almost always wrong — the choice is the group's."
+        note: "Not the same as read-only, which the component does not have: read-only means shown but not editable, disabled means not applicable now."
   -
     name: "is checked"
     kind: "variant"
@@ -118,19 +124,26 @@ api:
         note: "The component has no children at all in this value — there is no hidden mark layer."
       -
         value: "true"
-        note: "The mark is not a dot but a light disc inset into the filled circle, so the selected control reads as a thick ring. That is the inverse of the conventional radio, where the ring is the border and the dot is the accent."
+        note: "The circle takes the bold primary surface and drops its border, and a smaller circle in the inverted text role sits inside it."
+  -
+    name: "is focused"
+    kind: "boolean"
+    default: "false"
+    description: "Whether this option carries the group's focus ring. Focus belongs to the group, not to one option: the ring sits on a single member, and moving it with the arrow keys moves the selection with it — so a focused radio is a checked radio. It is a boolean rather than a value of state because it coexists with hover and active instead of replacing them."
 limitations:
   - "No mixed value, correctly: a radio is chosen or it is not, and partial selection has no meaning in a mutually exclusive set. This is the one place the Radio family and the Checkbox family diverge in their properties."
-  - "The centre is an opaque light fill rather than a hole. On a white page it reads as a ring; on any other surface it shows a pale disc that does not match what is behind it, and there is no property to change it."
+  - "The inner circle is an opaque fill in the inverted text role, not a hole, so it does not take the colour of whatever the component is placed on. There is no property to change it."
   - "No validation property: a required group with nothing chosen cannot show an error on the control."
   - "No read-only value. Disabled is the only unavailable state, and it is the wrong tool for a choice that is settled but still worth reading."
-  - "The stroke weight is a raw 1 with no variable binding, so it does not follow the border scale that width/normal defines."
-  - "The centre has a raw dimension with no binding and MIN constraints, so it neither follows the scale nor recentres if the circle is resized. The circle is not adjustable, which is why this has no consequence today."
+figma_notes:
+  - "Focus is a boolean toggling a Focus ring instance rather than a value of state, which keeps the set at 40 variants instead of 50."
+  - "The ring is drawn only on the checked variants, because a focused radio is a checked radio. Turning is focused on does not also set is checked — making it do so would double the variant count, and that trade has not been taken. In an implementation the two move together without either being a property of the other."
+  - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4344-431"
   last_verified: "2026-08-28"
-notes: "children/parents deliberately absent: the allowed-composition set from radio.yaml has not yet been split across the three family members, and that split is a judgement rather than a transcription. radio.yaml should be deleted once it is done — 15 other entries still name Radio. uses is absent because this component contains no instances. used_by needs a whole-file survey that has not been run. The mark layer is still named Check in Figma, a checkbox word on a radio that also names the light centre rather than a mark."
+notes: "children and parents are carried unchanged from the pre-split entry and have not yet been divided between the three family members — that division is a judgement, not a transcription. uses is absent because this component contains no instances."
 import:
   batch: 1
   ready: true

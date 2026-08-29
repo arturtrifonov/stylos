@@ -7,6 +7,7 @@ name: "Indicator Special"
 family: "Indicator"
 level: "primitive"
 role: "content"
+html: "no semantic html"
 status: "draft"
 version: "0.1"
 summary: "A dot in a named palette hue, for colour that identifies rather than judges."
@@ -109,9 +110,6 @@ sizing_model:
       size: "extra large"
       footprint: "size/s-2_000"
       dot: "size/s-1_500"
-variants:
-  count: 110
-  complete_cross_product: true
 api:
   -
     name: "tone"
@@ -183,7 +181,6 @@ api:
       -
         value: "extra large"
 limitations:
-  - "The 1px ring is decorative. `border/secondary` measures 1.23:1 against a white surface, so it separates the dot from a busy background optically but carries no contrast."
   - "No state property. The indicator is not interactive and reports rather than responds."
   - "Nothing assigns a hue to a category. Which project is `violet` is the product's decision and the product's to keep stable; the component only paints what it is told."
 figma:

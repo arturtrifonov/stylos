@@ -7,6 +7,7 @@ name: "Checkbox Label"
 family: "Checkbox"
 level: "element"
 role: "input"
+html: "<label><input type=\"checkbox\"> Label text</label>"
 status: "draft"
 version: "0.1"
 summary: "A checkbox with a short single-line label, sized by its text."
@@ -67,9 +68,6 @@ sizing_model:
       gap: "gap/g-1_000"
       font_size: "size/1_500"
       line_height: "line height/string/1_500"
-variants:
-  count: 60
-  complete_cross_product: true
 api:
   -
     name: "size"
@@ -102,9 +100,6 @@ api:
     kind: "variant"
     default: "default"
     description: "Pointer interaction and availability. The visual change happens in the box; the label follows only on disabled, and selection does not change the label at all."
-    a11y:
-      status: "open"
-      note: "No focus value, and none is planned as a state value: state is single-select and focus coexists with hover, active and checked. Focus becomes a boolean once its treatment is decided. Unresolved system-wide."
     values:
       -
         value: "default"
@@ -148,15 +143,23 @@ api:
         caption: "Anything that would wrap belongs in Checkbox Text — here it just grows sideways."
         props:
           "label text": "I agree to the processing of my personal data in accordance with the privacy policy"
+  -
+    name: "is focused"
+    kind: "boolean"
+    default: "false"
+    description: "Whether the control holds keyboard focus. A ring is drawn outside it and nothing else changes. It is a boolean rather than a value of state because focus coexists with hover, active and checked instead of replacing them."
 limitations:
   - "No validation property: a required unticked option cannot show an error inline."
   - "No label-position property. The label is always trailing."
   - "No text style on the label — every typographic property is bound to a variable directly, so a consumer cannot restyle it by swapping a style."
+figma_notes:
+  - "Focus is a boolean toggling a Focus ring instance rather than a value of state, which keeps the variant count where it is instead of multiplying it."
+  - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4327-34970"
   last_verified: "2026-08-26"
-notes: "children/parents deliberately absent: the allowed-composition set from checkbox.yaml has not yet been split across the three family members, and that split is a judgement rather than a transcription. used_by needs a whole-file survey that has not been run."
+notes: "children and parents are carried from the pre-split entry and have not yet been divided between the three family members — that division is a judgement, not a transcription."
 import:
   batch: 1
   ready: true

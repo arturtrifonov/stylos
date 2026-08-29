@@ -44,7 +44,6 @@ Add to `tools/lint-registry.mjs`. Each fails the run with exit 1.
 | `a11y.status` outside `warning` \| `fail` \| `open` \| `requires` |
 | a variant property whose `default` is not one of its `values[].value` |
 | `do_not_use_when[].instead` naming a component that is not in the registry (a `null` is fine) |
-| `variants.complete_cross_product: true` and `variants.count` ≠ the product of the variant properties' value counts |
 | a value carrying an `a11y` block and no `rationale` |
 | `api[].controls` naming a property that does not exist on the same component |
 | `api[].controls` on a property whose `kind` is not `boolean` |
@@ -98,7 +97,7 @@ What is fixed is the information and its grouping, in this order:
 5. **Public API** — one card per `api` entry, in file order. See §4.2.
 6. **Sizing model** — `horizontal`, `vertical` and `adjustable` as a short definition list, `intent` as prose, then `sizes[]` as a table with a column per key present. This is also where typography lives; there is no separate typography section, because size, gap, font size and line height move together and a reader comparing them across sizes needs them on one row. See §4.3 on resolving the token names — a table of bare token names is unreadable and fails this spec.
 7. **Limitations** — `limitations` as a list.
-8. **Footer** — the Figma link built from `figma.file_key` and `figma.node_id`, `last_verified`, `uses` / `used_by` and `children` / `parents` as links, and `notes`.
+8. **Footer** — the Figma link built from `figma.file_key` and `figma.node_id`, `last_verified`, `uses` and the derived `used_by`, and `children` / `parents` as links, and `notes`.
 
 Sections whose fields are absent are omitted entirely — no empty headings.
 

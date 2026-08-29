@@ -6,6 +6,7 @@ id: "Loader"
 name: "Loader"
 level: "primitive"
 role: "content"
+html: "no semantic html"
 status: "draft"
 version: "0.1"
 summary: "A spinning mark that says work is under way when there is no figure to report."
@@ -102,9 +103,6 @@ sizing_model:
   intent: "One footprint, bound to a token, with proportions locked. The mark inside is not separately sized: it is inset by a sixth on every side and its constraints are set to scale, so it follows the footprint whenever the footprint is set to something else. That is the opposite of Indicator, where the mark deliberately does not follow — here there is one dimension and the mark is a fixed fraction of it."
   footprint: "size/s-3_000"
   mark_ratio: "5/6 of the footprint, by constraint rather than by a recorded value"
-variants:
-  count: 4
-  complete_cross_product: true
 api:
   -
     name: "angle"

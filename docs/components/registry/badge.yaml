@@ -6,6 +6,7 @@ id: "Badge"
 name: "Badge"
 level: "primitive"
 role: "content"
+html: "no semantic html"
 status: "draft"
 version: "0.1"
 summary: "A compact numeric counter that takes its meaning from what it sits with."
@@ -136,9 +137,6 @@ sizing_model:
       padding_y: "gap/g-0_250"
       font_size: "size/1_000"
       line_height: "line height/string/1_000"
-variants:
-  count: 55
-  complete_cross_product: true
 api:
   -
     name: "number text"
