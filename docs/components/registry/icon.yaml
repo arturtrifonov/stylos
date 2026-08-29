@@ -1,13 +1,26 @@
-# Hand-edited. This file is the source for its component's structural data.
-# The CSV import that created it ran once, on 2026-08-20, and will not run
-# again — see docs/components/registry/README.md for the schema and workflow.
+# Contract written 2026-08-29 from the live Icon page. The parents list and the
+# import block are carried unchanged from the CSV import of 2026-08-20.
+# See docs/components/registry/README.md for the schema.
 
 id: "Icon"
 name: "Icon"
+family: "Icon"
 level: "primitive"
 role: "content"
-flow_behavior:
-  - "fixed"
+html: "<svg>"
+status: "draft"
+version: "0.1"
+summary: "A single mark from the system set, chosen by what it means rather than by how it is drawn."
+purpose: "Interfaces need a small vocabulary of marks that a person recognises faster than they read: close, search, expand, the direction a thing will move. Icon is that vocabulary. It is deliberately small and deliberately curated — every entry exists because a component needed it — so that choosing one is choosing a meaning the system already has, not shopping in an icon library. The drawing is an implementation of the meaning and can be replaced without any consumer changing."
+use_when:
+  - "A component needs a mark that stands for a meaning the set already carries, and it reaches for that meaning through one of the exposed icon slots."
+do_not_use_when:
+  -
+    text: "The picture is content rather than vocabulary — a photograph, a logo, an illustration a product owns. Those carry their own meaning, do not take the system's colour, and are not chosen from a set."
+    instead: "Image"
+  -
+    text: "The meaning is not in the set. Adding one is a decision about the vocabulary, not a local substitution, and tracing or importing a shape to fill the gap is how a set stops being a set."
+    instead: null
 parents:
   - "Accordion / Container"
   - "Accordion / Header"
@@ -71,7 +84,97 @@ parents:
   - "Side Panel"
   - "Side Panel Menu"
   - "Breadcrumbs"
-notes: ""
+flow_behavior:
+  - "fixed"
+a11y:
+  -
+    status: "requires"
+    note: "The mark carries no text, so whether it needs a name is the parent's question, not this component's. A mark that is the only thing saying what a control does has to be named; a mark repeating the words beside it has to be hidden from assistive technology instead, or it is read twice. Nothing in this component can tell which case it is in."
+sizing_model:
+  horizontal: "fixed"
+  vertical: "fixed"
+  adjustable: true
+  intent: "One square footprint, and the drawing inside is set to scale with it, so a consumer that needs another dimension sets the number and everything follows. That is why the set is authored at a single size rather than in a run: the components that use it already have size runs of their own and bind the icon slot to whichever step they are on. The drawing does not fill the footprint — each mark is inset by whatever its own optical balance needs, and those insets are the drawing's business rather than the system's."
+  footprint: "size/s-3_000"
+api:
+  -
+    name: "name"
+    kind: "variant"
+    default: "Placeholder"
+    description: "Which mark. The value names a meaning the set carries, not a particular drawing — a consumer asking for Search is asking for whatever the system currently uses to mean search, and is not entitled to the shape behind it."
+    values:
+      -
+        value: "Placeholder"
+        note: "The default in every icon slot in the system, and the mark that stays in the set whatever else changes. An instance left on it has not been chosen."
+      -
+        value: "Add"
+      -
+        value: "Arrow Down"
+      -
+        value: "Arrow Left"
+      -
+        value: "Arrow Right"
+      -
+        value: "Arrow Up"
+      -
+        value: "Calendar"
+      -
+        value: "Check"
+      -
+        value: "Chevron Left"
+      -
+        value: "Chevron Right"
+      -
+        value: "Close"
+      -
+        value: "Copy"
+      -
+        value: "Dash"
+      -
+        value: "Drop Down"
+      -
+        value: "Drop Left"
+      -
+        value: "Drop Right"
+      -
+        value: "Drop Up"
+      -
+        value: "Edit"
+      -
+        value: "Error"
+      -
+        value: "Expand Less"
+      -
+        value: "Expand More"
+      -
+        value: "File"
+      -
+        value: "Filter"
+      -
+        value: "Home"
+      -
+        value: "More"
+      -
+        value: "Person"
+      -
+        value: "Search"
+      -
+        value: "Success"
+      -
+        value: "Time"
+      -
+        value: "Warning"
+limitations:
+  - "No size and no tone property. The footprint takes one token and a consumer sets another number if it needs one; the colour is bound to a text role, so an instance can be repainted to any role in that family and to nothing outside it."
+  - "Error, Success and Warning name marks in the same words the validation vocabulary uses for outcomes. Nothing states whether picture names and property values share a namespace."
+figma_notes:
+  - "The set is thirty separate components rather than one component set with a property, because swapping an instance is how a designer picks a mark in Figma. They are not thirty components in any other sense: the contract is identical for all of them and only the drawing differs."
+  - "There is therefore no single node to address. figma.node_id points at Placeholder as a representative, because it is the default in every icon slot and stays in the set whatever else changes — not because Placeholder is the component this file describes."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "2840-130810"
+  last_verified: "2026-08-29"
+notes: "children and uses are absent because the mark is a drawing rather than a component. parents is carried unchanged from the pre-contract entry and still names Radio, which is no longer an id in the registry."
 import:
   batch: 1
   ready: true
