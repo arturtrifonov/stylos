@@ -39,6 +39,7 @@ import {
   COMPONENT_FILE_KEYS,
 } from "./lib/registry.mjs";
 import { SIZING_TOKEN_FIELDS, createTokenResolver } from "./lib/sizing.mjs";
+import { readPlan, plannedIds } from "./lib/plan.mjs";
 
 // Most entries carry none of the contract fields — they are the Airtable
 // inventory and nothing more. Absence is never a failure: every check below
@@ -61,7 +62,7 @@ function daysSince(date, today) {
   return Math.floor((today.getTime() - then) / 86400000);
 }
 
-export function checkRegistry(entries, { today = new Date(), resolveToken = null } = {}) {
+export function checkRegistry(entries, { today = new Date(), resolveToken = null, planned = null } = {}) {
   const errors = [];
   const reports = [];
 
@@ -159,6 +160,19 @@ export function checkRegistry(entries, { today = new Date(), resolveToken = null
           `"${entry.id}" (${entry.level}) is composed from "${child}" (${other.level}), ` +
             `which is at or above its own level`
         );
+      }
+    }
+  }
+
+  // Not named by either table in PLAN.md — neither a wave of the v0.1 core set
+  // nor a group after it. The plan claims to place every entry exactly once
+  // (PLAN.md §9), and a queue that quietly covers part of the set is the thing
+  // both tables exist to prevent. A run with no plan to check against skips it.
+  if (planned) {
+    for (const entry of entries) {
+      if (!entry.id) continue;
+      if (!planned.has(entry.id)) {
+        reports.push(`"${entry.id}" is named by neither table in PLAN.md — §4 waves nor §9 groups`);
       }
     }
   }
@@ -441,7 +455,11 @@ const isMain = process.argv[1] && fileURLToPath(import.meta.url) === path.resolv
 if (isMain) {
   const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
   const entries = loadRegistry(root);
-  const { ok, errors, reports } = checkRegistry(entries, { resolveToken: createTokenResolver(root) });
+  const plan = readPlan(root);
+  const { ok, errors, reports } = checkRegistry(entries, {
+    resolveToken: createTokenResolver(root),
+    planned: plan ? plannedIds(plan, entries) : null,
+  });
 
   for (const report of reports) console.error(`REPORT  ${report}`);
   for (const error of errors) console.error(`FAIL    ${error}`);

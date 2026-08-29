@@ -80,7 +80,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 | 2 | The remaining small elements | Icon, Tag, Toggle | a filter row | 1 wk |
 | 3 | The table | Table / TH Text, Table / TD Text, Table | a dense table carrying real data | 1–2 wk |
 | 4 | Input | Input Text, Select, Dropdown | a toolbar and filters above that table | 1 wk |
-| 5 | The Button family | Button Basic, Button / Button Outline, Button / Button Ghost, Button Icon | every action on the screen | 2 wk |
+| 5 | The Button family | Button / Button Basic, Button / Button Outline, Button / Button Ghost, Button Icon | every action on the screen | 2 wk |
 | 6 | The shell | Modal, Side Panel, Tooltip | the Stage 6 proof screen, composed | 1 wk |
 
 **Build the proof screen incrementally, as each wave lands** — in Figma, from the library, without waiting for Stage 6. A wave that ends in a rendered fragment finds the gap it opened within days; a wave that ends in a merged YAML file finds it in Stage 6, where it costs a re-cut of the set.
@@ -231,7 +231,7 @@ The v0.1 core set is 29 entries. The rest of the registry is grouped below by wh
 | Media | media playback and galleries | Audio Player, Video Player, Carousel |
 | Parked | nothing yet — mobile, and mobile is §8 | Bottom Sheet, Pull to Refresh |
 
-**Both tables are read, not copied.** `tools/lib/plan.mjs` parses §4 and this one on every build, so the registry index and the home page show the queue this document states and no other. The `Entries` column is therefore written as full registry ids — the only shorthand either table takes is `Radio Input / Label / Text`, which expands through the entry's `family`. An id named here that the registry does not hold fails the build; an entry named by neither table is reported by `npm run validate:registry`, so the queue cannot quietly cover part of the set.
+**Both tables are read, not copied.** `tools/lib/plan.mjs` parses §4 and this one on every build, so the registry index shows the queue this document states and no other — one **Queue** column, filterable by wave and by group. The home page charts §4 only: these groups carry no order inside them and no estimate, and a progress bar beside the waves would say they did. The `Entries` column is therefore written as full registry ids — the only shorthand either table takes is `Radio Input / Label / Text`, which expands through the entry's `family`. An id named in either table that the registry does not hold fails the build; an entry named by neither is reported by `npm run validate:registry`, so the queue cannot quietly cover part of the set.
 
 Three notes on the grouping, so it is not re-derived later:
 

@@ -44,11 +44,15 @@ It used to draw one bar per `import.batch`; that was Airtable's sequencing from 
 
 ### `lib/plan.mjs`
 
-Reads `PLAN.md` Stage 4 — the waves, and which registry entries are in each. Both the home page and the registry view read them through here, so neither holds a copy and neither can claim an order the plan has since changed.
+Reads the two tables in `PLAN.md`: §4, the waves the v0.1 core set is worked in, and §9, the groups everything after it is worked in. Both the home page and the registry view read them through here, so neither holds a copy and neither can claim an order the plan has since changed.
+
+The two are kept apart rather than numbered on from 6. §9 states it carries no order inside a group, no estimate and no date; a chip reading "Wave 7" would say it did. The registry view shows them in one **Queue** column and filters them as two facets; the home page charts the waves only.
 
 The Entries column is prose written to be read, so two forms are accepted: a full id, and the family shorthand `Radio Input / Label / Text`, where the first part is a full id and each part after it is joined to that entry's `family`. A full id is tried first, so `Table / TD Text` reads as itself — the two use the same punctuation and only the registry can tell them apart. **A token that resolves to nothing throws**: a wave quietly one component short is a wrong percentage nobody would ever catch.
 
 There is deliberately no `wave:` field on the registry entry. It would put the plan's sequence into a hundred files that are edited for entirely different reasons, and the two would part company inside a week.
+
+`plannedIds` is the union of both tables, and `npm run validate:registry` reports any entry outside it. That is what makes the plan's claim to place every entry exactly once checkable rather than asserted.
 
 `assets/column.png` is optional. When it is absent the page is built without it and the build says so once.
 

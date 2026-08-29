@@ -1,7 +1,16 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { parseWaves, waveById, waveMembers, waveProgress } from "./plan.mjs";
+import {
+  groupById,
+  groupMembers,
+  parseGroups,
+  parseWaves,
+  plannedIds,
+  waveById,
+  waveMembers,
+  waveProgress,
+} from "./plan.mjs";
 
 // PLAN.md Stage 4 in miniature, including the family shorthand the real table
 // uses. The fixture is a document rather than data, because a document is what
@@ -14,6 +23,14 @@ const plan = `## 4. Stages
 | 2 | The table | Table / TD Text | a dense table | 2 wk |
 
 Text after the table.
+
+## 9. After v0.1
+
+| Group | Unlocks | Entries |
+| --- | --- | --- |
+| Feedback | the states besides "loaded and fine" | Tooltip |
+
+Text after that one too.
 `;
 
 const entries = [
@@ -67,10 +84,45 @@ test("gives no wave to an entry outside the core set", () => {
 test("throws on a wave naming something the registry does not hold", () => {
   assert.throws(
     () => waveProgress(plan.replace("Badge,", "Buttton,"), entries),
-    /names "Buttton", which is no registry id/
+    /wave 1 names "Buttton", which is no registry id/
   );
 });
 
 test("throws rather than guessing when the plan has no wave table", () => {
   assert.throws(() => parseWaves("# A plan with no table\n"), /no wave table/);
+});
+
+// --- §9, the groups after v0.1 ----------------------------------------------
+
+test("reads the groups out of the plan's second table, in its order", () => {
+  assert.deepEqual(
+    parseGroups(plan).map(({ name, tokens }) => ({ name, tokens })),
+    [{ name: "Feedback", tokens: ["Tooltip"] }]
+  );
+});
+
+test("resolves a group's members the same way a wave's are resolved", () => {
+  assert.deepEqual(groupMembers(plan, entries)[0].ids, ["Tooltip"]);
+  assert.equal(groupById(plan, entries).get("Tooltip"), "Feedback");
+});
+
+test("throws on a group naming something the registry does not hold", () => {
+  assert.throws(
+    () => groupMembers(plan.replace("| Tooltip |", "| Toolteep |"), entries),
+    /group "Feedback" names "Toolteep"/
+  );
+});
+
+// The two tables together are the plan's claim to place every entry exactly
+// once; `plannedIds` is what makes that claim checkable.
+test("counts an entry as planned whichever table names it", () => {
+  const planned = plannedIds(plan, entries);
+  assert.equal(planned.has("Badge"), true, "named by a wave");
+  assert.equal(planned.has("Tooltip"), true, "named by a group");
+  assert.equal(planned.size, entries.length);
+});
+
+// A plan with no §9 is not an error — nothing after v0.1 has been grouped yet.
+test("says there are no groups rather than throwing when §9 is absent", () => {
+  assert.deepEqual(parseGroups("# A plan with only waves\n"), []);
 });

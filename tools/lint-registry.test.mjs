@@ -169,3 +169,21 @@ test("reports everything it finds, not the first thing", () => {
   assert.equal(result.errors.length, 2);
   assert.equal(result.reports.length, 1);
 });
+
+// PLAN.md §4 and §9 together claim to place every entry exactly once. A run
+// with no set to check against skips it entirely, which is what a fixture and
+// a repository without a plan both get.
+test("reports an entry that neither table in the plan names", () => {
+  const entries = [entry("Badge"), entry("Icon")];
+  const { ok, reports } = checkRegistry(entries, { planned: new Set(["Badge"]) });
+  assert.equal(ok, true, "the plan not naming something is a judgement, not a failure");
+  assert.equal(
+    reports.filter((report) => /named by neither table/.test(report)).join("\n"),
+    '"Icon" is named by neither table in PLAN.md — §4 waves nor §9 groups'
+  );
+});
+
+test("says nothing about the plan when there is no plan to check against", () => {
+  const { reports } = checkRegistry([entry("Badge")]);
+  assert.deepEqual(reports.filter((report) => /named by neither table/.test(report)), []);
+});

@@ -65,7 +65,7 @@ export function parseWaves(plan) {
  * A token resolving to nothing throws rather than being skipped. A wave quietly
  * one component short is a wrong percentage nobody would ever catch.
  */
-function resolveWaveToken(token, byId) {
+function resolveToken(token, byId, where) {
   if (byId.has(token)) return [token];
 
   const parts = token.split(" / ");
@@ -76,9 +76,33 @@ function resolveWaveToken(token, byId) {
   }
 
   throw new Error(
-    `plan: PLAN.md wave table names "${token}", which is no registry id ` +
+    `plan: PLAN.md ${where} names "${token}", which is no registry id ` +
       `and no "<id> / <sibling>" family shorthand`
   );
+}
+
+/**
+ * The rows of the §9 table — everything after v0.1, grouped by what the group
+ * unlocks. Deliberately not waves: PLAN.md §9 states it carries no order inside
+ * a group, no estimate and no date, and calling these waves would say it did.
+ */
+export function parseGroups(plan) {
+  const lines = String(plan).split("\n");
+  const header = lines.findIndex((line) => /^\|\s*Group\s*\|\s*Unlocks\s*\|\s*Entries\s*\|/.test(line));
+  if (header === -1) return [];
+
+  const groups = [];
+  for (const line of lines.slice(header + 2)) {
+    if (!line.startsWith("|")) break;
+    const cells = line.split("|").slice(1, -1).map((cell) => cell.trim());
+    if (cells.length < 3) break;
+    groups.push({
+      name: cells[0],
+      unlocks: cells[1],
+      tokens: cells[2].split(",").map((token) => token.trim()).filter(Boolean),
+    });
+  }
+  return groups;
 }
 
 /** Every wave with the registry ids it covers, in the plan's order. */
@@ -86,7 +110,7 @@ export function waveMembers(plan, entries) {
   const byId = new Map(entries.map((entry) => [entry.id, entry]));
 
   return parseWaves(plan).map((wave) => {
-    const ids = wave.tokens.flatMap((token) => resolveWaveToken(token, byId));
+    const ids = wave.tokens.flatMap((token) => resolveToken(token, byId, `wave ${wave.number}`));
     for (const id of ids) {
       if (!byId.has(id)) {
         throw new Error(`plan: PLAN.md wave ${wave.number} names "${id}", which has no registry entry`);
@@ -94,6 +118,40 @@ export function waveMembers(plan, entries) {
     }
     return { ...wave, ids };
   });
+}
+
+/** Every §9 group with the registry ids it covers, in the plan's order. */
+export function groupMembers(plan, entries) {
+  const byId = new Map(entries.map((entry) => [entry.id, entry]));
+
+  return parseGroups(plan).map((group) => {
+    const ids = group.tokens.flatMap((token) => resolveToken(token, byId, `group "${group.name}"`));
+    for (const id of ids) {
+      if (!byId.has(id)) {
+        throw new Error(`plan: PLAN.md group "${group.name}" names "${id}", which has no registry entry`);
+      }
+    }
+    return { ...group, ids };
+  });
+}
+
+/** `id → group name`, for everything §9 places. */
+export function groupById(plan, entries) {
+  const map = new Map();
+  for (const group of groupMembers(plan, entries)) {
+    for (const id of group.ids) map.set(id, group.name);
+  }
+  return map;
+}
+
+/**
+ * Every id either table places. What is missing from it is an entry the plan
+ * does not mention at all — which is the thing worth being told about, since a
+ * queue that quietly covers part of the set is the failure both tables exist
+ * to prevent.
+ */
+export function plannedIds(plan, entries) {
+  return new Set([...waveById(plan, entries).keys(), ...groupById(plan, entries).keys()]);
 }
 
 /**

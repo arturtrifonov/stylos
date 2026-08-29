@@ -174,27 +174,40 @@ test("keeps the import block on the row, so the detail panel can date it", () =>
   assert.equal(data.import_date, "2026-08-20");
 });
 
-// What replaced it. The waves are the queue, so the index does offer them —
-// read from PLAN.md on every build rather than stored on the entry.
+// What replaced it. The plan is the queue, so the index offers it — both
+// tables, read from PLAN.md on every build rather than stored on the entry.
 const plan = `| # | Wave | Entries | Ends with | Est. |
 | --- | --- | --- | --- | ---: |
 | 1 | Primitives | Badge | a form column | 1 wk |
+
+| Group | Unlocks | Entries |
+| --- | --- | --- |
+| The table, fully | a real data grid | Table / TD Text |
 `;
 
-test("lifts the wave off PLAN.md onto the row, and offers it as a facet", () => {
-  const { data, html } = build({ "PLAN.md": plan });
-  assert.equal(data.entries.find((e) => e.id === "Badge").wave, 1);
-  assert.equal(data.entries.find((e) => e.id === "Table / TD Text").wave, null);
-  assert.deepEqual(data.waves, [1]);
-  assert.match(html, /label: "Wave"/);
+test("lifts both of the plan's tables onto the row", () => {
+  const { data } = build({ "PLAN.md": plan });
+  const badge = data.entries.find((e) => e.id === "Badge");
+  const cell = data.entries.find((e) => e.id === "Table / TD Text");
+  assert.deepEqual([badge.wave, badge.group], [1, null]);
+  assert.deepEqual([cell.wave, cell.group], [null, "The table, fully"]);
 });
 
-// A view built somewhere with no plan says nothing about waves rather than
+test("offers a wave facet and a group facet, the groups in the plan's order", () => {
+  const { data, html } = build({ "PLAN.md": plan });
+  assert.deepEqual(data.waves, [1]);
+  assert.deepEqual(data.groups, ["The table, fully"]);
+  assert.match(html, /group\("Wave", DATA\.waves/);
+  assert.match(html, /group\("After v0\.1", DATA\.groups/);
+  assert.match(html, /label: "Queue"/);
+});
+
+// A view built somewhere with no plan says nothing about the queue rather than
 // falling back to an order of its own.
-test("offers no wave facet when there is no plan to read", () => {
+test("offers no queue facets when there is no plan to read", () => {
   const { data } = build();
-  assert.deepEqual(data.waves, []);
-  assert.equal(data.entries.every((e) => e.wave === null), true);
+  assert.deepEqual([data.waves, data.groups], [[], []]);
+  assert.equal(data.entries.every((e) => e.wave === null && e.group === null), true);
 });
 
 test("reads the two derived flags as one word, so ready rows can be spotted", () => {
