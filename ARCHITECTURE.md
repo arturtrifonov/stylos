@@ -21,6 +21,7 @@ Every domain has exactly one authoritative source. When two places disagree, the
 | Architectural decisions | Markdown | `docs/decisions/` | by hand, one record per material change |
 | Skill behaviour | Markdown sources | `skills/src/` | by hand, compiled to `skills/dist/` |
 | System structure | this document | `ARCHITECTURE.md` | by hand |
+| The queue — what is worked when | Markdown | `PLAN.md` §4 and §9 | by hand, read by `tools/lib/plan.mjs`, never copied — see §8 |
 | Canonical tokens | *derived* | `tokens/` | `tools/import-tokens.mjs`, from a Figma export plus `tokens/_naming.yaml` |
 | Figma-to-Stylos naming, slots, mode rules | YAML | `tokens/_naming.yaml` | by hand, validated by `npm run tokens:check` |
 | Compiled skill document | *derived* | `skills/dist/` | `tools/build-skills.mjs` |
@@ -147,3 +148,24 @@ An open question is anything not settled by a rule in `docs/foundations/` or by 
 - **Generated output is never edited by hand.** Change the source and rebuild.
 - **Figma exports are not kept.** `npm run tokens:import` reads one and writes `tokens/`; the export itself is discarded. History lives in git.
 - **Figma is never written to from this repository.** Explicit non-goal until a reliable round trip exists.
+
+---
+
+## 8. The queue: milestones, releases, waves
+
+Three words for three different things. "Where are we" is unanswerable when they are used interchangeably, which is how the Airtable batch numbers came to be read as a plan.
+
+**A milestone is a decision about distribution.** `0.1`, `alpha`, `beta`, `1.0`. The list under it is the checklist that decision waits on: everything in it done and the decision is open; anything missing and it is not. A milestone is deliberately **not a size budget** — putting more into one moves the decision later, it does not make the milestone wrong, so including something is cheap and leaving it out is not. Every registry entry carries exactly one, and `Parked` is a real value: work no decision waits on.
+
+**A release is a tag.** A number, chosen in `CHANGELOG.md` at the moment it is cut. How many releases fall between two milestones, and which number a milestone ships under, is not decided in advance and is written nowhere until it happens.
+
+**A wave is a unit of work** — a few components that end in something that renders, small enough to close. Waves are numbered continuously across the whole road and never restart inside a milestone. They exist only where the horizon is close enough to cut them, so an entry with a milestone and no wave is unsequenced work, not a gap.
+
+**Both tables live in [`PLAN.md`](PLAN.md) and nowhere else** — §4 the waves, §9 the milestones — and they are **read, never copied**. `tools/lib/plan.mjs` parses them on every build, so no page can show an order the plan has stopped stating, and nothing holds a second copy of the membership.
+
+**There is no `wave:` or `milestone:` field on a registry entry.** It would put the plan's sequence into a hundred files that are edited for entirely different reasons, and the two would part company within a week. The queue is a fact about the plan, not about the component.
+
+Two invariants, both mechanical:
+
+- **Every entry is placed exactly once.** An id named by neither table is reported by `npm run validate:registry`.
+- **Every name resolves.** An id named by either table that the registry does not hold fails the build rather than being skipped, because a checklist quietly one component short is a wrong answer nobody would catch.

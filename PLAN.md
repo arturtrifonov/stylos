@@ -214,27 +214,24 @@ A native Stylos icon set (Material Symbols stays interim), mobile support, writi
 
 ---
 
-## 9. After v0.1
+## 9. After v0.1 — the milestones
 
-The v0.1 core set is 29 entries. The rest of the registry is grouped below by what each group unlocks, in the order it would be worked if nothing external intervened.
+The vocabulary — what a milestone is, how it differs from a release and from a wave, and why neither lives on a registry entry — is [`ARCHITECTURE.md`](ARCHITECTURE.md) §8. This section is the content: which decision waits on what.
 
-**This is grouping, not a schedule.** No dates, no estimates, no waves inside a group, and no claim that the order survives contact with a real product. The first product built on Stylos is expected to pull a group forward because a screen needs it — that is the only reason that should move one. What must not happen again is the whole set being resorted by size or by level: §4's rule holds here too, that a group is defined by what it lets someone build.
+Two consequences worth restating where they apply. **A milestone is not a size budget**: putting more into one moves the decision later, it does not make the milestone wrong. And **waves do not stop at v0.1** — §4's numbering is continuous, so when v0.1 closes, alpha's checklist is cut into waves 7, 8, 9 and §4 grows. There are no waves inside a milestone here because there is nothing to cut yet.
 
 | Group | Unlocks | Entries |
 | --- | --- | --- |
-| Forms | any form in the product, not just the one field the proof screen needed | Input Color, Input Date, Input Datetime, Input Email, Input Number, Input Password, Input Search, Input Telephone, Input Time, Input URL, Text Area, Multiselect, Select Cascade, Date Picker, Slider, Chips, Uploader, Queryfield, Progress |
-| The table, fully | a real data grid — selection, row actions, expansion, typed cells, paging | Avatar, Image, Table / TD Actions, Table / TD Boolean, Table / TD Checkbox, Table / TD Expand, Table / TD Image, Table / TD Link, Table / TD Person, Table / TD Tags, Table / TH Checkbox, Table Toolbar, Pagination, Button Group, Button Dropdown |
-| Navigation and shell | a whole application frame rather than one screen | Header, Side Panel Menu, Breadcrumbs, Tabs Horizontal, Tabs / Tab Item, Tabs Vertical, Steps, Switcher, Scrollbar, Accordion, Accordion / Container, Accordion / Header, Flex Layout |
-| Feedback and status | the states a screen has besides "loaded and fine" | Toast, Alert, Popover, Skeleton Loader, Data Info, Metric |
-| Content objects | dashboards and content pages | Card, List, Tree, Person, Event, Asset, Logo, Feature List, Hero, Code Snippet, Charts |
-| Editors | in-place editing and the code surfaces | Code Editor, Code Editor / Text Area, Code Editor / Toolbar, Edit Mode / Edit, Edit Mode / View |
-| Media | media playback and galleries | Audio Player, Video Player, Carousel |
-| Parked | nothing yet — mobile, and mobile is §8 | Bottom Sheet, Pull to Refresh |
+| alpha | the decision that the library is ready for **internal distribution** — someone other than the author builds on it | Input Color, Input Date, Input Datetime, Input Email, Input Number, Input Password, Input Search, Input Telephone, Input Time, Input URL, Text Area, Multiselect, Select Cascade, Date Picker, Slider, Chips, Uploader, Queryfield, Progress, Avatar, Image, Table / TD Actions, Table / TD Boolean, Table / TD Checkbox, Table / TD Expand, Table / TD Image, Table / TD Link, Table / TD Person, Table / TD Tags, Table / TH Checkbox, Table Toolbar, Pagination, Button Group, Button Dropdown, Breadcrumbs, Tabs Horizontal, Tabs / Tab Item, Tabs Vertical, Switcher, Scrollbar, Accordion, Accordion / Container, Accordion / Header |
+| beta | the decision that it is ready **outside** — a product that is not ours, with the states a real screen has and an API that will not move under it | Toast, Alert, Popover, Skeleton Loader, Data Info, Metric, Card, List, Tree, Person, Event, Asset, Logo, Feature List, Hero, Code Snippet, Charts, Header, Side Panel Menu, Steps, Flex Layout |
+| 1.0 | the decision that the library is **complete and its API is a commitment** | Code Editor, Code Editor / Text Area, Code Editor / Toolbar, Edit Mode / Edit, Edit Mode / View, Audio Player, Video Player, Carousel |
+| Parked | no decision waits on these — mobile, which this plan excludes (§8 above) | Bottom Sheet, Pull to Refresh |
 
-**Both tables are read, not copied.** `tools/lib/plan.mjs` parses §4 and this one on every build, so the registry index shows the queue this document states and no other — one **Queue** column, filterable by wave and by group. The home page charts §4 only: these groups carry no order inside them and no estimate, and a progress bar beside the waves would say they did. The `Entries` column is therefore written as full registry ids — the only shorthand either table takes is `Radio Input / Label / Text`, which expands through the entry's `family`. An id named in either table that the registry does not hold fails the build; an entry named by neither is reported by `npm run validate:registry`, so the queue cannot quietly cover part of the set.
+**Both tables are read, not copied.** `tools/lib/plan.mjs` parses §4 and this one on every build, so the registry index shows the queue this document states and no other — one **Queue** column, filterable by wave and by milestone. The home page charts §4 only: a milestone carries no order inside it and no estimate, and a progress bar beside the waves would say it did. The `Entries` column is therefore written as full registry ids — the only shorthand either table takes is `Radio Input / Label / Text`, which expands through the entry's `family`. An id named in either table that the registry does not hold fails the build; an entry named by neither is reported by `npm run validate:registry`, so the queue cannot quietly cover part of the set.
 
-Three notes on the grouping, so it is not re-derived later:
+Four notes, so they are not re-derived later:
 
-- **The ten `Input *` entries read as one API repeated with a different type.** If that holds when the family is opened in Figma, the Forms group is much smaller than its count suggests — nine of those entries would be the same contract written once. That is inference from the registry, where the ten entries are identical in level, role and size; it has not been checked against the library.
-- **Avatar and Image sit with the table** because every cell type names them, not because they belong to it. Whichever group runs first pays for them.
-- **Toast, Tabs Horizontal and Tabs / Tab Item were cut from v0.1** rather than never wanted; they are the first things in their groups for that reason.
+- **A big layout component is worth less in a library than its size suggests.** Header and Side Panel Menu are assembled once per product and usually assembled by hand; being in the library early buys little. That is why they sit in beta while much smaller things — Steps, Switcher — sit above or beside them. Hero and Bottom Sheet are the same class of component, and Hero is in beta on that reasoning rather than on its own merits.
+- **The ten `Input *` entries read as one API repeated with a different type.** If that holds when the family is opened in Figma, alpha's checklist is much shorter than its count — nine of those entries would be the same contract written once. That is inference from the registry, where the ten are identical in level, role and size; it has not been checked against the library.
+- **Avatar and Image sit with the table cells** because every cell type names them, not because they belong to the table.
+- **Toast, Tabs Horizontal and Tabs / Tab Item were cut from v0.1** rather than never wanted.
