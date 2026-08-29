@@ -6,6 +6,7 @@ id: "Label"
 name: "Label"
 level: "primitive"
 role: "content"
+html: "<label>Label text <span>Additional text</span></label>"
 status: "draft"
 version: "0.1"
 summary: "The name of a control, with room for one line of supporting text under it."
@@ -60,7 +61,7 @@ a11y:
     note: "Placing this next to a control does not name it. The label must be programmatically associated with what it names — without that association the control is unnamed and this component is decoration that happens to read like a name."
   -
     status: "requires"
-    note: "`is required` draws the marker and does nothing else. The control itself must also be marked required, and the asterisk convention has to be explained once somewhere on the form."
+    note: "Draws the required marker beside the name. The marker is a convention rather than self-explanatory, so a form that uses it says once, somewhere, what it means."
   -
     status: "requires"
     note: "`validation` changes the colour of the supporting line and nothing else. The message must also be tied to the control it concerns and the control marked invalid, or a screen reader reaches the field with no idea that the text below it is about that field — and colour alone never carries the distinction between a hint and an error."
@@ -68,7 +69,7 @@ sizing_model:
   horizontal: "fill"
   vertical: "hug"
   adjustable: true
-  intent: "Width is the field's, not the label's: the 200 the set is authored at is a placeholder, the supporting line fills whatever it is given, and a form sets its own. Height is the sum of what is switched on — one line, or two with the gap between them — and is never set by hand. The name and the supporting line are separate type runs stepping at different rates; see the `size` property."
+  intent: "Height is the sum of what is switched on — one line, or two with the gap between them — and is never set by hand. The name and the supporting line are separate type runs stepping at different rates; see the size property. Nothing here reserves space around the label: the component ends at its text and a form places it."
   sizes:
     -
       size: "extra small"
@@ -110,9 +111,6 @@ sizing_model:
       label_line_height: "line height/string/1_250"
       additional_font_size: "size/0_875"
       additional_line_height: "line height/string/0_875"
-variants:
-  count: 20
-  complete_cross_product: true
 api:
   -
     name: "label text"
@@ -188,7 +186,7 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4373-7431"
   last_verified: "2026-08-28"
-notes: "The api block is ordered as the properties read, not as Figma's API reports them: componentPropertyDefinitions returns a key order that does not match the panel, so the order is not something this contract can transcribe. Confirmed by the owner 2026-08-28."
+notes: "The api block is ordered as the properties read, not as Figma reports them."
 import:
   batch: 1
   ready: true

@@ -7,10 +7,11 @@ name: "Button Inner"
 family: "Button Inner"
 level: "element"
 role: "trigger"
+html: "<button type=\"button\"><!-- icon --></button>"
 status: "draft"
 version: "0.1"
 summary: "An icon-sized trigger for a single local action on the component it sits in."
-purpose: "Composed components accumulate small actions on themselves — clear a field, remove a tag, dismiss a toast, reset a filter — and none of them is an action on the view. Button Inner is the control for exactly those. It is drawn as an icon and it occupies an icon's space, so a parent lays it out as though it were the icon it contains and the content beside it closes up around it; the affordance that says it is pressable appears only under the pointer and reaches outside that space. It is deliberately not a call to action: no label, no tone, no emphasis, and nothing in its API to give it any."
+purpose: "Composed components accumulate small actions on themselves — clear a field, remove a tag, dismiss a toast, reset a filter — and none of them is an action on the view. Button Inner is the control for exactly those. It is drawn as an icon and it occupies an icon's space, so a parent lays it out as though it were the icon it contains and the content beside it closes up around it; the affordance that says it is pressable appears only under the pointer and reaches outside that space. Its label is not visible — the icon carries the meaning on screen, the name is supplied to assistive technology, and a tooltip says the same thing to everyone else."
 use_when:
   - "A composed component needs one local action on itself — close, remove, clear, dismiss, reset — and the icon alone says what the action is."
   - "The action has to occupy no more room than the icon that names it, because the space belongs to the content beside it."
@@ -78,11 +79,8 @@ flow_behavior:
   - "fixed"
 a11y:
   -
-    status: "open"
-    note: "Focus is not modelled. `state` carries default, hover, active and disabled, there is no `is focused` boolean, and no focus ring exists in any variant, so SC 2.4.7 has nothing to satisfy it. This is not a gap peculiar to this component: focus coexists with hover and with active and therefore cannot be a value of a single-select property, and Stylos has not yet decided what shape it takes instead. The component waits on that decision rather than inventing one for itself."
-  -
     status: "requires"
-    note: "The component has no text of its own — its entire content is a swapped icon — so nothing in it carries an accessible name and the consumer must supply one, per SC 4.1.2. The name has to say what the action does, not what the icon looks like. An unlabelled instance is a control a screen reader announces as nothing."
+    note: "The component shows no text, so its name has to be supplied rather than read off the face of it — an aria-label, a reference to text elsewhere, or the tooltip that names the action. That is ordinary for an icon-only control and the platform supports it; what the component cannot do is supply the name itself, because it has no words of its own. The name says what the action does, not what the icon looks like."
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
@@ -90,9 +88,6 @@ sizing_model:
   intent: "One footprint bound to one token, with proportions locked so the second axis follows the first. There is no size run and no size property: a consumer that needs another dimension sets the number outright, and everything inside follows by scale constraint. The footprint is the icon's rather than the control's — the component is laid out as if it were the icon it contains, which is why a parent gives it exactly an icon's room. The pressable area is not that footprint. It is the halo, deliberately larger and drawn outside the bounds, so it behaves as an effect that appears under the pointer rather than as a box in the flow. That separation is the component: the icon holds the space, the halo holds the target."
   footprint: "size/s-5_000"
   halo: "larger than the footprint and outside it, by a raw dimension rather than a token — see limitations"
-variants:
-  count: 4
-  complete_cross_product: true
 api:
   -
     name: "icon"
@@ -103,7 +98,7 @@ api:
     name: "state"
     kind: "variant"
     default: "default"
-    description: "The interaction condition. Only the surface behind the icon responds to it: the icon itself is unchanged across default, hover and active, and changes only when the control is disabled. Focus is absent — see the component-level finding."
+    description: "The interaction condition. Only the surface behind the icon responds to it: the icon itself is unchanged across default, hover and active, and changes only when the control is disabled. Focus is a separate boolean."
     values:
       -
         value: "default"
@@ -117,16 +112,23 @@ api:
       -
         value: "disabled"
         note: "No halo, and the icon drops to the disabled text role. The component keeps its place in the layout and stops being a target."
+  -
+    name: "is focused"
+    kind: "boolean"
+    default: "false"
+    description: "Whether the control holds keyboard focus. A ring is drawn outside it and nothing else changes. It is a boolean rather than a value of state because focus coexists with hover, active and disabled instead of replacing them."
 limitations:
-  - "No tone and no size. The icon takes the base text role in every enabled state and the footprint takes one token; neither has a property to move it. On a filled or inverted surface the mark would be dark on dark, and nothing in the API corrects it."
+  - "No size property: the footprint takes one token and a consumer that needs another sets the number. The icon's colour is a different case — it is bound to a text role deliberately, so an instance can be repainted to any role in that family, which is how the control follows the text it sits beside."
   - "The halo is a raw 56 with no variable binding, so it cannot follow the scale when the scale moves. Resizing an instance carries it by scale constraint, which keeps the proportion but does not make it a token."
   - "The halo sits outside the component's bounds and no parent layout reserves room for it. That is the design, and it has a cost: in an auto-layout row whose gap is under 16 the halo of one instance overlaps its neighbour."
-  - "The component is not auto-layout. Both children are absolutely positioned with scale constraints, which is what makes a consumer's resize work at all; it also means the icon cannot be inset from the footprint without moving to a different layout model."
+figma_notes:
+  - "Focus is a boolean toggling a Focus ring instance rather than a value of state, which keeps the variant count where it is instead of multiplying it."
+  - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "330-59475"
   last_verified: "2026-08-28"
-notes: "The api order is authored for reading, not transcribed: componentPropertyDefinitions returns a key order that does not match the properties panel, so no ordering claim can be made from it. used_by is absent because it needs a whole-file survey that has not been run. The component's Figma documentationLinks still points at a node in Default Kit: Components rather than at this file."
+notes: "The api order is authored for reading, not transcribed: componentPropertyDefinitions returns a key order that does not match the properties panel, so no ordering claim can be made from it."
 import:
   batch: 1
   ready: true

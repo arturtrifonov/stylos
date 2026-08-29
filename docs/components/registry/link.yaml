@@ -6,10 +6,11 @@ id: "Link"
 name: "Link"
 level: "element"
 role: "trigger"
+html: "<a href=\"…\">Label text</a>"
 status: "draft"
 version: "0.1"
 summary: "An underlined text control that takes the person somewhere rather than acting on what is in front of them."
-purpose: "Navigation inside a dense interface has to happen without spending the room a button takes. Link is the control for that: a label with an underline and nothing else — no fill, no border, no reserved footprint — sized from the same run as the text around it so it can sit in a table cell, a panel header or a line of prose without disturbing it. Its two tones are the whole of its emphasis, because a link that competes with the primary action of a view has stopped being a link."
+purpose: "A link goes somewhere. What this component settles is how it behaves in a dense interface: it takes only the room its own text needs, it is sized from the same run as the text around it, and it carries no fill, border or reserved footprint that would make it compete with the actions on the view."
 use_when:
   - "The control takes the person somewhere — another view, an external destination, a record — rather than changing something in place."
   - "The control has to occupy no more room than its own text, because the space belongs to the content it sits in."
@@ -63,12 +64,6 @@ flow_behavior:
   - "hug"
 a11y:
   -
-    status: "open"
-    note: "Focus is not modelled. `state` carries default, hover, active and disabled, there is no `is focused` boolean, and no focus ring exists in any variant, so SC 2.4.7 has nothing to satisfy it. Focus coexists with hover and with active and therefore cannot be a value of a single-select property; Stylos has not decided what shape it takes instead, and this component waits on that decision rather than inventing one. The gap is worse here than on a control with a filled surface, because a keyboard user reaching a link gets no change of any kind."
-  -
-    status: "requires"
-    note: "The label is the accessible name and it is the only thing that says where the link goes — SC 2.4.4. A page of links all reading the same words is a page where the name identifies nothing, and no property of this component prevents that. The consumer writes a label that names the destination, or supplies the context in the markup around it."
-  -
     status: "requires"
     note: "Hover and active are carried entirely by the surface behind the label: the text keeps its colour, its weight and its underline in all three. Any implementation that drops that surface leaves the two states indistinguishable from default."
 sizing_model:
@@ -112,9 +107,6 @@ sizing_model:
       gap: "gap/g-1_000"
       font_size: "size/1_500"
       line_height: "line height/string/1_500"
-variants:
-  count: 40
-  complete_cross_product: true
 api:
   -
     name: "tone"
@@ -158,7 +150,7 @@ api:
     name: "state"
     kind: "variant"
     default: "default"
-    description: "The interaction condition. Hover and active add a surface behind the label and change nothing else; disabled changes the label colour and adds no surface. Focus is absent — see the component-level finding."
+    description: "The interaction condition. Hover and active add a surface behind the label and change nothing else; disabled changes the label colour and adds no surface. Focus is a separate boolean."
     values:
       -
         value: "default"
@@ -201,16 +193,24 @@ api:
     kind: "text"
     default: "Link"
     description: "The words of the link, and its accessible name. They have to name the destination on their own, because nothing else in the component does."
+  -
+    name: "is focused"
+    kind: "boolean"
+    default: "false"
+    description: "Whether the control holds keyboard focus. A ring is drawn outside it and nothing else changes. It is a boolean rather than a value of state because focus coexists with hover, active and disabled instead of replacing them."
 limitations:
   - "The hover and active surface is drawn outside the component's bounds and its insets are raw numbers with no variable binding. That is deliberate: the spacing scale governs room inside an element, and a surface that exists only under the pointer is not that. The cost is that nothing in the system moves it, and no parent layout reserves room for it — links on adjacent lines can have overlapping surfaces at a tight line height."
   - "Hover and active are the surface and nothing else. The label keeps its colour, its weight and its underline through both, so the component has no second channel for either state."
   - "No visited state. The one distinction a browser gives a link for free is not modelled, and there is no property to carry it."
   - "The label is a single line. The text layer resizes on both axes and the box height is derived from one line box, so a link that wraps is outside what this component describes."
+figma_notes:
+  - "Focus is a boolean toggling a Focus ring instance rather than a value of state, which keeps the variant count where it is instead of multiplying it."
+  - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4333-27795"
   last_verified: "2026-08-28"
-notes: "The api order follows naming.md §8 and §10 and is authored, not transcribed: componentPropertyDefinitions returns a key order that does not match the properties panel, so the panel order could not be verified from here — it reports the two controlling booleans before either instance slot, which would split both controlled groups. Both icon slots are hidden by their booleans in every one of the 40 variants, so only their width bindings could be read; their sizing behaviour when shown is unverified. The label reports the Georama Medium instance while its weight is bound to weight/semibold, which is 450 — the number is what the system specifies. used_by is absent; it needs a whole-file survey that has not been run."
+notes: "The api order follows naming.md §8 and §10 and is authored, not transcribed: componentPropertyDefinitions returns a key order that does not match the properties panel, so the panel order could not be verified from here."
 import:
   batch: 1
   ready: true

@@ -26,7 +26,7 @@ A contract is complete when:
 - every `do_not_use_when` that names an alternative resolves to a component that exists in the registry;
 - every property in Figma appears in `api`, with the same name, the same values, in the same order;
 - every property has a `description`, and every default is one of that property's values;
-- `variants.count` equals the product of the variant properties' value counts, or `complete_cross_product` is `false` and the gaps are stated;
+- any property combination that does not exist is stated as a rule, in `limitations` or on the value it constrains;
 - `sizing_model` has a row per size value and an `intent`, and every dimension and type measure in it is a token name that resolves against `tokens/`, never a number;
 - every value carrying an `a11y` finding also carries a `rationale` saying why it is shipped;
 - `figma.node_id` is present and `last_verified` is not older than the component's last change.

@@ -7,6 +7,7 @@ name: "Radio Label"
 family: "Radio"
 level: "element"
 role: "input"
+html: "<label><input type=\"radio\"> Label text</label>"
 status: "draft"
 version: "0.1"
 summary: "A radio with a short single-line label, sized by its text."
@@ -23,6 +24,23 @@ do_not_use_when:
   -
     text: "More than one of the options may be chosen at once."
     instead: "Checkbox Label"
+children:
+  - "Label"
+  - "Icon"
+  - "Badge"
+  - "Loader"
+parents:
+  - "Accordion / Container"
+  - "Asset"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
 uses:
   - "Radio Input"
 flow_behavior:
@@ -34,9 +52,6 @@ a11y:
   -
     status: "requires"
     note: "A radio only means anything inside a group. The implementation has to expose the set as one group with one name, move between members with the arrow keys rather than tab, and keep a single tab stop for the whole set — SC 4.1.2 and SC 2.1.1. The group is not a component here, so nothing in this file expresses it."
-  -
-    status: "open"
-    note: "No focus value, and none is planned as a state value: state is single-select and focus coexists with hover, active and checked. Focus becomes a boolean once its treatment is decided. Unresolved system-wide."
 sizing_model:
   horizontal: "hug"
   vertical: "hug"
@@ -73,9 +88,6 @@ sizing_model:
       gap: "gap/g-1_000"
       font_size: "size/1_500"
       line_height: "line height/string/1_500"
-variants:
-  count: 40
-  complete_cross_product: true
 api:
   -
     name: "size"
@@ -117,7 +129,7 @@ api:
         value: "active"
       -
         value: "disabled"
-        note: "The label takes the disabled text role along with the circle. Removes the control from tab order. Disabling one option of a group rather than the whole group is almost always wrong — the choice belongs to the group."
+        note: "The label takes the disabled text role along with the circle. Removes the control from tab order."
   -
     name: "is checked"
     kind: "variant"
@@ -143,17 +155,26 @@ api:
         caption: "Anything that would wrap belongs in Radio Text — here it just grows sideways."
         props:
           "label text": "Send a digest every weekday morning at nine, summarising the previous day"
+  -
+    name: "is focused"
+    kind: "boolean"
+    default: "false"
+    description: "Whether this option carries the group's focus ring. Focus belongs to the group, not to one option: the ring sits on a single member, and moving it with the arrow keys moves the selection with it — so a focused radio is a checked radio. It is a boolean rather than a value of state because it coexists with hover and active instead of replacing them."
 limitations:
   - "No validation property: a required group with nothing chosen cannot show an error inline."
   - "No label-position property. The label is always trailing."
   - "No text style on the label — every typographic property is bound to a variable directly, so a consumer cannot restyle it by swapping a style."
   - "No mixed value, correctly: partial selection has no meaning in a mutually exclusive set."
   - "The component is one option, not the group. Nothing here carries the group's label, its required state, its error, or the fact that the options are alternatives at all; every one of those is the consumer's to supply."
+figma_notes:
+  - "The ring is drawn only on the checked variants, because a focused radio is a checked radio. Turning is focused on does not also set is checked — making it do so would double the variant count, and that trade has not been taken."
+  - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
+  - "is focused exists here as well as on the Radio Input this component contains. Every other condition passes down — this component's state variant drives the nested input's — but focus is drawn as an appearance toggle rather than a variant, so that it does not multiply the variant count, and it is set on both independently. This is how the Figma file is built. It is not a requirement on the component: an implementation propagates focus by ordinary means and needs no equivalent of this duplication."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4344-894"
   last_verified: "2026-08-28"
-notes: "children/parents deliberately absent: the allowed-composition set from radio.yaml has not yet been split across the three family members, and that split is a judgement rather than a transcription. radio.yaml should be deleted once it is done — 15 other entries still name Radio. used_by needs a whole-file survey that has not been run."
+notes: "children and parents are carried unchanged from the pre-split entry and have not yet been divided between the three family members — that division is a judgement, not a transcription."
 import:
   batch: 1
   ready: true

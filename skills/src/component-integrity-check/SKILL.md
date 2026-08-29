@@ -328,6 +328,16 @@ Treat a layer as square when its rendered width and height are equal within norm
 
 If the variable binding is broken, report the binding error instead. If the aspect ratio is not locked, or neither dimension is variable-bound, apply the normal raw-numeric rules. Do not report both this finding and the icon-container finding for the same dimension pair.
 
+### Focus-ring geometry
+
+Example summary:
+
+`Info: A focus ring's dimensions and offset are hand-positioned and exempt from dimension checks`
+
+Use this information finding — never a warning — for a layer named `Focus`, or a layer whose only role is to draw a focus indicator, whenever the finding would concern its `width`, `height`, position or the offset those imply. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent, so the ring is positioned by hand for every size and every component it belongs to. There is no scale for it to follow and no binding to be missing.
+
+This exemption covers geometry and position only. The ring's stroke colour, stroke weight and corner radius are ordinary bindings and are checked normally — a broken reference on one of them is still an error.
+
 ## Avoid false positives
 
 - Do not infer historical causes. A raw value does not prove which variable or style was previously attached.
@@ -340,6 +350,7 @@ If the variable binding is broken, report the binding error instead. If the aspe
 - Do not warn about a verified icon container's unbound width; classify it as information.
 - Do not report the same property as both a broken style and a raw color.
 - Do not report the same dimension under both information exceptions.
+- Do not warn about a focus ring's unbound width, height or position; classify it as information. Its colour, weight and radius bindings are still checked.
 - Do not report an error solely from visual mismatch. Require structural or reference evidence.
 
 ## Output format

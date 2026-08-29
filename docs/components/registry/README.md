@@ -26,8 +26,39 @@ Files are read and written by the restricted YAML subset in [`tools/lib/yaml.mjs
 | `family` | flat grouping label, e.g. `"Checkbox"`. Not a component and not a slash group — see *Families* |
 | `level` | `primitive` \| `element` \| `object` \| `widget` \| `layout` |
 | `role` | `content` \| `trigger` \| `input` \| `toolbar` \| `output` \| `container` |
-| `status` | `draft` \| `published` \| `deprecated` |
+| `html` | the semantic structure it stands for, or `"no semantic html"` — see below |
+| `status` | `draft` \| `published` \| `deprecated` — see below |
 | `version` | the component's own version |
+
+#### `status` describes the component, not its entry
+
+The two are independent: a component can be finished in Figma with a thin entry, or fully documented and not yet built. Contract completeness is already derived — `documented` and `linked` are computed at build time — so this field is free to mean one thing.
+
+| Value | Means |
+| --- | --- |
+| `draft` | does not yet pass *Ready to publish* in [STANDARD.md](../STANDARD.md) |
+| `published` | passes both gates there and is in the published Figma library |
+| `deprecated` | superseded. Name the replacement — the same obligation `do_not_use_when.instead` carries |
+
+It stays authored rather than computed because readiness turns on judgements a tool cannot make: whether existing instances have an understood migration path, whether the supported states are the right ones.
+
+**Every entry currently says `draft`**, and most were set that way by default rather than assessed. With the values defined they can be.
+
+### `html`
+
+The semantic structure the component stands for, written as a one-line sketch:
+
+```yaml
+html: "<label><input type=\"radio\"> Label text</label>"
+```
+
+**It is not a template and not an implementation.** No classes, no wrappers, no attributes the element already implies, no ARIA the element already supplies. It is fake code — enough markup to say which standards apply and how the parts nest, and nothing that goes stale when `@stylos/ui` adds the wrappers and styling hooks a real component needs.
+
+**What it buys is deletions.** Naming the element imports its guarantees instead of restating them. `<input type="radio">` sharing a `name` already gives group membership, arrow-key movement, a single tab stop, form participation and name/role/value; an entry that names the element does not need an `a11y` paragraph repeating any of it. Where nesting carries meaning it is written out: a `<label>` wrapping its input is *why* the whole component is the click target and why the association needs no `for`.
+
+**Semantics, not a promise of markup.** The field says what the component is, not what an implementation must emit. A custom element meeting the same standards satisfies it.
+
+**Every entry is expected to carry it, and `"no semantic html"` is a value.** Some components — Loader, Badge — have no element that means anything, and saying so records that the question was asked. An absent `html` means nobody has looked yet, the same distinction the `a11y` block draws between silence and a finding.
 
 ### Narrative
 
@@ -57,17 +88,19 @@ Writing it into Figma always goes through **`descriptionMarkdown`**, never `desc
 | Field | Meaning | Authored? |
 | --- | --- | --- |
 | `children` / `parents` | what is **semantically allowed** inside, and where this is allowed | yes — a judgement, not checkable against Figma |
-| `uses` / `used_by` | what is **actually implemented** | no — read from Figma (`instance → mainComponent → parent`) |
+| `uses` | what is **actually implemented** inside | no — read from Figma (`instance → mainComponent`) |
 
 These are two different questions and both are worth answering. The Airtable-derived `children` were always the allowed set, which is why `Badge` and `Loader` appear on the old Checkbox entry and are nowhere in the file. Names are validated by reference, not by filesystem lookup, so renaming a file does not break a link — only renaming an `id` does.
 
-`uses` and `used_by` are never hand-authored. They are filled by reading Figma, on the same policy as the `figma:` block: per component, when it is open for other reasons.
+`uses` is never hand-authored. It is filled by reading Figma, on the same policy as the `figma:` block: per component, when it is open for other reasons.
+
+**There is no `used_by` field.** It is the same edge as `uses`, written a second time in the file least likely to be open when the instance is placed — and in 96 entries it was never once filled. The reverse index is computed at build time from every entry's `uses`; see *Computed, never authored*. Deriving it makes a one-sided implemented relation impossible rather than something for the validator to report.
 
 #### Families
 
 `family` is a label, not a node. Three components carry `family: "Checkbox"`; no `Checkbox` component exists in Figma or here, and inventing one would create an entity with no properties, variants or instances. No slash group either — `Checkbox / Input` violates [naming.md](../../foundations/naming.md) §2, because `Input` cannot stand alone as an instance name.
 
-**"Variant of" and "sub-component" are not recorded, because they are derived.** A family member that appears in other members' `used_by` is the family's base — `Checkbox Input`. One that does not is a sibling form — `Checkbox Label`, `Checkbox Text`. The relations are not mutually exclusive and no field should pretend they are.
+**"Variant of" and "sub-component" are not recorded, because they are derived.** A family member that other members name in their `uses` is the family's base — `Checkbox Input`. One that no sibling uses is a sibling form — `Checkbox Label`, `Checkbox Text`. The relations are not mutually exclusive and no field should pretend they are.
 
 ### `api`
 
@@ -106,15 +139,9 @@ api:
 
 **Examples are addresses, not assets.** An example is a property assignment against `figma.node_id`; the generator renders it. Nothing image-like is stored, and an example cannot go stale against the component.
 
-`variants`, at top level rather than inside `api` — a sequence cannot hold stray keys:
+**There is no `variants` block.** It held `count` and `complete_cross_product`, and both were artifacts of the Figma file rather than decisions. `count` is the product of the variant properties' value counts, which are already in `api` — a hand-copied derived number, checked by a validator that was therefore testing the transcription rather than the system. `complete_cross_product` was `true` in all fourteen entries that ever carried it.
 
-```yaml
-variants:
-  count: 60
-  complete_cross_product: true
-```
-
-The validator multiplies the variant properties' value counts and checks the product.
+A missing combination is still worth recording, but as what it is: a rule. If `tone = danger` has no `extra small`, say so in `limitations` or on the value, because that is API surface a consumer needs. Whether the Figma set is internally complete is library hygiene and belongs to `component-integrity-check`, which can read the file and compute the product itself.
 
 ### `a11y`
 
@@ -183,6 +210,14 @@ motion:
 
 What the block *does* record is the part the contract owns: that the component is animated at all, that it loops, which property carries it, and why a stopped instance is wrong. Everything the accessibility fields need — that motion starts on its own and must yield to a reduced-motion preference — hangs off that and nothing more.
 
+### `figma_notes`
+
+A sequence of strings recording **how the Figma library happens to implement this component**, where that implementation would otherwise be read as a requirement. It exists because those facts kept leaking into `limitations` and property descriptions, which are claims about the component, and once there they get treated as things to reproduce.
+
+Nothing in this block constrains an implementation. `@stylos/ui` satisfies the contract by whatever means it likes; a note saying Figma repeats a property on a parent because it cannot drive a nested one is a fact about Figma's model, not an instruction to repeat it in code.
+
+Keep it to what a reader would otherwise misread. Layer names, auto-layout settings, stroke positions and token bindings are still not recorded here — Figma answers those on demand, and *Working rules* in [STANDARD.md](../STANDARD.md) still holds.
+
 ### `limitations`, `figma`, `notes`
 
 `limitations` — a free sequence of strings: unsupported states, absent properties, technical constraints.
@@ -204,6 +239,8 @@ Two flags are derived at build time:
 | `documented` | `summary`, `purpose`, at least one `use_when` and a `description` on every property are present |
 | `linked` | `figma.node_id` is present |
 
+`used_by` is derived the same way and is a list rather than a flag: for each entry, every other entry whose `uses` names it. It is only as complete as the set of entries that have `uses` filled, and that is the intended trade — an index that follows the files beats a stored one that goes stale the next time an instance is placed.
+
 Lifecycle is `status` and `version` on the entry itself. `import.batch` and `import.ready` stay on the legacy files as history; the view shows them under a dated heading naming their origin, so they cannot be read as current.
 
 ## Reading it
@@ -221,7 +258,7 @@ The per-component page is generated by the same tooling — see [`docs/specs/000
 - **Editing:** open the YAML file directly. It is git-tracked; commit messages and diffs are the audit trail Airtable's CSV export could not give us.
 - **Adding a component:** create a file following the schema above, at the path its `id` implies.
 - **Validating:** `npm run validate:registry`, before committing. It separates two kinds of finding:
-  - **FAIL** (exit 1) — the registry contradicts itself: a reference resolving to nothing, two files claiming one `id`, a path not following from its `id`, a `level` outside the five, a `figma` block that could not address a real node, a status or kind outside its vocabulary, a default not among its property's values, a `variants.count` that does not match the product, a value with a finding and no `rationale`.
+  - **FAIL** (exit 1) — the registry contradicts itself: a reference resolving to nothing, two files claiming one `id`, a path not following from its `id`, a `level` outside the five, a `figma` block that could not address a real node, a status or kind outside its vocabulary, a default not among its property's values, a value with a finding and no `rationale`.
   - **REPORT** (exit 0) — something only a human can settle: a relation recorded on one side but not the other, a child at or above its parent's level, an entry with neither parents nor children, a contract missing narrative fields.
   
   Nothing is repaired automatically, because which side of a mismatch is wrong is a judgement.
