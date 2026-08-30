@@ -21,7 +21,8 @@ children:
   - "Radio Input"
   - "Radio Label"
   - "Radio Text"
-  - "Tag"
+  - "Tag Fill"
+  - "Tag Outline"
   - "Button Inner"
   - "Loader"
 parents:

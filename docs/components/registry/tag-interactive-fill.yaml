@@ -1,0 +1,10 @@
+# Planned, not built. Created 2026-08-30 so the work has somewhere to land.
+# No component exists in Figma yet, so there is no figma block and no api.
+
+id: "Tag Interactive Fill"
+name: "Tag Interactive Fill"
+family: "Tag"
+level: "element"
+role: "input"
+status: "draft"
+notes: "Planned. The interactive half of the Tag family — the same band with a state and something to press. Nothing is authored here beyond identity and family, because nothing has been designed: an api, a sizing model and relations are written when the component exists. Sequenced in PLAN.md under beta."

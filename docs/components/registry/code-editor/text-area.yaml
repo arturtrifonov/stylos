@@ -16,7 +16,8 @@ children:
   - "Indicator Status"
   - "Indicator Special"
   - "Scrollbar"
-  - "Tag"
+  - "Tag Fill"
+  - "Tag Outline"
   - "Chips"
   - "Loader"
 parents:

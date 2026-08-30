@@ -14,7 +14,8 @@ children:
   - "Indicator Status"
   - "Indicator Special"
   - "Badge"
-  - "Tag"
+  - "Tag Fill"
+  - "Tag Outline"
   - "Loader"
 parents:
   - "Accordion / Container"

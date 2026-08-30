@@ -20,7 +20,9 @@ do_not_use_when:
     instead: "Indicator Status"
   -
     text: "The category comes with a name that has to be readable. A hue alone identifies nothing to someone seeing it for the first time."
-    instead: "Tag"
+    instead:
+      - "Tag Fill"
+      - "Tag Outline"
   -
     text: "The marker carries a count."
     instead: "Badge"
@@ -30,7 +32,8 @@ parents:
   - "Avatar"
   - "Chips"
   - "Link"
-  - "Tag"
+  - "Tag Fill"
+  - "Tag Outline"
   - "Tooltip"
   - "Asset"
   - "Button / Button Basic"

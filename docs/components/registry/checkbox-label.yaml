@@ -23,7 +23,7 @@ do_not_use_when:
     instead: "Checkbox Input"
   -
     text: "The change takes effect on click. A checkbox is selected now and applied later."
-    instead: "Toggle"
+    instead: "Toggle Label"
 children:
   - "Label"
   - "Icon"
