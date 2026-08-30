@@ -12,7 +12,9 @@ children:
   - "Checkbox Input"
   - "Checkbox Label"
   - "Checkbox Text"
-  - "Toggle"
+  - "Toggle Input"
+  - "Toggle Label"
+  - "Toggle Text"
 parents:
   - "Table"
 notes: ""

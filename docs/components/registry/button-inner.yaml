@@ -27,7 +27,7 @@ do_not_use_when:
     instead: "Button Icon"
   -
     text: "The control changes a value rather than performing an action — selecting, toggling, expanding. A trigger that leaves state behind it is a different component."
-    instead: "Toggle"
+    instead: "Toggle Label"
 children:
   - "Icon"
   - "Loader"
@@ -83,7 +83,7 @@ flow_behavior:
 a11y:
   -
     status: "requires"
-    note: "The component shows no text, so its name has to be supplied rather than read off the face of it — an aria-label, a reference to text elsewhere, or the tooltip that names the action. That is ordinary for an icon-only control and the platform supports it; what the component cannot do is supply the name itself, because it has no words of its own. The name says what the action does, not what the icon looks like."
+    note: "The button shows no text, so nothing on screen supplies its accessible name automatically — the implementation sets one, and the tooltip that names the action usually carries the same words. That is ordinary work rather than a gap. The name says what the action does, not what the icon looks like."
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
@@ -96,7 +96,7 @@ api:
     name: "icon"
     kind: "instance"
     default: "Placeholder"
-    description: "The mark that names the action. It is the whole content of the component and it fills the footprint exactly, so there is no label to fall back on and the icon has to carry the meaning by itself. It is also what the accessible name has to describe."
+    description: "The mark that names the action. It is the whole content of the component and it fills the footprint exactly, so there is no visible label to fall back on and the icon has to carry the meaning on screen by itself. It is also what the accessible name has to describe."
   -
     name: "state"
     kind: "variant"

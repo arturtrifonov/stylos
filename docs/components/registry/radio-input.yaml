@@ -46,7 +46,7 @@ flow_behavior:
 a11y:
   -
     status: "requires"
-    note: "The component carries no text of its own, so there is nothing in it for an accessible name to be computed from. The name has to come from outside — the row's identifying cell, the card's heading, an association with surrounding text. A parent that embeds this and supplies nothing leaves the control named by nothing, and that is the parent's defect."
+    note: "The circle shows no text of its own, so nothing on screen supplies its accessible name automatically — the implementation sets one, either on the control or by pointing it at the cell, heading or copy that already identifies the option. That is ordinary work rather than a gap: what a label element does for Radio Label, an attribute does here."
   -
     status: "requires"
     note: "A radio only means anything inside a group. The implementation has to expose the set as one group with one name, move between members with the arrow keys rather than tab, and keep a single tab stop for the whole set — SC 4.1.2 and SC 2.1.1. Nothing in this component expresses the group, because the group is not a component here."

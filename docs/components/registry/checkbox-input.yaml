@@ -50,7 +50,7 @@ flow_behavior:
 a11y:
   -
     status: "requires"
-    note: "The component shows no text, so its name has to come from outside it — a label element, a reference to the cell or heading that identifies the row, a name supplied directly. All of those are ordinary and supported; what the component cannot do is provide the words itself. An instance embedded with no name is named by nothing, and that is the parent's omission."
+    note: "The box shows no text of its own, so nothing on screen supplies its accessible name automatically — the implementation sets one, either on the control or by pointing it at the cell or heading that already identifies the row. That is ordinary work rather than a gap: what a label element does for Checkbox Label, an attribute does here."
   -
     status: "requires"
     note: "The control has its own hit area because it is interactive, and at the smaller sizes that area is below the 24 by 24 the target-size criterion asks for — see the size values. A parent that owns the row usually extends the target across it, which is the normal remedy, but the obligation is to think about the target when placing the control rather than to assume the row will fix it."

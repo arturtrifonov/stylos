@@ -1,0 +1,168 @@
+# Hand-written 2026-08-30. Replaces part of toggle.yaml, whose id "Toggle"
+# matches no component in Figma. See docs/components/registry/README.md,
+# section "When a component is split".
+
+id: "Toggle Label"
+name: "Toggle Label"
+family: "Toggle"
+level: "element"
+role: "input"
+html: "<label><input type=\"checkbox\" role=\"switch\"> Label text</label>"
+status: "draft"
+version: "0.1"
+summary: "A switch with a short single-line label, sized by its text."
+purpose: "Most switches in a product are a track and two or three words, stacked into a list of settings. This is that case, authored so the label is part of the same component: clickable, aligned to the track at every size, and associated without the consumer arranging it."
+use_when:
+  - "The setting is a phrase that sits on one line, and the component may take whatever width its text needs."
+do_not_use_when:
+  -
+    text: "The text wraps, or the rows must occupy a fixed column width — the label would either force the component wider than its container or truncate."
+    instead: "Toggle Text"
+  -
+    text: "The control has no visible text of its own because its context supplies the meaning."
+    instead: "Toggle Input"
+  -
+    text: "The choice is made now and applied later, when the form is submitted."
+    instead: "Checkbox Label"
+children:
+  - "Label"
+  - "Icon"
+  - "Badge"
+  - "Loader"
+parents:
+  - "Accordion / Container"
+  - "Accordion / Header"
+  - "Table / TD Checkbox"
+  - "Table / TH Checkbox"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
+uses:
+  - "Toggle Input"
+flow_behavior:
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "The label is the accessible name and the whole component is the click target, label included. An implementation that makes only the track clickable has thrown away the reason to use this rather than assembling a switch and a text node."
+  -
+    status: "requires"
+    note: "A switch acts on the setting the moment it is flipped. Where the change is slow, costly or hard to reverse, the interface around it has to say so and offer the way back."
+sizing_model:
+  horizontal: "hug"
+  vertical: "hug"
+  adjustable: false
+  intent: "The run is authored per size rather than inherited from the track. The track happens to be the taller element at every size, so the component height follows it — a consequence, not the rule. Neither axis is adjustable: a fixed width is what Toggle Text is for. The line height comes from the string family because the label is one line by definition. The component height is not recorded because it is derived from the track and the line box."
+  sizes:
+    -
+      size: "extra small"
+      track: "size/s-2_000"
+      gap: "gap/g-0_500"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+    -
+      size: "small"
+      track: "size/s-2_500"
+      gap: "gap/g-0_625"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+    -
+      size: "medium"
+      track: "size/s-3_000"
+      gap: "gap/g-0_750"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+    -
+      size: "large"
+      track: "size/s-3_500"
+      gap: "gap/g-0_875"
+      font_size: "size/1_250"
+      line_height: "line height/string/1_250"
+    -
+      size: "extra large"
+      track: "size/s-4_000"
+      gap: "gap/g-1_000"
+      font_size: "size/1_500"
+      line_height: "line height/string/1_500"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Drives the track, the text measure and the gap together. They are not separately settable."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "Pointer interaction and availability. Hover and active change the track surface only; disabled changes the track, drops the border to the default role and dims the thumb. The label follows only on disabled, and the setting does not change the label at all."
+    values:
+      -
+        value: "default"
+      -
+        value: "hover"
+      -
+        value: "active"
+      -
+        value: "disabled"
+        note: "Not the same as read-only, which the component does not have: read-only means shown but not editable, disabled means not applicable now."
+  -
+    name: "is checked"
+    kind: "variant"
+    default: "false"
+    description: "Which way the switch is set. The thumb sits left when off and right when on, and the track carries the state as colour: neutral when off, primary when on."
+    values:
+      -
+        value: "false"
+      -
+        value: "true"
+      -
+        value: "mixed"
+        note: "The thumb sits centred on a neutral track. Not a third setting a person can choose — it is what the switch shows when it cannot honestly show either of the other two."
+        rationale: "It is a corner case the system chooses to handle rather than the main path: one switch may govern several things whose settings disagree, or the current setting may not be known yet. Leaving it out would force a consumer to show a lie in both situations."
+        a11y:
+          status: "requires"
+          criterion: "WAI-ARIA 1.2, switch role"
+          note: "The switch role does not accept a mixed value for aria-checked — only true or false. An implementation that reaches this value has to convey it some other way, and the obvious substitutes each cost something: falling back to the checkbox role loses the switch semantics, and conveying it only in the surrounding text leaves the control itself claiming one of the two settings it does not have."
+  -
+    name: "label text"
+    kind: "text"
+    default: "Toggle"
+    description: "One line, sentence case, no terminal period. Name the thing being switched rather than the act of switching, and phrase it so that on means on — a label that reads as a negative inverts under time pressure."
+  -
+    name: "is focused"
+    kind: "boolean"
+    default: "false"
+    description: "Whether the control holds keyboard focus. A ring is drawn outside the track and nothing else changes. It is a boolean rather than a value of state because focus coexists with hover, active and the setting instead of replacing them."
+limitations:
+  - "No validation property: a switch that must be on before a form can be submitted cannot show an error inline."
+  - "No label-position property. The label is always trailing, so a settings list that wants its names on the left and its switches on the right has to compose that itself."
+  - "No supporting-text slot. One text role only."
+  - "No tone."
+figma_notes:
+  - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
+  - "is focused exists here as well as on the Toggle Input this component contains. Every other condition passes down — this component's state variant drives the nested input's — but focus is drawn as an appearance toggle rather than a variant, so it is set on both independently. This is how the Figma file is built and it is not a requirement on the component: an implementation propagates focus by ordinary means."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4341-30082"
+  last_verified: "2026-08-30"
+notes: "children and parents are inherited in full from the entry this component was split out of, as the split rule requires; narrowing either is a later judgement."
+import:
+  batch: 1
+  ready: true

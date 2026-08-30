@@ -1,0 +1,151 @@
+# Hand-written 2026-08-30. Replaces part of toggle.yaml, whose id "Toggle"
+# matches no component in Figma. See docs/components/registry/README.md,
+# section "When a component is split".
+
+id: "Toggle Input"
+name: "Toggle Input"
+family: "Toggle"
+level: "element"
+role: "input"
+html: "<input type=\"checkbox\" role=\"switch\">"
+status: "draft"
+version: "0.1"
+summary: "The switch alone — the track and its setting, with no label."
+purpose: "A switch says what something is set to and changes it in one movement, without a Save between. This component is that control on its own, for the places where the surrounding interface already says what is being switched: a settings row whose left half is the name, a table cell under a column heading, a composed field. The box is authored once here so every component that needs one is showing the same switch."
+use_when:
+  - "The switch sits inside a component or layout whose surrounding content already identifies what it governs — a settings row, a table cell, a list item, a composed form field."
+do_not_use_when:
+  -
+    text: "The setting is a phrase a person reads and decides on. It needs a label, and the label has to be part of the same component to be clickable and associated."
+    instead: "Toggle Label"
+  -
+    text: "The setting is tied to copy that wraps, or the row must occupy a width the layout sets."
+    instead: "Toggle Text"
+  -
+    text: "The choice is made now and applied later, when the form is submitted. A switch that waits for a Save button has promised something it does not do."
+    instead: "Checkbox Input"
+children:
+  - "Label"
+  - "Icon"
+  - "Badge"
+  - "Loader"
+parents:
+  - "Accordion / Container"
+  - "Accordion / Header"
+  - "Table / TD Checkbox"
+  - "Table / TH Checkbox"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
+flow_behavior:
+  - "fixed"
+a11y:
+  -
+    status: "requires"
+    note: "The switch shows no text of its own, so nothing on screen supplies its accessible name automatically — the implementation sets one, either on the control or by pointing it at the text that already identifies the setting. That is ordinary work rather than a gap: what a label element does for Toggle Label, an attribute does here. The name is the thing being switched, not the act of switching it."
+  -
+    status: "requires"
+    note: "A switch acts on the setting the moment it is flipped. Where the change is slow, costly or hard to reverse, the interface around it has to say so and offer the way back — the control gives no opportunity to reconsider between deciding and doing."
+sizing_model:
+  horizontal: "fixed"
+  vertical: "fixed"
+  adjustable: false
+  intent: "The track is the authored dimension and the only one bound: its height takes a step of the Element run and its width follows at three halves by locked proportion, which is what makes a switch read as a switch rather than a wide box. The thumb has its own run, two steps below the track at every size, so the gap around it stays constant as both grow. Neither axis is adjustable — sizing.md names controls of this kind among the dimensions never set by hand. Resolve token values with npm run tokens:report."
+  sizes:
+    -
+      size: "extra small"
+      track: "size/s-2_000"
+      thumb: "size/s-1_500"
+    -
+      size: "small"
+      track: "size/s-2_500"
+      thumb: "size/s-1_750"
+    -
+      size: "medium"
+      track: "size/s-3_000"
+      thumb: "size/s-2_000"
+    -
+      size: "large"
+      track: "size/s-3_500"
+      thumb: "size/s-2_250"
+    -
+      size: "extra large"
+      track: "size/s-4_000"
+      thumb: "size/s-2_500"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "The track, and with it the thumb. Nothing else about the component changes with it."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "Pointer interaction and availability. Hover and active change the track surface only; disabled changes the track, drops the border to the default role and dims the thumb. Focus is a separate boolean."
+    values:
+      -
+        value: "default"
+      -
+        value: "hover"
+      -
+        value: "active"
+      -
+        value: "disabled"
+        note: "Not the same as read-only, which the component does not have: read-only means shown but not editable, disabled means not applicable now."
+  -
+    name: "is checked"
+    kind: "variant"
+    default: "false"
+    description: "Which way the switch is set. The thumb sits left when off and right when on, and the track carries the state as colour: neutral when off, primary when on."
+    values:
+      -
+        value: "false"
+      -
+        value: "true"
+      -
+        value: "mixed"
+        note: "The thumb sits centred on a neutral track. Not a third setting a person can choose — it is what the switch shows when it cannot honestly show either of the other two."
+        rationale: "It is a corner case the system chooses to handle rather than the main path: one switch may govern several things whose settings disagree, or the current setting may not be known yet. Leaving it out would force a consumer to show a lie in both situations."
+        a11y:
+          status: "requires"
+          criterion: "WAI-ARIA 1.2, switch role"
+          note: "The switch role does not accept a mixed value for aria-checked — only true or false. An implementation that reaches this value has to convey it some other way, and the obvious substitutes each cost something: falling back to the checkbox role loses the switch semantics, and conveying it only in the surrounding text leaves the control itself claiming one of the two settings it does not have."
+  -
+    name: "is focused"
+    kind: "boolean"
+    default: "false"
+    description: "Whether the control holds keyboard focus. A ring is drawn outside the track and nothing else changes. It is a boolean rather than a value of state because focus coexists with hover, active and the setting instead of replacing them."
+limitations:
+  - "No validation property: a switch that must be on before a form can be submitted cannot show an error on the control."
+  - "No read-only value. Disabled is the only unavailable state, and it is the wrong tool for a setting that is fixed but still worth reading."
+  - "No tone. The track takes the primary role when on and a neutral one when mixed, and there is no property to move either."
+figma_notes:
+  - "Focus is a boolean toggling a Focus ring instance rather than a value of state, which keeps the set at 60 variants instead of 75. The ring is present on every enabled variant and on none of the disabled ones."
+  - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
+  - "Five variants — state=default, is checked=false, at all five sizes — carry a padding binding that changes nothing: the track is not an auto-layout frame, so padding moves no child. It cannot be cleared from the file, because Figma does not expose padding controls on a frame without a layout, and it has no effect either way."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4341-31485"
+  last_verified: "2026-08-30"
+notes: "children and parents are inherited in full from the entry this component was split out of, as the split rule requires; narrowing either is a later judgement. uses is absent because the component contains no instances."
+import:
+  batch: 1
+  ready: true
