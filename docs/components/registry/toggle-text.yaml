@@ -1,0 +1,172 @@
+# Hand-written 2026-08-30. Replaces part of toggle.yaml, whose id "Toggle"
+# matches no component in Figma. See docs/components/registry/README.md,
+# section "When a component is split".
+
+id: "Toggle Text"
+name: "Toggle Text"
+family: "Toggle"
+level: "element"
+role: "input"
+html: "<label><input type=\"checkbox\" role=\"switch\"> Label text</label>"
+status: "draft"
+version: "0.1"
+summary: "A switch tied to wrapping copy in a column of fixed width, the track aligned to the first line."
+purpose: "Some settings need a sentence: what the switch turns on, and what that costs. That text wraps at a width the layout decides, and the track has to stay where the reader's eye starts rather than float in the vertical middle of three lines. Toggle Label can do neither, because it hugs and centres."
+use_when:
+  - "The setting needs more than a phrase to be understood, or the rows must occupy a width the layout sets rather than a width the text sets."
+do_not_use_when:
+  -
+    text: "The setting is a phrase on one line — a fixed width would leave a gap after short text."
+    instead: "Toggle Label"
+  -
+    text: "The control has no visible text of its own because its context supplies the meaning."
+    instead: "Toggle Input"
+  -
+    text: "The choice is made now and applied later, when the form is submitted."
+    instead: "Checkbox Text"
+children:
+  - "Label"
+  - "Icon"
+  - "Badge"
+  - "Loader"
+parents:
+  - "Accordion / Container"
+  - "Accordion / Header"
+  - "Table / TD Checkbox"
+  - "Table / TH Checkbox"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
+uses:
+  - "Toggle Input"
+flow_behavior:
+  - "fill"
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "Interactive content inside the copy — a link to what the setting affects is the usual case — must not flip the switch, and nesting a link inside the label is an HTML validity problem in some structures. This is the most common bug in the pattern and the implementation has to handle it explicitly."
+  -
+    status: "warning"
+    note: "The copy is the accessible name, so a screen reader reads the whole paragraph as the control's name with no pause. Where the copy runs past a sentence or two, give the control a short name and leave the full text as adjacent described-by content."
+  -
+    status: "requires"
+    note: "A switch acts on the setting the moment it is flipped. Where the change is slow, costly or hard to reverse, the interface around it has to say so and offer the way back."
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable: true
+  intent: "Width is the one dimension a consumer sets — directly, or by filling an auto-layout parent — and no width token is recorded because there is no width the system chooses. Height is the taller of the track and the line box, multiplied by the line count, and is never set by hand. The track stays aligned to the first line however many lines appear, which is the whole reason this component is separate from Toggle Label, and the line height comes from the text family rather than the string family for the same reason."
+  sizes:
+    -
+      size: "extra small"
+      track: "size/s-2_000"
+      gap: "gap/g-0_500"
+      font_size: "size/0_750"
+      line_height: "line height/text/0_750"
+    -
+      size: "small"
+      track: "size/s-2_500"
+      gap: "gap/g-0_625"
+      font_size: "size/0_875"
+      line_height: "line height/text/0_875"
+    -
+      size: "medium"
+      track: "size/s-3_000"
+      gap: "gap/g-0_750"
+      font_size: "size/1_000"
+      line_height: "line height/text/1_000"
+    -
+      size: "large"
+      track: "size/s-3_500"
+      gap: "gap/g-0_875"
+      font_size: "size/1_250"
+      line_height: "line height/text/1_250"
+    -
+      size: "extra large"
+      track: "size/s-4_000"
+      gap: "gap/g-1_000"
+      font_size: "size/1_500"
+      line_height: "line height/text/1_500"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Drives the track, the text measure and the gap together. It does not set the width."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "Pointer interaction and availability. Hover and active change the track surface only; disabled changes the track, drops the border to the default role and dims the thumb. The copy follows only on disabled, and the setting does not change the copy at all."
+    values:
+      -
+        value: "default"
+      -
+        value: "hover"
+      -
+        value: "active"
+      -
+        value: "disabled"
+        note: "Not the same as read-only, which the component does not have: read-only means shown but not editable, disabled means not applicable now."
+  -
+    name: "is checked"
+    kind: "variant"
+    default: "false"
+    description: "Which way the switch is set. The thumb sits left when off and right when on, and the track carries the state as colour: neutral when off, primary when on."
+    values:
+      -
+        value: "false"
+      -
+        value: "true"
+      -
+        value: "mixed"
+        note: "The thumb sits centred on a neutral track. Not a third setting a person can choose — it is what the switch shows when it cannot honestly show either of the other two."
+        rationale: "It is a corner case the system chooses to handle rather than the main path: one switch may govern several things whose settings disagree, or the current setting may not be known yet. Leaving it out would force a consumer to show a lie in both situations."
+        a11y:
+          status: "requires"
+          criterion: "WAI-ARIA 1.2, switch role"
+          note: "The switch role does not accept a mixed value for aria-checked — only true or false. An implementation that reaches this value has to convey it some other way, and the obvious substitutes each cost something: falling back to the checkbox role loses the switch semantics, and conveying it only in the surrounding text leaves the control itself claiming one of the two settings it does not have."
+  -
+    name: "label text"
+    kind: "text"
+    default: "Toggle"
+    description: "Prose: sentence case, full sentences, terminal punctuation. Written to wrap — if it never wraps, Toggle Label is the right component. Because the switch acts at once, the copy is the last thing a person reads before the change happens, so it says what will happen rather than what the setting is called."
+  -
+    name: "is focused"
+    kind: "boolean"
+    default: "false"
+    description: "Whether the control holds keyboard focus. A ring is drawn outside the track and nothing else changes. It is a boolean rather than a value of state because focus coexists with hover, active and the setting instead of replacing them."
+limitations:
+  - "No validation property."
+  - "No supporting-text slot. One text role only, so the setting and its explanation share a paragraph."
+  - "The track is always leading and always aligned to the first line. No property changes either."
+  - "No tone."
+figma_notes:
+  - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
+  - "is focused exists here as well as on the Toggle Input this component contains. Every other condition passes down — this component's state variant drives the nested input's — but focus is drawn as an appearance toggle rather than a variant, so it is set on both independently. This is how the Figma file is built and it is not a requirement on the component: an implementation propagates focus by ordinary means."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4703-26467"
+  last_verified: "2026-08-30"
+notes: "children and parents are inherited in full from the entry this component was split out of, as the split rule requires; narrowing either is a later judgement."
+import:
+  batch: 1
+  ready: true

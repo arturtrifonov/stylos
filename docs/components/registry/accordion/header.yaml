@@ -15,7 +15,9 @@ children:
   - "Indicator Status"
   - "Indicator Special"
   - "Tag"
-  - "Toggle"
+  - "Toggle Input"
+  - "Toggle Label"
+  - "Toggle Text"
   - "Avatar"
   - "Loader"
 parents:
