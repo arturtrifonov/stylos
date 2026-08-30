@@ -16,7 +16,8 @@ children:
   - "Badge"
   - "Avatar"
   - "Chips"
-  - "Tag"
+  - "Tag Fill"
+  - "Tag Outline"
   - "Label"
   - "Loader"
 parents:

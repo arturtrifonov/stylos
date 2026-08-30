@@ -68,7 +68,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 
 ### Stage 4 — Component contracts for the core set
 
-**Scope discipline:** 31 registry entries, not 101 — the set the proof screen needs. Two of them, `Button Outline` and `Button Ghost`, do not exist in the registry yet and are created here.
+**Scope discipline:** 32 registry entries, not 101 — the set the proof screen needs. Two of them, `Button Outline` and `Button Ghost`, do not exist in the registry yet and are created here.
 
 **The Airtable `import.batch` numbers are not this queue.** They are history from the one-time bootstrap of 2026-08-20, and `registry/README.md` keeps them as history for that reason. Read as a plan they mislead: batch 1 held 45 entries spanning all five levels, 18 of them outside this set, while Tooltip, Toast and Side Panel — named by the Stage 6 gate or by this set — sat in batch 2. Nothing below writes back into that field.
 
@@ -77,7 +77,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 | # | Wave | Entries | Ends with | Est. |
 | --- | --- | --- | --- | ---: |
 | 1 | Primitives and selection controls | Badge, Label, Loader, Indicator Status, Indicator Special, Button Inner, Link, Checkbox Input / Label / Text, Radio Input / Label / Text | a form column that renders from the library alone | 1 wk |
-| 2 | The remaining small elements | Icon, Tag, Toggle Input / Label / Text | a filter row | 1 wk |
+| 2 | The remaining small elements | Icon, Tag Fill / Outline, Toggle Input / Label / Text | a filter row | 1 wk |
 | 3 | The table | Table / TH Text, Table / TD Text, Table | a dense table carrying real data | 1–2 wk |
 | 4 | Input | Input Text, Select, Dropdown | a toolbar and filters above that table | 1 wk |
 | 5 | The Button family | Button / Button Basic, Button / Button Outline, Button / Button Ghost, Button Icon | every action on the screen | 2 wk |
@@ -223,7 +223,7 @@ Two consequences worth restating where they apply. **A milestone is not a size b
 | Milestone | The decision it opens | Entries |
 | --- | --- | --- |
 | alpha | the decision that the library is ready for **internal distribution** — someone other than the author builds on it | Input Color, Input Date, Input Datetime, Input Email, Input Number, Input Password, Input Search, Input Telephone, Input Time, Input URL, Text Area, Multiselect, Select Cascade, Date Picker, Slider, Chips, Uploader, Queryfield, Progress, Avatar, Image, Table / TD Actions, Table / TD Boolean, Table / TD Checkbox, Table / TD Expand, Table / TD Image, Table / TD Link, Table / TD Person, Table / TD Tags, Table / TH Checkbox, Table Toolbar, Pagination, Button Group, Button Dropdown, Breadcrumbs, Tabs Horizontal, Tabs / Tab Item, Tabs Vertical, Switcher, Scrollbar, Accordion, Accordion / Container, Accordion / Header |
-| beta | the decision that it is ready **outside** — a product that is not ours, with the states a real screen has and an API that will not move under it | Toast, Alert, Popover, Skeleton Loader, Data Info, Metric, Card, List, Tree, Person, Event, Asset, Logo, Feature List, Hero, Code Snippet, Charts, Header, Side Panel Menu, Steps, Flex Layout |
+| beta | the decision that it is ready **outside** — a product that is not ours, with the states a real screen has and an API that will not move under it | Toast, Alert, Popover, Skeleton Loader, Data Info, Metric, Card, List, Tree, Person, Event, Asset, Logo, Feature List, Hero, Code Snippet, Charts, Header, Side Panel Menu, Steps, Flex Layout, Tag Interactive Fill, Tag Interactive Outline |
 | 1.0 | the decision that the library is **complete and its API is a commitment** | Code Editor, Code Editor / Text Area, Code Editor / Toolbar, Edit Mode / Edit, Edit Mode / View, Audio Player, Video Player, Carousel |
 | Parked | no decision waits on these — mobile, which this plan excludes (§8 above) | Bottom Sheet, Pull to Refresh |
 

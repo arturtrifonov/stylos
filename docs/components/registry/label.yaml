@@ -19,7 +19,9 @@ do_not_use_when:
     instead: null
   -
     text: "The text names a category or state rather than a control."
-    instead: "Tag"
+    instead:
+      - "Tag Fill"
+      - "Tag Outline"
 children:
   - "Icon"
 parents:

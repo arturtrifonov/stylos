@@ -17,7 +17,8 @@ children:
   - "Indicator Status"
   - "Indicator Special"
   - "Loader"
-  - "Tag"
+  - "Tag Fill"
+  - "Tag Outline"
 parents:
   - "Table"
 notes: ""

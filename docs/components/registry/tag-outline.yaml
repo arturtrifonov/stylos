@@ -1,0 +1,217 @@
+# Hand-written 2026-08-30. Replaces part of tag.yaml, whose id "Tag" matches
+# no component in Figma. See docs/components/registry/README.md, section
+# "When a component is split".
+
+id: "Tag Outline"
+name: "Tag Outline"
+family: "Tag"
+level: "element"
+role: "content"
+html: "no semantic html"
+status: "draft"
+version: "0.1"
+summary: "A short label on a tinted band with a border, in one of five tones."
+purpose: "A tag says what kind of thing something is, in one or two words, without the reader having to parse a sentence. This is the quiet half of the pair: the tone is carried by a border and a pale wash rather than by a filled block, so several tags can sit together in a row or a cell without the colour becoming the loudest thing on the screen."
+use_when:
+  - "A short word or two classifies the thing it sits on — a status, a category, an owner — and the reader takes it in without reading it as a sentence."
+do_not_use_when:
+  -
+    text: "The mark is a count, or a dot that says only that something is there. A tag carries a word; those carry a quantity or a presence and are sized for the corner of something else."
+    instead:
+      - "Badge"
+      - "Indicator Status"
+  -
+    text: "The person can choose it, remove it, or filter by it. Nothing here responds to a pointer or a key — the same shape with behaviour is a different component."
+    instead:
+      - "Chips"
+  -
+    text: "The tag has to hold its own against a dense or coloured surface, where an outline reads as a hairline and disappears."
+    instead:
+      - "Tag Fill"
+children:
+  - "Icon"
+  - "Button Inner"
+  - "Badge"
+  - "Indicator Status"
+  - "Indicator Special"
+  - "Loader"
+parents:
+  - "Accordion / Container"
+  - "Accordion / Header"
+  - "Asset"
+  - "Button / Button Basic"
+  - "Button / Button Outline"
+  - "Button / Button Ghost"
+  - "Button Dropdown"
+  - "Button Group"
+  - "Button Icon"
+  - "Code Editor / Text Area"
+  - "Edit Mode / View"
+  - "Edit Mode / Edit"
+  - "Input Text"
+  - "Input Date"
+  - "Input Search"
+  - "Input Number"
+  - "Input Color"
+  - "Input Datetime"
+  - "Input Email"
+  - "Input Password"
+  - "Input Time"
+  - "Input Telephone"
+  - "Input URL"
+  - "Multiselect"
+  - "Select"
+  - "Select Cascade"
+  - "Text Area"
+  - "Table / TD Tags"
+  - "Tabs / Tab Item"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
+flow_behavior:
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "The uppercase value is a transform, not typed capitals — the characters stay as they were written. An implementation has to do the same and change the case in CSS, because typing the label in capitals changes the accessible name as well as the appearance, and a screen reader may then spell it out letter by letter."
+sizing_model:
+  horizontal: "hug"
+  vertical: "fixed"
+  adjustable: false
+  intent: "The height is authored on the Element run and the width is whatever the label needs, so a tag is a fixed band of a known height wrapping a variable word. The type run is a component-specific mapping rather than the Element profile — one step below it at every size, and topping out at a measure the profile does not carry — which typography.md allows where it is documented, and this is that documentation. Horizontal padding and the gap have their own runs; the radius does not move with size, because a tag reads as the same shape at every size rather than a shape that rounds off as it grows."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-2_000"
+      padding_inline: "gap/g-0_875"
+      gap: "gap/g-0_500"
+      font_size: "size/0_625"
+      line_height: "line height/string/0_625"
+      icon: "size/s-1_500"
+    -
+      size: "small"
+      box: "size/s-2_500"
+      padding_inline: "gap/g-1_000"
+      gap: "gap/g-0_625"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+      icon: "size/s-1_750"
+    -
+      size: "medium"
+      box: "size/s-3_000"
+      padding_inline: "gap/g-1_250"
+      gap: "gap/g-0_750"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+      icon: "size/s-2_000"
+    -
+      size: "large"
+      box: "size/s-3_500"
+      padding_inline: "gap/g-1_500"
+      gap: "gap/g-0_875"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+      icon: "size/s-2_250"
+    -
+      size: "extra large"
+      box: "size/s-4_000"
+      padding_inline: "gap/g-2_000"
+      gap: "gap/g-1_000"
+      font_size: "size/1_125"
+      line_height: "line height/string/1_125"
+      icon: "size/s-2_500"
+api:
+  -
+    name: "tone"
+    kind: "variant"
+    default: "base"
+    description: "Which meaning the tag carries. The tone is carried three ways at once — the border, the pale surface behind the label, and the label itself — so the tag stays legible where a filled block would be too heavy."
+    values:
+      -
+        value: "base"
+        note: "No meaning of its own — a category, an owner, a name. The one to reach for when the tag classifies rather than warns."
+      -
+        value: "primary"
+      -
+        value: "warning"
+      -
+        value: "danger"
+      -
+        value: "success"
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "The band height, and with it the label measure, the padding, the gap and the icon slots. A tag is sized to sit beside the content it labels rather than to be read on its own, which is why the run starts smaller than anything else at this level."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "text case"
+    kind: "variant"
+    default: "uppercase"
+    description: "Whether the label is set in capitals. uppercase transforms it and widens the letter spacing to match; original leaves it exactly as written. The value names what happens to the text, not what the text becomes — original is not lower case, it is no change."
+    values:
+      -
+        value: "uppercase"
+        note: "The default. Capitals and the wider tracking make a short label read as a marker rather than as a word in the sentence around it."
+      -
+        value: "original"
+        note: "For labels whose case carries meaning — a proper noun, a product name, an identifier that would be wrong in capitals."
+  -
+    name: "has leading icon"
+    kind: "boolean"
+    default: "false"
+    description: "Shows a mark before the label. Off by default: a tag is its word, and a mark in front is for the cases where the category has a symbol a reader already knows."
+    controls:
+      - "leading icon"
+  -
+    name: "leading icon"
+    kind: "instance"
+    default: "Placeholder"
+    description: "The mark shown before the label. It qualifies the word rather than replacing it, so a tag whose meaning rests on the mark alone is a tag with the wrong label."
+  -
+    name: "has trailing icon"
+    kind: "boolean"
+    default: "false"
+    description: "Shows a mark after the label. This is the side for a mark that points outward — that the tag links somewhere, or that more follows."
+    controls:
+      - "trailing icon"
+  -
+    name: "trailing icon"
+    kind: "instance"
+    default: "Placeholder"
+    description: "The mark shown after the label, on the same terms as the leading one. It is not a remove control: nothing here is interactive."
+  -
+    name: "label text"
+    kind: "text"
+    default: "Tag"
+    description: "One or two words. A tag that needs a phrase is labelling something too broad to be a category, and at these measures it will out-run the content it sits beside."
+limitations:
+  - "No state. Nothing here responds to a pointer or a key, which is the whole difference from the interactive members of the family."
+  - "The trailing icon is a mark, not a control. A tag that needs to be dismissed is a different component."
+figma_notes:
+  - "Both icon containers are hidden by their booleans in every one of the 50 variants, so only their bindings could be read; their geometry when shown is unverified."
+  - "The icon containers bind their width to the local icon size collection rather than to the dimension collection, so the value is not resolvable by npm run tokens:report. That collection exists for optical compensation, which component-integrity-check already treats as a case of its own."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4820-20677"
+  last_verified: "2026-08-30"
+notes: "children and parents are inherited in full from the entry this component was split out of, as the split rule requires; narrowing either is a later judgement."
+import:
+  batch: 1
+  ready: true

@@ -19,7 +19,9 @@ do_not_use_when:
     instead: null
   -
     text: "The content is a word rather than a number — a label, category, or piece of descriptive metadata."
-    instead: "Tag"
+    instead:
+      - "Tag Fill"
+      - "Tag Outline"
   -
     text: "The thing being shown is a status with no count, such as an online dot or a state marker."
     instead: "Indicator Status"
@@ -38,7 +40,8 @@ parents:
   - "Radio Input"
   - "Radio Label"
   - "Radio Text"
-  - "Tag"
+  - "Tag Fill"
+  - "Tag Outline"
   - "Toggle Input"
   - "Toggle Label"
   - "Toggle Text"

@@ -23,14 +23,17 @@ do_not_use_when:
     instead: "Badge"
   -
     text: "The marker is meant to be read, selected or acted on. This is a dot, not a control and not a label."
-    instead: "Tag"
+    instead:
+      - "Tag Fill"
+      - "Tag Outline"
 parents:
   - "Accordion / Container"
   - "Accordion / Header"
   - "Avatar"
   - "Chips"
   - "Link"
-  - "Tag"
+  - "Tag Fill"
+  - "Tag Outline"
   - "Tooltip"
   - "Asset"
   - "Button / Button Basic"
