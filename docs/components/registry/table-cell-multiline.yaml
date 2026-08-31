@@ -1,0 +1,10 @@
+# Planned, not built. Created 2026-08-30 so the work has somewhere to land.
+# No component exists in Figma yet, so there is no figma block and no api.
+
+id: "Table Cell Multiline"
+name: "Table Cell Multiline"
+family: "Table Cell"
+level: "object"
+role: "output"
+status: "draft"
+notes: "Planned. The wrapping member of the family: the same box and the same column width, but the value runs to as many lines as it needs instead of truncating at one. Nothing is authored here beyond identity and family, because nothing has been designed — an api, a sizing model and relations are written when the component exists. The name is provisional. Sequenced in PLAN.md under beta."

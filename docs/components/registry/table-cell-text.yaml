@@ -1,0 +1,205 @@
+# Hand-written 2026-08-30. Replaces table/td-text.yaml, whose id "Table / TD Text"
+# no longer matches the component in Figma. Carries the full component contract;
+# there is no companion Markdown document — the readable page is generated here.
+
+id: "Table Cell Text"
+name: "Table Cell Text"
+family: "Table Cell"
+level: "object"
+role: "output"
+html: "<td>"
+status: "draft"
+version: "0.1"
+summary: "One value in one column, on one line, truncated rather than wrapped."
+purpose: "A table is read down its columns, and that only works if every row is the same height and every value starts in the same place. This component is that discipline made into a component: it takes the width the column gives it, it commits to a single line, and where the value is longer than the column it cuts the value rather than the rhythm. The two things a value often needs beyond itself — a mark that classifies it and a second line that qualifies it — are here as optional anatomy, so that adding them does not mean abandoning the cell and assembling one by hand."
+use_when:
+  - "A column carries a value a person reads rather than acts on — a name, a date, an amount, a status word."
+  - "The value may need a leading mark or a quieter second line, and the row must stay the same height as every other row."
+do_not_use_when:
+  -
+    text: "The cell heads the column rather than carrying one of its values. A header has the sorting and filtering the column is controlled by, and is a different element in the document."
+    instead: "Table Cell Heading"
+  -
+    text: "The value is a destination the reader follows rather than text they read."
+    instead: "Table / TD Link"
+  -
+    text: "The value is a set of labels rather than one string, and each of them takes a tone."
+    instead: "Table / TD Tags"
+  -
+    text: "The copy runs past one line and must wrap. This cell truncates at one line by construction, and a wrapping member of the family does not exist yet — see notes."
+    instead: null
+children:
+  - "Badge"
+  - "Avatar"
+  - "Button Inner"
+  - "Icon"
+  - "Image"
+  - "Indicator Status"
+  - "Indicator Special"
+  - "Loader"
+parents:
+  - "Table"
+uses:
+  - "Icon"
+flow_behavior:
+  - "fill"
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "The cell truncates with an ellipsis at one line, so a value longer than its column is not readable and is not recoverable from the rendered text. Whoever uses it has to make the full value reachable — a title, an expandable row, a wider column the reader can set — because the visible string is the only thing this component guarantees, and it is a prefix."
+  -
+    status: "requires"
+    note: "A value means nothing without the column it is in, and nothing in this component ties it to a header. The implementation has to produce a real table structure so the association exists — SC 1.3.1. A grid of positioned boxes reads as a list of unrelated strings, which is the failure mode this component cannot detect and cannot prevent."
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable: false
+  intent: "Width belongs to the column and is never named here, which is why no width token is recorded and the 220 the set is authored at carries no meaning. Height is hugged from the contents and is not named either, which is why there is no box token in the rows below — nothing binds a height, so anything written down here would be a result dressed up as a rule. The type run is the Element profile rather than the Object profile its level would give it, deliberately: a table is dense, and a medium cell set in the Object measure would be a heading. This entry is that documented mapping, and it overrides the level default per typography.md. Line heights come from the string family because the cell is one line by definition. Resolve token values with npm run tokens:report."
+  sizes:
+    -
+      size: "extra small"
+      padding_inline: "gap/g-1_250"
+      padding_block: "gap/g-0_500"
+      gap: "gap/g-0_500"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+      stack_padding_block: "gap/g-0_250"
+      stack_gap: "gap/g-0_250"
+      additional_font_size: "size/0_625"
+      additional_line_height: "line height/string/0_625"
+      icon: "size/s-2_000"
+    -
+      size: "small"
+      padding_inline: "gap/g-1_250"
+      padding_block: "gap/g-0_750"
+      gap: "gap/g-0_625"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+      stack_padding_block: "gap/g-0_375"
+      stack_gap: "gap/g-0_250"
+      additional_font_size: "size/0_625"
+      additional_line_height: "line height/string/0_625"
+      icon: "size/s-2_500"
+    -
+      size: "medium"
+      padding_inline: "gap/g-1_250"
+      padding_block: "gap/g-1_000"
+      gap: "gap/g-0_750"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+      stack_padding_block: "gap/g-0_500"
+      stack_gap: "gap/g-0_375"
+      additional_font_size: "size/0_750"
+      additional_line_height: "line height/string/0_750"
+      icon: "size/s-3_000"
+    -
+      size: "large"
+      padding_inline: "gap/g-1_750"
+      padding_block: "gap/g-1_250"
+      gap: "gap/g-0_875"
+      font_size: "size/1_250"
+      line_height: "line height/string/1_250"
+      stack_padding_block: "gap/g-0_500"
+      stack_gap: "gap/g-0_375"
+      additional_font_size: "size/0_750"
+      additional_line_height: "line height/string/0_750"
+      icon: "size/s-3_500"
+    -
+      size: "extra large"
+      padding_inline: "gap/g-1_750"
+      padding_block: "gap/g-1_500"
+      gap: "gap/g-1_000"
+      font_size: "size/1_500"
+      line_height: "line height/string/1_500"
+      stack_padding_block: "gap/g-0_500"
+      stack_gap: "gap/g-0_500"
+      additional_font_size: "size/0_875"
+      additional_line_height: "line height/string/0_875"
+      icon: "size/s-4_000"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Row density. Drives the padding, the gap, the type and the icon together, and through them the row height. It does not set the width."
+    values:
+      -
+        value: "extra small"
+        note: "The default, and the one a data-dense table actually uses."
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "alignment"
+    kind: "variant"
+    default: "start"
+    description: "Which edge of the column the value sits against. It mirrors the whole cell rather than just the text: the icon moves to the opposite edge from the text so it stays on the outside of the column. Amounts and counts are read against a common right edge, which is what end is for; everything else starts where the reader's eye does."
+    values:
+      -
+        value: "start"
+      -
+        value: "end"
+        note: "Right-aligns the text and moves the icon to the leading edge. Meant for numbers a reader compares down the column."
+  -
+    name: "has icon"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a mark sits beside the value. The mark classifies the value — a currency, a file kind, a direction — and never acts."
+    controls:
+      - "icon"
+  -
+    name: "icon"
+    kind: "instance"
+    default: "Placeholder"
+    description: "Which mark. Named for the meaning the set carries, not for a drawing. The property is not called leading or trailing because the side is not fixed — alignment decides it."
+  -
+    name: "cell text"
+    kind: "text"
+    default: "Cell text"
+    description: "The value. One line, no terminal period, and phrased so the first words identify it — the end of a long value is what gets cut. Values in one column have to be comparable, which usually means the same shape and the same unit rather than the same length."
+    examples:
+      -
+        verdict: "do"
+        props:
+          "cell text": "Invoice 2026-0184"
+      -
+        verdict: "dont"
+        caption: "The distinguishing part is at the end, so every row in the column truncates to the same string."
+        props:
+          "cell text": "Monthly subscription renewal for the Berlin office"
+  -
+    name: "has additional text"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a second, quieter line sits under the value. It qualifies the value rather than continuing it, and it doubles the row height, so a table that turns it on turns it on for the column."
+    controls:
+      - "additional text"
+  -
+    name: "additional text"
+    kind: "text"
+    default: "Additional text"
+    description: "The qualifier: a unit, an owner, a timestamp, the thing the value is of. It takes the secondary text role and a smaller measure, and it truncates on the same terms as the value above it."
+limitations:
+  - "One line, always. There is no wrapping value and no property to allow one; a value longer than its column is cut with an ellipsis and the rest is gone from the rendering."
+  - "No state at all — no hover, no selected, no disabled. Row highlighting, striping and selection belong to whatever draws the row, and this component cannot participate in them."
+  - "No surface, no border and no divider. The cell is transparent, so column rules and row rules are the table's to draw and this component contributes nothing to the grid."
+  - "The additional-text measure repeats: five sizes map onto three type steps, so extra small and small share one measure and medium and large share another. The primary run does not repeat."
+  - "No numeric alignment beyond right-aligning the string. Nothing lines up decimal points or pads to a common width."
+figma_notes:
+  - "The icon sits in a container whose width binds to a local collection named icon size, outside tokens/, and which is narrower than the icon it holds — the overhang is the drawing's optical inset. The icon's own footprint is the token recorded in sizes above."
+  - "has icon and has additional text are false in all ten variants, so the set stores no visible geometry for either. Everything recorded here about them comes from their variable bindings, which are stored whether the layer is visible or not."
+  - "The two alignment values are built as mirrored child orders rather than by an alignment property on one frame, which is why the icon layer is named for the side it happens to be on."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4860:14267"
+  last_verified: "2026-08-30"
+notes: "A wrapping cell is expected to join this family — the set will grow and a multi-line value will need one — and is sequenced in PLAN.md under beta rather than designed here. The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."
+import:
+  batch: 1
+  ready: true

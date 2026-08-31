@@ -9,7 +9,7 @@ role: "container"
 flow_behavior:
   - "fill"
 children:
-  - "Table / TD Text"
+  - "Table Cell Text"
   - "Table / TD Link"
   - "Table / TD Boolean"
   - "Table / TD Tags"
@@ -18,7 +18,7 @@ children:
   - "Table / TD Checkbox"
   - "Table / TD Person"
   - "Table / TD Image"
-  - "Table / TH Text"
+  - "Table Cell Heading"
   - "Table / TH Checkbox"
 parents:
   - "Accordion / Container"

@@ -78,7 +78,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 | --- | --- | --- | --- | ---: |
 | 1 | Primitives and selection controls | Badge, Label, Loader, Indicator Status, Indicator Special, Button Inner, Link, Checkbox Input / Label / Text, Radio Input / Label / Text | a form column that renders from the library alone | 1 wk |
 | 2 | The remaining small elements | Icon, Tag Fill / Outline, Toggle Input / Label / Text | a filter row | 1 wk |
-| 3 | The table | Table / TH Text, Table / TD Text, Table | a dense table carrying real data | 1–2 wk |
+| 3 | The table | Table Cell Heading, Table Cell Text, Table | a dense table carrying real data | 1–2 wk |
 | 4 | Input | Input Text, Select, Dropdown | a toolbar and filters above that table | 1 wk |
 | 5 | The Button family | Button / Button Basic, Button / Button Outline, Button / Button Ghost, Button Icon | every action on the screen | 2 wk |
 | 6 | The shell | Modal, Side Panel, Tooltip | the Stage 6 proof screen, composed | 1 wk |
@@ -87,7 +87,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 
 **Figma readiness is inside the wave, not a precondition of it.** Table, Side Panel and Tooltip are not ready in the library today. That work belongs to waves 3 and 6 and is priced into them; it is not a survey to run ahead of the stage.
 
-**Wave 5 is not four contracts.** Figma holds three sets of 100 variants under `Button / Button Basic | Outline | Ghost` with an identical API; `tone` carries `error` against [`naming.md`](docs/foundations/naming.md) §4 in all three; two of the three have no registry entry; the ids do not match the Figma names the way `Table / TD Text` does; and the change making `do_not_use_when.instead` take a list is blocked until Outline and Ghost exist to anchor to. It is one reconciliation, done once, across the family.
+**Wave 5 is not four contracts.** Figma holds three sets of 100 variants under `Button / Button Basic | Outline | Ghost` with an identical API; `tone` carries `error` against [`naming.md`](docs/foundations/naming.md) §4 in all three; two of the three have no registry entry; the ids do not match the Figma names the way `Table Cell Text` does; and the change making `do_not_use_when.instead` take a list is blocked until Outline and Ghost exist to anchor to. It is one reconciliation, done once, across the family.
 
 **Out of v0.1, deliberately:** Toast, Tabs Horizontal and Tabs / Tab Item — the Stage 6 gate names a table, filters, a side panel and a modal, and none of the three appears in it. Everything else follows them, grouped in §9.
 
@@ -223,7 +223,7 @@ Two consequences worth restating where they apply. **A milestone is not a size b
 | Milestone | The decision it opens | Entries |
 | --- | --- | --- |
 | alpha | the decision that the library is ready for **internal distribution** — someone other than the author builds on it | Input Color, Input Date, Input Datetime, Input Email, Input Number, Input Password, Input Search, Input Telephone, Input Time, Input URL, Text Area, Multiselect, Select Cascade, Date Picker, Slider, Chips, Uploader, Queryfield, Progress, Avatar, Image, Table / TD Actions, Table / TD Boolean, Table / TD Checkbox, Table / TD Expand, Table / TD Image, Table / TD Link, Table / TD Person, Table / TD Tags, Table / TH Checkbox, Table Toolbar, Pagination, Button Group, Button Dropdown, Breadcrumbs, Tabs Horizontal, Tabs / Tab Item, Tabs Vertical, Switcher, Scrollbar, Accordion, Accordion / Container, Accordion / Header |
-| beta | the decision that it is ready **outside** — a product that is not ours, with the states a real screen has and an API that will not move under it | Toast, Alert, Popover, Skeleton Loader, Data Info, Metric, Card, List, Tree, Person, Event, Asset, Logo, Feature List, Hero, Code Snippet, Charts, Header, Side Panel Menu, Steps, Flex Layout, Tag Interactive Fill, Tag Interactive Outline |
+| beta | the decision that it is ready **outside** — a product that is not ours, with the states a real screen has and an API that will not move under it | Toast, Alert, Popover, Skeleton Loader, Data Info, Metric, Card, List, Tree, Person, Event, Asset, Logo, Feature List, Hero, Code Snippet, Charts, Header, Side Panel Menu, Steps, Flex Layout, Tag Interactive Fill, Tag Interactive Outline, Table Cell Multiline |
 | 1.0 | the decision that the library is **complete and its API is a commitment** | Code Editor, Code Editor / Text Area, Code Editor / Toolbar, Edit Mode / Edit, Edit Mode / View, Audio Player, Video Player, Carousel |
 | Parked | no decision waits on these — mobile, which this plan excludes (§8 above) | Bottom Sheet, Pull to Refresh |
 
