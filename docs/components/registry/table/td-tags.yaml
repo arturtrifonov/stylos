@@ -20,7 +20,7 @@ children:
   - "Tag Fill"
   - "Tag Outline"
 parents:
-  - "Table"
+  - "Table Row Body"
 notes: ""
 import:
   batch: 2

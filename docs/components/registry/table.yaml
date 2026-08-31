@@ -9,17 +9,8 @@ role: "container"
 flow_behavior:
   - "fill"
 children:
-  - "Table / TD Text"
-  - "Table / TD Link"
-  - "Table / TD Boolean"
-  - "Table / TD Tags"
-  - "Table / TD Actions"
-  - "Table / TD Expand"
-  - "Table / TD Checkbox"
-  - "Table / TD Person"
-  - "Table / TD Image"
-  - "Table / TH Text"
-  - "Table / TH Checkbox"
+  - "Table Row Head"
+  - "Table Row Body"
 parents:
   - "Accordion / Container"
   - "Bottom Sheet"
@@ -29,7 +20,7 @@ parents:
   - "Modal"
   - "Side Panel"
   - "Side Panel Menu"
-notes: ""
+notes: "children are the two rows rather than the cells: a cell is allowed in a row and a row is allowed in a table, and nothing places a cell in a table directly."
 import:
   batch: 1
   ready: false

@@ -1,0 +1,128 @@
+# Hand-written 2026-08-31 from the live component. Carries the full component
+# contract; there is no companion Markdown document — the readable page is
+# generated from here.
+
+id: "Table Row Body"
+name: "Table Row Body"
+family: "Table"
+level: "widget"
+role: "container"
+html: "<tr>"
+status: "draft"
+version: "0.1"
+summary: "One record across the table's columns, with the banding and the response to the pointer that make a long list readable."
+purpose: "A row is the unit a person actually reads: a table is scanned down its columns but understood one record at a time, and the eye needs help staying on the line it is on. That help is the whole of what this component adds to the cells it holds — a surface it can be given, a rule it can be given, and a darker surface while the pointer is over it. Everything about the values themselves belongs to the cells; everything about keeping the reader's place belongs here."
+use_when:
+  - "A table has records to show, and each one occupies one line across every column."
+do_not_use_when:
+  -
+    text: "The row names the columns rather than carrying a record."
+    instead: "Table Row Head"
+children:
+  - "Table Cell Text"
+  - "Table / TD Link"
+  - "Table / TD Boolean"
+  - "Table / TD Tags"
+  - "Table / TD Actions"
+  - "Table / TD Expand"
+  - "Table / TD Checkbox"
+  - "Table / TD Person"
+  - "Table / TD Image"
+parents:
+  - "Table"
+uses:
+  - "Table Cell Text"
+flow_behavior:
+  - "fill"
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "The cells in this row have to be in the same order and the same number as the header row, because that position is the only thing tying a value to the column that names it — SC 1.3.1. Nothing in the component enforces it."
+  -
+    status: "open"
+    note: "There is no focus value and no selected value, so the row responds to a pointer and to nothing else. A person moving through a table by keyboard gets no row-level indication of where they are, and a row that is selected has no way to look selected. Unresolved, and it is the gap that matters most here because a table is where keyboard movement is most likely."
+  -
+    status: "requires"
+    note: "state = hover is a description of what the row looks like under a pointer, not an interaction the component supplies. Whatever makes the row activatable — opening a record, selecting it — is the consumer's, and if the row does something on click it needs a control that a keyboard reaches, because a hovered surface is not an affordance."
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable: false
+  intent: "Width belongs to the table. Height is hugged from the cells and is not named; unlike the header row this one adds no block padding at all, so a body row is exactly as tall as the cells in it and the table's rhythm is the cell run rather than anything decided here. The cells sit flush with no gap. The inline padding is the table's outer margin, held on the row so that the first and last columns do not sit against the edge, and it matches the header row step for step. Resolve token values with npm run tokens:report."
+  sizes:
+    -
+      size: "extra small"
+      padding_inline: "gap/g-1_000"
+    -
+      size: "small"
+      padding_inline: "gap/g-1_000"
+    -
+      size: "medium"
+      padding_inline: "gap/g-1_000"
+    -
+      size: "large"
+      padding_inline: "gap/g-1_500"
+    -
+      size: "extra large"
+      padding_inline: "gap/g-1_500"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Row density, and it has to be the size every cell in the row, every other body row, and the header row are set to. It drives the row's inline padding; the height comes from the cells."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "How the row's surface responds to the pointer. It changes the surface and nothing else — no cell in the row changes with it."
+    values:
+      -
+        value: "default"
+      -
+        value: "hover"
+        note: "A row under the pointer has a surface: hover is always the darker of the two, for a banded row and a plain one alike, so has background is on whenever this value is used. The surface is the only thing that moves."
+  -
+    name: "cells slot"
+    kind: "slot"
+    description: "The record's cells, in column order and matching the header row. A slot rather than an instance property because a row holds as many cells as the table has columns and they are rarely all the same component — a name, a date, a set of tags and a row of actions sit side by side."
+  -
+    name: "has background"
+    kind: "boolean"
+    default: "false"
+    description: "Whether the row paints a surface. It is what banding is made of — every other row turns it on — and it is also the surface that state darkens, so a row that shows hover has it on. A row with it off is transparent and shows the table through."
+  -
+    name: "has divider"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a rule sits along the bottom edge of the row, separating it from the next. An alternative to banding rather than a companion to it: a table usually wants one or the other."
+limitations:
+  - "state and has background are set together. A row with no background has nothing for hover to darken, so state = hover on its own changes nothing at all. That is the current shape of the pair and is provisional — the intent is that a hovered row has a surface whether or not it is banded."
+  - "The hover surface is a 1.08:1 change in light mode and 1.34:1 in dark. That is the entire difference between a resting row and a hovered one, and it is a decision taken for now rather than an oversight."
+  - "The rule measures 1.23:1 against the page in light mode and 2.16:1 in dark. Where banding is off and the rule is the only thing separating one record from the next, that is below the 3:1 SC 1.4.11 asks of a boundary that carries meaning. Also recorded as a decision taken for now."
+  - "No selected, no focus, no disabled and no expanded. The row has a pointer state and nothing else, so a table with selectable rows, an expandable row, or a row being saved has to express all of it inside the cells."
+  - "Banding is not a property of the row. Which rows are odd and which are even is the table's to know, and this component only carries the result."
+  - "No striping tone and no tone at all. The surface is one pair of neutral roles and cannot be tinted to mark a row as new, changed or in error."
+figma_notes:
+  - "The surface and the rule are an absolutely positioned rectangle and LINE rather than a fill and a border on the frame, so that neither takes part in the row's layout."
+  - "The rule's stroke weight is not bound to a variable here, while the same hairline on Table Row Head binds width/normal. The whole boundVariables object was read on both."
+  - "state is implemented by binding the surface rectangle to a different colour role per variant — background/secondary on default, background/tertiary on hover — which is why the value does nothing while that rectangle is hidden."
+  - "In the Figma set the variant properties are ordered state before size, where naming.md section 8 puts size first."
+  - "The slot is Figma's SLOT property type. The four cells visible in every variant are the slot's default content, not a fixed anatomy."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4867:7422"
+  last_verified: "2026-08-31"
+notes: "The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."

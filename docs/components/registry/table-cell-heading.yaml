@@ -1,0 +1,221 @@
+# Hand-written 2026-08-30. Replaces table/th-text.yaml, whose id "Table / TH Text"
+# no longer matches the component in Figma. Carries the full component contract;
+# there is no companion Markdown document — the readable page is generated here.
+
+id: "Table Cell Heading"
+name: "Table Cell Heading"
+family: "Table Cell"
+level: "object"
+role: "output"
+html: "<th scope=\"col\">"
+status: "draft"
+version: "0.1"
+summary: "The cell that names a column and carries the controls the column is ordered and narrowed by."
+purpose: "A column is only readable if something says what is in it, and only usable if the thing that says so is also where you go to sort and filter it. This is that cell. It is built on the same box as the value cells so the header row lines up with the body without anyone arranging it, and it is set a shade quieter than the values because a header is read once and the column is read a hundred times. Sorting and filtering live here rather than in a toolbar because they belong to one column, and a control that belongs to one column belongs in that column's head."
+use_when:
+  - "A column needs a name, and the reader may need to order or narrow the table by it."
+  - "The header row must share the body's density and alignment without being assembled separately."
+do_not_use_when:
+  -
+    text: "The cell carries one of the column's values rather than naming the column."
+    instead: "Table Cell Text"
+  -
+    text: "The header is a checkbox that selects every row, not a name."
+    instead: "Table / TH Checkbox"
+children:
+  - "Badge"
+  - "Avatar"
+  - "Button Inner"
+  - "Icon"
+  - "Image"
+  - "Indicator Status"
+  - "Indicator Special"
+  - "Loader"
+parents:
+  - "Table Row Head"
+uses:
+  - "Icon"
+  - "Button Inner"
+flow_behavior:
+  - "fill"
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "The component says it heads a column but carries nothing that says which cells it heads. The implementation has to place it as a real header cell with a scope, or the association exists only visually and every value in the column is read as a bare string — SC 1.3.1."
+  -
+    status: "requires"
+    note: "The cell knows which way its column is ordered and drives the sort control's arrow from it, so the direction is the cell's to state rather than something read off the control. The implementation has to say it programmatically as well as draw it — aria-sort on the header — because a reader who does not see the arrow has nothing else to go on."
+  -
+    status: "requires"
+    note: "The sort and filter controls carry no visible text of their own. Each one has a name and it has to be set — sort by amount, filter by owner — because a header row of identically named buttons is a list of controls a person cannot choose between. That is ordinary work rather than a gap: the control has somewhere to put the name, and nothing on screen fills it in automatically."
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable: false
+  intent: "The box is the value cell's box, step for step, because a header that did not match would make the header row a different height from every row under it. Width belongs to the column. Height is hugged from the contents and no height token is recorded, because none is bound — what the five steps come out at is a result, not a rule, and writing it down here would make it one. The type run is the Element profile rather than the Object profile its level would give it — the same documented mapping the family's value cell carries, and for the same reason — and it overrides the level default per typography.md. Line heights come from the string family because the header is one line. The controls take the Primitive run rather than the run the rest of the cell is on. Resolve token values with npm run tokens:report."
+  sizes:
+    -
+      size: "extra small"
+      padding_inline: "gap/g-1_250"
+      padding_block: "gap/g-0_500"
+      gap: "gap/g-0_500"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+      stack_padding_block: "gap/g-0_250"
+      stack_gap: "gap/g-0_250"
+      additional_font_size: "size/0_625"
+      additional_line_height: "line height/string/0_625"
+      icon: "size/s-2_000"
+      control: "size/s-1_500"
+    -
+      size: "small"
+      padding_inline: "gap/g-1_250"
+      padding_block: "gap/g-0_750"
+      gap: "gap/g-0_625"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+      stack_padding_block: "gap/g-0_375"
+      stack_gap: "gap/g-0_250"
+      additional_font_size: "size/0_625"
+      additional_line_height: "line height/string/0_625"
+      icon: "size/s-2_500"
+      control: "size/s-1_750"
+    -
+      size: "medium"
+      padding_inline: "gap/g-1_250"
+      padding_block: "gap/g-1_000"
+      gap: "gap/g-0_750"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+      stack_padding_block: "gap/g-0_500"
+      stack_gap: "gap/g-0_375"
+      additional_font_size: "size/0_750"
+      additional_line_height: "line height/string/0_750"
+      icon: "size/s-3_000"
+      control: "size/s-2_000"
+    -
+      size: "large"
+      padding_inline: "gap/g-1_750"
+      padding_block: "gap/g-1_250"
+      gap: "gap/g-0_875"
+      font_size: "size/1_250"
+      line_height: "line height/string/1_250"
+      stack_padding_block: "gap/g-0_500"
+      stack_gap: "gap/g-0_375"
+      additional_font_size: "size/0_750"
+      additional_line_height: "line height/string/0_750"
+      icon: "size/s-3_500"
+      control: "size/s-2_250"
+    -
+      size: "extra large"
+      padding_inline: "gap/g-1_750"
+      padding_block: "gap/g-1_500"
+      gap: "gap/g-1_000"
+      font_size: "size/1_500"
+      line_height: "line height/string/1_500"
+      stack_padding_block: "gap/g-0_500"
+      stack_gap: "gap/g-0_500"
+      additional_font_size: "size/0_875"
+      additional_line_height: "line height/string/0_875"
+      icon: "size/s-4_000"
+      control: "size/s-2_500"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Row density, and it has to be the size the value cells in the same table are set to. Drives padding, gap, type, icon and the controls together."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "alignment"
+    kind: "variant"
+    default: "start"
+    description: "Which edge the column name sits against, and it must match the alignment of the values beneath it. The whole cell mirrors: the controls move to the opposite edge from the name, so on a right-aligned numeric column they sit on the left and stay clear of the digits."
+    values:
+      -
+        value: "start"
+      -
+        value: "end"
+        note: "For a column of numbers. The name right-aligns and the sort and filter controls move to the leading edge."
+  -
+    name: "has icon"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a mark sits beside the column name — a unit, a source, the kind of thing the column holds."
+    controls:
+      - "icon"
+  -
+    name: "icon"
+    kind: "instance"
+    default: "Placeholder"
+    description: "Which mark. Not called leading or trailing because alignment decides the side."
+  -
+    name: "cell text"
+    kind: "text"
+    default: "Cell text"
+    description: "The column name. One line, sentence case, no terminal period, and short — it truncates on the same terms as the values and a header that truncates leaves the column unnamed. The property is not called heading text: this is a cell, and its text is the cell's text, the same property the value cell exposes so the two stay swappable."
+    examples:
+      -
+        verdict: "do"
+        props:
+          "cell text": "Renewal date"
+      -
+        verdict: "dont"
+        caption: "A sentence in a header truncates to a fragment and takes the row height with it."
+        props:
+          "cell text": "The date on which this subscription will next renew"
+  -
+    name: "has additional text"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a second line sits under the column name, usually the unit the column is in."
+    controls:
+      - "additional text"
+  -
+    name: "additional text"
+    kind: "text"
+    default: "Additional text"
+    description: "The qualifier under the name — a unit, a currency, a period. It is set one weight heavier than the name above it, which is the one place this component departs from the value cell's treatment."
+  -
+    name: "is sorted"
+    kind: "boolean"
+    default: "false"
+    description: "Whether the table is currently ordered by this column. It shows the sort control and marks the column. The direction is the cell's own: it knows which way the column is ordered and drives the control's arrow from it."
+  -
+    name: "is filtered"
+    kind: "boolean"
+    default: "false"
+    description: "Whether this column is currently narrowing the rows. It shows the filter control and marks the column with the same rule is sorted uses. There is one mark, not one per state — it says the column is constrained and shows the reader how wide the column is — and which constraint is applied is told by the control that is showing."
+limitations:
+  - "The controls here adjust a sort or a filter that is already applied. Starting one happens from a menu that is not part of this cell, which is why an untouched column shows no control — there is nothing yet to adjust."
+  - "The rule that draws that mark has a thickness that is not bound to a variable at any size. It steps with the box, but it steps outside the scale."
+  - "One line, always. There is no wrapping header and no property to allow one."
+  - "No state — no hover, no active, no disabled. Whatever the sort and filter controls do on hover is theirs; the cell around them does not change."
+  - "Nothing says which axis the cell heads. A row header is not a value of anything here, so a table with headers down its left side has no component for them."
+  - "No resize handle and no width property. A column a reader can drag wider is the table's mechanism, not the header's."
+figma_notes:
+  - "The mark for a constrained column is built as two identical rectangles, one governed by is sorted and one by is filtered, because a Figma property cannot show one layer when either of two booleans is true without introducing variables for it. There is one mark, not two."
+  - "Nothing in the set exposes the sort direction as a property, so it is set by swapping the icon inside the sort control's instance. The cell carries the direction; the Figma set has nowhere to put it."
+  - "Both rectangles are absolutely positioned at the cell's bottom edge and the cell does not clip, so in the Figma set the mark renders outside the component's own box."
+  - "The sort and filter controls bind their width to two different collections along the run — the token scale at extra small and a local collection named icon size, outside tokens/, at the other four steps. The two produce the same numbers; the run recorded in sizes above is the container's, which uses the token scale at every step."
+  - "The icon sits in a container narrower than the icon it holds, the overhang being the drawing's optical inset. The icon's own footprint is the token recorded above."
+  - "has icon, has additional text, is sorted and is filtered are all false in every variant, so the set stores no visible geometry for any of that anatomy. What is recorded here comes from variable bindings and property references, which hold whether a layer is visible or not."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4862:5460"
+  last_verified: "2026-08-30"
+notes: "Built on the value cell — the two share property keys, box and type run — so a column can be composed once and its header differs from its cells in colour, in the controls it carries, and in nothing else. A header cell that opens a menu is expected as a separate component; this is the plain one, and sorting and filtering are initiated from that menu rather than here. The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."
+import:
+  batch: 1
+  ready: true
