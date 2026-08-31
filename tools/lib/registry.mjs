@@ -25,7 +25,7 @@ export const ROLES = ["content", "trigger", "input", "toolbar", "output", "conta
 // them too — a glyph per kind, a colour per a11y status — and a second copy
 // would be a second thing to update when one of them grows.
 export const STATUSES = ["draft", "published", "deprecated"];
-export const PROPERTY_KINDS = ["variant", "text", "boolean", "instance"];
+export const PROPERTY_KINDS = ["variant", "text", "boolean", "instance", "slot"];
 export const A11Y_STATUSES = ["warning", "fail", "open", "requires"];
 export const SIZING_AXES = ["hug", "fixed", "fill", "absolute"];
 export const LINE_HEIGHT_FAMILIES = ["text", "string", "heading", "code"];

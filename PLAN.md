@@ -32,7 +32,7 @@ That single gate is chosen because it is the only test that exercises the whole 
 
 ## 2. Operating principles
 
-1. **Contracts before code.** No Svelte package until the foundations and component contracts it would consume are settled.
+1. **Contracts before code, per component.** No component is written in code before its own contract exists. The package does not wait for all of them: the rule exists so that an API is not invented in Svelte and then called a contract, and that risk is per component, not per stage. Build from the contracts that are written, in the order the waves produced them.
 2. **Every open question is time-boxed to one session.** Solo projects stall on decisions, not on work. If a question cannot be reasoned to a conclusion in one sitting, the conclusion is "adopt what Figma already does, write it down as provisional, move on."
 3. **A stage is not finished until its gate passes.** Gates are mechanical where possible — a command exits 0 — rather than a judgement call.
 4. **Scope is cut from breadth, never from the gate.** If time runs short, fewer components — not a partially documented one.
@@ -44,12 +44,15 @@ That single gate is chosen because it is the only test that exercises the whole 
 ## 3. Critical path
 
 ```
-S0 truthful baseline ──▶ S4 contracts ──▶ S5 @stylos/ui ──▶ S6 proof ──▶ v0.1
+S0 truthful baseline ──▶ S4 contracts ──┐
+                              ╰──▶ S5 @stylos/ui ──▶ S6 proof ──▶ v0.1
 ```
 
 **Three stages are gone.** The foundations are confirmed and the registry is readable, so S1 and S2 are behind. S3 — tokens to CSS — was a week of output with no reader: custom properties can only be proved by something rendering with them, and that something is the package. It is now the first step of S5. Stage numbers are kept as they were so that references elsewhere still resolve.
 
-The long pole is now **S4**: twenty-nine component contracts, each needing judgement that cannot be batched — cut into six waves, each ending in something that renders.
+**S4 and S5 overlap**, because principle 1 gates a component rather than a stage. The package starts on the contracts that already exist — the primitives and the selection controls of wave 1 — and the two stages run together until S4 runs out of work.
+
+For one person that buys **no calendar time**: the hours are the same however they are ordered. What it buys is knowing, weeks earlier, whether S5's estimate is real. And that is the estimate worth testing: S4's remaining weeks are now grounded in a measured pace, while **S5 is the long pole and has never been tested against a line of code**.
 
 ---
 
@@ -68,7 +71,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 
 ### Stage 4 — Component contracts for the core set
 
-**Scope discipline:** 32 registry entries, not 101 — the set the proof screen needs. Two of them, `Button Outline` and `Button Ghost`, do not exist in the registry yet and are created here.
+**Scope discipline:** 34 registry entries, not 101 — the set the proof screen needs. Two of them, `Button Outline` and `Button Ghost`, do not exist in the registry yet and are created here.
 
 **The Airtable `import.batch` numbers are not this queue.** They are history from the one-time bootstrap of 2026-08-20, and `registry/README.md` keeps them as history for that reason. Read as a plan they mislead: batch 1 held 45 entries spanning all five levels, 18 of them outside this set, while Tooltip, Toast and Side Panel — named by the Stage 6 gate or by this set — sat in batch 2. Nothing below writes back into that field.
 
@@ -78,7 +81,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 | --- | --- | --- | --- | ---: |
 | 1 | Primitives and selection controls | Badge, Label, Loader, Indicator Status, Indicator Special, Button Inner, Link, Checkbox Input / Label / Text, Radio Input / Label / Text | a form column that renders from the library alone | 1 wk |
 | 2 | The remaining small elements | Icon, Tag Fill / Outline, Toggle Input / Label / Text | a filter row | 1 wk |
-| 3 | The table | Table Cell Heading, Table Cell Text, Table | a dense table carrying real data | 1–2 wk |
+| 3 | The table | Table Cell Heading, Table Cell Text, Table Row Head, Table Row Body, Table | a dense table carrying real data | 1–2 wk |
 | 4 | Input | Input Text, Select, Dropdown | a toolbar and filters above that table | 1 wk |
 | 5 | The Button family | Button / Button Basic, Button / Button Outline, Button / Button Ghost, Button Icon | every action on the screen | 2 wk |
 | 6 | The shell | Modal, Side Panel, Tooltip | the Stage 6 proof screen, composed | 1 wk |
@@ -107,6 +110,8 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 
 ### Stage 5 — `@stylos/ui`
 
+**It starts now, not when S4 finishes** — principle 1, and §3. Everything below is worked against the contracts that exist, which today is wave 1 and part of wave 2.
+
 **First, generate the CSS** — what used to be Stage 3, moved here because its output has no reader until something renders with it:
 
 - `tokens/*.yaml` → CSS custom properties, preserving the primitive/semantic indirection so palette overrides propagate.
@@ -126,7 +131,9 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 Work:
 
 - Scaffold the package; consume the generated CSS as the only source of visual values.
-- Implement in dependency order — primitives → elements → objects → widgets → layouts. The registry's `children` field gives the order.
+- **One component end to end before any others** — Badge: a primitive, its contract written, few variants, no behaviour. Token → custom property → Svelte → every documented variant rendering → the prop ↔ variant mapping table. Until that path exists, every estimate below it is a guess.
+- **Then the first interactive one**, Checkbox Input, because it is where the headless behaviour library is either right or wrong, and that answer should not arrive in month three.
+- Implement the rest in dependency order — primitives → elements → objects → widgets → layouts. The registry's `children` field gives the order, and a component whose contract is not written yet waits for it rather than being invented.
 - Per component, a prop ↔ Figma variant property mapping table. Divergence is a bug in one side, not a translation detail.
 - A lint rule rejecting hex colours and raw px outside the generated token file.
 - Accessibility tests against the baseline set in Stage 4.
@@ -162,7 +169,9 @@ At 5–10 h/week:
 | S5 — `@stylos/ui`, CSS included | 11–13 wk | 22 wk |
 | S6 — proof + docs | 4 wk | **26 wk** |
 
-**≈ 6 months.** The total has not moved: the CSS week did not disappear, it moved next to the thing that consumes it. Two stages before it shrank on inspection rather than on optimism, and both are behind. Foundations was budgeted at 6–8 weeks and cost days, being mostly ratification of what Figma already held. S2 was four weeks of automated registry↔Figma reconciliation whose only consumer exists nowhere; what the registry actually needed was to be readable, and that took a day. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
+**≈ 6 months.** Interleaving S4 and S5 does not shorten this — one person's hours do not run in parallel — so the table is read as a sum of work, not as a sequence of dates. Two things genuinely took work out of it: the table was cut to a minimal visual for v0.1, with the data model, filters and sort editing deferred, which removes work from S4, S5 and S6 at once; and a family split costs what one component with a couple of variants costs, so the registry growing from 29 entries to 34 did not grow the work behind it.
+
+The total has not moved: the CSS week did not disappear, it moved next to the thing that consumes it. Two stages before it shrank on inspection rather than on optimism, and both are behind. Foundations was budgeted at 6–8 weeks and cost days, being mostly ratification of what Figma already held. S2 was four weeks of automated registry↔Figma reconciliation whose only consumer exists nowhere; what the registry actually needed was to be readable, and that took a day. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
 
 **Scope levers, in the order to pull them:**
 

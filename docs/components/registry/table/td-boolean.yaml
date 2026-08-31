@@ -18,7 +18,7 @@ children:
   - "Indicator Special"
   - "Loader"
 parents:
-  - "Table"
+  - "Table Row Body"
 notes: ""
 import:
   batch: 2

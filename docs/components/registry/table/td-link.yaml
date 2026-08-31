@@ -19,7 +19,7 @@ children:
   - "Loader"
   - "Link"
 parents:
-  - "Table"
+  - "Table Row Body"
 notes: ""
 import:
   batch: 1

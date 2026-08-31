@@ -126,7 +126,7 @@ A **sequence**, because property order is part of the public API ([naming.md](..
 api:
   -
     name: "size"
-    kind: "variant"          # variant | text | boolean | instance
+    kind: "variant"          # variant | text | boolean | instance | slot
     default: "extra small"
     description: "What the property means and what it governs."
     a11y:                     # optional, property-level finding
@@ -150,6 +150,8 @@ api:
     controls:                 # booleans only — the properties this one governs
       - "leading icon"
 ```
+
+**`slot` and `instance` are different things.** An `instance` property holds one instance of one type — swapping it changes which component sits in that place. A `slot` holds however many instances the consumer puts in it, of several types, sometimes drawn from a constrained set and sometimes from none. Table Row Body is the case: a row holds as many cells as the table has columns, and a name, a date, a set of tags and a row of actions are four different components in one slot. A slot has no `default` and no `values`; what a slot will accept is recorded where every other allowed composition is, in `children`.
 
 **`controls` is what a "controlled group" is.** [naming.md](../../foundations/naming.md) §9 requires that when a boolean governs an element's presence, that element's properties follow it immediately. Recording which properties it governs makes the adjacency checkable instead of conventional.
 

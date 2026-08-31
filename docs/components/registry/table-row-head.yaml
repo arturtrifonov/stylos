@@ -1,0 +1,98 @@
+# Hand-written 2026-08-31 from the live component. Carries the full component
+# contract; there is no companion Markdown document — the readable page is
+# generated from here.
+
+id: "Table Row Head"
+name: "Table Row Head"
+family: "Table"
+level: "widget"
+role: "container"
+html: "<tr>"
+status: "draft"
+version: "0.1"
+summary: "The band across the top of a table that holds its column headings and separates them from the data."
+purpose: "A table needs one row that is not data — the row that names the columns, carries whatever ordering and narrowing is applied to them, and is visibly not part of the body. This is that row. It exists as a component rather than as a rule the table follows so that the band, its padding and the line under it are decided once and cannot drift between one table and the next, and so that the cells inside it are placed by a slot rather than arranged by hand."
+use_when:
+  - "A table has column headings, which is every table whose columns mean different things."
+do_not_use_when:
+  -
+    text: "The row carries data rather than naming the columns."
+    instead: "Table Row Body"
+children:
+  - "Table Cell Heading"
+  - "Table / TH Checkbox"
+parents:
+  - "Table"
+uses:
+  - "Table Cell Heading"
+flow_behavior:
+  - "fill"
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "This row is what makes its cells headers. If the implementation does not mark it as the table's header row, every heading in it is read as an ordinary value and the columns underneath are named by nothing — SC 1.3.1. The cells cannot supply that on their own; the grouping is the row's."
+  -
+    status: "requires"
+    note: "The association between a heading and its column is positional. The number of cells in this row and their order have to match the body rows exactly, and a table that hides a column has to hide it in both. Nothing in the component enforces it, and nothing in it can."
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable: false
+  intent: "Width belongs to the table. Height is hugged from the cells and is not named — the row adds its own block padding around them, which is what makes the header band taller than a body row at the same size, and the body row has none. The cells sit flush with no gap between them: where one column ends and the next begins is the cells' own padding, not a space in the row. The inline padding is the table's outer margin, held here rather than on the table, so the first and last columns do not sit against the edge. Resolve token values with npm run tokens:report."
+  sizes:
+    -
+      size: "extra small"
+      padding_inline: "gap/g-1_000"
+      padding_block: "gap/g-0_250"
+    -
+      size: "small"
+      padding_inline: "gap/g-1_000"
+      padding_block: "gap/g-0_250"
+    -
+      size: "medium"
+      padding_inline: "gap/g-1_000"
+      padding_block: "gap/g-0_375"
+    -
+      size: "large"
+      padding_inline: "gap/g-1_500"
+      padding_block: "gap/g-0_500"
+    -
+      size: "extra large"
+      padding_inline: "gap/g-1_500"
+      padding_block: "gap/g-0_500"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Row density, and it has to be the size every cell in the row and every body row in the table is set to. It drives the row's own padding; the cells carry their own run."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "cells slot"
+    kind: "slot"
+    description: "The heading cells, in column order. A slot rather than an instance property because a row holds as many cells as the table has columns and they are not all the same component — a select-all checkbox and a named column sit side by side."
+limitations:
+  - "The band and the line under it are not optional. There is no property to make the header row transparent or to drop the rule, so a table that wants a plain header has no way to ask for one."
+  - "The line under the row measures 1.23:1 against the page in light mode and 2.16:1 in dark, and 1.18:1 against the band itself. Where it is the only thing separating the headings from the first row of data that is below the 3:1 SC 1.4.11 asks of a boundary that carries meaning. Recorded as a decision taken for now rather than as an oversight."
+  - "No state. The header row does not respond to the pointer, and there is no property for a table whose whole header is disabled while data loads."
+  - "No sticky behaviour and no property for one. A header that stays put while the body scrolls is the table's mechanism, not the row's."
+  - "The row cannot say how many columns it has, and nothing checks that it matches the body."
+figma_notes:
+  - "The line is a LINE node positioned absolutely at the row's bottom edge with a MAX vertical constraint, rather than a bottom border on the frame. Its stroke weight is bound to width/normal."
+  - "The slot is Figma's SLOT property type. The four heading cells visible in every variant are the slot's default content, not a fixed anatomy — a row takes as many cells as the table has columns."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "5101:16565"
+  last_verified: "2026-08-31"
+notes: "The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."

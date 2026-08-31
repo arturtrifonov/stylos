@@ -32,7 +32,7 @@ children:
   - "Indicator Special"
   - "Loader"
 parents:
-  - "Table"
+  - "Table Row Head"
 uses:
   - "Icon"
   - "Button Inner"

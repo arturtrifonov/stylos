@@ -38,7 +38,7 @@ children:
   - "Indicator Special"
   - "Loader"
 parents:
-  - "Table"
+  - "Table Row Body"
 uses:
   - "Icon"
 flow_behavior:

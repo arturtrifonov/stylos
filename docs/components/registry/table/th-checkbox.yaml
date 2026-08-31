@@ -16,7 +16,7 @@ children:
   - "Toggle Label"
   - "Toggle Text"
 parents:
-  - "Table"
+  - "Table Row Head"
 notes: ""
 import:
   batch: 1
