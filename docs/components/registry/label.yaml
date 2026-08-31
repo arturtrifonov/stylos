@@ -1,5 +1,6 @@
-# Contract written 2026-08-28 from the live component set. The relations and the
-# import block are carried over from the CSV import of 2026-08-20.
+# Contract written 2026-08-28 from the live component set, updated 2026-08-31 when
+# the set gained a state property. The relations and the import block are carried
+# over from the CSV import of 2026-08-20.
 # See docs/components/registry/README.md for the schema.
 
 id: "Label"
@@ -75,11 +76,10 @@ sizing_model:
   horizontal: "fill"
   vertical: "hug"
   adjustable: true
-  intent: "Height is the sum of what is switched on — one line, or two with the gap between them — and is never set by hand. The name and the supporting line are separate type runs stepping at different rates; see the size property. Nothing here reserves space around the label: the component ends at its text and a form places it."
+  intent: "Height is the sum of what is switched on — one line, or two with the gap between them — and is never set by hand, which is why no height token is recorded: nothing binds one. The name and the supporting line are separate type runs stepping at different rates; see the size property. Nothing here reserves space around the label: the component ends at its text and a form places it."
   sizes:
     -
       size: "extra small"
-      height: "size/s-1_500"
       gap: "gap/g-0_125"
       label_font_size: "size/0_750"
       label_line_height: "line height/string/0_750"
@@ -87,7 +87,6 @@ sizing_model:
       additional_line_height: "line height/string/0_625"
     -
       size: "small"
-      height: "size/s-1_750"
       gap: "gap/g-0_250"
       label_font_size: "size/0_875"
       label_line_height: "line height/string/0_875"
@@ -95,7 +94,6 @@ sizing_model:
       additional_line_height: "line height/string/0_625"
     -
       size: "medium"
-      height: "size/s-2_000"
       gap: "gap/g-0_375"
       label_font_size: "size/1_000"
       label_line_height: "line height/string/1_000"
@@ -103,7 +101,6 @@ sizing_model:
       additional_line_height: "line height/string/0_750"
     -
       size: "large"
-      height: "size/s-2_250"
       gap: "gap/g-0_500"
       label_font_size: "size/1_125"
       label_line_height: "line height/string/1_125"
@@ -111,7 +108,6 @@ sizing_model:
       additional_line_height: "line height/string/0_750"
     -
       size: "extra large"
-      height: "size/s-2_500"
       gap: "gap/g-0_500"
       label_font_size: "size/1_250"
       label_line_height: "line height/string/1_250"
@@ -137,7 +133,7 @@ api:
     name: "is required"
     kind: "boolean"
     default: false
-    description: "Shows the required marker after the name. A marker and nothing more — it does not make the control required and it does not explain what the asterisk means."
+    description: "Shows the required marker after the name, in the primary text role. A marker and nothing more — it does not make the control required and it does not explain what the asterisk means. It has no effect while state is disabled; see limitations."
   -
     name: "has additional text"
     kind: "boolean"
@@ -169,10 +165,21 @@ api:
       -
         value: "extra large"
   -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "Whether the control this names is available. The label has no interaction of its own — it takes this from whatever it names, so that a name does not stay bright above a field nobody can use."
+    values:
+      -
+        value: "default"
+      -
+        value: "disabled"
+        note: "The name and the supporting line both take the disabled text role. It carries no validation outcome, and the required marker is not drawn — see limitations."
+  -
     name: "validation"
     kind: "variant"
     default: "off"
-    description: "The outcome the supporting line reports. Any value other than `off` requires the line, so it also switches it on; beyond that it recolours the line and does nothing else — the name keeps the base text role at every value. This is also the clearest place in the system to see why `error` is a validation word while `danger` is a colour: the value is named for the outcome, and it paints with `text/danger`."
+    description: "The outcome the supporting line reports. Any value other than `off` requires the line, so it also switches it on; beyond that it recolours the line and does nothing else — with state at default the name keeps the base text role at every value. This is also the clearest place in the system to see why `error` is a validation word while `danger` is a colour: the value is named for the outcome, and it paints with `text/danger`."
     values:
       -
         value: "off"
@@ -187,11 +194,13 @@ api:
         value: "success"
         note: "`text/success`. Carries the line with it."
 limitations:
-  - "No state. A label beside a disabled control does not dim with it."
+  - "The required marker is not drawn while state is disabled. The layer is absent from those variants rather than hidden, so a required field that is currently unavailable loses the one mark saying it must be filled — and gets it back when the field becomes available again."
+  - "No outcome while disabled. state and validation do not combine: a label above an unavailable control has nothing to report, which is the same rule the fields it names follow."
+  - "state has two values and no more. There is no read-only treatment, so a label above a read-only field is drawn exactly as one above an editable field."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4373-7431"
-  last_verified: "2026-08-28"
+  last_verified: "2026-08-31"
 notes: "The api block is ordered as the properties read, not as Figma reports them."
 import:
   batch: 1
