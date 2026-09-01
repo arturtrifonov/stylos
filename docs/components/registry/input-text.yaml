@@ -71,7 +71,7 @@ a11y:
     note: "The placeholder is not the label. It disappears as soon as someone types, and it sits at text/tertiary, one step quieter than the value. With has label off, the field still needs a name and it is set on the component rather than left to the placeholder."
   -
     status: "requires"
-    note: "validation is drawn three ways — the border colour, the mark in the field, the message under the name — and none of them is programmatic. The implementation has to say the field is invalid and tie the message to it, or a person not looking at the colour learns nothing. SC 1.4.1 and SC 3.3.1."
+    note: "validation is drawn as the border colour and the mark in the field, and on error and warning as the message above the label — and none of them is programmatic. The implementation has to say the field is invalid and tie the message to it, or a person not looking at the colour learns nothing. SC 1.4.1 and SC 3.3.1."
   -
     status: "requires"
     note: "read only and disabled have to be exposed as the different things they are. A read-only field stays reachable, stays selectable and is announced as read-only; a disabled one leaves the tab order and is announced as unavailable. The text role is what separates them on screen, and nothing about the semantics follows from that automatically."
@@ -202,17 +202,20 @@ api:
     name: "validation"
     kind: "variant"
     default: "off"
-    description: "What checking the value said. It colours the border, puts a mark in the field, and switches the message under the label. The message is above the field rather than below it because suggestion lists, dropdowns and pickers open below the field and would cover it. Only default, hover and active / focus carry validation — see limitations."
+    description: "What checking the value said. It colours the border and puts a mark in the field. On error and warning it also switches the message above the label; on success it does not — see that value. The message is above the field rather than below it because suggestion lists, dropdowns and pickers open below the field and would cover it. Only default, hover and active / focus carry validation — see limitations."
     values:
       -
         value: "off"
         note: "Nothing has been checked, or nothing was wrong. Not the same as success."
       -
         value: "error"
+        note: "Carries the message with it, because a person who has to fix something needs to be told what."
       -
         value: "warning"
+        note: "Carries the message with it."
       -
         value: "success"
+        note: "The mark in the field and nothing else. The label stays in its default treatment and no message appears, because a field that is simply correct rarely has anything to say beyond being correct — and success is rare enough that the mark carries it. Where there is something to say, the supporting line is switched on deliberately."
   -
     name: "is filled"
     kind: "variant"
@@ -302,7 +305,8 @@ limitations:
 figma_notes:
   - "read only is modelled as a value of state because a separate property would need none of hover, focus or validation and would have to exclude every state but default. It is a mode, and state is where Figma can hold it cheaply."
   - "The label's words and the message's words are properties of the nested Label instance rather than of this component, because Figma cannot push a value deeper without a variable for the whole file. Figma surfaces them on the instance instead. In @stylos/ui the label is set on Input Text and passed down."
-  - "validation and state both drive the nested Label by swapping its variant — validation switches the message, state carries the disabled treatment through to the label."
+  - "state and validation both drive the nested Label by swapping its variant. On success the Label is left on validation off, which is how the rule that success carries no message is expressed."
+  - "The placeholder sits in a wrapper so the field row keeps its width when the placeholder is switched off."
   - "Focus is a third drop shadow on top of the two the resting field already carries, rather than a change of border weight."
   - "The leading, trailing and validation icon containers bind their width to a local collection named icon size, outside tokens/, while their heights bind to the dimension scale. The icon footprints recorded in sizes above are the tokens."
 figma:
