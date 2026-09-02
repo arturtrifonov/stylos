@@ -68,7 +68,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 
 ### Stage 4 — Component contracts for the core set
 
-**Scope discipline:** 37 registry entries, not 101 — the set the proof screen needs. Two of them, `Button Outline` and `Button Ghost`, do not exist in the registry yet and are created here.
+**Scope discipline:** 37 registry entries, not 112 — the set the proof screen needs.
 
 **The Airtable `import.batch` numbers are not this queue.** They are history from the one-time bootstrap of 2026-08-20, and `registry/README.md` keeps them as history for that reason. Read as a plan they mislead: batch 1 held 45 entries spanning all five levels, 18 of them outside this set, while Tooltip, Toast and Side Panel — named by the Stage 6 gate or by this set — sat in batch 2. Nothing below writes back into that field.
 
@@ -80,16 +80,18 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 | 2 | The remaining small elements | Icon, Tag Fill / Outline, Toggle Input / Label / Text | a filter row | 1 wk |
 | 3 | The table | Table Cell Heading, Table Cell Text, Table Row Head, Table Row Body | a dense table carrying real data | 1–2 wk |
 | 4 | Input | Input Text, Select, Dropdown Item Default / Parent / Checkbox / Toggle, Dropdown | a toolbar and filters above that table | 1 wk |
-| 5 | The Button family | Button / Button Basic, Button / Button Outline, Button / Button Ghost, Button Icon | every action on the screen | 2 wk |
+| 5 | The Button family | Button Basic, Button Outline, Button Ghost, Button Icon | every action on the screen | 2 wk |
 | 6 | The shell | Modal, Side Panel, Tooltip | the Stage 6 proof screen, composed | 1 wk |
 
 **Build the proof screen incrementally, as each wave lands** — in Figma, from the library, without waiting for Stage 6. A wave that ends in a rendered fragment finds the gap it opened within days; a wave that ends in a merged YAML file finds it in Stage 6, where it costs a re-cut of the set.
 
 **Figma readiness is inside the wave, not a precondition of it.** Side Panel and Tooltip are not ready in the library today. That work belongs to wave 6 and is priced into it; it is not a survey to run ahead of the stage.
 
-**Wave 5 is not four contracts.** Figma holds three sets of 100 variants under `Button / Button Basic | Outline | Ghost` with an identical API; `tone` carries `error` against [`naming.md`](docs/foundations/naming.md) §4 in all three; two of the three have no registry entry; the ids do not match the Figma names the way `Table Cell Text` does; and the change making `do_not_use_when.instead` take a list is blocked until Outline and Ghost exist to anchor to. It is one reconciliation, done once, across the family.
+**The registry's names lead Figma's, deliberately, until each contract is written.** On 2026-09-02 the twenty-one ids that carried a slash group — the shape the 2026-08-20 import left behind — became compound names, because a slash group is not how this system expresses a family ([registry README](docs/components/registry/README.md), *Families*). Figma still holds the old names for most of them. The rename in Figma happens in the wave or milestone that writes the component's contract, not as a separate sweep, and until it does, `id` does not match the Figma name for those entries. The list is in each entry's header comment.
 
-**Out of v0.1, deliberately:** Toast, Tabs Horizontal and Tabs / Tab Item — the Stage 6 gate names a table, filters, a side panel and a modal, and none of the three appears in it. Everything else follows them, grouped in §9.
+**Wave 5 is not four contracts.** Figma holds three sets of 100 variants under `Button / Button Basic | Outline | Ghost` with an identical API; `tone` carries `error` against [`naming.md`](docs/foundations/naming.md) §4 in all three; the registry now names them `Button Basic`, `Button Outline` and `Button Ghost`, so the Figma rename is part of the wave; and the change making `do_not_use_when.instead` take a list belongs here too, now that all three entries exist to anchor to. It is one reconciliation, done once, across the family.
+
+**Out of v0.1, deliberately:** Toast, Tabs Horizontal and Tab Item — the Stage 6 gate names a table, filters, a side panel and a modal, and none of the three appears in it. Everything else follows them, grouped in §9.
 
 - **First**, settle the documentation boundary — which of `STANDARD.md`'s twenty points live in Figma and which in Markdown. Writing twenty documents before that rule exists guarantees rewriting them.
 - Decide the accessibility target and browser baseline. A contract records accessibility findings against the thing each is about, so the target they are judged by cannot wait for Stage 5.
@@ -201,7 +203,7 @@ Its scope and timing are open, not its existence. It is not on the critical path
 | Risk | Signal | Countermeasure |
 | --- | --- | --- |
 | S4 stalls — twenty-nine contracts of judgement work | two sessions on the same component | §2.2: adopt what Figma does, write it down as provisional. The wave's rendered fragment is the forcing function |
-| Completionism against the 101-entry registry | documenting outside the core set | the Stage 4 table is the scope |
+| Completionism against the 112-entry registry | documenting outside the core set | the Stage 4 table is the scope |
 | The registry drifts from Figma unnoticed | `validate:registry` not run for weeks | make it part of the pre-commit habit |
 | Documentation drifts from the built system | a document describing something that no longer exists | keep facts in one place; documents point rather than copy |
 | The proof screen gets skipped as "obvious" | v0.1 tagged without S6 | it is the gate |
@@ -222,9 +224,9 @@ Two consequences worth restating where they apply. **A milestone is not a size b
 
 | Milestone | The decision it opens | Entries |
 | --- | --- | --- |
-| alpha | the decision that the library is ready for **internal distribution** — someone other than the author builds on it | Input Color, Input Date, Input Datetime, Input Email, Input Number, Input Password, Input Search, Input Telephone, Input Time, Input URL, Text Area, Multiselect, Select Cascade, Date Picker, Slider, Chips, Uploader, Queryfield, Progress, Avatar, Image, Table / TD Actions, Table / TD Boolean, Table / TD Checkbox, Table / TD Expand, Table / TD Image, Table / TD Link, Table / TD Person, Table / TD Tags, Table / TH Checkbox, Table Toolbar, Pagination, Button Group, Button Dropdown, Breadcrumbs, Tabs Horizontal, Tabs / Tab Item, Tabs Vertical, Switcher, Scrollbar, Accordion, Accordion / Container, Accordion / Header |
+| alpha | the decision that the library is ready for **internal distribution** — someone other than the author builds on it | Input Color, Input Date, Input Datetime, Input Email, Input Number, Input Password, Input Search, Input Telephone, Input Time, Input URL, Text Area, Multiselect, Select Cascade, Date Picker, Slider, Chips, Uploader, Queryfield, Progress, Avatar, Image, Table Cell Actions, Table Cell Boolean, Table Cell Checkbox, Table Cell Expand, Table Cell Image, Table Cell Link, Table Cell Person, Table Cell Tags, Table Cell Heading Checkbox, Table Toolbar, Pagination, Button Group, Button Dropdown, Breadcrumbs, Tabs Horizontal, Tab Item, Tabs Vertical, Switcher, Scrollbar, Accordion, Accordion Header |
 | beta | the decision that it is ready **outside** — a product that is not ours, with the states a real screen has and an API that will not move under it | Toast, Alert, Popover, Skeleton Loader, Data Info, Metric, Card, List, Tree, Person, Event, Asset, Logo, Feature List, Hero, Code Snippet, Charts, Header, Side Panel Menu, Steps, Flex Layout, Tag Interactive Fill, Tag Interactive Outline, Table Cell Multiline |
-| 1.0 | the decision that the library is **complete and its API is a commitment** | Code Editor, Code Editor / Text Area, Code Editor / Toolbar, Edit Mode / Edit, Edit Mode / View, Audio Player, Video Player, Carousel |
+| 1.0 | the decision that the library is **complete and its API is a commitment** | Code Editor, Code Editor Text Area, Code Editor Toolbar, Edit Mode, Audio Player, Video Player, Carousel |
 | Parked | no decision waits on these — mobile, which this plan excludes (§8 above) | Bottom Sheet, Pull to Refresh |
 
 **Both tables are read, not copied.** `tools/lib/plan.mjs` parses §4 and this one on every build, so the views show the road this document states and no other — the registry index as a **Milestone** column and a **Wave** column, each with its own facet, and the home page as two charts and a sentence saying which milestone and which wave the work is in. The milestone bars are all full width and only their fill differs: a milestone is a checklist, not a quantity of work, and drawing 43 against 8 would say otherwise. `Parked` is not charted, because no decision waits on it. The `Entries` column is therefore written as full registry ids — the only shorthand either table takes is `Radio Input / Label / Text`, which expands through the entry's `family`. An id named in either table that the registry does not hold fails the build; an entry named by neither is reported by `npm run validate:registry`, so the queue cannot quietly cover part of the set.
@@ -234,4 +236,4 @@ Four notes, so they are not re-derived later:
 - **A big layout component is worth less in a library than its size suggests.** Header and Side Panel Menu are assembled once per product and usually assembled by hand; being in the library early buys little. That is why they sit in beta while much smaller things — Steps, Switcher — sit above or beside them. Hero and Bottom Sheet are the same class of component, and Hero is in beta on that reasoning rather than on its own merits.
 - **The ten `Input *` entries read as one API repeated with a different type.** If that holds when the family is opened in Figma, alpha's checklist is much shorter than its count — nine of those entries would be the same contract written once. That is inference from the registry, where the ten are identical in level, role and size; it has not been checked against the library.
 - **Avatar and Image sit with the table cells** because every cell type names them, not because they belong to the table.
-- **Toast, Tabs Horizontal and Tabs / Tab Item were cut from v0.1** rather than never wanted.
+- **Toast, Tabs Horizontal and Tab Item were cut from v0.1** rather than never wanted.

@@ -1,28 +1,33 @@
 # Hand-edited. This file is the source for its component's structural data.
 # The CSV import that created it ran once, on 2026-08-20, and will not run
 # again — see docs/components/registry/README.md for the schema and workflow.
+#
+# 2026-09-02: renamed from "Accordion / Header". A slash group is not how this
+# registry expresses a family — see the registry README, *Families*. The
+# entry moved out of accordion/ with it.
 
-id: "Code Editor / Text Area"
-name: "Code Editor / Text Area"
+id: "Accordion Header"
+name: "Accordion Header"
 level: "object"
-role: "input"
+role: "trigger"
 flow_behavior:
   - "fill"
 children:
   - "Badge"
-  - "Avatar"
   - "Button Inner"
   - "Icon"
   - "Indicator Status"
   - "Indicator Special"
-  - "Scrollbar"
   - "Tag Fill"
   - "Tag Outline"
-  - "Chips"
+  - "Toggle Input"
+  - "Toggle Label"
+  - "Toggle Text"
+  - "Avatar"
   - "Loader"
 parents:
-  - "Code Editor"
+  - "Accordion"
 notes: ""
 import:
-  batch: 4
-  ready: false
+  batch: 1
+  ready: true

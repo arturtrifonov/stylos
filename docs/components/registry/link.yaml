@@ -18,9 +18,9 @@ do_not_use_when:
   -
     text: "The control performs an action rather than going somewhere — submitting, saving, deleting, applying. A control whose appearance promises navigation and then acts is the one mistake a link can make that a person cannot recover from."
     instead:
-      - "Button / Button Basic"
-      - "Button / Button Outline"
-      - "Button / Button Ghost"
+      - "Button Basic"
+      - "Button Outline"
+      - "Button Ghost"
   -
     text: "The action belongs to the component around it — clearing a field, removing a tag, dismissing a message — and is named by an icon rather than by words."
     instead: "Button Inner"
@@ -34,7 +34,7 @@ children:
   - "Indicator Special"
   - "Loader"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Input Text"
   - "Input Date"
   - "Input Search"
@@ -50,7 +50,7 @@ parents:
   - "Select"
   - "Select Cascade"
   - "Text Area"
-  - "Table / TD Link"
+  - "Table Cell Link"
   - "Alert"
   - "Toast"
   - "Bottom Sheet"

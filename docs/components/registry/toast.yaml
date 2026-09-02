@@ -12,9 +12,9 @@ flow_behavior:
 children:
   - "Avatar"
   - "Badge"
-  - "Button / Button Basic"
-  - "Button / Button Outline"
-  - "Button / Button Ghost"
+  - "Button Basic"
+  - "Button Outline"
+  - "Button Ghost"
   - "Button Inner"
   - "Button Dropdown"
   - "Button Group"

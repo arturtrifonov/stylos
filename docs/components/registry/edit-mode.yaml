@@ -1,9 +1,15 @@
 # Hand-edited. This file is the source for its component's structural data.
 # The CSV import that created it ran once, on 2026-08-20, and will not run
 # again — see docs/components/registry/README.md for the schema and workflow.
+#
+# 2026-09-02: the registry held two entries, one for viewing and one for
+# editing, where Figma holds a single component set. They are this one entry
+# now. The children are the union of the two, which is what the editing entry
+# already carried; the role is "input" because that is what the component is
+# for, and viewing is the state it rests in.
 
-id: "Edit Mode / Edit"
-name: "Edit Mode / Edit"
+id: "Edit Mode"
+name: "Edit Mode"
 level: "object"
 role: "input"
 flow_behavior:
@@ -21,7 +27,7 @@ children:
   - "Label"
   - "Loader"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Bottom Sheet"
   - "Flex Layout"
   - "Header"

@@ -9,8 +9,8 @@ role: "toolbar"
 flow_behavior:
   - "fixed"
 parents:
-  - "Accordion / Container"
-  - "Code Editor / Text Area"
+  - "Accordion"
+  - "Code Editor Text Area"
   - "Alert"
   - "Toast"
   - "Bottom Sheet"

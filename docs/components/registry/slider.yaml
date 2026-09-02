@@ -13,7 +13,7 @@ children:
   - "Icon"
   - "Button Inner"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Alert"
   - "Toast"
   - "Bottom Sheet"

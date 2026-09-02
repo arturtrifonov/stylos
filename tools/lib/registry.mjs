@@ -65,7 +65,12 @@ const KNOWN_FIELDS = new Set([
   "import",
 ]);
 
-/** `Table / TD Text` → `table/td-text`. The same rule the 2026-08-20 import used. */
+/**
+ * `Table Cell Text` → `table-cell-text`, and `Foo / Bar` → `foo/bar`. The same
+ * rule the 2026-08-20 import used. No entry carries a `/` since 2026-09-02 —
+ * the split survives because the path has to follow whatever Figma's name is,
+ * not because a nested path is wanted (docs/foundations/naming.md §2).
+ */
 export function slugPath(id) {
   return id
     .split(" / ")
@@ -85,9 +90,9 @@ export function registryPathFor(id) {
 
 /**
  * Where this component's generated page lands, relative to build/components/.
- * The path mirrors the registry path, so `Table / TD Text` is one directory
- * deep in both places and a link between two pages is a relative path either
- * side of the same tree.
+ * The path mirrors the registry path, so an id that puts its entry a directory
+ * deep puts its page a directory deep too, and a link between two pages is a
+ * relative path either side of the same tree.
  *
  * There is no hand-written document to point at any more: the readable page is
  * generated from the entry (docs/components/STANDARD.md).

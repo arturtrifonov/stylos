@@ -12,7 +12,7 @@ children:
   - "Link"
   - "Icon"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Bottom Sheet"
   - "Flex Layout"
   - "Header"

@@ -20,9 +20,9 @@ do_not_use_when:
     instead: "Table Row Body"
 children:
   - "Table Cell Heading"
-  - "Table / TH Checkbox"
+  - "Table Cell Heading Checkbox"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Bottom Sheet"
   - "Flex Layout"
   - "Header"

@@ -9,7 +9,7 @@ role: "output"
 flow_behavior:
   - "fill"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Alert"
   - "Toast"
   - "Bottom Sheet"

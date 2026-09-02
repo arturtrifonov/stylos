@@ -23,7 +23,7 @@ children:
   - "Tag Outline"
   - "Loader"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Bottom Sheet"
   - "Flex Layout"
   - "Header"
