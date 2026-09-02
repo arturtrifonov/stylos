@@ -31,6 +31,7 @@ do_not_use_when:
       - "Radio Label"
       - "Radio Text"
 children:
+  - "Dropdown"
   - "Avatar"
   - "Badge"
   - "Button Inner"

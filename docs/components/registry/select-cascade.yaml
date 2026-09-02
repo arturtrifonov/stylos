@@ -9,6 +9,7 @@ role: "input"
 flow_behavior:
   - "fill"
 children:
+  - "Dropdown"
   - "Avatar"
   - "Badge"
   - "Button Inner"

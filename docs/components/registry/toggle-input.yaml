@@ -30,6 +30,7 @@ children:
   - "Badge"
   - "Loader"
 parents:
+  - "Dropdown Item Toggle"
   - "Accordion / Container"
   - "Accordion / Header"
   - "Table / TD Checkbox"
