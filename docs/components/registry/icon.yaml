@@ -22,6 +22,8 @@ do_not_use_when:
     text: "The meaning is not in the set. Adding one is a decision about the vocabulary, not a local substitution, and tracing or importing a shape to fill the gap is how a set stops being a set."
     instead: null
 parents:
+  - "Dropdown Item Parent"
+  - "Dropdown Item Default"
   - "Accordion / Container"
   - "Accordion / Header"
   - "Avatar"

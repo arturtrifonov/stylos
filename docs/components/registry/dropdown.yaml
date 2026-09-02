@@ -1,15 +1,178 @@
-# Hand-edited. This file is the source for its component's structural data.
-# The CSV import that created it ran once, on 2026-08-20, and will not run
-# again — see docs/components/registry/README.md for the schema and workflow.
+# Contract written 2026-09-02 from the live component set. The import block is
+# carried over from the CSV import of 2026-08-20; children were authored when the
+# four item components were written. See docs/components/registry/README.md.
 
 id: "Dropdown"
 name: "Dropdown"
-level: "object"
-role: "toolbar"
+level: "widget"
+role: "container"
+html: "<ul role=\"listbox\">"
+status: "draft"
+version: "0.1"
+summary: "The panel a dropdown opens: a list of options with optional search, a way back, and buttons under it."
+purpose: "Everything a list of options needs around the options themselves. The rows are their own components and go in a slot; what this adds is the surface they sit on, the four bands that can appear around them — a way back out of a submenu, a field to narrow the list, the list itself, and buttons to apply or cancel — and one decision about how tall the thing is allowed to get before it starts scrolling."
+use_when:
+  - "Options have to be shown in a panel over the page rather than in the layout."
+  - "The list needs searching, applying, or a way back out of a nested level."
+do_not_use_when:
+  -
+    text: "The options belong in the page rather than over it, and all of them should be visible at once."
+    instead:
+      - "Radio Label"
+      - "Radio Text"
+  -
+    text: "The panel is a whole view rather than a list — a form, a document, a set of sections."
+    instead:
+      - "Modal"
+      - "Side Panel"
+children:
+  - "Dropdown Item Default"
+  - "Dropdown Item Parent"
+  - "Dropdown Item Checkbox"
+  - "Dropdown Item Toggle"
+parents:
+  - "Select"
+  - "Multiselect"
+  - "Select Cascade"
+  - "Button Dropdown"
+uses:
+  - "Dropdown Item Default"
+  - "Input Search"
+  - "Button / Button Basic"
+  - "Button / Button Outline"
+  - "Scrollbar"
 flow_behavior:
   - "fixed"
   - "absolute"
-notes: ""
+a11y:
+  -
+    status: "requires"
+    note: "The panel is a list of options and nothing here says so. The implementation has to expose it as one, tie it to whatever opened it, and carry the open state on that control — SC 4.1.2."
+  -
+    status: "requires"
+    note: "Opening a panel over the page takes the keyboard with it. Arrow keys move through the options, Escape closes and returns to the control that opened it, and focus does not escape into the page behind — SC 2.1.1 and SC 2.1.2. None of that is drawn, and all of it is required."
+  -
+    status: "requires"
+    note: "The search field narrows the list under it. The implementation has to say how many options are left after each keystroke, because a person who cannot see the list shrinking has no way to know the field is doing anything — SC 4.1.3."
+  -
+    status: "requires"
+    note: "The buttons band means the choices are not applied until it is pressed, and the list is telling nobody that. Where it is used, whether a change has been staged or committed has to be said rather than implied by a button being there."
+sizing_model:
+  horizontal: "fixed"
+  vertical: "hug"
+  adjustable: true
+  intent: "Width is named by whoever opens the panel, usually to match the control it drops from. Height is the sum of the bands that are switched on and hugs them, up to max_height, past which the list scrolls inside while the bands around it stay put. max_height is the one number here rather than a token, because it is not a step on any scale: it is six rows, the five gaps between them, the list padding on both sides and the panel border — the height of a six-row panel, which is the count at which a list stops being read and starts being scanned — plus half a row, so a longer list is cut mid-row and reads as continuing rather than ending flush and looking complete. Recomputing it is the row height from the item at that size and the list padding recorded here, put back through that sum. It is a default and a consumer may name another. Every band steps with size except the space between rows, which stays at one value on purpose: the rows grow and their own padding grows, and holding the gap keeps a long list dense instead of loosening as it gets bigger. Resolve token values with npm run tokens:report."
+  sizes:
+    -
+      size: "extra small"
+      max_height: 186
+      list_padding: "gap/g-0_500"
+      list_gap: "gap/g-0_500"
+      search_padding: "gap/g-1_000"
+      buttons_padding: "gap/g-1_000"
+      buttons_gap: "gap/g-0_750"
+      back_padding_block: "gap/g-0_750"
+      back_padding_inline: "gap/g-0_250"
+    -
+      size: "small"
+      max_height: 229
+      list_padding: "gap/g-0_750"
+      list_gap: "gap/g-0_500"
+      search_padding: "gap/g-1_250"
+      buttons_padding: "gap/g-1_250"
+      buttons_gap: "gap/g-0_875"
+      back_padding_block: "gap/g-0_875"
+      back_padding_inline: "gap/g-0_375"
+    -
+      size: "medium"
+      max_height: 272
+      list_padding: "gap/g-1_000"
+      list_gap: "gap/g-0_500"
+      search_padding: "gap/g-1_500"
+      buttons_padding: "gap/g-1_500"
+      buttons_gap: "gap/g-0_875"
+      back_padding_block: "gap/g-1_000"
+      back_padding_inline: "gap/g-0_500"
+    -
+      size: "large"
+      max_height: 315
+      list_padding: "gap/g-1_250"
+      list_gap: "gap/g-0_500"
+      search_padding: "gap/g-1_750"
+      buttons_padding: "gap/g-1_750"
+      buttons_gap: "gap/g-0_875"
+      back_padding_block: "gap/g-1_000"
+      back_padding_inline: "gap/g-0_625"
+    -
+      size: "extra large"
+      max_height: 358
+      list_padding: "gap/g-1_500"
+      list_gap: "gap/g-0_500"
+      search_padding: "gap/g-2_000"
+      buttons_padding: "gap/g-2_000"
+      buttons_gap: "gap/g-0_875"
+      back_padding_block: "gap/g-1_250"
+      back_padding_inline: "gap/g-0_750"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Density, and it sets the size of everything the panel puts in itself — the rows in the slot, the search field, the buttons. One panel is one size throughout."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "content slot"
+    kind: "slot"
+    description: "The options, in order. A slot rather than an instance property because a list holds as many rows as there are options and they are not all the same component — a plain option, one that opens a submenu, and one carrying a checkbox or a switch sit in the same list."
+  -
+    name: "has back button"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a row sits above the list leading back out. For a panel that is one level of a nested set: the row that got you here, offered in reverse."
+  -
+    name: "has search"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a field above the list narrows it. For lists long enough that reading them is worse than typing at them."
+  -
+    name: "has scrollbar"
+    kind: "boolean"
+    default: "false"
+    description: "Whether the scrollbar is shown beside the list. It says the bar is visible, not that the list scrolls: a list shorter than the maximum has nothing to scroll and nothing to show it with."
+  -
+    name: "has buttons"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a band of buttons closes the panel. Its presence changes what the list means: with buttons the choices are staged and applied together, without them each choice takes effect as it is made."
+limitations:
+  - "No open and no closed. The panel is the open thing; whatever it drops from owns the opening, the closing and where it sits on the screen."
+  - "No position, no side and no alignment. Whether the panel hangs below or above the control, and which edge it lines up with, is not decided here."
+  - "No empty state, no loading state and no group headings inside the list. A list with nothing in it, a list still arriving, and a list that needs dividing all have to be built in the slot."
+  - "The two buttons are fixed as an outline and a filled one. There is no property for their words, their tone or how many there are."
+  - "max_height is a pixel value and every other measure here is a token. It has to be recomputed by hand whenever the row height, the list padding or the gap moves, and nothing checks that it was."
+  - "The scrollbar is the same size at every panel size. That is a choice of default parameters for it rather than a run, and it does not follow the size property the way the rows, the field and the buttons do."
+  - "One search field and one back row, both at the top and both in a fixed order. Nothing reorders the bands."
+figma_notes:
+  - "The maximum height has no property in the set. Figma cannot hold a maximum and keep the buttons band pinned beneath it, so the two ends are variants instead: hug is the panel under its maximum, and fixed is a height a designer sets by hand to see the list clipped with the buttons still in place. Neither value is part of the component — it has one adjustable maximum and no such switch."
+  - "The set is authored at a width because Figma cannot leave one unset. It carries no meaning and no width token is recorded."
+  - "The back row is an instance of Dropdown Item Default rather than a component of its own, so it inherits the row's states and its focus ring."
+  - "The scrollbar instance is Scrollbar / Vertical in the library. The registry entry it points at is Scrollbar; the ids will meet when that component is written."
+  - "The panel clips its own content, and so does the container holding the list, so a row longer than the panel is cut at the panel's edge rather than drawn over its shadow."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4857:3786"
+  last_verified: "2026-09-02"
+notes: "The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."
 import:
   batch: 1
   ready: true

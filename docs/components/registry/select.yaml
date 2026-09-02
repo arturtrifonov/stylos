@@ -1,14 +1,37 @@
-# Hand-edited. This file is the source for its component's structural data.
-# The CSV import that created it ran once, on 2026-08-20, and will not run
-# again — see docs/components/registry/README.md for the schema and workflow.
+# Contract written 2026-09-01 from the live component set. The relations and the
+# import block are carried over from the CSV import of 2026-08-20.
+# See docs/components/registry/README.md for the schema.
 
 id: "Select"
 name: "Select"
+family: "Input"
 level: "object"
 role: "input"
-flow_behavior:
-  - "fill"
+html: "<label>Label text <span>Additional text</span></label><select>"
+status: "draft"
+version: "0.1"
+summary: "A form control showing the option currently chosen, which opens a list to change it."
+purpose: "A select shows the option currently chosen and a chevron saying there are others. That pair is the whole of it: the value in a box, the mark that the box opens, and an optional control for putting it back to nothing. What opens is not here — the list, its options and every way of moving through them belong to whatever draws it, which is why this entry describes a closed control and stops there."
+use_when:
+  - "One value is chosen from a set the product knows, and the set is short enough to be worth opening rather than searching."
+  - "The set is fixed: a person picks from it and cannot add to it."
+do_not_use_when:
+  -
+    text: "More than one option may be chosen at once."
+    instead: "Multiselect"
+  -
+    text: "The options nest, so choosing means walking a tree rather than picking from a list."
+    instead: "Select Cascade"
+  -
+    text: "The value is typed rather than chosen."
+    instead: "Input Text"
+  -
+    text: "The set is short, the options are visible together, and choosing is the point of the screen rather than one field in a form."
+    instead:
+      - "Radio Label"
+      - "Radio Text"
 children:
+  - "Dropdown"
   - "Avatar"
   - "Badge"
   - "Button Inner"
@@ -32,7 +55,235 @@ parents:
   - "Modal"
   - "Side Panel"
   - "Side Panel Menu"
-notes: ""
+uses:
+  - "Label"
+  - "Icon"
+  - "Button Inner"
+flow_behavior:
+  - "fill"
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "The field needs an accessible name and something has to associate it with the control. Which route is used is the implementation's to choose — see has label — but having none is not a route."
+  -
+    status: "requires"
+    note: "Everything about the open list is outside this component: that it is open, which option is active, how the arrow keys move through it, how the choice returns. None of that is here to get right or wrong, and all of it is required for the control to work — SC 4.1.2 and SC 2.1.1."
+  -
+    status: "requires"
+    note: "validation is drawn as the border colour and the mark in the field, and on error and warning as the message above it. None of it is programmatic. The implementation has to say the field is invalid and tie the message to it, or a person not looking at the colour learns nothing. SC 1.4.1 and SC 3.3.1."
+  -
+    status: "requires"
+    note: "The clear control carries no visible text. It needs a name saying what it clears, because a form of identically named controls is a list a person cannot choose between."
+  -
+    status: "requires"
+    note: "read only and disabled have to be exposed as the different things they are. A read-only field stays reachable, stays selectable and is announced as read-only; a disabled one leaves the tab order and is announced as unavailable. The text role is what separates them on screen, and nothing about the semantics follows from that automatically."
+sizing_model:
+  horizontal: "fixed"
+  vertical: "hug"
+  adjustable: true
+  intent: "Width is the one dimension anyone names, which is what adjustable refers to; the 220 the set is authored at is a canvas artifact carrying no meaning. Height is nobody's to name. The box is a token height per size, and above it the label is one line, or two where it carries a supporting line, or absent — so the component hugs whatever that comes to rather than offering a height to set. The type follows the Element profile rather than the Object one its level would give it, documented here so it overrides the level default per typography.md. Line heights come from the string family because the value is one line. The chevron and the leading mark step on the icon run; the clear control and the validation mark step two below it, so neither competes with the value. Resolve token values with npm run tokens:report."
+  sizes:
+    -
+      size: "extra small"
+      field_height: "size/s-3_000"
+      padding_inline: "gap/g-1_000"
+      gap: "gap/g-0_500"
+      stack_gap: "gap/g-0_250"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+      suffix_font_size: "size/0_625"
+      suffix_line_height: "line height/string/0_625"
+      icon: "size/s-2_000"
+      validation_icon: "size/s-1_500"
+      clear: "size/s-1_500"
+    -
+      size: "small"
+      field_height: "size/s-4_000"
+      padding_inline: "gap/g-1_250"
+      gap: "gap/g-0_625"
+      stack_gap: "gap/g-0_375"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+      suffix_font_size: "size/0_625"
+      suffix_line_height: "line height/string/0_625"
+      icon: "size/s-2_500"
+      validation_icon: "size/s-1_750"
+      clear: "size/s-1_750"
+    -
+      size: "medium"
+      field_height: "size/s-5_000"
+      padding_inline: "gap/g-1_500"
+      gap: "gap/g-0_750"
+      stack_gap: "gap/g-0_500"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+      suffix_font_size: "size/0_750"
+      suffix_line_height: "line height/string/0_750"
+      icon: "size/s-3_000"
+      validation_icon: "size/s-2_000"
+      clear: "size/s-2_000"
+    -
+      size: "large"
+      field_height: "size/s-6_000"
+      padding_inline: "gap/g-2_000"
+      gap: "gap/g-0_875"
+      stack_gap: "gap/g-0_625"
+      font_size: "size/1_250"
+      line_height: "line height/string/1_250"
+      suffix_font_size: "size/0_750"
+      suffix_line_height: "line height/string/0_750"
+      icon: "size/s-3_500"
+      validation_icon: "size/s-2_250"
+      clear: "size/s-2_250"
+    -
+      size: "extra large"
+      field_height: "size/s-7_000"
+      padding_inline: "gap/g-2_500"
+      gap: "gap/g-1_000"
+      stack_gap: "gap/g-0_750"
+      font_size: "size/1_500"
+      line_height: "line height/string/1_500"
+      suffix_font_size: "size/0_875"
+      suffix_line_height: "line height/string/0_875"
+      icon: "size/s-4_000"
+      validation_icon: "size/s-2_500"
+      clear: "size/s-2_500"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Field density, and it has to match the fields beside it in the same form. Drives the box, its padding and gap, the type, the chevron and the two smaller marks."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "Where the control is in the interaction, and — for two of the values — whether it can be opened at all."
+    values:
+      -
+        value: "default"
+      -
+        value: "hover"
+        note: "The border takes the primary role."
+      -
+        value: "active / focus"
+        note: "One value, not two. Pressing the control is what focuses it, so the two would never be seen apart."
+      -
+        value: "read only"
+        note: "The chosen value is shown and cannot be changed. No chevron, because there is no list to open. Carries no validation outcome."
+      -
+        value: "disabled"
+        note: "Not applicable now, against read only, which is applicable and settled. No chevron for the same reason, the label and the value both take the disabled text role, and the field leaves the tab order."
+  -
+    name: "validation"
+    kind: "variant"
+    default: "off"
+    description: "What checking the value said. It colours the border and puts a mark in the field. On error and warning it also switches the message above the label; on success it does not — see that value."
+    values:
+      -
+        value: "off"
+        note: "Nothing has been checked, or nothing was wrong. Not the same as success."
+      -
+        value: "error"
+        note: "Carries the message with it, because a person who has to fix something needs to be told what."
+      -
+        value: "warning"
+        note: "Carries the message with it."
+      -
+        value: "success"
+        note: "The mark in the field and nothing else. The label stays in its default treatment and no message appears, because a field that is simply correct rarely has anything to say beyond being correct — and success is rare enough that the mark carries it. Where there is something to say, the supporting line is switched on deliberately."
+  -
+    name: "is filled"
+    kind: "variant"
+    default: "false"
+    description: "Whether an option has been chosen. It swaps the placeholder for the value and takes the text from tertiary to base, and it is what makes the clear control possible."
+    values:
+      -
+        value: "false"
+      -
+        value: "true"
+  -
+    name: "has leading icon"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a mark sits before the value — the kind of thing the list holds."
+    controls:
+      - "leading icon"
+  -
+    name: "leading icon"
+    kind: "instance"
+    default: "Placeholder"
+    description: "Which mark leads. Named for the meaning the set carries, not for a drawing."
+  -
+    name: "has label"
+    kind: "boolean"
+    default: "true"
+    description: "Whether the name of the field is shown above it. On by default. Three routes give the field its name: the label is passed to the component, which associates it; a label is authored outside and associated with the control; or the context makes the field obvious and the name is supplied without being shown. Turning this off rules out the first and leaves the other two."
+  -
+    name: "has placeholder"
+    kind: "boolean"
+    default: "true"
+    description: "Whether the control shows a placeholder before anything is chosen. On by default: an empty select cannot be typed into, so the placeholder is the only thing separating a control nobody has answered from one whose answer happens to be short."
+    controls:
+      - "placeholder text"
+  -
+    name: "placeholder text"
+    kind: "text"
+    default: "Select the option"
+    description: "What stands in the control before anything is chosen. It is an instruction rather than an example of a format — there is nothing to demonstrate and nothing is typed over it, because the chosen option replaces it whole. One line, truncated with an ellipsis."
+  -
+    name: "input text"
+    kind: "text"
+    default: "Selected option"
+    description: "The chosen option, shown when is filled is true. One line, truncated with an ellipsis rather than wrapped — an option too long for the field is cut here and readable in the list."
+  -
+    name: "has suffix text"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a short quiet string sits at the end of the field, inside it."
+    controls:
+      - "suffix text"
+  -
+    name: "suffix text"
+    kind: "text"
+    default: "Suffix"
+    description: "The unit or qualifier the chosen value is in. It sits in the secondary text role at a smaller measure, inside the field and after the value."
+  -
+    name: "has clear button"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a control for returning the field to nothing sits before the chevron. It only exists while is filled is true — an unchosen field has nothing to clear — so turning it on before then does nothing. Off by default because clearing is not always allowed: a field that must hold a value should not offer it."
+limitations:
+  - "This is the closed control and the value in it. There is no open state, no list, no active option and no is expanded — everything that happens after the field is pressed belongs to whatever draws the list."
+  - "One line, always. The chosen option truncates with an ellipsis; there is no wrapping and no second line."
+  - "No search and no typeahead. A set long enough to need either is a set this component is the wrong shape for."
+  - "validation exists only on default, hover and active / focus. A read-only or disabled field carries no outcome, so a form re-rendered read-only after a failed submit has nowhere to keep the error."
+  - "Marking a field required belongs to the label, not to the field: the component passes it on and the label carries the marker, so there is no is required here. A required field with has label off has nowhere to show it, and that shape is not supported."
+  - "No tone and no way to mark one option as different from the rest. The field shows a string; whatever distinguishes that option lives in the list."
+figma_notes:
+  - "read only and disabled drop the chevron entirely rather than dimming it, because in those states there is no list to open."
+  - "The placeholder sits in a wrapper so the field row keeps its width when the placeholder is switched off."
+  - "The label's words and the message's words are properties of the nested Label instance rather than of this component, because Figma cannot push a value deeper without a variable for the whole file. In @stylos/ui both are set on Select and passed down."
+  - "state and validation both drive the nested Label by swapping its variant. On success the Label is left on validation off, which is how the rule that success carries no message is expressed."
+  - "Focus is a third drop shadow on top of the two the resting field already carries, rather than a change of border weight."
+  - "The leading, clear, validation and chevron containers bind their width to a local collection named icon size, outside tokens/, while their heights bind to the dimension scale. The footprints recorded in sizes above are the tokens."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4804:9784"
+  last_verified: "2026-09-01"
+notes: "Select and Input Text share property keys, box, type run, states and colour roles. That is because they are the same kind of thing in a form, not because either derives from the other. The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."
 import:
   batch: 1
   ready: true

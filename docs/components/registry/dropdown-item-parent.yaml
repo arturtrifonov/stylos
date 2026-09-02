@@ -1,0 +1,179 @@
+# Contract written 2026-09-02 from the live component set. A new component, so
+# there is no import block. See docs/components/registry/README.md for the schema.
+
+id: "Dropdown Item Parent"
+name: "Dropdown Item Parent"
+family: "Dropdown Item"
+level: "object"
+role: "trigger"
+html: "<li role=\"menuitem\" aria-haspopup=\"true\">"
+status: "draft"
+version: "0.1"
+summary: "A row that opens a further list instead of settling the question."
+purpose: "The row that is a door rather than an answer. It reads like every other option and ends in an arrow pointing on, and pressing it opens another list rather than choosing anything — which is why it has no chosen state to carry and no tick to show."
+use_when:
+  - "The options are grouped deeply enough that one row has to lead to another list."
+do_not_use_when:
+  -
+    text: "Pressing the row settles the question rather than opening another list."
+    instead: "Dropdown Item Default"
+children:
+  - "Icon"
+parents:
+  - "Dropdown"
+uses:
+  - "Icon"
+flow_behavior:
+  - "fill"
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "is focused draws the ring and says nothing about what has it. The implementation has to move the ring with the keys and tell assistive technology which option it is on, because in a list the ring is the only thing saying where a person is."
+  -
+    status: "requires"
+    note: "The arrow says a further list exists and nothing reads an arrow. The implementation has to say the row opens something and whether it is open, and to make the keys that open and close it work — SC 4.1.2 and SC 2.1.1."
+  -
+    status: "fail"
+    note: "The second line measures 3.48:1 against the page in light mode and 2.82:1 on a hovered row, against 4.5:1. Dark mode clears it at 9.81:1, 4.54:1. The role is text/secondary; what fails is the pairing rather than this component's use of it."
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable: false
+  intent: "Width belongs to the list, which gives every option the same one so the labels line up down the column. Height is nobody's to name — the block padding twice over plus whatever the row is carrying — and the run is deliberately tighter than the Object run the components inside it sit on, because options stack and a tall option multiplies down the list. The inline padding is set so that it plus the list's own padding comes to the padding the closed control above uses, which is what puts the text in the control and the text in every option on one line. The type follows the Element profile rather than the Object one its level would give it, documented here so it overrides the level default per typography.md. Line heights come from the string family because an option is one line. Resolve token values with npm run tokens:report."
+  sizes:
+    -
+      size: "extra small"
+      padding_inline: "gap/g-0_500"
+      padding_block: "gap/g-0_500"
+      gap: "gap/g-0_500"
+      text_gap: "gap/g-0_500"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+      additional_font_size: "size/0_625"
+      additional_line_height: "line height/string/0_625"
+      icon: "size/s-2_000"
+    -
+      size: "small"
+      padding_inline: "gap/g-0_750"
+      padding_block: "gap/g-0_625"
+      gap: "gap/g-0_625"
+      text_gap: "gap/g-0_625"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+      additional_font_size: "size/0_625"
+      additional_line_height: "line height/string/0_625"
+      icon: "size/s-2_500"
+    -
+      size: "medium"
+      padding_inline: "gap/g-1_000"
+      padding_block: "gap/g-0_750"
+      gap: "gap/g-0_750"
+      text_gap: "gap/g-0_625"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+      additional_font_size: "size/0_750"
+      additional_line_height: "line height/string/0_750"
+      icon: "size/s-3_000"
+    -
+      size: "large"
+      padding_inline: "gap/g-1_500"
+      padding_block: "gap/g-0_875"
+      gap: "gap/g-0_875"
+      text_gap: "gap/g-0_750"
+      font_size: "size/1_250"
+      line_height: "line height/string/1_250"
+      additional_font_size: "size/0_750"
+      additional_line_height: "line height/string/0_750"
+      icon: "size/s-3_500"
+    -
+      size: "extra large"
+      padding_inline: "gap/g-2_000"
+      padding_block: "gap/g-1_000"
+      gap: "gap/g-1_000"
+      text_gap: "gap/g-0_750"
+      font_size: "size/1_500"
+      line_height: "line height/string/1_500"
+      additional_font_size: "size/0_875"
+      additional_line_height: "line height/string/0_875"
+      icon: "size/s-4_000"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Row density, and every option in one list is set to the same one. Drives the padding, the gap, the type and the arrow."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "How the row answers a pointer, and whether it can be chosen at all."
+    values:
+      -
+        value: "default"
+      -
+        value: "hover"
+      -
+        value: "active"
+        note: "The row under a press. Not the row the keyboard is on — that is is focused, and the two are independent."
+      -
+        value: "disabled"
+        note: "Cannot be chosen. No surface, both lines drop to the disabled text role, and the row carries no focus ring at all because there is nothing to reach."
+  -
+    name: "is focused"
+    kind: "boolean"
+    default: "false"
+    description: "Whether the keyboard is on this row. A ring outside the row, independent of state and of whether the option is chosen: in a list, moving is not choosing, so where the keys are and what is selected are two different facts and both have to be visible at once."
+  -
+    name: "has icon"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a mark leads the row — what kind of thing the further list holds."
+    controls:
+      - "icon"
+  -
+    name: "icon"
+    kind: "instance"
+    default: "Placeholder"
+    description: "Which mark leads. The arrow at the trailing end is not this property and cannot be swapped."
+  -
+    name: "label text"
+    kind: "text"
+    default: "Option"
+    description: "The option. One line, truncated with an ellipsis — an option too long for the list is cut, so the words that tell it apart go first."
+  -
+    name: "has additional text"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a second, quieter line sits under the option. It qualifies the option rather than continuing it, and it makes every row in the list taller."
+    controls:
+      - "additional text"
+  -
+    name: "additional text"
+    kind: "text"
+    default: "Additional"
+    description: "The qualifier — what the option costs, what it does, why it is not available. Secondary text role at a smaller measure, truncated on the same terms."
+limitations:
+  - "No chosen state. A parent row is never the answer, so there is nothing for it to carry and no tick."
+  - "No open state. Nothing here says the further list is currently showing; the arrow points the same way whether it is open or shut."
+  - "One line for the row and one for its qualifier, both truncated."
+  - "The arrow is fixed and always trailing. It does not mirror for a list that opens to the other side."
+figma_notes:
+  - "The focus ring is an absolutely positioned rectangle larger than the row, with a thick stroke and a larger radius than the row itself, so it reads as around the option rather than as part of it. It is absent from the disabled variants rather than hidden."
+  - "The row's own stroke weight is bound on all four sides but no stroke colour is set, so nothing is painted."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4858:5820"
+  last_verified: "2026-09-02"
+notes: "The leading and trailing icon containers bind a height but no width, unlike the equivalents on Dropdown Item Default; the whole boundVariables object was read on each. The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."

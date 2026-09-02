@@ -1,0 +1,199 @@
+# Contract written 2026-09-02 from the live component set. A new component, so
+# there is no import block. See docs/components/registry/README.md for the schema.
+
+id: "Dropdown Item Default"
+name: "Dropdown Item Default"
+family: "Dropdown Item"
+level: "object"
+role: "input"
+html: "<li role=\"option\">"
+status: "draft"
+version: "0.1"
+summary: "One option in a dropdown list, with a mark when it is the chosen one."
+purpose: "The plain row of a dropdown: a label, optionally a second line under it and a mark before it, and a tick at the end once it has been chosen. It carries the four ways a row answers a pointer, a ring for where the keyboard is, and nothing else — what it is inside, how many of it there are and what happens when it is pressed all belong to the list."
+use_when:
+  - "A dropdown offers options and choosing one closes the question."
+do_not_use_when:
+  -
+    text: "Choosing the option does not settle anything — it opens a further list of options."
+    instead: "Dropdown Item Parent"
+  -
+    text: "More than one option may be chosen at once, so a row has to be switchable without being left."
+    instead:
+      - "Dropdown Item Checkbox"
+      - "Dropdown Item Toggle"
+children:
+  - "Icon"
+parents:
+  - "Dropdown"
+uses:
+  - "Icon"
+flow_behavior:
+  - "fill"
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "is focused draws the ring and says nothing about what has it. The implementation has to move the ring with the keys and tell assistive technology which option it is on, because in a list the ring is the only thing saying where a person is."
+  -
+    status: "requires"
+    note: "A row is an option in a list, not a thing on its own. The list has to be exposed as one, with each row named and its chosen state carried programmatically — the tick is a picture and nothing reads it. SC 4.1.2."
+  -
+    status: "fail"
+    note: "The label of a chosen option measures 4.39:1 in light and 4.41:1 in dark on a hovered row, and 3.74:1 and 3.63:1 on a pressed one, against the 4.5:1 SC 1.4.3 asks. At rest it passes at 4.75:1 and 6.50:1 — putting the pointer on the option is what drops it under."
+  -
+    status: "fail"
+    note: "The second line measures 3.48:1 against the page in light mode, 2.82:1 on a hovered row and 3.05:1 on a chosen one, against 4.5:1. Dark mode clears it at 9.81:1, 4.54:1 and 5.45:1. The role is text/secondary; what fails is the pairing rather than this component's use of it."
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable: false
+  intent: "Width belongs to the list, which gives every option the same one so the labels line up down the column. Height is nobody's to name — the block padding twice over plus whatever the row is carrying — and the run is deliberately tighter than the Object run the components inside it sit on, because options stack and a tall option multiplies down the list. The inline padding is set so that it plus the list's own padding comes to the padding the closed control above uses, which is what puts the text in the control and the text in every option on one line. The type follows the Element profile rather than the Object one its level would give it, documented here so it overrides the level default per typography.md. Line heights come from the string family because an option is one line. Resolve token values with npm run tokens:report."
+  sizes:
+    -
+      size: "extra small"
+      padding_inline: "gap/g-0_500"
+      padding_block: "gap/g-0_500"
+      gap: "gap/g-0_500"
+      text_gap: "gap/g-0_500"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+      additional_font_size: "size/0_625"
+      additional_line_height: "line height/string/0_625"
+      icon: "size/s-2_000"
+    -
+      size: "small"
+      padding_inline: "gap/g-0_750"
+      padding_block: "gap/g-0_625"
+      gap: "gap/g-0_625"
+      text_gap: "gap/g-0_625"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+      additional_font_size: "size/0_625"
+      additional_line_height: "line height/string/0_625"
+      icon: "size/s-2_500"
+    -
+      size: "medium"
+      padding_inline: "gap/g-1_000"
+      padding_block: "gap/g-0_750"
+      gap: "gap/g-0_750"
+      text_gap: "gap/g-0_625"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+      additional_font_size: "size/0_750"
+      additional_line_height: "line height/string/0_750"
+      icon: "size/s-3_000"
+    -
+      size: "large"
+      padding_inline: "gap/g-1_500"
+      padding_block: "gap/g-0_875"
+      gap: "gap/g-0_875"
+      text_gap: "gap/g-0_750"
+      font_size: "size/1_250"
+      line_height: "line height/string/1_250"
+      additional_font_size: "size/0_750"
+      additional_line_height: "line height/string/0_750"
+      icon: "size/s-3_500"
+    -
+      size: "extra large"
+      padding_inline: "gap/g-2_000"
+      padding_block: "gap/g-1_000"
+      gap: "gap/g-1_000"
+      text_gap: "gap/g-0_750"
+      font_size: "size/1_500"
+      line_height: "line height/string/1_500"
+      additional_font_size: "size/0_875"
+      additional_line_height: "line height/string/0_875"
+      icon: "size/s-4_000"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Row density, and every option in one list is set to the same one. Drives the padding, the gap, the type and the two marks."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "How the row answers a pointer, and whether it can be chosen at all."
+    values:
+      -
+        value: "default"
+      -
+        value: "hover"
+      -
+        value: "active"
+        note: "The row under a press. Not the row the keyboard is on — that is is focused, and the two are independent."
+      -
+        value: "disabled"
+        note: "Cannot be chosen. No surface, both lines drop to the disabled text role, and the row carries no focus ring at all because there is nothing to reach."
+  -
+    name: "is focused"
+    kind: "boolean"
+    default: "false"
+    description: "Whether the keyboard is on this row. A ring outside the row, independent of state and of whether the option is chosen: in a list, moving is not choosing, so where the keys are and what is selected are two different facts and both have to be visible at once."
+  -
+    name: "is selected"
+    kind: "variant"
+    default: "false"
+    description: "Whether this is the option currently chosen. It tints the row, takes the label to the primary text role and puts a tick at the trailing end."
+    values:
+      -
+        value: "false"
+      -
+        value: "true"
+  -
+    name: "has icon"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a mark leads the option — what kind of thing it is, where it comes from."
+    controls:
+      - "icon"
+  -
+    name: "icon"
+    kind: "instance"
+    default: "Placeholder"
+    description: "Which mark leads. Named for the meaning the set carries, not for a drawing. The tick at the other end is not this property and cannot be swapped."
+  -
+    name: "label text"
+    kind: "text"
+    default: "Option"
+    description: "The option. One line, truncated with an ellipsis — an option too long for the list is cut, so the words that tell it apart go first."
+  -
+    name: "has additional text"
+    kind: "boolean"
+    default: "false"
+    description: "Whether a second, quieter line sits under the option. It qualifies the option rather than continuing it, and it makes every row in the list taller."
+    controls:
+      - "additional text"
+  -
+    name: "additional text"
+    kind: "text"
+    default: "Additional"
+    description: "The qualifier — what the option costs, what it does, why it is not available. Secondary text role at a smaller measure, truncated on the same terms."
+limitations:
+  - "One line for the option and one for its qualifier, both truncated. There is no wrapping, so a list of long options becomes a list of identical prefixes."
+  - "The tick is fixed. Nothing changes the mark that says an option is chosen, and there is no mark for a partially chosen one."
+  - "No tone. An option that is destructive, recommended or unavailable-for-a-reason looks like every other option."
+  - "No group heading, no separator and no empty state. A list that needs any of them gets them from whatever draws it."
+  - "is selected and is focused are independent and both can be true. That is the point of them, and it means the row can carry a tint, a tick and a ring at once."
+figma_notes:
+  - "The focus ring is an absolutely positioned rectangle larger than the row, with a thick stroke and a larger radius than the row itself, so it reads as around the option rather than as part of it. It is absent from the disabled variants rather than hidden."
+  - "The row's own stroke weight is bound on all four sides but no stroke colour is set, so nothing is painted."
+  - "The tick sits in a container named Selected icon container, which appears only in the chosen variants rather than being hidden in the others."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4854:2723"
+  last_verified: "2026-09-02"
+notes: "The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."
