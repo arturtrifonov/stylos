@@ -22,7 +22,14 @@ children:
   - "Table Cell Heading"
   - "Table / TH Checkbox"
 parents:
-  - "Table"
+  - "Accordion / Container"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
 uses:
   - "Table Cell Heading"
 flow_behavior:

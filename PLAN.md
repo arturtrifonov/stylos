@@ -68,7 +68,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 
 ### Stage 4 — Component contracts for the core set
 
-**Scope discipline:** 38 registry entries, not 101 — the set the proof screen needs. Two of them, `Button Outline` and `Button Ghost`, do not exist in the registry yet and are created here.
+**Scope discipline:** 37 registry entries, not 101 — the set the proof screen needs. Two of them, `Button Outline` and `Button Ghost`, do not exist in the registry yet and are created here.
 
 **The Airtable `import.batch` numbers are not this queue.** They are history from the one-time bootstrap of 2026-08-20, and `registry/README.md` keeps them as history for that reason. Read as a plan they mislead: batch 1 held 45 entries spanning all five levels, 18 of them outside this set, while Tooltip, Toast and Side Panel — named by the Stage 6 gate or by this set — sat in batch 2. Nothing below writes back into that field.
 
@@ -78,14 +78,14 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 | --- | --- | --- | --- | ---: |
 | 1 | Primitives and selection controls | Badge, Label, Loader, Indicator Status, Indicator Special, Button Inner, Link, Checkbox Input / Label / Text, Radio Input / Label / Text | a form column that renders from the library alone | 1 wk |
 | 2 | The remaining small elements | Icon, Tag Fill / Outline, Toggle Input / Label / Text | a filter row | 1 wk |
-| 3 | The table | Table Cell Heading, Table Cell Text, Table Row Head, Table Row Body, Table | a dense table carrying real data | 1–2 wk |
+| 3 | The table | Table Cell Heading, Table Cell Text, Table Row Head, Table Row Body | a dense table carrying real data | 1–2 wk |
 | 4 | Input | Input Text, Select, Dropdown Item Default / Parent / Checkbox / Toggle, Dropdown | a toolbar and filters above that table | 1 wk |
 | 5 | The Button family | Button / Button Basic, Button / Button Outline, Button / Button Ghost, Button Icon | every action on the screen | 2 wk |
 | 6 | The shell | Modal, Side Panel, Tooltip | the Stage 6 proof screen, composed | 1 wk |
 
 **Build the proof screen incrementally, as each wave lands** — in Figma, from the library, without waiting for Stage 6. A wave that ends in a rendered fragment finds the gap it opened within days; a wave that ends in a merged YAML file finds it in Stage 6, where it costs a re-cut of the set.
 
-**Figma readiness is inside the wave, not a precondition of it.** Table, Side Panel and Tooltip are not ready in the library today. That work belongs to waves 3 and 6 and is priced into them; it is not a survey to run ahead of the stage.
+**Figma readiness is inside the wave, not a precondition of it.** Side Panel and Tooltip are not ready in the library today. That work belongs to wave 6 and is priced into it; it is not a survey to run ahead of the stage.
 
 **Wave 5 is not four contracts.** Figma holds three sets of 100 variants under `Button / Button Basic | Outline | Ghost` with an identical API; `tone` carries `error` against [`naming.md`](docs/foundations/naming.md) §4 in all three; two of the three have no registry entry; the ids do not match the Figma names the way `Table Cell Text` does; and the change making `do_not_use_when.instead` take a list is blocked until Outline and Ghost exist to anchor to. It is one reconciliation, done once, across the family.
 
