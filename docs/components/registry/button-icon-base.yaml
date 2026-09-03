@@ -1,0 +1,181 @@
+# Contract written 2026-09-03 from the live component set. One of three members
+# split out of the "Button Icon" entry, which matched no single component in
+# Figma — see docs/components/registry/README.md, section "When a component is
+# split". children, parents and the import block are inherited from that entry
+# whole, as the split rule requires.
+
+id: "Button Icon Base"
+name: "Button Icon Base"
+family: "Button Icon"
+level: "object"
+role: "trigger"
+html: "<button type=\"button\">"
+status: "draft"
+version: "0.1"
+summary: "The filled action button with no label — an icon in a square box."
+purpose: "Some actions are recognised faster as a symbol than as a word, and some places have no room for a word at all: a toolbar, a table header, the corner of a panel. This is the filled member of that family. It is the same box, the same size run and the same tones as the labelled buttons, squared off and given to the icon alone, so a row of icon buttons lines up with a row of ordinary ones and swapping between them moves nothing. What it does not have is a name on screen — the icon has to carry the whole meaning, and the name has to be supplied to anyone who cannot see it."
+use_when:
+  - "The action has a symbol a reader already knows — close, search, add, filter, more — and the surface has no room for the word beside it."
+  - "Several actions sit in a strip and labelling each of them would make the strip longer than the content it acts on."
+do_not_use_when:
+  -
+    text: "The action's symbol is not already known to the reader. An icon nobody recognises is a button nobody presses, and a tooltip is not a fix — it arrives after the hesitation it was meant to prevent."
+    instead:
+      - "Button Base"
+      - "Button Outline"
+      - "Button Ghost"
+  -
+    text: "The action supports another one rather than being the main thing on its surface. A filled square is as loud as a filled button."
+    instead:
+      - "Button Icon Outline"
+      - "Button Icon Ghost"
+  -
+    text: "The control is a local action on the component it sits in — clear a field, remove a tag, dismiss a toast. That one is an element sized to the icon and borrows its space from the content beside it; this one is an object with a box of its own."
+    instead: "Button Inner"
+  -
+    text: "The control navigates rather than acts. A link drawn as a button is still a link, and drawing it this way breaks the middle click, the copy-address, and the back button."
+    instead: "Link"
+  -
+    text: "Pressing it leaves a state behind rather than performing an action — selecting, toggling, expanding."
+    instead:
+      - "Toggle Label"
+      - "Checkbox Label"
+children:
+  - "Badge"
+  - "Avatar"
+  - "Icon"
+  - "Indicator Status"
+  - "Indicator Special"
+  - "Tag Fill"
+  - "Tag Outline"
+  - "Loader"
+parents:
+  - "Accordion"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
+uses:
+  - "Icon"
+flow_behavior:
+  - "fixed"
+a11y:
+  -
+    status: "requires"
+    note: "The component has no visible label and no text property, so nothing in it supplies an accessible name. Whoever places it has to give one — and it has to say what the action does, not what the icon depicts. Without it the control reaches assistive technology as an unnamed button."
+  -
+    status: "requires"
+    note: "The name has to be available to sighted readers too, normally as a tooltip on hover and focus. An icon that is obvious to the person who chose it is not obvious to the person meeting it."
+sizing_model:
+  horizontal: "fixed"
+  vertical: "fixed"
+  adjustable: false
+  intent: "A square, and fixed on both axes, because the whole point of the component is that it occupies a known amount of room in a strip of controls. The box is the Object run, the same one the labelled buttons use, so an icon button and a labelled button of the same size are the same height and sit on the same line. The icon inside is the Element run, one level down — the pairing that holds everywhere a mark sits inside a control in this system. There is no padding: the box is the icon's box and the icon is centred in it, so the ring of empty space is whatever the two runs leave, and it grows with size because both runs do. There is no type row, because there is no text. The radius does not move with size, matching the labelled buttons."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-3_000"
+      icon: "size/s-2_000"
+    -
+      size: "small"
+      box: "size/s-4_000"
+      icon: "size/s-2_500"
+    -
+      size: "medium"
+      box: "size/s-5_000"
+      icon: "size/s-3_000"
+    -
+      size: "large"
+      box: "size/s-6_000"
+      icon: "size/s-3_500"
+    -
+      size: "extra large"
+      box: "size/s-7_000"
+      icon: "size/s-4_000"
+api:
+  -
+    name: "tone"
+    kind: "variant"
+    default: "primary"
+    description: "Which meaning the action carries. The tone fills the box and the icon is knocked out of it in the inverted text role, so every tone reads at the same weight and none of them recedes. A tone is a colour role, not an outcome: a destructive action is danger because destroying is what it does, not because anything went wrong."
+    values:
+      -
+        value: "base"
+        note: "No meaning of its own. The filled square for an action that is the main one on its surface without being brand or consequence."
+      -
+        value: "primary"
+        note: "The default, and the brand."
+      -
+        value: "warning"
+        note: "The action has a consequence the reader should weigh first, and can undo afterwards."
+      -
+        value: "danger"
+        note: "The action destroys something, or cannot be undone. Not an error — the button is working exactly as intended."
+      -
+        value: "success"
+        note: "Rare on a trigger. For a button that completes something rather than starting it."
+  -
+    name: "size"
+    kind: "variant"
+    default: "medium"
+    description: "The side of the square, and with it the icon inside. Sized to the density of the strip the button sits in rather than to the importance of the action — importance is what tone is for."
+    values:
+      -
+        value: "extra small"
+        note: "For a dense row — a table, a toolbar. At 24 square the button is well under the 44 by 44 pointer target WCAG 2.2 asks for; the system has not chosen an accessibility target, so this is recorded as a measurement rather than judged."
+      -
+        value: "small"
+      -
+        value: "medium"
+        note: "The default, and what most surfaces want."
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "The pointer condition. Each step darkens the tone rather than changing it, so the button stays the colour it started as while it is pressed. disabled drops the shadow as well as the colour, because an inert control should not appear to sit above the surface. Focus is not a value here — it is a separate boolean, because a button can be focused and hovered at once and a variant axis cannot say so."
+    values:
+      -
+        value: "default"
+      -
+        value: "hover"
+      -
+        value: "active"
+      -
+        value: "disabled"
+        note: "Every tone resolves into the same neutral surface, which is deliberate — a disabled control is structurally inert regardless of what it would have meant enabled; see color.md. The icon sits at 1.44:1 against it, low enough to read as unavailable."
+  -
+    name: "icon"
+    kind: "instance"
+    default: "Placeholder"
+    description: "The mark, and the entire visible content of the button. It has to be one a reader already knows, because nothing beside it explains what it means. The swap is unconstrained, so choosing a mark that does not read as an action is possible and is the main way this component gets used wrongly."
+  -
+    name: "is focused"
+    kind: "boolean"
+    default: "false"
+    description: "Shows the focus ring — a two-pixel outline in the primary role, sitting outside the button and clearing its corner exactly. A boolean rather than a state value because focus coincides with the pointer conditions instead of replacing them: a button under the pointer and under the keyboard is both at once. It does nothing while state is disabled, where the ring does not exist."
+limitations:
+  - "There is no label and no text property. The name exists only in whatever the consumer supplies, which is why the component carries two requires rather than one."
+  - "The focus ring is absent from every disabled variant, so is focused has no effect there. That is the intended reading — a disabled control is not in the tab order — rather than a property that silently fails."
+  - "The base tone measures 4.55:1 against its own icon in light mode. Any move of surface/bold/base/default or text/inverted is a contrast change, not a colour change."
+  - "The focus ring does not scale with size. A 24-square button and a 56-square one take the same two-pixel ring at the same offset — deliberate, because the ring belongs to the keyboard rather than to the size run."
+figma_notes:
+  - "The box and the icon both carry constrainProportions, so only their width is variable-bound and the height follows. The unbound height is not a missing binding."
+  - "The focus ring is an instance of a shared Focus component that has no registry entry of its own. Its stroke weight is the single unbound value on this component — a raw 2 where everything else resolves to a token."
+  - "The api block above is ordered for readability, per naming.md §8 and §10. Figma's API returns properties in a key order that does not match the panel, so the order the designer sees could not be read and is not asserted here."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4390-2375"
+  last_verified: "2026-09-03"
+notes: "The accessibility target is not chosen yet — PLAN.md Stage 5 — so contrast and target-size measurements are recorded as facts rather than judged against a criterion the system has not adopted. children and parents are inherited whole from the Button Icon entry this component was split out of; narrowing either is a later judgement, and the list is wider than the single icon slot the component actually offers."
+import:
+  batch: 1
+  ready: true

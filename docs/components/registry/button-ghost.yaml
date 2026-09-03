@@ -1,18 +1,42 @@
-# Hand-written 2026-08-29. Created by docs/specs/0004-registry-reconciliation.md
-# §3.3: Figma holds three Button treatments under one slash group and the
-# registry held only one. Structure only — the contract is PLAN.md §4 wave 5.
-#
-# 2026-09-02: renamed from "Button / Button Ghost". A slash group is not how this
-# registry expresses a family — see the registry README, *Families*. The
-# entry moved out of button/ with it.
+# Contract written 2026-09-03 from the live component set. The entry was created
+# on 2026-08-29 by docs/specs/0004-registry-reconciliation.md §3.3, which carried
+# its children and parents over from Button Base; it left button/ and lost its
+# slash group on 2026-09-02. See docs/components/registry/README.md for the schema.
 
 id: "Button Ghost"
 name: "Button Ghost"
 family: "Button"
 level: "object"
 role: "trigger"
-flow_behavior:
-  - "hug"
+html: "<button type=\"button\">"
+status: "draft"
+version: "0.1"
+summary: "The unboxed action button, for an action that should wait to be looked for."
+purpose: "A dense interface accumulates actions that have to be available without being present — the third option in a dialog, the actions on a table row, the controls in a toolbar that would become a wall of boxes if each of them had one. This is the member of the family that draws nothing at rest: no fill, no border, no shadow, just the label in its tone, so a row of them reads as a row of words and the interface stays quiet until the pointer arrives. It occupies the same box as its siblings even while drawing none of it, so a ghost button and a filled one of the same size line up and swapping one for the other moves nothing."
+use_when:
+  - "The action is a background option that should be findable without competing — the third button in a dialog, a row action, a toolbar entry."
+  - "Several actions sit close together and giving each of them a box would turn the surface into a grid of boxes."
+do_not_use_when:
+  -
+    text: "The action is what the surface exists for, or sits directly beside the one that is. An action with no visible edge next to one with a filled box is not secondary, it is missed."
+    instead:
+      - "Button Base"
+      - "Button Outline"
+  -
+    text: "The button stands alone with nothing around it to give it context. Without neighbours there is nothing to say the word is pressable until someone points at it."
+    instead: "Button Outline"
+  -
+    text: "The control is a local action on the component it sits in — clear a field, remove a tag, dismiss a toast. That one is sized to an icon; this one still takes a button's box."
+    instead: "Button Inner"
+  -
+    text: "The control is icon-only and stands on its own — a toolbar action, an action in a header."
+    instead:
+      - "Button Icon Base"
+      - "Button Icon Outline"
+      - "Button Icon Ghost"
+  -
+    text: "The control navigates rather than acts. A link drawn as a button is still a link, and drawing it this way breaks the middle click, the copy-address, and the back button."
+    instead: "Link"
 children:
   - "Badge"
   - "Avatar"
@@ -33,4 +57,170 @@ parents:
   - "Modal"
   - "Side Panel"
   - "Side Panel Menu"
-notes: ""
+uses:
+  - "Icon"
+flow_behavior:
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "The label is uppercased by a transform, not typed in capitals — the characters stay as they were written. An implementation has to do the same and change the case in CSS, because typing the label in capitals changes the accessible name as well as the appearance, and a screen reader may then spell it out letter by letter."
+  -
+    status: "requires"
+    note: "The label has to say what the action does. This component draws nothing at rest, so the label is the entire control — a ghost button labelled OK is a word on a page."
+  -
+    status: "requires"
+    note: "At rest the only thing marking this as a control is its label, so the surface it is placed on has to give the label the contrast it needs. Measured on the white page it sits between 7.1:1 and 14.6:1; on a coloured or image surface that is the consumer's to check, because the component supplies no background of its own to measure against."
+sizing_model:
+  horizontal: "hug"
+  vertical: "fixed"
+  adjustable: true
+  intent: "Identical to Button Base and Button Outline, and deliberately so: the three treatments are interchangeable in a layout only if a row of them lines up without anyone arranging it, which means one height run, one padding run, one gap run and one type run across the family. The point of this member is that it keeps the box while drawing none of it — the padding and the height are still authored, so the pointer target and the alignment survive the missing fill, and a ghost button never sits tighter to its neighbour than a filled one would. The label neither wraps nor truncates. The type run is a component-specific mapping rather than the Object profile — one step below it at every size — which typography.md allows where it is documented, and this is that documentation. Width is the consumer's to name where a layout calls for it — a named width is still fixed, not fill."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-3_000"
+      padding_inline: "gap/g-1_500"
+      gap: "gap/g-0_500"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+      icon: "size/s-2_000"
+    -
+      size: "small"
+      box: "size/s-4_000"
+      padding_inline: "gap/g-2_000"
+      gap: "gap/g-0_625"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+      icon: "size/s-2_500"
+    -
+      size: "medium"
+      box: "size/s-5_000"
+      padding_inline: "gap/g-2_500"
+      gap: "gap/g-0_750"
+      font_size: "size/1_125"
+      line_height: "line height/string/1_125"
+      icon: "size/s-3_000"
+    -
+      size: "large"
+      box: "size/s-6_000"
+      padding_inline: "gap/g-3_000"
+      gap: "gap/g-0_875"
+      font_size: "size/1_375"
+      line_height: "line height/string/1_375"
+      icon: "size/s-3_500"
+    -
+      size: "extra large"
+      box: "size/s-7_000"
+      padding_inline: "gap/g-3_500"
+      gap: "gap/g-1_000"
+      font_size: "size/1_625"
+      line_height: "line height/string/1_625"
+      icon: "size/s-4_000"
+api:
+  -
+    name: "tone"
+    kind: "variant"
+    default: "primary"
+    description: "Which meaning the action carries. With no fill and no border at rest, the tone is carried by the label alone, which is why every tone here is a text role dark enough to read on a page rather than a surface colour. Under the pointer the same tone appears again as the pale surface that arrives. A tone is a colour role, not an outcome: a destructive action is danger because destroying is what it does, not because anything went wrong."
+    values:
+      -
+        value: "base"
+        note: "No meaning of its own, and the darkest label of the five. The one to reach for when the action is simply an action and the row should read as text."
+      -
+        value: "primary"
+        note: "The default. For a background action that still belongs to the brand path."
+      -
+        value: "warning"
+        note: "The action has a consequence the reader should weigh first, and can undo afterwards."
+      -
+        value: "danger"
+        note: "The action destroys something, or cannot be undone. Not an error — the button is working exactly as intended."
+      -
+        value: "success"
+        note: "Rare on a trigger. For a button that completes something rather than starting it."
+  -
+    name: "size"
+    kind: "variant"
+    default: "medium"
+    description: "The band height, and with it the label measure, the padding, the gap and the icon slots. The box is kept even though nothing draws it, so the pointer target is the size the run says and not the size of the word."
+    values:
+      -
+        value: "extra small"
+        note: "For a dense row — a table, a toolbar. At 24 tall the button is well under the 44 by 44 pointer target WCAG 2.2 asks for; the system has not chosen an accessibility target, so this is recorded as a measurement rather than judged."
+      -
+        value: "small"
+      -
+        value: "medium"
+        note: "The default, and what most surfaces want."
+      -
+        value: "large"
+      -
+        value: "extra large"
+        note: "For a button that is the only thing on its surface — an empty state, a landing section."
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "The pointer condition, and the only thing that makes this member visible as a control. At rest there is no surface at all; hover brings the tone's pale surface in and active deepens it, so the box appears under the pointer and leaves with it. disabled has no surface either, so a disabled ghost button is its label greyed and nothing else. Focus is not a value here — it is a separate boolean, because a button can be focused and hovered at once and a variant axis cannot say so."
+    values:
+      -
+        value: "default"
+        note: "No fill, no border, no shadow. The label alone."
+      -
+        value: "hover"
+      -
+        value: "active"
+      -
+        value: "disabled"
+        note: "The surface stays absent, which is the deliberate reading — a disabled ghost button should not become more visible than an enabled one. The label falls to the shared disabled role, 2.05:1 against a white page, low enough to read as unavailable."
+  -
+    name: "has leading icon"
+    kind: "boolean"
+    default: "false"
+    description: "Shows a mark before the label. Off by default: the label names the action, and a mark in front is for the cases where the action has a symbol the reader already knows."
+    controls:
+      - "leading icon"
+  -
+    name: "leading icon"
+    kind: "instance"
+    default: "Placeholder"
+    description: "The mark shown before the label. It qualifies the action rather than naming it, so a button whose meaning rests on the mark alone is a button with the wrong label."
+  -
+    name: "has trailing icon"
+    kind: "boolean"
+    default: "false"
+    description: "Shows a mark after the label. This is the side for a mark that points outward — that the action opens something, continues somewhere, or reveals more."
+    controls:
+      - "trailing icon"
+  -
+    name: "trailing icon"
+    kind: "instance"
+    default: "Placeholder"
+    description: "The mark shown after the label, on the same terms as the leading one."
+  -
+    name: "label text"
+    kind: "text"
+    default: "Button"
+    description: "What the action does, as a verb or a verb phrase, in two or three words. It carries more weight here than in the other two members, because at rest it is the whole control. The label neither wraps nor truncates, so a longer phrase widens the button until it breaks the layout around it — which is the signal to shorten the phrase, not to constrain the button."
+  -
+    name: "is focused"
+    kind: "boolean"
+    default: "false"
+    description: "Shows the focus ring — a two-pixel outline in the primary role, sitting outside the button and clearing its corner exactly. It matters more here than on the other two members: the ring is the only edge this button ever draws at rest. A boolean rather than a state value because focus coincides with the pointer conditions instead of replacing them. It does nothing while state is disabled, where the ring does not exist."
+limitations:
+  - "Nothing marks this as a control until it is pointed at or focused. That is the component's purpose rather than a defect, but it makes it the wrong choice standing alone, and the reason it names Button Outline as the alternative for that case."
+  - "The focus ring is absent from every disabled variant, so is focused has no effect there. That is the intended reading — a disabled control is not in the tab order — rather than a property that silently fails."
+  - "The tones are measured against a white page, because the component supplies no surface of its own. On any other background the numbers are different and nothing in the component knows it."
+  - "The label cannot wrap. There is no two-line button and no truncating one; the component is one line by construction."
+  - "The focus ring does not scale with size. A 24-tall button and a 56-tall one take the same two-pixel ring at the same offset — deliberate, because the ring belongs to the keyboard rather than to the size run."
+figma_notes:
+  - "Both icon containers are hidden by their booleans in every one of the 100 variants, so only their bindings could be read; their geometry when shown is unverified."
+  - "The icon containers bind their width to the local icon size collection rather than to the dimension collection, so the value is not resolvable by npm run tokens:report. That collection exists for optical compensation of the icon's overhang and is a deliberate per-component setting."
+  - "The focus ring is an instance of a shared Focus component that has no registry entry of its own. Its stroke weight is the single unbound value on this component — a raw 2 where everything else resolves to a token."
+  - "The api block above is ordered for readability, per naming.md §8 and §10. Figma's API returns properties in a key order that does not match the panel, so the order the designer sees could not be read and is not asserted here."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4829-8344"
+  last_verified: "2026-09-03"
+notes: "The accessibility target is not chosen yet — PLAN.md Stage 5 — so contrast and target-size measurements are recorded as facts rather than judged against a criterion the system has not adopted. children and parents were carried over whole from Button Base when this entry was created; narrowing either is a later judgement."

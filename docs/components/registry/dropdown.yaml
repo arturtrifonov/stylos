@@ -38,7 +38,7 @@ parents:
 uses:
   - "Dropdown Item Default"
   - "Input Search"
-  - "Button Basic"
+  - "Button Base"
   - "Button Outline"
   - "Scrollbar"
 flow_behavior:
