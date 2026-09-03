@@ -1,24 +1,31 @@
 # Hand-edited. This file is the source for its component's structural data.
 # The CSV import that created it ran once, on 2026-08-20, and will not run
 # again — see docs/components/registry/README.md for the schema and workflow.
+#
+# 2026-09-02: renamed from "Button / Button Basic". A slash group is not how this
+# registry expresses a family — see the registry README, *Families*. The
+# entry moved out of button/ with it.
 
-id: "Edit Mode / View"
-name: "Edit Mode / View"
+id: "Button Basic"
+name: "Button Basic"
+family: "Button"
 level: "object"
-role: "output"
+role: "trigger"
 flow_behavior:
   - "hug"
 children:
+  - "Badge"
   - "Avatar"
   - "Icon"
   - "Indicator Status"
   - "Indicator Special"
-  - "Badge"
   - "Tag Fill"
   - "Tag Outline"
   - "Loader"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
+  - "Alert"
+  - "Toast"
   - "Bottom Sheet"
   - "Flex Layout"
   - "Header"
@@ -28,5 +35,5 @@ parents:
   - "Side Panel Menu"
 notes: ""
 import:
-  batch: 5
-  ready: false
+  batch: 1
+  ready: true

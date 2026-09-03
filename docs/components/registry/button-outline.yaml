@@ -1,9 +1,13 @@
 # Hand-written 2026-08-29. Created by docs/specs/0004-registry-reconciliation.md
 # §3.3: Figma holds three Button treatments under one slash group and the
 # registry held only one. Structure only — the contract is PLAN.md §4 wave 5.
+#
+# 2026-09-02: renamed from "Button / Button Outline". A slash group is not how this
+# registry expresses a family — see the registry README, *Families*. The
+# entry moved out of button/ with it.
 
-id: "Button / Button Ghost"
-name: "Button / Button Ghost"
+id: "Button Outline"
+name: "Button Outline"
 family: "Button"
 level: "object"
 role: "trigger"
@@ -19,7 +23,7 @@ children:
   - "Tag Outline"
   - "Loader"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Alert"
   - "Toast"
   - "Bottom Sheet"

@@ -24,13 +24,15 @@ Title Case with spaces.
 
 `/` groups components in the Assets panel. Do not encode size, state, icon presence, or any other property as a slash hierarchy when a variant or component property can carry it.
 
-**The last segment must be a name that stands on its own.** Figma names an instance after the last segment, so the rest of the path is gone the moment the component is placed: `Button / Base` becomes a layer called `Base`, which means nothing in a layer tree. `Tabs / Tab Item` becomes `Tab Item`, which does. Where the last segment cannot stand alone, use a compound name instead — `Button Base`, `Button Hollow`.
+**The last segment must be a name that stands on its own.** Figma names an instance after the last segment, so the rest of the path is gone the moment the component is placed: `Button / Base` becomes a layer called `Base`, which means nothing in a layer tree. Where the last segment cannot stand alone, use a compound name instead — `Button Base`, `Button Hollow`.
 
 **A slash group is a category, never a claim about containment.** A component used inside another is not filed under it: `Tab Item` is a top-level component whether or not `Tabs` is the only thing that uses it. What is composed of what is recorded in the registry's `children` and `parents`, which is checkable; a folder name is not.
 
+**Prefer a compound name to a slash group.** A group buys one thing, a heading in the Assets panel, and charges for it in the registry path, in every reference that has to spell the path out, and in the reader's need to know that `Header` means the accordion's. Where the two would say the same thing, `Accordion Header` is the name and `Accordion / Header` is not. No registry entry carries a slash group: the twenty-one that did came from the 2026-08-20 import and were renamed on 2026-09-02.
+
 **Components used inside other components stay public and unprefixed.** No `_` marker, no hiding. Publishing them is required for composition anyway, so a marker prevents nothing, and a name prefix lands in every nested instance and clutters the layer tree it is meant to help. Where a component is normally used inside another, say so in its Figma description — that is visible in the Assets panel and in Dev Mode, and costs nothing in the tree.
 
-The registry mirrors this naming as a file path — `Table / TD Text` → `table/td-text.yaml` — and a component's `id` there must match its Figma name exactly ([registry README](../components/registry/README.md)).
+The registry mirrors this naming as a file path — `Table Cell Text` → `table-cell-text.yaml`, and `Foo / Bar` → `foo/bar.yaml` for a name that does carry a group — and a component's `id` there must match its Figma name exactly ([registry README](../components/registry/README.md)).
 
 ## 3. Layers
 

@@ -8,7 +8,9 @@ The readable page for a component is **generated** from its entry. Nothing here 
 
 ## Files and paths
 
-One file per component, path mirroring Figma's `/` hierarchy naming: `Table / TD Text` → `table/td-text.yaml`. A component's `id` must match its Figma name exactly.
+One file per component, at the path the `id` implies: `Table Cell Text` → `table-cell-text.yaml`. A component's `id` must match its Figma name exactly.
+
+An `id` carrying a `/` puts its file in a directory — `Foo / Bar` → `foo/bar.yaml` — because the path mirrors Figma's `/` hierarchy naming. No entry does this. The twenty-one that did were the 2026-08-20 import's shape and were renamed to compound names on 2026-09-02; see *Families* below for why a slash group is not how this registry groups anything. The machinery stays because the rule about matching Figma's name is unconditional, not because the shape is wanted.
 
 Files are read and written by the restricted YAML subset in [`tools/lib/yaml.mjs`](../../../tools/lib/yaml.mjs). Two consequences that shape the schema:
 

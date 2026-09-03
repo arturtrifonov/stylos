@@ -26,7 +26,7 @@ children:
   - "Button Inner"
   - "Loader"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Bottom Sheet"
   - "Flex Layout"
   - "Header"

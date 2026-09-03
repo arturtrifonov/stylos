@@ -1,5 +1,6 @@
-# Hand-written 2026-08-30. Replaces table/th-text.yaml, whose id "Table / TH Text"
-# no longer matches the component in Figma. Carries the full component contract;
+# Hand-written 2026-08-30. Replaced table/th-text.yaml, whose id "Table / TH Text"
+# no longer matched the component in Figma; that file was deleted on 2026-09-02.
+# Carries the full component contract;
 # there is no companion Markdown document — the readable page is generated here.
 
 id: "Table Cell Heading"
@@ -21,7 +22,7 @@ do_not_use_when:
     instead: "Table Cell Text"
   -
     text: "The header is a checkbox that selects every row, not a name."
-    instead: "Table / TH Checkbox"
+    instead: "Table Cell Heading Checkbox"
 children:
   - "Badge"
   - "Avatar"

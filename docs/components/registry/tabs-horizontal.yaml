@@ -9,9 +9,9 @@ role: "toolbar"
 flow_behavior:
   - "fill"
 children:
-  - "Tabs / Tab Item"
+  - "Tab Item"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Bottom Sheet"
   - "Flex Layout"
   - "Header"

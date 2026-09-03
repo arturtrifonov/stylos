@@ -16,9 +16,9 @@ children:
   - "Badge"
   - "Loader"
 parents:
-  - "Accordion / Container"
-  - "Code Editor / Text Area"
-  - "Edit Mode / Edit"
+  - "Accordion"
+  - "Code Editor Text Area"
+  - "Edit Mode"
   - "Input Text"
   - "Input Date"
   - "Input Search"

@@ -20,9 +20,16 @@ do_not_use_when:
     instead: "Table Row Body"
 children:
   - "Table Cell Heading"
-  - "Table / TH Checkbox"
+  - "Table Cell Heading Checkbox"
 parents:
-  - "Table"
+  - "Accordion"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Side Panel"
+  - "Side Panel Menu"
 uses:
   - "Table Cell Heading"
 flow_behavior:

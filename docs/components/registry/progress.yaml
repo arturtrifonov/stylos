@@ -16,7 +16,7 @@ children:
   - "Indicator Special"
   - "Loader"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Alert"
   - "Toast"
   - "Bottom Sheet"

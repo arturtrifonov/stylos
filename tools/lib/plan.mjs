@@ -112,8 +112,10 @@ export function parseMilestones(plan) {
  * Two forms, because the column is prose: a full id, and the family shorthand
  * `Radio Input / Label / Text`, where the first part is a full id and each part
  * after it is joined to that entry's `family`. A full id is tried first, so
- * `Table / TD Text` reads as itself rather than as a shorthand — the two use
- * the same punctuation and only the registry can tell them apart.
+ * an id that itself carries a `/` reads as itself rather than as a shorthand —
+ * the two use the same punctuation and only the registry can tell them apart.
+ * No entry carries one today (docs/foundations/naming.md §2), so the shorthand
+ * is the only live reading; the order still matters if one ever does again.
  *
  * A token resolving to nothing throws rather than being skipped. A checklist
  * quietly one component short is a wrong answer nobody would ever catch.

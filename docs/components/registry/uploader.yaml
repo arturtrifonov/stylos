@@ -9,7 +9,7 @@ role: "input"
 flow_behavior:
   - "fill"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Bottom Sheet"
   - "Flex Layout"
   - "Header"

@@ -46,7 +46,7 @@ children:
   - "Tag Outline"
   - "Loader"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Alert"
   - "Toast"
   - "Bottom Sheet"

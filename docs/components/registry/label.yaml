@@ -26,7 +26,7 @@ do_not_use_when:
 children:
   - "Icon"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Checkbox Input"
   - "Checkbox Label"
   - "Checkbox Text"
@@ -36,7 +36,7 @@ parents:
   - "Toggle Input"
   - "Toggle Label"
   - "Toggle Text"
-  - "Edit Mode / Edit"
+  - "Edit Mode"
   - "Input Text"
   - "Input Date"
   - "Input Search"

@@ -7,7 +7,7 @@ name: "Skeleton Loader"
 level: "element"
 role: "content"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Bottom Sheet"
   - "Flex Layout"
   - "Header"

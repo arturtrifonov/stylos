@@ -9,10 +9,10 @@ role: "toolbar"
 flow_behavior:
   - "fill"
 children:
-  - "Code Editor / Toolbar"
-  - "Code Editor / Text Area"
+  - "Code Editor Toolbar"
+  - "Code Editor Text Area"
 parents:
-  - "Accordion / Container"
+  - "Accordion"
   - "Bottom Sheet"
   - "Flex Layout"
   - "Header"
