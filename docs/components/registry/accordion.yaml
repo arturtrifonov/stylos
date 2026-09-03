@@ -20,7 +20,7 @@ children:
   - "Avatar"
   - "Badge"
   - "Breadcrumbs"
-  - "Button Basic"
+  - "Button Base"
   - "Button Outline"
   - "Button Ghost"
   - "Button Dropdown"

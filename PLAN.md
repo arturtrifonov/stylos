@@ -80,7 +80,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 | 2 | The remaining small elements | Icon, Tag Fill / Outline, Toggle Input / Label / Text | a filter row | 1 wk |
 | 3 | The table | Table Cell Heading, Table Cell Text, Table Row Head, Table Row Body | a dense table carrying real data | 1–2 wk |
 | 4 | Input | Input Text, Select, Dropdown Item Default / Parent / Checkbox / Toggle, Dropdown | a toolbar and filters above that table | 1 wk |
-| 5 | The Button family | Button Basic, Button Outline, Button Ghost, Button Icon | every action on the screen | 2 wk |
+| 5 | The Button family | Button Base, Button Outline, Button Ghost, Button Icon | every action on the screen | 2 wk |
 | 6 | The shell | Modal, Side Panel, Tooltip | the Stage 6 proof screen, composed | 1 wk |
 
 **Build the proof screen incrementally, as each wave lands** — in Figma, from the library, without waiting for Stage 6. A wave that ends in a rendered fragment finds the gap it opened within days; a wave that ends in a merged YAML file finds it in Stage 6, where it costs a re-cut of the set.
@@ -89,7 +89,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 
 **The registry's names lead Figma's, deliberately, until each contract is written.** On 2026-09-02 the twenty-one ids that carried a slash group — the shape the 2026-08-20 import left behind — became compound names, because a slash group is not how this system expresses a family ([registry README](docs/components/registry/README.md), *Families*). Figma still holds the old names for most of them. The rename in Figma happens in the wave or milestone that writes the component's contract, not as a separate sweep, and until it does, `id` does not match the Figma name for those entries. The list is in each entry's header comment.
 
-**Wave 5 is not four contracts.** Figma holds three sets of 100 variants under `Button / Button Basic | Outline | Ghost` with an identical API; `tone` carries `error` against [`naming.md`](docs/foundations/naming.md) §4 in all three; the registry now names them `Button Basic`, `Button Outline` and `Button Ghost`, so the Figma rename is part of the wave; and the change making `do_not_use_when.instead` take a list belongs here too, now that all three entries exist to anchor to. It is one reconciliation, done once, across the family.
+**Wave 5 was one reconciliation, not four contracts, and the three Button treatments are done.** Figma holds three sets of 100 variants with an identical API — one box, one size run, one type run, one set of properties, three weights — so they were read and written together on 2026-09-03 rather than one at a time. The Figma rename to `Button Base | Outline | Ghost` landed with them, and `do_not_use_when.instead` now takes a list, which those three contracts are the first to use. `Button Icon` is the entry still open in this wave.
 
 **Out of v0.1, deliberately:** Toast, Tabs Horizontal and Tab Item — the Stage 6 gate names a table, filters, a side panel and a modal, and none of the three appears in it. Everything else follows them, grouped in §9.
 
@@ -168,7 +168,7 @@ At 5–10 h/week:
 
 **Scope levers, in the order to pull them:**
 
-1. Ship wave 5 as `Button Basic` alone, leaving Outline and Ghost undocumented, and drop Tooltip from wave 6. Saves ~2 weeks across S4 and S5. Side Panel, Modal and the table are named by the gate and are not available to cut.
+1. Ship wave 5 as `Button Base` alone, leaving Outline and Ghost undocumented, and drop Tooltip from wave 6. Saves ~2 weeks across S4 and S5. Side Panel, Modal and the table are named by the gate and are not available to cut.
 2. Ship the documentation surface as rendered Markdown instead of Storybook. Saves ~2 weeks in S6.
 3. Defer component-token depth by adopting "no component-specific tokens" as the provisional answer. Saves ~1 week.
 

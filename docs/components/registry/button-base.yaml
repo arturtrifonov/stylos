@@ -1,37 +1,45 @@
-# Contract written 2026-09-03 from the live component set. The entry was created
-# on 2026-08-29 by docs/specs/0004-registry-reconciliation.md §3.3, which carried
-# its children and parents over from Button Base; it left button/ and lost its
-# slash group on 2026-09-02. See docs/components/registry/README.md for the schema.
+# Contract written 2026-09-03 from the live component set. The children/parents
+# lists and the import block are carried over from the CSV import of 2026-08-20.
+# See docs/components/registry/README.md for the schema.
+#
+# 2026-09-02: the entry left button/ and its id lost the slash group — a slash
+# group is not how this registry expresses a family, see the registry README,
+# *Families*. 2026-09-03: "Button Basic" became "Button Base", matching the
+# component in Figma and the compound name naming.md §2 gives as its own example.
 
-id: "Button Outline"
-name: "Button Outline"
+id: "Button Base"
+name: "Button Base"
 family: "Button"
 level: "object"
 role: "trigger"
 html: "<button type=\"button\">"
 status: "draft"
 version: "0.1"
-summary: "The bordered action button, for the action beside the main one."
-purpose: "A surface usually has one action it is for and one or two that go with it — cancel beside save, back beside continue, export beside apply. Those need to be as easy to hit and as easy to read as the main action while being visibly not it, and the way this family draws that distinction is weight rather than size or position. This member keeps the box, the run and the label of its siblings and replaces the filled band with a pale surface and a border in its own tone, so it holds its shape and its edge on any background without claiming the eye first."
+summary: "The filled action button — the one a view is built around."
+purpose: "Every screen has an action it exists to let someone take, and that action has to be found before it is read. This is the member of the family that fills its box with its tone and knocks the label out of it, so it is located by scanning a screen rather than by reading one. That weight is the whole of what separates it from its siblings: the box, the run of sizes, the label, the two icon slots and the states are the same in all three, and choosing between them is choosing how loudly the action should speak, not what it does."
 use_when:
-  - "The action sits beside a filled one and should be equally reachable but not reached for first — cancel, back, export, duplicate."
-  - "Several actions of equal standing sit together and none of them is the one the surface is for."
+  - "The action is what the view, form, dialog or row is for — save, create, submit, confirm, apply, delete."
+  - "Two or more actions sit together and one of them should be reached for first, without the reader comparing them to find out which."
 do_not_use_when:
   -
-    text: "The action is what the surface exists for. Drawing the main action at secondary weight makes the reader look for it."
-    instead: "Button Base"
+    text: "The action supports the main one rather than being it. Two filled buttons side by side compete, and the reader settles the competition by reading both."
+    instead:
+      - "Button Outline"
+      - "Button Ghost"
   -
-    text: "The action is a background option that should recede until it is looked for, and a visible box around it would clutter a dense row."
-    instead: "Button Ghost"
-  -
-    text: "The control is a local action on the component it sits in — clear a field, remove a tag, dismiss a toast."
+    text: "The control is a local action on the component it sits in — clear a field, remove a tag, dismiss a toast. Those take an icon's space and show their affordance under the pointer; this takes a button's space and is always visible."
     instead: "Button Inner"
   -
-    text: "The control is icon-only and stands on its own — a toolbar action, an action in a header."
+    text: "The control is icon-only and stands on its own — a toolbar action, an action in a header. That is an object with its own size run, not this one with its label emptied."
     instead: "Button Icon"
   -
     text: "The control navigates rather than acts. A link drawn as a button is still a link, and drawing it this way breaks the middle click, the copy-address, and the back button."
     instead: "Link"
+  -
+    text: "Pressing it leaves a state behind rather than performing an action — selecting, toggling, expanding."
+    instead:
+      - "Toggle Label"
+      - "Checkbox Label"
 children:
   - "Badge"
   - "Avatar"
@@ -62,12 +70,12 @@ a11y:
     note: "The label is uppercased by a transform, not typed in capitals — the characters stay as they were written. An implementation has to do the same and change the case in CSS, because typing the label in capitals changes the accessible name as well as the appearance, and a screen reader may then spell it out letter by letter."
   -
     status: "requires"
-    note: "The label has to say what the action does. This component supplies visual weight and nothing else; a button labelled OK inside a bordered box is still a button labelled OK."
+    note: "The label has to say what the action does. This component supplies visual weight and nothing else; a button labelled OK inside a filled box is still a button labelled OK."
 sizing_model:
   horizontal: "hug"
   vertical: "fixed"
   adjustable: true
-  intent: "Identical to Button Base, and deliberately so: the three treatments are interchangeable in a layout only if a row of them lines up without anyone arranging it, which means one height run, one padding run, one gap run and one type run across the family. The height is authored on the Object run and the width is whatever the label needs. The label neither wraps nor truncates, so a phrase too long for its column widens the button rather than being cut. The type run is a component-specific mapping rather than the Object profile — one step below it at every size — which typography.md allows where it is documented, and this is that documentation. The border is drawn inside the box, so turning it on costs no width and a bordered button and a filled one of the same size and label are the same size on screen. The radius does not move with size. Width is the consumer's to name where a layout calls for it — a named width is still fixed, not fill."
+  intent: "The height is authored on the Object run and the width is whatever the label needs, so a button is a band of a known height wrapping a variable phrase. The label neither wraps nor truncates — it has no width to truncate against — so a phrase too long for its column widens the button rather than being cut. The type run is a component-specific mapping rather than the Object profile: one step below it at every size, which typography.md allows where it is documented, and this is that documentation. A button carries two or three words beside the content it acts on, and at the profile's own measures it would out-shout that content. Padding and gap have their own runs; the radius does not move with size, because a button reads as the same shape at every size rather than a shape that rounds off as it grows. Width is the consumer's to name where a layout calls for it — a named width is still fixed, not fill."
   sizes:
     -
       size: "extra small"
@@ -114,14 +122,14 @@ api:
     name: "tone"
     kind: "variant"
     default: "primary"
-    description: "Which meaning the action carries. Unlike the filled member, the tone here colours the label, the border and a pale surface rather than filling the box, so the tone is read from the writing rather than from the block. A tone is a colour role, not an outcome: a destructive action is danger because destroying is what it does, not because anything went wrong."
+    description: "Which meaning the action carries. The tone fills the box and the label is knocked out of it in the inverted text role, so every tone reads at the same weight and none of them recedes. A tone is a colour role, not an outcome: a destructive action is danger because destroying is what it does, not because anything went wrong."
     values:
       -
         value: "base"
-        note: "No meaning of its own — the neutral secondary action, and the most common one on a form. Its border is the shared neutral rather than a tone of its own, so its edge is quieter than the other four."
+        note: "No meaning of its own. The filled button for an action that is the main one on its surface without being brand or consequence."
       -
         value: "primary"
-        note: "The default. For a secondary action that still belongs to the brand path — back, previous, edit."
+        note: "The default, and the brand. One per surface — a second one is two main actions, which is none."
       -
         value: "warning"
         note: "The action has a consequence the reader should weigh first, and can undo afterwards."
@@ -154,7 +162,7 @@ api:
     name: "state"
     kind: "variant"
     default: "default"
-    description: "The pointer condition. The surface deepens through the tone's pale run while the label and the border hold still, so the button gains presence under the pointer without changing colour. disabled drops the shadow, empties the surface and drops the border to the shared neutral, so an inert button loses its tone as well as its weight. Focus is not a value here — it is a separate boolean, because a button can be focused and hovered at once and a variant axis cannot say so."
+    description: "The pointer condition. Each step darkens the tone rather than changing it, so the button stays the colour it started as while it is pressed. disabled drops the shadow as well as the colour, because an inert control should not appear to sit above the surface. Focus is not a value here — it is a separate boolean, because a button can be focused and hovered at once and a variant axis cannot say so."
     values:
       -
         value: "default"
@@ -164,7 +172,7 @@ api:
         value: "active"
       -
         value: "disabled"
-        note: "Every tone resolves into the same near-white surface and the same neutral border, which is deliberate — a disabled control is structurally inert regardless of what it would have meant enabled; see color.md. The label sits at 2.05:1 against it, low enough to read as unavailable."
+        note: "Every tone resolves into the same neutral surface, which is deliberate — a disabled control is structurally inert regardless of what it would have meant enabled; see color.md. The label sits at 1.44:1 against it, low enough to read as unavailable."
   -
     name: "has leading icon"
     kind: "boolean"
@@ -201,7 +209,7 @@ api:
     description: "Shows the focus ring — a two-pixel outline in the primary role, sitting outside the button and clearing its corner exactly. A boolean rather than a state value because focus coincides with the pointer conditions instead of replacing them: a button under the pointer and under the keyboard is both at once. It does nothing while state is disabled, where the ring does not exist."
 limitations:
   - "The focus ring is absent from every disabled variant, so is focused has no effect there. That is the intended reading — a disabled control is not in the tab order — rather than a property that silently fails."
-  - "The base tone's border is the shared neutral at 2.14:1 against a white page, where the other four tones sit between 7.1:1 and 7.9:1. The label carries the contrast in every tone — between 9.8:1 and 12.9:1 for base — and the border is a boundary rather than information, so it is recorded here rather than treated as a failure against a criterion the system has not adopted."
+  - "The base tone measures 4.55:1 against its own label in light mode, clearing 4.5:1 by less than rounding. Any move of surface/bold/base/default or text/inverted is a contrast change, not a colour change."
   - "The label cannot wrap. There is no two-line button and no truncating one; the component is one line by construction."
   - "The focus ring does not scale with size. A 24-tall button and a 56-tall one take the same two-pixel ring at the same offset — deliberate, because the ring belongs to the keyboard rather than to the size run."
 figma_notes:
@@ -211,6 +219,9 @@ figma_notes:
   - "The api block above is ordered for readability, per naming.md §8 and §10. Figma's API returns properties in a key order that does not match the panel, so the order the designer sees could not be read and is not asserted here."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
-  node_id: "4829-7643"
+  node_id: "4479-13507"
   last_verified: "2026-09-03"
-notes: "The accessibility target is not chosen yet — PLAN.md Stage 5 — so contrast and target-size measurements are recorded as facts rather than judged against a criterion the system has not adopted. children and parents were carried over whole from Button Base when this entry was created; narrowing either is a later judgement."
+notes: "The accessibility target is not chosen yet — PLAN.md Stage 5 — so contrast and target-size measurements are recorded as facts rather than judged against a criterion the system has not adopted."
+import:
+  batch: 1
+  ready: true
