@@ -68,11 +68,11 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 
 ### Stage 4 — Component contracts for the core set
 
-**Scope discipline:** 37 registry entries, not 112 — the set the proof screen needs.
+**Scope discipline:** 39 registry entries, not 114 — the set the proof screen needs.
 
 **The Airtable `import.batch` numbers are not this queue.** They are history from the one-time bootstrap of 2026-08-20, and `registry/README.md` keeps them as history for that reason. Read as a plan they mislead: batch 1 held 45 entries spanning all five levels, 18 of them outside this set, while Tooltip, Toast and Side Panel — named by the Stage 6 gate or by this set — sat in batch 2. Nothing below writes back into that field.
 
-**The set, in the order it is worked.** A wave is defined by what it lets you build, not by level or by size, and it is capped at four entries so that it closes.
+**The set, in the order it is worked.** A wave is defined by what it lets you build, not by level or by size. It is not capped at a number: wave 1 holds thirteen entries and wave 6 holds three, because what a wave has to contain is whatever makes its rendered fragment possible, and counting to four instead would have cut the form column in half. A wave closes when that fragment renders.
 
 | # | Wave | Entries | Ends with | Est. |
 | --- | --- | --- | --- | ---: |
@@ -80,7 +80,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 | 2 | The remaining small elements | Icon, Tag Fill / Outline, Toggle Input / Label / Text | a filter row | 1 wk |
 | 3 | The table | Table Cell Heading, Table Cell Text, Table Row Head, Table Row Body | a dense table carrying real data | 1–2 wk |
 | 4 | Input | Input Text, Select, Dropdown Item Default / Parent / Checkbox / Toggle, Dropdown | a toolbar and filters above that table | 1 wk |
-| 5 | The Button family | Button Base, Button Outline, Button Ghost, Button Icon | every action on the screen | 2 wk |
+| 5 | The Button family | Button Base, Button Outline, Button Ghost, Button Icon Base, Button Icon Outline, Button Icon Ghost | every action on the screen | 2 wk |
 | 6 | The shell | Modal, Side Panel, Tooltip | the Stage 6 proof screen, composed | 1 wk |
 
 **Build the proof screen incrementally, as each wave lands** — in Figma, from the library, without waiting for Stage 6. A wave that ends in a rendered fragment finds the gap it opened within days; a wave that ends in a merged YAML file finds it in Stage 6, where it costs a re-cut of the set.
@@ -89,7 +89,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 
 **The registry's names lead Figma's, deliberately, until each contract is written.** On 2026-09-02 the twenty-one ids that carried a slash group — the shape the 2026-08-20 import left behind — became compound names, because a slash group is not how this system expresses a family ([registry README](docs/components/registry/README.md), *Families*). Figma still holds the old names for most of them. The rename in Figma happens in the wave or milestone that writes the component's contract, not as a separate sweep, and until it does, `id` does not match the Figma name for those entries. The list is in each entry's header comment.
 
-**Wave 5 was one reconciliation, not four contracts, and the three Button treatments are done.** Figma holds three sets of 100 variants with an identical API — one box, one size run, one type run, one set of properties, three weights — so they were read and written together on 2026-09-03 rather than one at a time. The Figma rename to `Button Base | Outline | Ghost` landed with them, and `do_not_use_when.instead` now takes a list, which those three contracts are the first to use. `Button Icon` is the entry still open in this wave.
+**Wave 5 was two reconciliations, not four contracts, and both are done.** Figma holds the labelled buttons as three sets of 100 variants with an identical API — one box, one size run, one type run, one set of properties, three weights — and the icon buttons as three more on the same terms, so each family was read and written in one pass on 2026-09-03 rather than one component at a time. The Figma rename to `Button Base | Outline | Ghost` landed with the first, and `Button Icon` split into three members with the second — one registry entry against three components, the fourth split this registry has seen. `do_not_use_when.instead` now takes a list, which these six contracts are the first to use.
 
 **Out of v0.1, deliberately:** Toast, Tabs Horizontal and Tab Item — the Stage 6 gate names a table, filters, a side panel and a modal, and none of the three appears in it. Everything else follows them, grouped in §9.
 
@@ -203,7 +203,7 @@ Its scope and timing are open, not its existence. It is not on the critical path
 | Risk | Signal | Countermeasure |
 | --- | --- | --- |
 | S4 stalls — twenty-nine contracts of judgement work | two sessions on the same component | §2.2: adopt what Figma does, write it down as provisional. The wave's rendered fragment is the forcing function |
-| Completionism against the 112-entry registry | documenting outside the core set | the Stage 4 table is the scope |
+| Completionism against the 114-entry registry | documenting outside the core set | the Stage 4 table is the scope |
 | The registry drifts from Figma unnoticed | `validate:registry` not run for weeks | make it part of the pre-commit habit |
 | Documentation drifts from the built system | a document describing something that no longer exists | keep facts in one place; documents point rather than copy |
 | The proof screen gets skipped as "obvious" | v0.1 tagged without S6 | it is the gate |

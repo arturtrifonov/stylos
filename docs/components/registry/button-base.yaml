@@ -31,7 +31,10 @@ do_not_use_when:
     instead: "Button Inner"
   -
     text: "The control is icon-only and stands on its own — a toolbar action, an action in a header. That is an object with its own size run, not this one with its label emptied."
-    instead: "Button Icon"
+    instead:
+      - "Button Icon Base"
+      - "Button Icon Outline"
+      - "Button Icon Ghost"
   -
     text: "The control navigates rather than acts. A link drawn as a button is still a link, and drawing it this way breaks the middle click, the copy-address, and the back button."
     instead: "Link"
