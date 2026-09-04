@@ -24,7 +24,7 @@ do_not_use_when:
     text: "The panel is a whole view rather than a list — a form, a document, a set of sections."
     instead:
       - "Modal"
-      - "Side Panel"
+      - "Drawer"
 children:
   - "Dropdown Item Default"
   - "Dropdown Item Parent"

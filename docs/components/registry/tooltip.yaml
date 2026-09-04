@@ -1,14 +1,39 @@
-# Hand-edited. This file is the source for its component's structural data.
-# The CSV import that created it ran once, on 2026-08-20, and will not run
-# again — see docs/components/registry/README.md for the schema and workflow.
+# Contract written 2026-09-04 from the live component set. The children list and
+# the import block are carried over from the CSV import of 2026-08-20.
+# See docs/components/registry/README.md for the schema.
 
 id: "Tooltip"
 name: "Tooltip"
 level: "element"
 role: "content"
-flow_behavior:
-  - "absolute"
-  - "hug"
+html: "no semantic html"
+status: "draft"
+version: "0.1"
+summary: "A short description of another control, shown beside it while it is pointed at or focused."
+purpose: "Interfaces run out of room long before they run out of things worth saying, and the first casualty is the sentence that would have explained a control. This is where that sentence goes. It is a floating slab of text with no arrow — a tail is a second shape to align, a second thing to get wrong against a scrolling edge, and it earns none of that by pointing at something the reader is already looking at. Because it appears only on hover or focus and leaves with them, nothing inside it can be reached and nothing that matters can live only here."
+use_when:
+  - "A control needs a few words of explanation that will not fit beside it — what an icon button does, what an abbreviation stands for, why a control is unavailable."
+  - "The explanation is worth having but not worth the room it would take permanently."
+do_not_use_when:
+  -
+    text: "The content is interactive, or the reader needs to keep it open while they do something else. Nothing here survives the pointer leaving, so a link or a button inside it cannot be reached."
+    instead: "Popover"
+  -
+    text: "The information is required to complete the task. A tooltip is unavailable on touch, invisible to anyone not hovering, and gone the moment attention moves — it can repeat what is needed but must not be the only place it is said."
+    instead:
+      - "Label"
+      - "Alert"
+  -
+    text: "The message reports something that happened rather than describing something that is there."
+    instead:
+      - "Toast"
+      - "Alert"
+  -
+    text: "The text is a permanent classification of the thing beside it — a status, a category, a count."
+    instead:
+      - "Badge"
+      - "Tag Fill"
+      - "Tag Outline"
 children:
   - "Icon"
   - "Indicator Status"
@@ -16,7 +41,123 @@ children:
   - "Badge"
   - "Button Inner"
   - "Loader"
-notes: ""
+flow_behavior:
+  - "absolute"
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "The tooltip has to be tied to the control it describes, so that the description reaches assistive technology as part of that control rather than as loose text somewhere on the page. Nothing in this component establishes the association; whoever places it does."
+  -
+    status: "requires"
+    note: "It has to appear on keyboard focus and not only under the pointer, and it has to stay while the reader moves onto it. A description available only to a mouse is a description most readers never get."
+  -
+    status: "requires"
+    note: "Nothing may live only here. The component is unavailable on touch, absent for anyone not hovering, and gone as soon as attention moves, so anything the reader needs in order to finish the task has to be said somewhere that stays."
+sizing_model:
+  horizontal: "hug"
+  vertical: "hug"
+  adjustable: true
+  intent: "Both axes hug in the single-line form: the slab is whatever the words need, and its height is the padding twice over plus the line box. The padding run is authored so that those heights land on the Element run at every size, which is what makes a tooltip sit level with the control it belongs to rather than near it. Choosing the wrapping form swaps the horizontal axis: the width stops hugging and becomes a number the consumer names, and the height goes on hugging however many lines that width produces. No width is recorded here, because there is no right one — it belongs to the place the tooltip is used, not to the component. The type run is a component-specific mapping rather than the Element profile, which typography.md allows where it is documented and this is that documentation: an even ramp of one step per size, where the profile's own run accelerates at the top. A tooltip is read beside content, never instead of it, so it stays below the profile at every size and further below the larger the profile gets. The radius does not move with size."
+  sizes:
+    -
+      size: "extra small"
+      padding_block: "gap/g-0_375"
+      padding_inline: "gap/g-0_875"
+      font_size: "size/0_625"
+      line_height: "line height/string/0_625"
+      wrapping_line_height: "line height/text/0_625"
+    -
+      size: "small"
+      padding_block: "gap/g-0_500"
+      padding_inline: "gap/g-1_000"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+      wrapping_line_height: "line height/text/0_750"
+    -
+      size: "medium"
+      padding_block: "gap/g-0_625"
+      padding_inline: "gap/g-1_250"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+      wrapping_line_height: "line height/text/0_875"
+    -
+      size: "large"
+      padding_block: "gap/g-0_750"
+      padding_inline: "gap/g-1_500"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+      wrapping_line_height: "line height/text/1_000"
+    -
+      size: "extra large"
+      padding_block: "gap/g-0_875"
+      padding_inline: "gap/g-1_750"
+      font_size: "size/1_125"
+      line_height: "line height/string/1_125"
+      wrapping_line_height: "line height/text/1_125"
+api:
+  -
+    name: "type"
+    kind: "variant"
+    default: "string"
+    description: "Whether the text is one line or a paragraph, and it changes three things at once because they are one decision. string hugs its width, takes the line height for single-line content, and centres. text takes a width from wherever it is used, wraps inside it, takes the same measure in the line height family for wrapping content — which is looser, because a paragraph needs the leading a label does not — and aligns left, since centred prose is read a line at a time rather than read."
+    values:
+      -
+        value: "string"
+        note: "The default. A label, a name, a few words that fit on one line and would look wrong broken across two."
+      -
+        value: "text"
+        note: "A sentence or two. The only form that wraps, and the only one whose width is not its own."
+  -
+    name: "tone"
+    kind: "variant"
+    default: "base"
+    description: "Which of the two treatments the slab takes. Both are neutral — a tooltip describes, and description has no severity — so the choice is about the surface underneath rather than about what the words mean. There is no danger tooltip and no success one; a tooltip that needs a colour is carrying a message, and a message is a different component."
+    values:
+      -
+        value: "base"
+        note: "The default. The page surface with a quiet border, for a tooltip over ordinary content, where an inverted slab would read as heavier than the thing it explains."
+      -
+        value: "inverted"
+        note: "The solid neutral surface with knocked-out text and no border, for a tooltip over a busy, dark or image-bearing surface, where a pale slab would disappear into it."
+  -
+    name: "size"
+    kind: "variant"
+    default: "medium"
+    description: "The measure of the text, and with it the padding around it. Chosen to sit under the density of the surface the tooltip belongs to rather than to the importance of what it says — a tooltip is never the important thing on screen."
+    values:
+      -
+        value: "extra small"
+        note: "For a dense surface — a table, a toolbar. At a 10-pixel measure this is the smallest text in the system, and it reads because a tooltip is met once, close up, on demand."
+      -
+        value: "small"
+      -
+        value: "medium"
+        note: "The default, and what most surfaces want."
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "tooltip text"
+    kind: "text"
+    default: "Tooltip text"
+    description: "What the control does or means, in the fewest words that say it. It is not transformed — the case is whatever is written, unlike the label of a button or a tag — because a tooltip is read as a sentence rather than scanned as a marker. Neither form truncates: the single-line one widens until the words fit and the wrapping one grows downward, so length shows up as a slab that has outgrown the thing it describes."
+limitations:
+  - "There is no arrow, and none is planned. The tooltip is a plain slab placed beside what it describes; the connection is made by proximity and by the fact that it appeared when the reader arrived, not by a tail."
+  - "The wrapping form takes its width from the place it is used. The component names no default, no minimum and no maximum, so a consumer that supplies nothing gets whatever their layout gives it."
+  - "Nothing here is interactive and nothing dismisses it. It has no state, no close control and no way to be pinned open — a tooltip that needs any of those is a Popover."
+  - "Both tones are neutral by construction. There is no way to make a tooltip carry severity, which is deliberate: a coloured tooltip is a message wearing a description's clothes."
+  - "The inverted tone measures 4.55:1 between its text and its surface in light mode, clearing 4.5:1 by less than rounding. Any move of surface/bold/base/default or text/inverted is a contrast change, not a colour change."
+  - "The base tone is the page surface, so on a white page nothing but a 1.23:1 border and the shadow says where the tooltip ends. That is the reason the inverted tone exists, and the reason it is the one to reach for over anything busy."
+figma_notes:
+  - "The wrapping variants carry a fixed width of 220 because Figma has no way to express a width that is simply not set. It is a placeholder for the consumer's number, not a value this contract records."
+  - "The api block above is ordered for readability, per naming.md §8 and §10. Figma's API returns properties in a key order that does not match the panel, so the order the designer sees could not be read and is not asserted here."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "1217-172945"
+  last_verified: "2026-09-04"
+notes: "The accessibility target is not chosen yet — PLAN.md Stage 5 — so contrast measurements are recorded as facts rather than judged against a criterion the system has not adopted. children is the composition the system permits in principle; the component as built has one text layer and no slot for any of it, and narrowing the list is a later judgement."
 import:
   batch: 2
   ready: false

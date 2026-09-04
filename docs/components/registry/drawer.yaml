@@ -1,0 +1,276 @@
+# Contract written 2026-09-04 from the live component set. The children list and
+# the import block are carried over from the CSV import of 2026-08-20.
+# See docs/components/registry/README.md for the schema.
+#
+# 2026-09-04: renamed from "Side Panel". That entry always described this
+# component; the panel of menus and tools that the name suggests is a different,
+# later thing, and the registry keeps it as "Side Panel Menu".
+
+id: "Drawer"
+name: "Drawer"
+level: "layout"
+role: "container"
+html: "<dialog>"
+status: "draft"
+version: "0.1"
+summary: "A full-height panel that slides in from one edge and holds a task beside the page."
+purpose: "Some work is too big for a dialog and too small for a page: editing a record while its list stays visible, filtering a table while the table is still there, reading a detail without losing your place in what led to it. A drawer is the frame for that. It takes one edge of the screen and the full height of it, keeps the heading, the content and the answers in the same three bands the dialog uses, and leaves the page behind it in view. It is squared off against the edge it comes from and carries a single border on the side that faces the page — the only line in it, and the one that says where the panel stops and the page resumes."
+use_when:
+  - "A task needs more room than a dialog and would be worse as a page, and the context it came from is worth keeping on screen."
+  - "The work is long enough to scroll — a form of many fields, a record, a document — which a dialog cannot do."
+do_not_use_when:
+  -
+    text: "The person has to answer before anything else can continue. A drawer keeps the page in view and reads as optional; a decision that blocks the flow should look like it blocks the flow."
+    instead: "Modal"
+  -
+    text: "The panel is the application's own chrome — navigation, the permanent tools down one side. That is assembled once per product and stays there; this arrives, is used, and leaves."
+    instead: "Side Panel Menu"
+  -
+    text: "The content is a short reaction to something the person just did, needing no answer."
+    instead:
+      - "Toast"
+      - "Alert"
+  -
+    text: "It is a small amount of content anchored to one control rather than to the screen edge."
+    instead:
+      - "Popover"
+      - "Tooltip"
+children:
+  - "Accordion"
+  - "Alert"
+  - "Asset"
+  - "Avatar"
+  - "Badge"
+  - "Breadcrumbs"
+  - "Button Base"
+  - "Button Outline"
+  - "Button Ghost"
+  - "Button Dropdown"
+  - "Button Group"
+  - "Button Icon Base"
+  - "Button Icon Outline"
+  - "Button Icon Ghost"
+  - "Button Inner"
+  - "Card"
+  - "Carousel"
+  - "Charts"
+  - "Checkbox Input"
+  - "Checkbox Label"
+  - "Checkbox Text"
+  - "Chips"
+  - "Code Editor"
+  - "Code Snippet"
+  - "Data Info"
+  - "Edit Mode"
+  - "Event"
+  - "Feature List"
+  - "Flex Layout"
+  - "Icon"
+  - "Image"
+  - "Indicator Status"
+  - "Indicator Special"
+  - "Input Text"
+  - "Input Date"
+  - "Input Search"
+  - "Input Number"
+  - "Input Color"
+  - "Input Datetime"
+  - "Input Email"
+  - "Input Password"
+  - "Input Time"
+  - "Input Telephone"
+  - "Input URL"
+  - "Link"
+  - "Pagination"
+  - "Label"
+  - "List"
+  - "Logo"
+  - "Loader"
+  - "Slider"
+  - "Metric"
+  - "Person"
+  - "Select"
+  - "Select Cascade"
+  - "Multiselect"
+  - "Audio Player"
+  - "Progress"
+  - "Queryfield"
+  - "Radio Input"
+  - "Radio Label"
+  - "Radio Text"
+  - "Toggle Input"
+  - "Toggle Label"
+  - "Toggle Text"
+  - "Switcher"
+  - "Scrollbar"
+  - "Skeleton Loader"
+  - "Table Toolbar"
+  - "Table Row Head"
+  - "Table Row Body"
+  - "Steps"
+  - "Tabs Horizontal"
+  - "Tag Fill"
+  - "Tag Outline"
+  - "Video Player"
+  - "Uploader"
+  - "Tree"
+  - "Text Area"
+  - "Tabs Vertical"
+uses:
+  - "Button Base"
+  - "Button Outline"
+  - "Button Ghost"
+  - "Button Inner"
+  - "Scrollbar"
+flow_behavior:
+  - "fixed"
+  - "fill"
+  - "absolute"
+a11y:
+  -
+    status: "requires"
+    note: "Focus has to move into the drawer when it opens and return to whatever opened it when it closes. Whether focus is also trapped inside is the consumer's call and depends on whether the page behind stays operable — but the move in and the return out are not optional either way."
+  -
+    status: "requires"
+    note: "Escape has to close it, and closing by Escape has to be the same act as pressing the close control — same cleanup, same returned focus. A panel that can only be left with the mouse traps anyone who is not using one."
+  -
+    status: "requires"
+    note: "The heading names the panel, so it has to be present and has to say what the drawer is for. It is the only text the component guarantees, and it is what assistive technology announces on open."
+  -
+    status: "requires"
+    note: "The content scrolls, so it has to be reachable by keyboard — a scrolling region that only responds to a wheel is content that some readers cannot get to the bottom of."
+sizing_model:
+  horizontal: "fixed"
+  vertical: "fill"
+  adjustable: true
+  intent: "A panel pinned to one edge: the width is a definite number per size, the height is the whole of whatever it is placed in. The widths are the same run the Modal uses and are deliberately outside the token scale for the same reason — the scale is built for the inside of components and stops well below a window, and a panel width is a decision about a viewport. Each size names a default width, recorded on the size values rather than here, and a consumer that needs another sets it outright; that is still fixed, not fill. Vertically there is no number at all: the drawer takes the full height it is given, the header and footer keep theirs, and the content between them absorbs the rest — which is what makes this the member of the pair that can scroll. One spacing measure runs through the frame — the padding of all three bands, the gap between the heading and the close, and the gap between whatever the slot holds — so the panel reads as one column rather than three stacked boxes, and the footer keeps its own tighter run because buttons side by side want less air than bands do. The heading is the only place the display family and the heading line heights appear. This is a layout, so there is no level profile to deviate from; typography.md documents layouts per component, and this is that documentation."
+  sizes:
+    -
+      size: "extra small"
+      padding_block: "gap/g-1_500"
+      padding_inline: "gap/g-1_500"
+      gap: "gap/g-1_500"
+      footer_gap: "gap/g-0_750"
+      font_size: "size/1_125"
+      line_height: "line height/heading/1_125"
+      close_button: "size/s-2_500"
+    -
+      size: "small"
+      padding_block: "gap/g-2_000"
+      padding_inline: "gap/g-2_000"
+      gap: "gap/g-2_000"
+      footer_gap: "gap/g-0_875"
+      font_size: "size/1_250"
+      line_height: "line height/heading/1_250"
+      close_button: "size/s-3_000"
+    -
+      size: "medium"
+      padding_block: "gap/g-2_500"
+      padding_inline: "gap/g-2_500"
+      gap: "gap/g-2_500"
+      footer_gap: "gap/g-1_000"
+      font_size: "size/1_500"
+      line_height: "line height/heading/1_500"
+      close_button: "size/s-3_500"
+    -
+      size: "large"
+      padding_block: "gap/g-3_000"
+      padding_inline: "gap/g-3_000"
+      gap: "gap/g-3_000"
+      footer_gap: "gap/g-1_250"
+      font_size: "size/1_750"
+      line_height: "line height/heading/1_750"
+      close_button: "size/s-4_000"
+    -
+      size: "extra large"
+      padding_block: "gap/g-3_500"
+      padding_inline: "gap/g-3_500"
+      gap: "gap/g-3_500"
+      footer_gap: "gap/g-1_500"
+      font_size: "size/2_000"
+      line_height: "line height/heading/2_000"
+      close_button: "size/s-4_500"
+api:
+  -
+    name: "position"
+    kind: "variant"
+    default: "right"
+    description: "Which edge of the screen the drawer is attached to, and with it which side carries the border. A drawer on the right has its border on the left, because that is the side facing the page. The values are physical rather than logical, and deliberately so: leading and trailing swap in a right-to-left interface, and if this property swapped with them the border would end up on the outer edge, drawn against the screen instead of against the content it separates the panel from. Which side a panel comes from may well be mirrored in a right-to-left layout; that is the consumer choosing left or right, not the property meaning something different."
+    values:
+      -
+        value: "left"
+        note: "Attached to the left edge, border on the right."
+      -
+        value: "right"
+        note: "The default. Attached to the right edge, border on the left."
+  -
+    name: "size"
+    kind: "variant"
+    default: "medium"
+    description: "The width of the panel, and with it the spacing, the heading measure and the size the footer buttons and the close take. Chosen for the shape of the task rather than its importance — a wide drawer with one field in it reads as a mistake, and a narrow one with a record in it reads as a column."
+    values:
+      -
+        value: "extra small"
+        note: "400 wide by default. A short form, a set of filters."
+      -
+        value: "small"
+        note: "500 wide by default."
+      -
+        value: "medium"
+        note: "600 wide by default, and the one most drawers want."
+      -
+        value: "large"
+        note: "700 wide by default. A record with several sections, or a form in two columns."
+      -
+        value: "extra large"
+        note: "800 wide by default. The widest a panel goes before the page behind it stops being usable context and becomes something the drawer is hiding."
+  -
+    name: "heading text"
+    kind: "text"
+    default: "Drawer heading"
+    description: "What the panel is for, as a phrase rather than a sentence. It is the only text the component guarantees and the first thing read, so a heading that names the container rather than the work — Details, Panel — spends the most valuable line on nothing. It wraps rather than truncates."
+  -
+    name: "content"
+    kind: "slot"
+    description: "Everything between the heading and the buttons, supplied by whoever places the drawer. It takes the height the header and footer leave, which is what makes it the part that scrolls. What is allowed in it is the composition recorded in children, which is nearly the whole library."
+  -
+    name: "has scrollbar"
+    kind: "boolean"
+    default: "false"
+    description: "Whether the content is overflowing. It is not a choice: the scrollbar belongs to the content and appears when there is more of it than room, exactly as it would anywhere else. The property exists because the drawer is drawn rather than run — see the Figma notes — and a consumer implementing this component should drive it from overflow rather than expose it."
+  -
+    name: "has primary button"
+    kind: "boolean"
+    default: "true"
+    description: "Shows the filled button at the right end of the footer — the action the drawer exists to complete. On by default, and off for a drawer that only shows something and has nothing to confirm."
+  -
+    name: "has secondary button"
+    kind: "boolean"
+    default: "true"
+    description: "Shows the outlined button beside the primary one — the way out that is not the action, usually cancel. On by default."
+  -
+    name: "has tertiary button"
+    kind: "boolean"
+    default: "false"
+    description: "Shows a third action at the left end of the footer, apart from the pair. Off by default. The separation is the point: it is an action of a different kind rather than a third choice ranked below the other two, and putting it at the far end says so before the label is read."
+limitations:
+  - "There is no state. A drawer is open or it is not, and how it arrives, how it leaves and what happens to the page behind it belong to whoever places it."
+  - "There is no overlay, and unlike the Modal none is implied. The page behind a drawer is meant to stay visible; whether it also stays operable is the consumer's decision and nothing here enforces either answer."
+  - "The close control cannot be turned off."
+  - "The scrollbar is a property here rather than a consequence, which is an artefact of the drawing rather than a design decision — see the Figma notes."
+  - "The footer holds at most three buttons and their order is fixed."
+  - "The widths are not tokens and are not meant to become them. The dimension scale is built for the inside of components and reaches nothing near a panel."
+figma_notes:
+  - "The height is a flat 500 in all ten variants because Figma has no way to express a height that is simply the container's. It is a placeholder for the viewport, not a value this contract records."
+  - "has scrollbar is a boolean because a Figma component cannot react to its own overflow. The contract states the behaviour the component is meant to have; the boolean is how that behaviour is shown in the library."
+  - "The close control is a Button Inner whose width is bound across a five-step run. That is not an instance being scaled to fit: Button Inner ships one footprint and no size property, and its own contract says a consumer needing another dimension sets it outright."
+  - "The scrollbar instance is Scrollbar / Vertical in the library, while the registry entry it points at is Scrollbar; the ids will meet when that component is written."
+  - "The api block above is ordered for readability, per naming.md §8 and §10. Figma's API returns properties in a key order that does not match the panel, so the order the designer sees could not be read and is not asserted here."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "5232-15231"
+  last_verified: "2026-09-04"
+notes: "position takes physical values where naming.md §7 prefers leading and trailing. That is a deliberate exception with a reason recorded on the property: the border's side is a physical fact about which edge the panel is against, and a logical property would put it on the wrong side in a right-to-left interface. The accessibility target is not chosen yet — PLAN.md Stage 5 — so what is recorded here is the obligation on the consumer rather than a judgement. children is carried over whole from the imported entry; narrowing it is a later judgement."
+import:
+  batch: 2
+  ready: false
