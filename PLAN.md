@@ -70,7 +70,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 
 **Scope discipline:** 39 registry entries, not 114 — the set the proof screen needs.
 
-**The Airtable `import.batch` numbers are not this queue.** They are history from the one-time bootstrap of 2026-08-20, and `registry/README.md` keeps them as history for that reason. Read as a plan they mislead: batch 1 held 45 entries spanning all five levels, 18 of them outside this set, while Tooltip, Toast and Side Panel — named by the Stage 6 gate or by this set — sat in batch 2. Nothing below writes back into that field.
+**The Airtable `import.batch` numbers are not this queue.** They are history from the one-time bootstrap of 2026-08-20, and `registry/README.md` keeps them as history for that reason. Read as a plan they mislead: batch 1 held 45 entries spanning all five levels, 18 of them outside this set, while Tooltip, Toast and Drawer — named by the Stage 6 gate or by this set — sat in batch 2. Nothing below writes back into that field.
 
 **The set, in the order it is worked.** A wave is defined by what it lets you build, not by level or by size. It is not capped at a number: wave 1 holds thirteen entries and wave 6 holds three, because what a wave has to contain is whatever makes its rendered fragment possible, and counting to four instead would have cut the form column in half. A wave closes when that fragment renders.
 
@@ -81,11 +81,11 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 | 3 | The table | Table Cell Heading, Table Cell Text, Table Row Head, Table Row Body | a dense table carrying real data | 1–2 wk |
 | 4 | Input | Input Text, Select, Dropdown Item Default / Parent / Checkbox / Toggle, Dropdown | a toolbar and filters above that table | 1 wk |
 | 5 | The Button family | Button Base, Button Outline, Button Ghost, Button Icon Base, Button Icon Outline, Button Icon Ghost | every action on the screen | 2 wk |
-| 6 | The shell | Modal, Side Panel, Tooltip | the Stage 6 proof screen, composed | 1 wk |
+| 6 | The shell | Modal, Drawer, Tooltip | the Stage 6 proof screen, composed | 1 wk |
 
 **Build the proof screen incrementally, as each wave lands** — in Figma, from the library, without waiting for Stage 6. A wave that ends in a rendered fragment finds the gap it opened within days; a wave that ends in a merged YAML file finds it in Stage 6, where it costs a re-cut of the set.
 
-**Figma readiness is inside the wave, not a precondition of it.** Side Panel is not ready in the library today. That work belongs to wave 6 and is priced into it; it is not a survey to run ahead of the stage. Tooltip was in the same position and was built on 2026-09-04, inside the wave, which is what this paragraph describes rather than an exception to it.
+**Figma readiness is inside the wave, not a precondition of it.** Neither Tooltip nor Drawer was ready in the library when this wave opened; both were built inside it, on 2026-09-04, alongside their contracts. That is what this paragraph describes rather than an exception to it, and it is why the wave was priced at a week of building rather than a survey run ahead of the stage.
 
 **The registry's names lead Figma's, deliberately, until each contract is written.** On 2026-09-02 the twenty-one ids that carried a slash group — the shape the 2026-08-20 import left behind — became compound names, because a slash group is not how this system expresses a family ([registry README](docs/components/registry/README.md), *Families*). Figma still holds the old names for most of them. The rename in Figma happens in the wave or milestone that writes the component's contract, not as a separate sweep, and until it does, `id` does not match the Figma name for those entries. The list is in each entry's header comment.
 
@@ -168,7 +168,7 @@ At 5–10 h/week:
 
 **Scope levers, in the order to pull them:**
 
-1. Ship wave 5 as `Button Base` alone, leaving Outline and Ghost undocumented, and drop Tooltip from wave 6. Saves ~2 weeks across S4 and S5. Side Panel, Modal and the table are named by the gate and are not available to cut.
+1. Ship wave 5 as `Button Base` alone, leaving Outline and Ghost undocumented, and drop Tooltip from wave 6. Saves ~2 weeks across S4 and S5. Drawer, Modal and the table are named by the gate and are not available to cut.
 2. Ship the documentation surface as rendered Markdown instead of Storybook. Saves ~2 weeks in S6.
 3. Defer component-token depth by adopting "no component-specific tokens" as the provisional answer. Saves ~1 week.
 

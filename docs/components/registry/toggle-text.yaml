@@ -41,7 +41,7 @@ parents:
   - "Header"
   - "Hero"
   - "Modal"
-  - "Side Panel"
+  - "Drawer"
   - "Side Panel Menu"
 uses:
   - "Toggle Input"

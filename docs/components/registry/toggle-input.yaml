@@ -42,7 +42,7 @@ parents:
   - "Header"
   - "Hero"
   - "Modal"
-  - "Side Panel"
+  - "Drawer"
   - "Side Panel Menu"
 flow_behavior:
   - "fixed"

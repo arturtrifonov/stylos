@@ -21,7 +21,7 @@ do_not_use_when:
   -
     text: "Nothing has to be answered — the panel only shows something alongside the page, and the page should stay usable while it is open."
     instead:
-      - "Side Panel"
+      - "Drawer"
       - "Popover"
   -
     text: "The message reports something that has already happened and needs no answer. Stopping the person to acknowledge a result they cannot change is a dialog spent on nothing."

@@ -31,7 +31,7 @@ parents:
   - "Header"
   - "Hero"
   - "Modal"
-  - "Side Panel"
+  - "Drawer"
   - "Side Panel Menu"
 notes: ""
 import:
