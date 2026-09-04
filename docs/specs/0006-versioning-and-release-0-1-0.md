@@ -182,8 +182,9 @@ Stylos 0.1.0 — 39 core components, contracts fixed. Notes: <release URL>
 
 1. Merge `wave-6-shell` into `master`.
 2. `button-icon.yaml` — sweep every reference to `Button Icon`, then delete the file. It is a bare inventory record with no contract sitting beside the three members it split into on 2026-09-03; the fourth surface of a split stopped short again.
-3. `README.md` names the repository as `arturtrifonov/stylos`; the remote is `arturtrifonov/stylos`. One of them is false.
-4. `npm test`, `npm run validate:registry`, `npm run validate:skills` — all green before anything else starts.
+3. `npm test`, `npm run validate:registry`, `npm run validate:skills` — all green before anything else starts.
+
+*(The `README.md` repository URL, which named `wrgraff/stylos` against a remote of `arturtrifonov/stylos`, was corrected on 2026-09-04 and is out of this list.)*
 
 ### B — The library earns the claim
 
