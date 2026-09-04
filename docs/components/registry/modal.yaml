@@ -1,14 +1,36 @@
-# Hand-edited. This file is the source for its component's structural data.
-# The CSV import that created it ran once, on 2026-08-20, and will not run
-# again — see docs/components/registry/README.md for the schema and workflow.
+# Contract written 2026-09-04 from the live component set. The children list and
+# the import block are carried over from the CSV import of 2026-08-20.
+# See docs/components/registry/README.md for the schema.
 
 id: "Modal"
 name: "Modal"
 level: "layout"
 role: "container"
-flow_behavior:
-  - "fixed"
-  - "absolute"
+html: "<dialog>"
+status: "draft"
+version: "0.1"
+summary: "A dialog that takes over the screen until the person answers it."
+purpose: "Some decisions cannot be deferred, and the only honest way to say so is to stop everything else. A modal is that stop: a titled panel over the page with the task in the middle and the answers along the bottom, and nothing behind it reachable until one of them is chosen. Everything in it follows from that. It has one heading because a dialog asks one question. It has a close in the corner because refusing to answer has to be as easy as answering. It has a slot rather than a fixed body because what is being asked varies completely while the frame around it does not. And it has no state, because a dialog is not a control — it is either there or it is not."
+use_when:
+  - "The person has to answer before anything else can continue — confirm a deletion, resolve a conflict, complete a step the flow cannot skip."
+  - "A short task deserves its own frame without deserving its own page — a form of a few fields, a picker, a set of settings."
+do_not_use_when:
+  -
+    text: "The content is long enough to scroll at any length, or wide enough to want the page. A dialog that has to be scrolled is a page that has been put in a box."
+    instead: "Flex Layout"
+  -
+    text: "Nothing has to be answered — the panel only shows something alongside the page, and the page should stay usable while it is open."
+    instead:
+      - "Side Panel"
+      - "Popover"
+  -
+    text: "The message reports something that has already happened and needs no answer. Stopping the person to acknowledge a result they cannot change is a dialog spent on nothing."
+    instead:
+      - "Toast"
+      - "Alert"
+  -
+    text: "It is a few words describing a control the person is already looking at."
+    instead: "Tooltip"
 children:
   - "Accordion"
   - "Alert"
@@ -90,7 +112,140 @@ children:
   - "Tree"
   - "Text Area"
   - "Tabs Vertical"
-notes: ""
+uses:
+  - "Button Base"
+  - "Button Outline"
+  - "Button Ghost"
+  - "Button Inner"
+flow_behavior:
+  - "fixed"
+  - "absolute"
+a11y:
+  -
+    status: "requires"
+    note: "Focus has to move into the dialog when it opens, stay inside it while it is open, and return to whatever opened it when it closes. None of that is in this component; it is the single largest obligation on whoever places one."
+  -
+    status: "requires"
+    note: "Escape has to close it, and closing by Escape has to be the same act as pressing the close control — same cleanup, same returned focus. A dialog that can only be left with the mouse traps anyone who is not using one."
+  -
+    status: "requires"
+    note: "The overlay behind the dialog is not part of this component. Whoever places it supplies it, and it has to actually prevent interaction with the page rather than only dim it — a modal that can be clicked past is not modal."
+  -
+    status: "requires"
+    note: "The heading names the dialog, so it has to be present and has to say what is being asked. It is the only text the component guarantees, and it is what assistive technology announces on open."
+sizing_model:
+  horizontal: "fixed"
+  vertical: "hug"
+  adjustable: true
+  intent: "A window, not a control: the width is a definite number per size and the height is whatever the content needs, so a dialog is as tall as its question and never taller. The widths are the one run in this system deliberately left out of the token scale — the scale is built for the inside of components and tops out well below a window, and a dialog width is a decision about a viewport rather than about a component. Each size therefore names a default width, recorded on the size values rather than here, and a consumer that needs another sets it outright; that is still fixed, not fill. One spacing measure runs through the whole frame: the padding of all three regions, the gap between the heading and the close, and the gap between whatever the slot holds are the same token at every size, so the dialog reads as one box rather than three stacked ones. The footer keeps its own tighter run, because buttons sitting side by side want less air between them than regions do. The heading is the only place the display family and the heading line heights appear in this component, which is what makes it read as a title rather than as the first line of the content. This is a layout, so there is no level profile to deviate from — typography.md documents layouts per component, and this is that documentation."
+  sizes:
+    -
+      size: "extra small"
+      padding_block: "gap/g-1_500"
+      padding_inline: "gap/g-1_500"
+      gap: "gap/g-1_500"
+      footer_gap: "gap/g-0_750"
+      font_size: "size/1_125"
+      line_height: "line height/heading/1_125"
+      close_button: "size/s-2_500"
+    -
+      size: "small"
+      padding_block: "gap/g-2_000"
+      padding_inline: "gap/g-2_000"
+      gap: "gap/g-2_000"
+      footer_gap: "gap/g-0_875"
+      font_size: "size/1_250"
+      line_height: "line height/heading/1_250"
+      close_button: "size/s-3_000"
+    -
+      size: "medium"
+      padding_block: "gap/g-2_500"
+      padding_inline: "gap/g-2_500"
+      gap: "gap/g-2_500"
+      footer_gap: "gap/g-1_000"
+      font_size: "size/1_500"
+      line_height: "line height/heading/1_500"
+      close_button: "size/s-3_500"
+    -
+      size: "large"
+      padding_block: "gap/g-3_000"
+      padding_inline: "gap/g-3_000"
+      gap: "gap/g-3_000"
+      footer_gap: "gap/g-1_250"
+      font_size: "size/1_750"
+      line_height: "line height/heading/1_750"
+      close_button: "size/s-4_000"
+    -
+      size: "extra large"
+      padding_block: "gap/g-3_500"
+      padding_inline: "gap/g-3_500"
+      gap: "gap/g-3_500"
+      footer_gap: "gap/g-1_500"
+      font_size: "size/2_000"
+      line_height: "line height/heading/2_000"
+      close_button: "size/s-4_500"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "medium"
+    description: "The width of the window, and with it the spacing, the heading measure and the size the footer buttons and the close take. It is chosen for the shape of what is being asked rather than for how much the answer matters — a wide dialog with two words in it reads as a mistake, and a narrow one with a form in it reads as a cage."
+    values:
+      -
+        value: "extra small"
+        note: "400 wide by default. A confirmation: one sentence and two buttons."
+      -
+        value: "small"
+        note: "500 wide by default. A short form, a few fields."
+      -
+        value: "medium"
+        note: "600 wide by default, and the one most dialogs want."
+      -
+        value: "large"
+        note: "700 wide by default. A form with two columns, or content that needs the room to be read."
+      -
+        value: "extra large"
+        note: "800 wide by default. The largest a dialog goes before the answer is that it should have been a page."
+  -
+    name: "heading text"
+    kind: "text"
+    default: "Modal heading"
+    description: "What is being asked, as a phrase rather than a sentence. It is the only text the component guarantees and the thing a person reads first, so a heading that describes the dialog rather than the decision — Settings, Confirm — spends the most valuable line on nothing. It wraps rather than truncates: a long heading pushes the content down instead of losing its end."
+  -
+    name: "content"
+    kind: "slot"
+    description: "Everything between the heading and the buttons, supplied by whoever places the dialog. It is a slot rather than an instance because what a dialog asks varies completely while the frame around it does not — one dialog holds a sentence, the next a form, the next a table. What is allowed in it is the composition recorded in children, which is nearly the whole library."
+  -
+    name: "has primary button"
+    kind: "boolean"
+    default: "true"
+    description: "Shows the filled button at the right end of the footer — the answer the dialog exists to get. On by default, and off only for a dialog whose only answer is to leave, where a primary button would invent an action that does not exist."
+  -
+    name: "has secondary button"
+    kind: "boolean"
+    default: "true"
+    description: "Shows the outlined button beside the primary one — the way out that is not the answer, usually cancel. On by default, because a dialog that stops everything and offers one way forward is a dialog that has to be got past rather than answered."
+  -
+    name: "has tertiary button"
+    kind: "boolean"
+    default: "false"
+    description: "Shows a third action at the left end of the footer, apart from the pair. Off by default. The separation is the point: it is not a third choice ranked below the other two but an action of a different kind — learn more, go back a step, do something else entirely — and putting it at the far end says so before the label is read."
+limitations:
+  - "There is no state. A dialog is open or it is not, and everything about how it arrives, how it leaves and what happens behind it belongs to whoever places it."
+  - "The overlay is not part of the component. What is drawn here is the panel; the thing that dims the page and blocks it is supplied elsewhere, which is why it is written as an obligation rather than as anatomy."
+  - "The close control cannot be turned off. A dialog that cannot be dismissed is a dialog that has taken the screen hostage, and the system does not offer one."
+  - "Nothing scrolls. The height hugs whatever the slot holds, so content that would overflow makes a taller dialog rather than a scrolling one — which is the signal that it should not have been a dialog."
+  - "The footer holds at most three buttons and their order is fixed. A dialog needing a fourth is asking more than one question."
+  - "The widths are not tokens and are not meant to become them. The dimension scale is built for the inside of components and reaches nothing near a window."
+figma_notes:
+  - "The close control is a Button Inner whose width is bound across a five-step run. That is not an instance being scaled to fit: Button Inner ships one footprint and no size property, and its own contract says a consumer needing another dimension sets it outright."
+  - "The footer buttons are real instances of Button Base, Button Outline and Button Ghost, with tone and size set per variant. They are recorded in uses for that reason, and the size run they follow is the same one the modal is on."
+  - "The api block above is ordered for readability, per naming.md §8 and §10. Figma's API returns properties in a key order that does not match the panel, so the order the designer sees could not be read and is not asserted here."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4453-7650"
+  last_verified: "2026-09-04"
+notes: "The accessibility target is not chosen yet — PLAN.md Stage 5 — so what is recorded here is the obligation on the consumer rather than a judgement against a criterion the system has not adopted. children is carried over whole from the imported entry and is close to the whole library, which is what a dialog slot permits in principle; narrowing it is a later judgement."
 import:
   batch: 1
   ready: true
