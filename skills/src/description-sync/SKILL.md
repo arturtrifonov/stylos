@@ -32,7 +32,7 @@ If nothing is selected, ask the user to select one or more components. Do not sc
 ## The repository
 
 ```
-repository  wrgraff/stylos
+repository  arturtrifonov/stylos
 branch      master
 directory   docs/components/registry/
 ```
