@@ -85,7 +85,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 
 **Build the proof screen incrementally, as each wave lands** — in Figma, from the library, without waiting for Stage 6. A wave that ends in a rendered fragment finds the gap it opened within days; a wave that ends in a merged YAML file finds it in Stage 6, where it costs a re-cut of the set.
 
-**Figma readiness is inside the wave, not a precondition of it.** Side Panel and Tooltip are not ready in the library today. That work belongs to wave 6 and is priced into it; it is not a survey to run ahead of the stage.
+**Figma readiness is inside the wave, not a precondition of it.** Side Panel is not ready in the library today. That work belongs to wave 6 and is priced into it; it is not a survey to run ahead of the stage. Tooltip was in the same position and was built on 2026-09-04, inside the wave, which is what this paragraph describes rather than an exception to it.
 
 **The registry's names lead Figma's, deliberately, until each contract is written.** On 2026-09-02 the twenty-one ids that carried a slash group — the shape the 2026-08-20 import left behind — became compound names, because a slash group is not how this system expresses a family ([registry README](docs/components/registry/README.md), *Families*). Figma still holds the old names for most of them. The rename in Figma happens in the wave or milestone that writes the component's contract, not as a separate sweep, and until it does, `id` does not match the Figma name for those entries. The list is in each entry's header comment.
 
