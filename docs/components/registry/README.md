@@ -263,6 +263,13 @@ Keep it to what a reader would otherwise misread. Layer names, auto-layout setti
 - **`file_key` belongs to the entry, not to the repository.** Components live in two files ([`figma/README.md`](../../../figma/README.md)); a key belonging to any other file is a failure.
 - **`node_id` is stored exactly as the URL gives it** — the dash form, `4479-13507`. Both parts are then a straight copy out of the address bar and the link is a concatenation. The URL itself is never stored: it is derivable, and a stored URL rots in a way the parts do not.
 - **There is no `type` field.** Nothing reads a node's kind, and Figma reports it itself when anything asks.
+- **`last_verified` is the date a person compared this entry to the live component**, in `YYYY-MM-DD`. Not the date the entry was edited, not the date the component changed in Figma, and nothing derives it — a field that moved on every touch of the file would stop answering its one question, which is *how old is the last time anyone actually looked*. Only a person sets it, and only after looking.
+
+  Set it when the comparison is real: the run of [`stylos-component-integrity-check`](../../../skills/src/component-integrity-check/SKILL.md) and [`stylos-naming-cleanup`](../../../skills/src/naming-cleanup/SKILL.md) is done, findings are fixed **in Figma**, and the entry has been brought back into line with what is now there. Not for a glance, not for a description sync, and not because the file was open. The date is the whole record — no report is stored, because a stored report is a changelog of a check nobody re-reads.
+
+  Two things depend on it. [`STANDARD.md`](../STANDARD.md) requires it to be no older than the component's last change, which is what makes a contract *complete*. And `npm run validate:registry` reports a `published` entry verified more than 90 days ago — a finding for a person, not a contradiction, because staleness is a judgement about how much the component has moved since.
+
+  **It is not the same fact as `status`.** `last_verified` says when someone looked; `status: published` says the component passed both gates of `STANDARD.md` and is in the published library. A component can be freshly verified and still `draft`. Order on a pass: fix Figma → correct the entry → `version` if the `api` moved → `last_verified` → `status`.
 
 `notes` — freeform, one line. Where a decision is deliberately pending, this is where that is said.
 
