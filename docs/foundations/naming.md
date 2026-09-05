@@ -134,14 +134,21 @@ Prefer `leading`/`trailing` over `left`/`right` — localization and RTL depend 
 
 ## 8. Canonical variant-property order
 
-**A property that changes the meaning of what is below it comes first.** Changing `type` changes which tones make sense; changing `tone` does not change which sizes exist; changing `state` changes nothing below it. Arrangement is last because nothing depends on it. A property not listed below finds its place by asking what its change would invalidate.
+**Four positions are derived; the rest is convention.** The rule that derives them: a property that changes which values of another make sense stands above it. `type` decides what the thing is. `style` decides its treatment, and a treatment decides which tones are available — an outline and a fill do not offer the same set. `tone` decides nothing about size.
 
-Where present, in this order:
+The rule stops there. `state`, `validation` and the condition booleans invalidate nothing below them, and neither does arrangement, so from position 5 down this is a settled order kept for consistency, not a conclusion. **Do not argue positions 5–15 from the principle — it does not reach them**, and re-deriving them is how a list like this gets rewritten every six months to say the same thing.
+
+Where present, in this order.
+
+**Derived:**
 
 1. `type`
-2. `tone`
-3. `style`
+2. `style`
+3. `tone`
 4. `size`
+
+**Convention:**
+
 5. `state`
 6. `validation`
 7. `is checked`
@@ -153,14 +160,15 @@ Where present, in this order:
 13. `icon position`
 14. `arrows`
 15. `angle`
-16. `first link type`
-17. component-specific properties
+16. component-specific properties
 
-Only properties that exist are included. Rare component-specific properties sit at the end of their group.
+Only properties that exist are included. A property not listed sits at the end, and if it plainly decides which values of a listed property make sense, it belongs in the derived band instead — that is a judgement recorded in the component's contract, not a change to this list.
 
 ## 9. Controlled property groups
 
 **If a boolean controls an element's presence, every property for that element immediately follows the boolean.** No unrelated property may split the group.
+
+**Adjacency is required inside a panel section, never across one.** Figma lists variant properties and component properties separately, so a group cannot span both: an element's variant-level setting — `icon position`, for one — keeps its place in §8 and does not join the group in §10. A rule that demanded otherwise would be asking for something the tool cannot render.
 
 Order inside a group:
 
@@ -181,36 +189,35 @@ Examples:
 
 ## 10. Canonical non-variant property order
 
-Controlled groups stay intact within this order:
+**What the component says comes before what decorates it.** Text is what a component means: without it a heading is empty and a field has no name. An icon, an avatar, a badge are additions to something that already means something. So text leads, companion slots follow, condition and optional actions come last.
 
-1. `has leading icon` → `leading icon`
-2. `has icon` → `icon`
-3. `has trailing icon` → `trailing icon`
-4. `has avatar` → `avatar`
-5. `has badge` → `badge`
-6. `has status indicator` → `status indicator`
-7. `has label` → `label text`
-8. `has heading` → `heading text`
-9. `has title` → `title text`
-10. `has description` → `description text`
-11. `placeholder text`
-12. `input text`
-13. `helper text`
-14. `has additional text` → `additional text`
-15. `number text`
-16. `has content` → `content`
-17. `has active page` → `active page text`
-18. `is required`
-19. `has close button`
-20. `has primary button`
-21. `has secondary button`
-22. `has tertiary button`
-23. `has buttons`
-24. `has undo button`
-25. `has overflow`
-26. `has item 1` … `has item 5`
-27. `has page 2` … `has page 6`
-28. rare component-specific properties
+Controlled groups stay intact within this order (§9):
+
+1. `has label` → `label text`
+2. `has heading` → `heading text`
+3. `has title` → `title text`
+4. `has description` → `description text`
+5. `placeholder text`
+6. `input text`
+7. `helper text`
+8. `has additional text` → `additional text`
+9. `has content` → `content`
+10. `has leading icon` → `leading icon`
+11. `has icon` → `icon`
+12. `has trailing icon` → `trailing icon`
+13. `has avatar` → `avatar`
+14. `has badge` → `badge`
+15. `has status indicator` → `status indicator`
+16. `is required`
+17. `has close button`
+18. `has buttons` → `has primary button` → `has secondary button` → `has tertiary button`
+19. `has undo button`
+20. `has overflow`
+21. component-specific properties
+
+**`has buttons` leads the row it controls**, by §9 — a boolean that turns a group on stands above the members of that group, never after them. `has close button` and `has undo button` are their own affordances and are not part of that row.
+
+**One component's vocabulary does not belong in this list.** `first link type`, `has active page` → `active page text`, `has page 2` … `has page 6`, `has item 1` … `has item 5` and `number text` were here and are not any more: they are component-specific properties, position 21, and they still appear in their own component's order because that order is printed from the properties the component actually has.
 
 If a listed optional action exposes its own instance, text, type, tone, size, or position settings, those stay immediately after its controlling boolean, per §9.
 

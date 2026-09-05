@@ -69,3 +69,23 @@ Only **Element and Object** have a grid that a skill applies mechanically, and t
 Primitive has a recommendation, as above, but no skill-enforced grid.
 
 The collection is called `dimension` because it holds both — a control's height and the gap beside it are both lengths in the layout plane. It is not called `space`: a control's height is not spacing.
+## A dimension above the scale is deliberately raw
+
+The scale stops where components stop. It carries the heights, widths and gaps a control can plausibly take, and nothing above that, because a layout dimension is not the kind of thing this system sets out to constrain: a frame 200 wide is 200 because a screen put it there, and there is no design decision hidden in the number.
+
+So **a fixed `width` or `height` larger than the largest value the `dimension` collection defines is a legitimate raw value, not an unbound one.** There is no token to bind it to, and adding one would be inventing a rule about layout the system does not want to make.
+
+The exemption is narrow, on purpose:
+
+- **Only `width` and `height`, and only where they are fixed.** Padding, gap, corner radius and stroke weight above the top of the scale are suspicious rather than exempt — those are treatments, and a treatment that large is usually a mistake.
+- **Only above the top.** A fixed dimension inside the scale's range that matches no step is an off-scale value and stays a finding: there the token exists and was not used.
+
+Anything that applies this exemption states the top of the scale it read, so the basis is visible rather than assumed.
+
+## A hidden layer's sizing says nothing
+
+Figma does not preserve fill sizing on a hidden layer: taken out of the auto-layout flow, it reports `layoutSizingHorizontal: FIXED` and keeps whatever width it last had, and a hidden text layer reports `textAutoResize: NONE` the same way. None of that is what the layer will do once it is visible.
+
+**A layer's dimensions are judged where the layer is visible, and nowhere else.** Where the same layer is visible in another variant, that occurrence carries the finding. Where it is hidden in every variant, its sizing cannot be established at all and that is what gets said, once, instead of a warning per variant.
+
+This is about sizing only. A hidden layer's colours, radii, stroke weights and type are as real as any other layer's — they are not distorted by being hidden, and they become visible with it.

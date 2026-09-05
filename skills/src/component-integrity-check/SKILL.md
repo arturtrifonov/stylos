@@ -4,7 +4,7 @@ description: "Audit selected Figma components, component sets, instances, or sev
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.3
+  version: 0.4
 ---
 
 # Stylos Component Integrity Check
@@ -225,13 +225,15 @@ Do not report:
 - prototype timing or interaction values
 - implicit Figma defaults that are exposed on every node but are not actively used, such as opacity `1` or stroke weight on a layer with no visible stroke
 
-Apply these dimension classifications before producing a raw-numeric warning:
+Apply these dimension classifications, in order, before producing a raw-numeric warning. Both of the first two come from [sizing.md](../../../docs/foundations/sizing.md), which holds the reasoning; this list only applies it.
 
-1. If exactly one of `width` or `height` is bound to a valid variable, the other is a fixed numeric value, and the layer's aspect ratio is locked, treat the unbound dimension as derived from the bound dimension. Do not warn about it. If the rendered layer is non-square, emit the aspect-ratio information finding defined below; if it is square, emit no finding.
-2. Otherwise, if an unbound fixed width belongs to a verified icon container, emit the icon-container information finding defined below instead of a warning for that width.
-3. Apply the ordinary raw-numeric warning to dimensions that meet neither exception.
+1. **A hidden layer's `width` and `height` are not evidence.** Figma takes a hidden layer out of the auto-layout flow, so it reports `layoutSizingHorizontal: FIXED` — and, for text, `textAutoResize: NONE` — with whatever number it last held, whatever it will do when visible. Judge a layer's dimensions on the variants where it is visible: if the same layer is visible anywhere in the set, that occurrence carries the finding and the hidden ones are silent. If it is hidden in every variant, emit one information finding saying its sizing could not be established, and no warning.
+2. **A fixed `width` or `height` above the top of the scale is deliberately raw.** Where the value is larger than the largest the `dimension` collection defines, there is no token to bind it to and none is wanted — do not warn. Read the top of the scale and **state the value you read, once, in the report**, so the basis is visible; if you cannot read the collection, say so instead of guessing, and skip this class rather than warning through it. A fixed dimension *inside* the scale's range that matches no step is not covered by this and stays a warning.
+3. If exactly one of `width` or `height` is bound to a valid variable, the other is a fixed numeric value, and the layer's aspect ratio is locked, treat the unbound dimension as derived from the bound dimension. Do not warn about it. If the rendered layer is non-square, emit the aspect-ratio information finding defined below; if it is square, emit no finding.
+4. Otherwise, if an unbound fixed width belongs to a verified icon container, emit the icon-container information finding defined below instead of a warning for that width.
+5. Apply the ordinary raw-numeric warning to dimensions that meet none of these.
 
-Do not suppress unrelated raw numeric properties on the same layer. A raw icon-container height, padding, gap, radius, or other property still follows the normal rules unless it independently qualifies for an exception.
+**Classifications 1 and 2 cover `width` and `height` only.** A hidden layer's padding, gap, radius, stroke weight and type are as real as any other layer's, and a padding or radius above the top of the scale is suspicious rather than exempt. Do not suppress unrelated raw numeric properties on the same layer. A raw icon-container height, padding, gap, radius, or other property still follows the normal rules unless it independently qualifies for an exception.
 
 For several occurrences of the same property and value, group the affected paths instead of repeating identical entries.
 

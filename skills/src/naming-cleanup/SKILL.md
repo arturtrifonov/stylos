@@ -4,7 +4,7 @@ description: "Clean up naming in a selected Figma component or component set acc
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.9
+  version: 0.10
 ---
 
 # Stylos Naming Cleanup
@@ -394,18 +394,18 @@ Figma already separates variant properties from component properties in the UI. 
 
 ### Canonical variant property order
 
-**The principle: a property that changes the meaning of what is below it comes first.** Changing `type` changes which tones make sense; changing `tone` does not change which sizes exist; changing `state` changes nothing below it. Arrangement comes last because nothing depends on it. A property not listed below finds its place by asking what it would invalidate.
+**Four positions are derived; the rest is convention** ([naming.md](../../../docs/foundations/naming.md) §8). Derived by one rule: a property that changes which values of another make sense stands above it. `type` decides what the thing is; `style` decides its treatment and so decides which tones are available; `tone` decides nothing about size. The rule stops after `size` — `state`, the condition booleans and arrangement invalidate nothing below them — so the rest is a settled order kept for consistency. Do not re-derive positions 5–15.
 
 | Band | Properties |
 | --- | --- |
-| what it is | `type` |
-| what it means | `tone` |
-| how it is rendered | `style` |
-| how big | `size` |
-| what is happening to it | `state`, `validation` |
-| its internal condition | `is checked`, `is filled`, `is expanded` |
-| how it is arranged | `orientation`, `alignment`, `position`, `icon position` |
-| its own | `arrows`, `angle`, `first link type`, anything component-specific |
+| derived — what it is | `type` |
+| derived — how it is treated | `style` |
+| derived — what it means | `tone` |
+| derived — how big | `size` |
+| convention — what is happening to it | `state`, `validation` |
+| convention — its internal condition | `is checked`, `is filled`, `is expanded` |
+| convention — how it is arranged | `orientation`, `alignment`, `position`, `icon position` |
+| convention — its own | `arrows`, `angle`, anything component-specific |
 
 Read top to bottom, left to right, for the full order.
 
@@ -462,6 +462,8 @@ Bad:
 
 #### Order inside a controlled property group
 
+**Adjacency holds inside a panel section, never across one.** Figma lists variant properties and component properties separately, so a group cannot span both: `icon position` keeps its place in the variant order and does not join the `has icon` group. Never report a group as split because one of its settings is a variant.
+
 Use this order inside the group:
 
 1. `has [element]`
@@ -488,59 +490,50 @@ Examples:
 
 Use this order for component properties after variant properties.
 
+**What the component says comes before what decorates it** ([naming.md](../../../docs/foundations/naming.md) §10). Text is what a component means; an icon, an avatar or a badge is an addition to something already meaningful. Text leads, companion slots follow, condition and optional actions come last.
+
 Each controlled property group should stay together.
 
-1. `has leading icon`
-2. `leading icon`
-3. `has icon`
-4. `icon`
-5. `has trailing icon`
-6. `trailing icon`
-7. `has avatar`
-8. `avatar`
-9. `has badge`
-10. `badge`
-11. `has status indicator`
-12. `status indicator`
-13. `has label`
-14. `label text`
-15. `has heading`
-16. `heading text`
-17. `has title`
-18. `title text`
-19. `has description`
-20. `description text`
-21. `placeholder text`
-22. `input text`
-23. `helper text`
-24. `has additional text`
-25. `additional text`
-26. `number text`
-27. `has content`
-28. `content`
-29. `has active page`
-30. `active page text`
-31. `is required`
-32. `has close button`
-33. `has primary button`
-34. `has secondary button`
-35. `has tertiary button`
-36. `has buttons`
-37. `has undo button`
-38. `has overflow`
-39. `has item 1`
-40. `has item 2`
-41. `has item 3`
-42. `has item 4`
-43. `has item 5`
-44. `has page 2`
-45. `has page 3`
-46. `has page 4`
-47. `has page 5`
-48. `has page 6`
-49. rare component-specific properties
+1. `has label`
+2. `label text`
+3. `has heading`
+4. `heading text`
+5. `has title`
+6. `title text`
+7. `has description`
+8. `description text`
+9. `placeholder text`
+10. `input text`
+11. `helper text`
+12. `has additional text`
+13. `additional text`
+14. `has content`
+15. `content`
+16. `has leading icon`
+17. `leading icon`
+18. `has icon`
+19. `icon`
+20. `has trailing icon`
+21. `trailing icon`
+22. `has avatar`
+23. `avatar`
+24. `has badge`
+25. `badge`
+26. `has status indicator`
+27. `status indicator`
+28. `is required`
+29. `has close button`
+30. `has buttons`
+31. `has primary button`
+32. `has secondary button`
+33. `has tertiary button`
+34. `has undo button`
+35. `has overflow`
+36. component-specific properties
 
-Only include properties that exist in the component.
+`has buttons` stands above the three it controls, never after them. `has close button` and `has undo button` are their own affordances, not part of that row.
+
+Only include properties that exist in the component. A property this list does not name is component-specific and sits at position 36, in whatever order its own component gives it.
 
 ### Slot and icon controlled groups
 
@@ -819,30 +812,31 @@ type · tone · size · state
 
 ### Step 6: Hand back what the API cannot do
 
-The Plugin API cannot reorder properties without breaking instance bindings, so property order is always a manual fix. Anything else the API refuses goes in the same section.
+**Property order is not checked, and nothing in the report may claim it is wrong.** The Plugin API does not expose the order shown in the properties panel — `componentPropertyDefinitions` returns an object, and the order of its keys is not the panel's — so any statement about which property is out of place would be invented. It reads as a finding, sends a person to the panel, and is right only by accident.
 
-This is an instruction for a person working in the Figma properties panel, which is a vertical list. Write it as a vertical list:
+What the report does instead is print the canonical order for the properties this component actually has, as a reference to compare against by eye. The Plugin API also cannot reorder properties without breaking instance bindings, so reordering is a manual fix either way; anything else the API refuses goes in the same section.
+
+This is a reference for a person working in the Figma properties panel, which is a vertical list. Write it as a vertical list:
 
 ```md
-## Needs your hand — the Plugin API cannot reorder properties
+## For your eye — property order is not machine-checkable
 
-**Pagination — component properties.** Drag into this order:
+**Label — component properties.** The canonical order for the properties this
+component has:
 
-1. has active page
-2. active page text
-3. has overflow
-4. has page 2
-5. has page 3
-6. has page 4
-7. has page 5
-8. has page 6
+1. label text
+2. has additional text
+3. additional text
+4. is required
 
-Two things are out of place: `active page text` is last, though it belongs
-directly under the boolean that controls it; and the pages run backwards.
+The panel's order cannot be read through the Plugin API, so this is a reference,
+not a finding. Compare it against the panel and drag if they differ.
 ```
 
-- **Enumerate every entry.** No `…`, no ranges — an ellipsis cannot be dragged.
+- **Enumerate every entry.** No `…`, no ranges — an ellipsis cannot be compared.
 - **Number the lines**, so a place in the list can be kept while working.
+- **Include only properties the component has**, in canonical order.
+- **Never write that something is out of place, is after something else, or needs moving.** You cannot see where it is. State the canonical order and stop.
 - **State what is wrong once, in prose, after the list.** Not as a second chain of arrows.
 - **Say why it is manual** in the heading, so it does not read as the skill having failed.
 
@@ -1008,7 +1002,7 @@ The final component should meet these conditions:
 - variant property names and values use lowercase
 - `size` values are full words in their fixed order
 - `default` is used instead of `static` for the base state
-- recurring properties follow canonical property order, or the report says they could not be reordered
+- the report prints the canonical order for the properties present, and claims nothing about the panel's current order
 - controlled properties are placed immediately after their `has` boolean
 - variable names use slash-separated lowercase hierarchy when variables are in scope
 
