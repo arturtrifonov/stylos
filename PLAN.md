@@ -136,14 +136,14 @@ The long pole is **S4**: thirty-nine component contracts, each needing judgement
 
 ### Stage 5 — `@stylos/ui`
 
-**First, generate the CSS** — what used to be Stage 3, moved here because its output has no reader until something renders with it:
+**First, generate the CSS** — what used to be Stage 3, moved here because its output has no reader until something renders with it. Specified in full by [SPEC 0007](docs/specs/0007-tokens-to-css.md):
 
 - `tokens/*.yaml` → CSS custom properties, preserving the primitive/semantic indirection so palette overrides propagate.
 - One deterministic, documented rule for token name → custom property name.
 - Mode scoping per [`color.md`](docs/foundations/color.md): palette emitted flat and unscoped; the semantic layer emitted once per mode with every role declared in both; one global switch.
 - The slot layer emitted as its own indirection, so a client rebrand is five bindings rather than 110 overrides.
 - Shadows composed per [`effects.md`](docs/foundations/effects.md) — cumulative stacks, not one layer per level.
-- Fail on a token that disappeared between runs without acknowledgement.
+- Fail on a token that disappeared without acknowledgement. **This moved to `tokens:import`**, where the withdrawal actually happens: the CSS is a build result and is not committed, so it has no baseline to compare a run against. The CSS build's whole responsibility for disappearance is refusing to run on a set that fails `tokens:check` ([SPEC 0007](docs/specs/0007-tokens-to-css.md) §6).
 
 **Then the package itself. Svelte is committed** (2026-09-04); the rest is a planned approach to revisit when the work actually starts:
 
