@@ -9,7 +9,7 @@ A design system for dense, desktop-oriented web product interfaces. Its visual l
 | Owner | Artur Trifonov |
 | Figma | [Styles](https://www.figma.com/design/2OJYDoTE9EAdQKaJAJK9Kt/Stylos--Styles) · [Components](https://www.figma.com/design/WUc07ZBtjRvypXtsOlbVut/Stylos--Components) · [GUI components](https://www.figma.com/design/vmR8eiLdeZQuEVXokZK57c/Stylos--GUI-components) · [Playground](https://www.figma.com/design/Fx2BP5qzqL9Gkas8JTFKz6/Stylos-Playground) — keys in [`figma/README.md`](figma/README.md) |
 | Icons | [Default Kit / Material Icons](https://www.figma.com/design/mal5Fp20UXdswiLoBTVDvI/Default-Kit--Material-Icons) — external, interim |
-| Repository | https://github.com/wrgraff/stylos |
+| Repository | https://github.com/arturtrifonov/stylos |
 | Design tool | Figma |
 | Platform | web, desktop-oriented applications |
 | Planned implementation | Svelte |
@@ -22,7 +22,7 @@ A design system for dense, desktop-oriented web product interfaces. Its visual l
 | [`docs/charter.md`](docs/charter.md) | what the system is for, its character, and where its boundaries are |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | how it is put together — what lives where, and what is currently broken |
 | [`docs/foundations/`](docs/foundations/README.md) | the rules of the design language |
-| [`PLAN.md`](PLAN.md) | the path to v0.1 |
+| [`PLAN.md`](PLAN.md) | the release ladder, and the stages that reach each tag |
 
 ## What is here
 

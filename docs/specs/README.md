@@ -21,3 +21,4 @@ If a spec finds itself arguing for an approach rather than describing one, that 
 | [0003](0003-component-page.md) | Component page | `docs/components/STANDARD.md` | Built |
 | [0004](0004-registry-reconciliation.md) | Registry reconciliation | `docs/components/registry/README.md`, `PLAN.md` §4 | Built |
 | [0005](0005-queue-in-the-views.md) | The queue in the views | `ARCHITECTURE.md` §8 | Built |
+| [0006](0006-versioning-and-release-0-1-0.md) | Versioning, and the 0.1.0 release | `ARCHITECTURE.md` §9 | Open |

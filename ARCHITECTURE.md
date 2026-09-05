@@ -4,7 +4,7 @@ How the system is put together: what lives where, which source is authoritative 
 
 **This document is normative.** It describes the system as it actually is on the date below — not as it is intended to become. Anything that does not exist is listed as not existing. Intent, rationale, and history belong in [`docs/decisions/`](docs/decisions/README.md); rules of the design language belong in [`docs/foundations/`](docs/foundations/README.md).
 
-**Status:** Alpha · private, owner-led · last verified 22 August 2026
+**Status:** Pre-alpha · private, owner-led · last verified 4 September 2026
 
 ---
 
@@ -55,21 +55,22 @@ The CSS conversion (`tokens:build`) and the package are both planned but unbuilt
 ### 2.2 Components
 
 ```
-Components in Figma      ──✗ no link ✗──      docs/components/registry/*.yaml
-                                                        │
-                                                        ├──▶ build/components/ (generated, gitignored)
-                                                        └──▶ published surface (does not exist)
+docs/components/registry/*.yaml  ──▶ figma.node_id ──▶  the component in Figma
+                │
+                ├──▶ build/components/ (generated, gitignored)
+                ├──▶ the Figma description (composed; carried across by hand)
+                └──▶ published surface (does not exist)
 ```
 
-Components themselves live in Figma. Their whole contract — level, role, purpose, boundaries, public API, accessibility findings, sizing model, limitations, relations — lives as one YAML file per component under `docs/components/registry/`, with the path mirroring each component's Figma `/` hierarchy. 96 components were imported from an Airtable export on 20 August 2026; Airtable is retired as a source. Hand-editing the YAML is the expected workflow, and there is no second document: the readable page is generated from the entry ([`docs/components/STANDARD.md`](docs/components/STANDARD.md)).
+Components themselves live in Figma. Their whole contract — level, role, purpose, boundaries, public API, accessibility findings, sizing model, limitations, relations — lives as one YAML file per component under `docs/components/registry/`, with the path mirroring each component's Figma `/` hierarchy. 96 components were imported from an Airtable export on 20 August 2026; Airtable is retired as a source. Hand-editing the YAML is the expected workflow, and there is no second document. Everything a reader meets is composed from the entry: the readable page ([`docs/components/STANDARD.md`](docs/components/STANDARD.md)) and the component's description in Figma, built from `summary`, the first `use_when` and the first `do_not_use_when` rather than authored ([`registry/README.md`](docs/components/registry/README.md)). Nothing inside Figma is documentation in its own right; what is written there is the registry, rendered.
 
 `npm run validate:registry` checks the registry **against itself**: references resolve, ids are unique, each file sits at the path its id implies, any `figma:` block could address a real node, and every contract field that is present is internally consistent — a status or kind inside its vocabulary, a default among its property's values, a variant count that matches the product, a controlled group that is adjacent, a sizing run written as token names that resolve against `tokens/`, a value with a finding and a reason for shipping it. It separates contradictions (exit 1) from findings a human has to settle — a one-sided relation, a child at or above its parent's level, a contract missing narrative fields (exit 0). It does not check the registry against Figma.
 
 `npm run build` renders the whole set into `build/` — a home page, the registry view, one page per component, and `assets/` beside them — and it is the only command that produces an uploadable tree. `npm run registry:view` renders the registry view alone as one self-contained HTML file, where relations are links rather than files to open, and every row links to that component's page. `npm run components:view` writes those pages — one per entry under `build/components/`, the contract laid out to be read rather than parsed. It is also the one place the two records meet: a contract records dimensions as token names, and the page resolves them against `tokens/` at build time and shows the value with the name, so the scale stays legible without a number ever being copied into a contract. The pages are also the token set's first consumer in the other direction: colour, radius, the type scale and both families are resolved from `tokens/` by `tools/lib/theme.mjs` on every build and emitted as custom properties, so no Stylos value is transcribed into a stylesheet. That is a theme, not the CSS build of [`PLAN.md`](PLAN.md) Stage 3 — the pages are hand-written HTML and use no Stylos component. Two flags are derived at build time and never authored: `documented` (the contract carries a summary, a purpose, a `use_when` and a description on every property) and `linked` (a Figma node is recorded). Neither output is committed — both are cheap to rebuild and would put a diff the size of the whole registry into every registry change.
 
-An entry may carry a `figma:` block naming the file and node it is implemented by. That is a hand-recorded address, not a sync: it is filled in when a component is opened in Figma for other reasons.
+An entry carries a `figma:` block naming the file and node it is implemented by, with a `last_verified` date. A complete contract requires it ([`STANDARD.md`](docs/components/STANDARD.md)), so an entry has the address exactly when it has a contract — 39 of 114 at the time of writing — and it arrives with the contract rather than in a sweep of its own.
 
-**Break:** the two records share no identifiers. A component renamed, added, or removed in Figma produces no signal in the registry, and nothing can detect the divergence automatically.
+**What the address does not do is detect anything.** Nothing polls Figma: a component renamed, added or removed there still produces no signal here, and `last_verified` is the only freshness the repository has — a date a person set, aging on its own. The address makes divergence checkable by hand, not detected.
 
 ### 2.3 Operations
 
@@ -107,7 +108,6 @@ Stated explicitly so it is never assumed.
 - **A front-end library.** No package, no dependencies, no component code. The intended structure is sketched in [`PLAN.md`](PLAN.md) Stage 5; building it before the Figma contracts stabilise would create maintenance without delivering anything.
 - **CSS token output.** The token pipeline exists and produces the canonical set (`tokens/*.yaml`), but no script converts it into CSS custom properties yet — that is `tokens:build`, a later spec.
 - **Any published documentation surface.** No site, no Storybook, no designer-facing portal. Documentation is Markdown in git, read in an editor.
-- **A link between the registry and Figma.** No shared identifiers in either direction.
 - **Per-component contracts.** The standard, the schema, the validator and the page generator exist; most entries still carry the inventory record only. How many is derived — `documented` in the registry view — rather than restated here.
 
 ---
@@ -116,11 +116,10 @@ Stated explicitly so it is never assumed.
 
 Ordered by cost of leaving them.
 
-1. **Registry and Figma are unlinked.** Two records of the same entities with no shared identifiers. Divergence is undetectable. Cost grows with component count.
-2. **The token record is stale by default.** The import mechanism exists; the habit does not. Neither a script nor a person can rely on `tokens/` reflecting the live Figma file.
-3. **Documentation is split across two homes without a rule.** Markdown in this repository and descriptions inside Figma (StateDiagram, PropTable, annotations) exist in parallel, with no statement of which is authoritative for which kind of information. Publishing before that is settled would ship a self-contradicting set.
-4. **Skill installation is unversioned.** The loaded build cannot be identified.
-5. **Nothing is validated by a real build.** Tokens, sizes, and component contracts have never been exercised by code.
+1. **The token record is stale by default.** The import mechanism exists; the habit does not. Neither a script nor a person can rely on `tokens/` reflecting the live Figma file.
+2. **Nothing is validated by a real build.** Tokens, sizes, and component contracts have never been exercised by code.
+
+**Three breaks closed, 2026-09-04.** *Registry and Figma are unlinked* — a contract carries `figma.node_id` and `last_verified`, so divergence is checkable by hand for every entry that has one; the entries that do not are the ones with no contract, which §4 already states rather than counting twice. *Documentation is split across two homes without a rule* — there is one source, the registry entry, and both the generated page and the Figma description are composed from it (§2.2). *Skill installation is unversioned* — `tools/build-skills.mjs` has appended each source's `metadata.version` to its description since 2026-08-24, and the loaded build names itself.
 
 ---
 
@@ -155,7 +154,7 @@ An open question is anything not settled by a rule in `docs/foundations/` or by 
 
 Three words for three different things. "Where are we" is unanswerable when they are used interchangeably, which is how the Airtable batch numbers came to be read as a plan.
 
-**A milestone is a decision about distribution.** `0.1`, `alpha`, `beta`, `1.0`. The list under it is the checklist that decision waits on: everything in it done and the decision is open; anything missing and it is not. A milestone is deliberately **not a size budget** — putting more into one moves the decision later, it does not make the milestone wrong, so including something is cheap and leaving it out is not. Every registry entry carries exactly one, and `Parked` is a real value: work no decision waits on.
+**A milestone is a decision about distribution.** `0.1`, `alpha`, `beta`, `1.0`. `0.1` opens the decision that the Figma library is published and can be built against; its checklist is `PLAN.md` §4, which is why it is the one milestone §9 does not list. The list under it is the checklist that decision waits on: everything in it done and the decision is open; anything missing and it is not. A milestone is deliberately **not a size budget** — putting more into one moves the decision later, it does not make the milestone wrong, so including something is cheap and leaving it out is not. Every registry entry carries exactly one, and `Parked` is a real value: work no decision waits on.
 
 **A release is a tag.** A number, chosen in `CHANGELOG.md` at the moment it is cut. How many releases fall between two milestones, and which number a milestone ships under, is not decided in advance and is written nowhere until it happens.
 
@@ -169,3 +168,46 @@ Two invariants, both mechanical:
 
 - **Every entry is placed exactly once.** An id named by neither table is reported by `npm run validate:registry`.
 - **Every name resolves.** An id named by either table that the registry does not hold fails the build rather than being skipped, because a checklist quietly one component short is a wrong answer nobody would catch.
+
+---
+
+## 9. Versioning
+
+**One version line covers the system** — the contracts in `docs/components/registry/`, the canonical set in `tokens/`, and the Figma library that implements them. They cannot drift by design: a registry entry *is* that library's contract and holds its `figma.node_id`, so versioning them apart would track a difference that must not be allowed to exist. The number lives in `package.json`, and a git tag names it.
+
+**`@stylos/ui` carries its own semver.** It is published on its own schedule and declares in one line which system version it implements. That is the only place two numbers meet, and the relationship runs one way: the package names the system, never the reverse.
+
+**Semver is read against the contract, not against the code.**
+
+| | |
+| --- | --- |
+| **Major** | a component is removed, or a documented property, value or state disappears |
+| **Minor** | a component is added, or a property, value or state is added without changing what exists |
+| **Patch** | appearance, tokens, prose, findings — any change that leaves the API where it was |
+
+**Below `1.0` that table is a description, not a promise.** A major change may ship in a minor release; the only commitment is that the notes name it. A stability guarantee a solo project cannot honour is worth less than no guarantee at all, because it is believed once.
+
+### What breaks a Figma instance
+
+Figma has no semver, and a consumer cannot pin or install an earlier version of a library — an update is to the latest publish or nothing. Compatibility there is therefore not version negotiation but one question, asked of every change.
+
+**Breaks instances:** deleting a component or component set; deleting a variant that instances use; deleting a property, or changing its type; moving a component to another file, which mints a new key and orphans every instance of it.
+
+**Does not break instances:** renaming the component, whose key is stable; adding a property with a default, or adding values or variants; any change to appearance, tokens, layer structure or description.
+
+That is what the table above means when the change is made in Figma rather than in a file.
+
+### Where a version is written
+
+| | |
+| --- | --- |
+| `package.json` | the number itself |
+| a git tag | annotated, on the commit that is the release |
+| `CHANGELOG.md` | the notes, with a `### Figma library` subsection recording the publish and what moved in it |
+| `Meta / version` in *Stylos / Styles* | a string variable naming the release the published library belongs to |
+
+**`CHANGELOG.md` is the only source of notes.** The GitHub release body and the Figma publish description are copies of it, made at the moment of release and never edited afterwards.
+
+**`Meta / version` is checked, not trusted.** `npm run tokens:import` records it in `figma/library.yaml` and `npm run tokens:check` fails when it disagrees with `package.json`. Because the export is manual, it answers what the library reported at the last export and nothing about right now — which is enough, since the moment it matters is the release.
+
+**The milestone list is not duplicated outside `PLAN.md` §9**, GitHub Milestones included. §8 says why.
