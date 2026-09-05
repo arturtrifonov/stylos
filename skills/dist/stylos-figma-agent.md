@@ -11,7 +11,7 @@ Compiled skill document for manual import into Figma Agent. Contains:
 
 - `stylos-component-integrity-check` v0.5
 - `stylos-description-sync` v0.2
-- `stylos-naming-cleanup` v0.12
+- `stylos-naming-cleanup` v0.13
 - `stylos-reference-reconstruction` v0.2
 
 ---
@@ -637,7 +637,7 @@ description: "Clean up naming in a selected Figma component or component set acc
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.12
+  version: 0.13
 ---
 
 # Stylos Naming Cleanup
@@ -1101,7 +1101,7 @@ Bad:
 Use this order inside the group:
 
 1. `has [element]`
-2. `[element]` instance swap or slot
+2. `[element]` for an instance swap, or `[element] slot` for a slot
 3. `[element] text`
 4. `[element] type`
 5. `[element] tone`
@@ -1154,8 +1154,8 @@ Use this order for component properties after variant properties.
 19. `cell text`
 20. `tooltip text`
 21. `has content`
-22. `content`
-23. `cells`
+22. `content slot`
+23. `cells slot`
 
 *What operates on the content*
 
@@ -1413,6 +1413,7 @@ Flag these as errors:
 - text properties not ending in `text`
 - boolean properties not starting with `has` or `is`
 - boolean properties starting with `show`
+- a slot property missing its suffix — `content` → `content slot`, `cells` → `cells slot` (§7). The suffix names the kind of property, as `text` does; a bare name says nothing about what the property accepts
 - `left` / `right` used for icon slots
 - variant property names using Title Case
 - variant values using Title Case
@@ -1524,6 +1525,8 @@ not a finding. Compare it against the panel and drag if they differ.
 - **Number the lines**, so a place in the list can be kept while working.
 - **Include only properties the component has**, in canonical order.
 - **Never write that something is out of place, is after something else, or needs moving.** You cannot see where it is. State the canonical order and stop.
+- **One list per panel section, never merged.** Variant properties take §8's order, component properties take §10's, and Figma draws them as two separate sections. Print them under two headings with two numberings. A variant name appearing in a component-property list, or the reverse, is a defect in the report — the two orders are not comparable and a single sequence over both means nothing.
+- **Print the list once.** Work out the order before writing anything, then write the finished list. A report that contains a first attempt, a correction and a second attempt makes the reader decide which one to trust, which is the reader doing the skill's job. No `Wait —`, no `Let me correct`, no revised list following an earlier one.
 - **State what is wrong once, in prose, after the list.** Not as a second chain of arrows.
 - **Say why it is manual** in the heading, so it does not read as the skill having failed.
 

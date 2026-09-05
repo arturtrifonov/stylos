@@ -124,13 +124,17 @@ Public booleans use exactly two forms:
 
 `show` is not permitted in a public component API. It is allowed only on documentation or prototype controls — `show annotations`, `show measurements`.
 
-## 7. Instance-swap properties
+## 7. Instance-swap and slot properties
 
-Role-based, lowercase:
+**An instance-swap property is named for the role it fills**, lowercase, with no suffix — swapping it changes which component sits in that one place:
 
 `icon` · `leading icon` · `trailing icon` · `avatar` · `badge` · `prefix component` · `suffix component` · `empty state illustration`
 
 Prefer `leading`/`trailing` over `left`/`right` — localization and RTL depend on it.
+
+**A slot property carries the `slot` suffix**: `content slot`, `cells slot`.
+
+The suffix names the kind of property, exactly as `text` does in §5. `label text` is a text property; `content slot` is a slot. Dropping it would leave a name that says nothing about what the property accepts — `content` could be a boolean, a text or one instance, and a slot is none of those: it takes however many instances the consumer puts in it, of several types. A reader who cannot tell a slot from an instance swap will fill it wrongly, and so will an agent.
 
 ## 8. Canonical variant-property order
 
@@ -177,7 +181,7 @@ Only properties that exist are included. A property not listed sits at the end, 
 Order inside a group:
 
 1. `has [element]`
-2. `[element]` — instance swap or slot
+2. `[element]` — an instance swap — or `[element] slot` — a slot (§7)
 3. `[element] text`
 4. `[element] type`
 5. `[element] tone`
@@ -217,8 +221,8 @@ Examples:
 11. `number text`
 12. `cell text`
 13. `tooltip text`
-14. `has content` → `content`
-15. `cells`
+14. `has content` → `content slot`
+15. `cells slot`
 
 **What operates on the content**
 
