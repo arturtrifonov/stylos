@@ -8,7 +8,7 @@ family: "Radio"
 level: "element"
 role: "input"
 html: "<label><input type=\"radio\"> Label text</label>"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "A radio with a short single-line label, sized by its text."
 purpose: "Most radios in a product are a circle and two or three words, stacked into a short list of alternatives. This is that case, authored so the label is part of the same component: clickable, aligned to the circle at every size, and programmatically associated without the consumer arranging it. The list itself is not a component — what this guarantees is that each row of it behaves the same way."
@@ -173,7 +173,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4344-894"
-  last_verified: "2026-08-28"
+  last_verified: "2026-09-05"
 notes: "children and parents are carried unchanged from the pre-split entry and have not yet been divided between the three family members — that division is a judgement, not a transcription."
 import:
   batch: 1

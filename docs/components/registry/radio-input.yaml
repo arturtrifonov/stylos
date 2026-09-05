@@ -8,7 +8,7 @@ family: "Radio"
 level: "element"
 role: "input"
 html: "<input type=\"radio\">"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "The radio control alone — the circle and its selection state, with no label."
 purpose: "A radio is never one control. It is one member of a set where choosing any member unchooses the rest, and that set is the unit a person reasons about. This component exists for the places where the set is already drawn by something else — a table of plans, a list of options, a row of cards — so the circle can be authored once and reused by everything that needs one, without carrying a label it would only duplicate."
@@ -142,7 +142,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4344-431"
-  last_verified: "2026-08-28"
+  last_verified: "2026-09-05"
 notes: "children and parents are carried unchanged from the pre-split entry and have not yet been divided between the three family members — that division is a judgement, not a transcription. uses is absent because this component contains no instances."
 import:
   batch: 1

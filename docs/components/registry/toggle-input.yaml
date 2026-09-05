@@ -8,7 +8,7 @@ family: "Toggle"
 level: "element"
 role: "input"
 html: "<input type=\"checkbox\" role=\"switch\">"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "The switch alone — the track and its setting, with no label."
 purpose: "A switch says what something is set to and changes it in one movement, without a Save between. This component is that control on its own, for the places where the surrounding interface already says what is being switched: a settings row whose left half is the name, a table cell under a column heading, a composed field. The box is authored once here so every component that needs one is showing the same switch."
@@ -145,7 +145,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4341-31485"
-  last_verified: "2026-08-30"
+  last_verified: "2026-09-05"
 notes: "children and parents are inherited in full from the entry this component was split out of, as the split rule requires; narrowing either is a later judgement. uses is absent because the component contains no instances."
 import:
   batch: 1

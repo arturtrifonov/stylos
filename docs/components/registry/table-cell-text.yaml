@@ -9,7 +9,7 @@ family: "Table Cell"
 level: "object"
 role: "output"
 html: "<td>"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "One value in one column, on one line, truncated rather than wrapped."
 purpose: "A table is read down its columns, and that only works if every row is the same height and every value starts in the same place. This component is that discipline made into a component: it takes the width the column gives it, it commits to a single line, and where the value is longer than the column it cuts the value rather than the rhythm. The two things a value often needs beyond itself — a mark that classifies it and a second line that qualifies it — are here as optional anatomy, so that adding them does not mean abandoning the cell and assembling one by hand."
@@ -199,7 +199,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4860:14267"
-  last_verified: "2026-08-30"
+  last_verified: "2026-09-05"
 notes: "A wrapping cell is expected to join this family — the set will grow and a multi-line value will need one — and is sequenced in PLAN.md under beta rather than designed here. The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."
 import:
   batch: 1

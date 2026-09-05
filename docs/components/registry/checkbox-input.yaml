@@ -8,7 +8,7 @@ family: "Checkbox"
 level: "element"
 role: "input"
 html: "<input type=\"checkbox\">"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "The checkbox control alone — the box and its selection state, with no label."
 purpose: "Selection has to be shown in places that already explain themselves. A table row, a menu item and a bulk-selection header all carry their own meaning, and a label on the checkbox there would repeat what the row already says. This component exists so those contexts get the control without the explanation, and so the box itself is authored once and reused by every component that needs one."
@@ -147,7 +147,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4349-1753"
-  last_verified: "2026-08-26"
+  last_verified: "2026-09-05"
 notes: "children and parents are carried from the pre-split entry and have not yet been divided between the three family members — that division is a judgement, not a transcription."
 import:
   batch: 1

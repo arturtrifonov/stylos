@@ -10,7 +10,7 @@ family: "Button Icon"
 level: "object"
 role: "trigger"
 html: "<button type=\"button\">"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "The bordered action button with no label — an icon in a squared outline."
 purpose: "A strip of controls usually has one action that matters more than the rest and several that are simply available. This is the member for the ones that are simply available: the same square as its siblings, drawn as a pale surface inside a border in its own tone rather than as a filled block. The border is what makes it work where a ghost would not — in a toolbar over a busy or coloured background, an edge says the square is pressable before anyone points at it, and every button in the strip keeps the same footprint whether it is filled, outlined or empty."
@@ -170,7 +170,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4710-27501"
-  last_verified: "2026-09-03"
+  last_verified: "2026-09-05"
 notes: "The accessibility target is not chosen yet — PLAN.md Stage 5 — so contrast and target-size measurements are recorded as facts rather than judged against a criterion the system has not adopted. children and parents are inherited whole from the Button Icon entry this component was split out of; narrowing either is a later judgement, and the list is wider than the single icon slot the component actually offers."
 import:
   batch: 1

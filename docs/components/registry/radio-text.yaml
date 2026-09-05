@@ -8,7 +8,7 @@ family: "Radio"
 level: "element"
 role: "input"
 html: "<label><input type=\"radio\"> Label text</label>"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "A radio tied to wrapping copy in a column of fixed width, the circle aligned to the first line."
 purpose: "The options a person has to weigh against each other are often a sentence each — a plan with what it includes, a permission with its consequence, a mode with what it changes. That text wraps at a width the layout decides, and the circle has to stay where the reader's eye starts rather than float in the vertical middle of three lines. Radio Label can do neither, because it hugs and centres."
@@ -178,7 +178,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4333-26184"
-  last_verified: "2026-08-28"
+  last_verified: "2026-09-05"
 notes: "children and parents are carried unchanged from the pre-split entry and have not yet been divided between the three family members — that division is a judgement, not a transcription."
 import:
   batch: 1

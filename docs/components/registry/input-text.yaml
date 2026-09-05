@@ -8,7 +8,7 @@ family: "Input"
 level: "object"
 role: "input"
 html: "<label>Label text <span>Additional text</span></label><input type=\"text\">"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "A single-line text field with its label, for building forms."
 purpose: "A text field is a label, a box, and a message that appears when the value is checked, with room inside the box for a mark and for a unit. They are one component because a field assembled from separate parts spaces itself differently in every form, and because a field built without a place for the message has nowhere to put one when validation is added."
@@ -312,7 +312,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4392:6011"
-  last_verified: "2026-08-31"
+  last_verified: "2026-09-05"
 notes: "The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed. The variant properties themselves are ordered size, state, validation, is filled, which is section 8's order."
 import:
   batch: 1

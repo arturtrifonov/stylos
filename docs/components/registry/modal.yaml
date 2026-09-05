@@ -7,7 +7,7 @@ name: "Modal"
 level: "layout"
 role: "container"
 html: "<dialog>"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "A dialog that takes over the screen until the person answers it."
 purpose: "Some decisions cannot be deferred, and the only honest way to say so is to stop everything else. A modal is that stop: a titled panel over the page with the task in the middle and the answers along the bottom, and nothing behind it reachable until one of them is chosen. Everything in it follows from that. It has one heading because a dialog asks one question. It has a close in the corner because refusing to answer has to be as easy as answering. It has a slot rather than a fixed body because what is being asked varies completely while the frame around it does not. And it has no state, because a dialog is not a control — it is either there or it is not."
@@ -244,7 +244,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4453-7650"
-  last_verified: "2026-09-04"
+  last_verified: "2026-09-05"
 notes: "The accessibility target is not chosen yet — PLAN.md Stage 5 — so what is recorded here is the obligation on the consumer rather than a judgement against a criterion the system has not adopted. children is carried over whole from the imported entry and is close to the whole library, which is what a dialog slot permits in principle; narrowing it is a later judgement."
 import:
   batch: 1

@@ -7,7 +7,7 @@ name: "Tooltip"
 level: "element"
 role: "content"
 html: "no semantic html"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "A short description of another control, shown beside it while it is pointed at or focused."
 purpose: "Interfaces run out of room long before they run out of things worth saying, and the first casualty is the sentence that would have explained a control. This is where that sentence goes. It is a floating slab of text with no arrow — a tail is a second shape to align, a second thing to get wrong against a scrolling edge, and it earns none of that by pointing at something the reader is already looking at. Because it appears only on hover or focus and leaves with them, nothing inside it can be reached and nothing that matters can live only here."
@@ -156,7 +156,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "1217-172945"
-  last_verified: "2026-09-04"
+  last_verified: "2026-09-05"
 notes: "The accessibility target is not chosen yet — PLAN.md Stage 5 — so contrast measurements are recorded as facts rather than judged against a criterion the system has not adopted. children is the composition the system permits in principle; the component as built has one text layer and no slot for any of it, and narrowing the list is a later judgement."
 import:
   batch: 2

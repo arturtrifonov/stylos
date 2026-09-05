@@ -13,7 +13,7 @@ family: "Button"
 level: "object"
 role: "trigger"
 html: "<button type=\"button\">"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "The filled action button — the one a view is built around."
 purpose: "Every screen has an action it exists to let someone take, and that action has to be found before it is read. This is the member of the family that fills its box with its tone and knocks the label out of it, so it is located by scanning a screen rather than by reading one. That weight is the whole of what separates it from its siblings: the box, the run of sizes, the label, the two icon slots and the states are the same in all three, and choosing between them is choosing how loudly the action should speak, not what it does."
@@ -223,7 +223,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4479-13507"
-  last_verified: "2026-09-03"
+  last_verified: "2026-09-05"
 notes: "The accessibility target is not chosen yet — PLAN.md Stage 5 — so contrast and target-size measurements are recorded as facts rather than judged against a criterion the system has not adopted."
 import:
   batch: 1

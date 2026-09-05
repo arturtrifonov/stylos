@@ -9,7 +9,7 @@ family: "Table Cell"
 level: "object"
 role: "output"
 html: "<th scope=\"col\">"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "The cell that names a column and carries the controls the column is ordered and narrowed by."
 purpose: "A column is only readable if something says what is in it, and only usable if the thing that says so is also where you go to sort and filter it. This is that cell. It is built on the same box as the value cells so the header row lines up with the body without anyone arranging it, and it is set a shade quieter than the values because a header is read once and the column is read a hundred times. Sorting and filtering live here rather than in a toolbar because they belong to one column, and a control that belongs to one column belongs in that column's head."
@@ -215,7 +215,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4862:5460"
-  last_verified: "2026-08-30"
+  last_verified: "2026-09-05"
 notes: "Built on the value cell — the two share property keys, box and type run — so a column can be composed once and its header differs from its cells in colour, in the controls it carries, and in nothing else. A header cell that opens a menu is expected as a separate component; this is the plain one, and sorting and filtering are initiated from that menu rather than here. The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."
 import:
   batch: 1

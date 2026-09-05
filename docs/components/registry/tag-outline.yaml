@@ -8,7 +8,7 @@ family: "Tag"
 level: "element"
 role: "content"
 html: "no semantic html"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "A short label on a tinted band with a border, in one of five tones."
 purpose: "A tag says what kind of thing something is, in one or two words, without the reader having to parse a sentence. This is the quiet half of the pair: the tone is carried by a border and a pale wash rather than by a filled block, so several tags can sit together in a row or a cell without the colour becoming the loudest thing on the screen."
@@ -211,7 +211,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4820-20677"
-  last_verified: "2026-08-30"
+  last_verified: "2026-09-05"
 notes: "children and parents are inherited in full from the entry this component was split out of, as the split rule requires; narrowing either is a later judgement."
 import:
   batch: 1

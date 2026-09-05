@@ -7,7 +7,7 @@ name: "Dropdown"
 level: "widget"
 role: "container"
 html: "<ul role=\"listbox\">"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "The panel a dropdown opens: a list of options with optional search, a way back, and buttons under it."
 purpose: "Everything a list of options needs around the options themselves. The rows are their own components and go in a slot; what this adds is the surface they sit on, the four bands that can appear around them — a way back out of a submenu, a field to narrow the list, the list itself, and buttons to apply or cancel — and one decision about how tall the thing is allowed to get before it starts scrolling."
@@ -145,11 +145,6 @@ api:
     default: "false"
     description: "Whether a field above the list narrows it. For lists long enough that reading them is worse than typing at them."
   -
-    name: "has scrollbar"
-    kind: "boolean"
-    default: "false"
-    description: "Whether the scrollbar is shown beside the list. It says the bar is visible, not that the list scrolls: a list shorter than the maximum has nothing to scroll and nothing to show it with."
-  -
     name: "has buttons"
     kind: "boolean"
     default: "false"
@@ -167,11 +162,12 @@ figma_notes:
   - "The set is authored at a width because Figma cannot leave one unset. It carries no meaning and no width token is recorded."
   - "The back row is an instance of Dropdown Item Default rather than a component of its own, so it inherits the row's states and its focus ring."
   - "The scrollbar instance is Scrollbar / Vertical in the library. The registry entry it points at is Scrollbar; the ids will meet when that component is written."
+  - "has scrollbar is a Figma property and not part of the API. It shows the bar beside the list so a mockup can draw an overflowing panel; it says the bar is visible, never that the list scrolls, and a list shorter than the maximum has nothing to scroll and nothing to show it with. A real component decides this from its own content height and exposes nothing for it, which is why the property is recorded here rather than in api — registry/README.md."
   - "The panel clips its own content, and so does the container holding the list, so a row longer than the panel is cut at the panel's edge rather than drawn over its shadow."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4857:3786"
-  last_verified: "2026-09-02"
+  last_verified: "2026-09-05"
 notes: "The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."
 import:
   batch: 1

@@ -7,7 +7,7 @@ name: "Link"
 level: "element"
 role: "trigger"
 html: "<a href=\"…\">Label text</a>"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "An underlined text control that takes the person somewhere rather than acting on what is in front of them."
 purpose: "A link goes somewhere. What this component settles is how it behaves in a dense interface: it takes only the room its own text needs, it is sized from the same run as the text around it, and it carries no fill, border or reserved footprint that would make it compete with the actions on the view."
@@ -212,7 +212,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4333-27795"
-  last_verified: "2026-08-28"
+  last_verified: "2026-09-05"
 notes: "The api order follows naming.md §8 and §10 and is authored, not transcribed: componentPropertyDefinitions returns a key order that does not match the properties panel, so the panel order could not be verified from here."
 import:
   batch: 1

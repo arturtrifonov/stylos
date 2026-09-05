@@ -11,7 +11,7 @@ name: "Drawer"
 level: "layout"
 role: "container"
 html: "<dialog>"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "A full-height panel that slides in from one edge and holds a task beside the page."
 purpose: "Some work is too big for a dialog and too small for a page: editing a record while its list stays visible, filtering a table while the table is still there, reading a detail without losing your place in what led to it. A drawer is the frame for that. It takes one edge of the screen and the full height of it, keeps the heading, the content and the answers in the same three bands the dialog uses, and leaves the page behind it in view. It is squared off against the edge it comes from and carries a single border on the side that faces the page — the only line in it, and the one that says where the panel stops and the page resumes."
@@ -234,11 +234,6 @@ api:
     kind: "slot"
     description: "Everything between the heading and the buttons, supplied by whoever places the drawer. It takes the height the header and footer leave, which is what makes it the part that scrolls. What is allowed in it is the composition recorded in children, which is nearly the whole library."
   -
-    name: "has scrollbar"
-    kind: "boolean"
-    default: "false"
-    description: "Whether the content is overflowing. It is not a choice: the scrollbar belongs to the content and appears when there is more of it than room, exactly as it would anywhere else. The property exists because the drawer is drawn rather than run — see the Figma notes — and a consumer implementing this component should drive it from overflow rather than expose it."
-  -
     name: "has primary button"
     kind: "boolean"
     default: "true"
@@ -262,14 +257,14 @@ limitations:
   - "The widths are not tokens and are not meant to become them. The dimension scale is built for the inside of components and reaches nothing near a panel."
 figma_notes:
   - "The height is a flat 500 in all ten variants because Figma has no way to express a height that is simply the container's. It is a placeholder for the viewport, not a value this contract records."
-  - "has scrollbar is a boolean because a Figma component cannot react to its own overflow. The contract states the behaviour the component is meant to have; the boolean is how that behaviour is shown in the library."
+  - "has scrollbar is a Figma property and not part of the API, so it is recorded here rather than in api — registry/README.md. A Figma component cannot react to its own overflow, so the boolean is how the behaviour is shown in the library; the scrollbar belongs to the content and appears when there is more of it than room, exactly as it would anywhere else. A consumer drives it from overflow and exposes nothing for it."
   - "The close control is a Button Inner whose width is bound across a five-step run. That is not an instance being scaled to fit: Button Inner ships one footprint and no size property, and its own contract says a consumer needing another dimension sets it outright."
   - "The scrollbar instance is Scrollbar / Vertical in the library, while the registry entry it points at is Scrollbar; the ids will meet when that component is written."
   - "The api block above is ordered for readability, per naming.md §8 and §10. Figma's API returns properties in a key order that does not match the panel, so the order the designer sees could not be read and is not asserted here."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "5232-15231"
-  last_verified: "2026-09-04"
+  last_verified: "2026-09-05"
 notes: "position takes physical values where naming.md §7 prefers leading and trailing. That is a deliberate exception with a reason recorded on the property: the border's side is a physical fact about which edge the panel is against, and a logical property would put it on the wrong side in a right-to-left interface. The accessibility target is not chosen yet — PLAN.md Stage 5 — so what is recorded here is the obligation on the consumer rather than a judgement. children is carried over whole from the imported entry; narrowing it is a later judgement."
 import:
   batch: 2

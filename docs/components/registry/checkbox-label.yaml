@@ -8,7 +8,7 @@ family: "Checkbox"
 level: "element"
 role: "input"
 html: "<label><input type=\"checkbox\"> Label text</label>"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "A checkbox with a short single-line label, sized by its text."
 purpose: "Most checkboxes in a product are a box and two or three words. This is that case, authored so the label is part of the same component: clickable, aligned to the box at every size, and programmatically associated without the consumer arranging it."
@@ -177,7 +177,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4327-34970"
-  last_verified: "2026-08-26"
+  last_verified: "2026-09-05"
 notes: "children and parents are carried from the pre-split entry and have not yet been divided between the three family members — that division is a judgement, not a transcription."
 import:
   batch: 1

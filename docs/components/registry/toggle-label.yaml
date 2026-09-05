@@ -8,7 +8,7 @@ family: "Toggle"
 level: "element"
 role: "input"
 html: "<label><input type=\"checkbox\" role=\"switch\"> Label text</label>"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "A switch with a short single-line label, sized by its text."
 purpose: "Most switches in a product are a track and two or three words, stacked into a list of settings. This is that case, authored so the label is part of the same component: clickable, aligned to the track at every size, and associated without the consumer arranging it."
@@ -161,7 +161,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4341-30082"
-  last_verified: "2026-08-30"
+  last_verified: "2026-09-05"
 notes: "children and parents are inherited in full from the entry this component was split out of, as the split rule requires; narrowing either is a later judgement."
 import:
   batch: 1

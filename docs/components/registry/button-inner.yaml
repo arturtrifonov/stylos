@@ -8,7 +8,7 @@ family: "Button Inner"
 level: "element"
 role: "trigger"
 html: "<button type=\"button\"><!-- icon --></button>"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "An icon-sized trigger for a single local action on the component it sits in."
 purpose: "Composed components accumulate small actions on themselves — clear a field, remove a tag, dismiss a toast, reset a filter — and none of them is an action on the view. Button Inner is the control for exactly those. It is drawn as an icon and it occupies an icon's space, so a parent lays it out as though it were the icon it contains and the content beside it closes up around it; the affordance that says it is pressable appears only under the pointer and reaches outside that space. Its label is not visible — the icon carries the meaning on screen, the name is supplied to assistive technology, and a tooltip says the same thing to everyone else."
@@ -134,7 +134,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "330-59475"
-  last_verified: "2026-08-28"
+  last_verified: "2026-09-05"
 notes: "The api order is authored for reading, not transcribed: componentPropertyDefinitions returns a key order that does not match the properties panel, so no ordering claim can be made from it."
 import:
   batch: 1

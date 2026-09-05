@@ -10,7 +10,7 @@ family: "Button Icon"
 level: "object"
 role: "trigger"
 html: "<button type=\"button\">"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "The filled action button with no label — an icon in a square box."
 purpose: "Some actions are recognised faster as a symbol than as a word, and some places have no room for a word at all: a toolbar, a table header, the corner of a panel. This is the filled member of that family. It is the same box, the same size run and the same tones as the labelled buttons, squared off and given to the icon alone, so a row of icon buttons lines up with a row of ordinary ones and swapping between them moves nothing. What it does not have is a name on screen — the icon has to carry the whole meaning, and the name has to be supplied to anyone who cannot see it."
@@ -174,7 +174,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4390-2375"
-  last_verified: "2026-09-03"
+  last_verified: "2026-09-05"
 notes: "The accessibility target is not chosen yet — PLAN.md Stage 5 — so contrast and target-size measurements are recorded as facts rather than judged against a criterion the system has not adopted. children and parents are inherited whole from the Button Icon entry this component was split out of; narrowing either is a later judgement, and the list is wider than the single icon slot the component actually offers."
 import:
   batch: 1

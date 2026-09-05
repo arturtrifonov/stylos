@@ -8,7 +8,7 @@ family: "Checkbox"
 level: "element"
 role: "input"
 html: "<label><input type=\"checkbox\"> Label text</label>"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "A checkbox tied to wrapping copy in a column of fixed width, the box aligned to the first line."
 purpose: "Some checkboxes carry a paragraph — a data-processing agreement, a permission with a qualifier, a confirmation that has to state what is being confirmed. That text wraps at a width the layout decides, and the box has to stay where the reader's eye starts rather than float in the vertical middle of four lines. Checkbox Label can do neither, because it hugs and centres."
@@ -177,7 +177,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4349-3554"
-  last_verified: "2026-08-26"
+  last_verified: "2026-09-05"
 notes: "children and parents are carried from the pre-split entry and have not yet been divided between the three family members — that division is a judgement, not a transcription."
 import:
   batch: 1
