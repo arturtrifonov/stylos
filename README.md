@@ -22,7 +22,7 @@ A design system for dense, desktop-oriented web product interfaces. Its visual l
 | [`docs/charter.md`](docs/charter.md) | what the system is for, its character, and where its boundaries are |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | how it is put together — what lives where, and what is currently broken |
 | [`docs/foundations/`](docs/foundations/README.md) | the rules of the design language |
-| [`PLAN.md`](PLAN.md) | the path to v0.1 |
+| [`PLAN.md`](PLAN.md) | the release ladder, and the stages that reach each tag |
 
 ## What is here
 

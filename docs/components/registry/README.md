@@ -30,7 +30,7 @@ Files are read and written by the restricted YAML subset in [`tools/lib/yaml.mjs
 | `role` | `content` \| `trigger` \| `input` \| `toolbar` \| `output` \| `container` |
 | `html` | the semantic structure it stands for, or `"no semantic html"` — see below |
 | `status` | `draft` \| `published` \| `deprecated` — see below |
-| `version` | the component's own version |
+| `version` | the release in which this contract's current API shipped — see below |
 
 #### `status` describes the component, not its entry
 
@@ -45,6 +45,18 @@ The two are independent: a component can be finished in Figma with a thin entry,
 It stays authored rather than computed because readiness turns on judgements a tool cannot make: whether existing instances have an understood migration path, whether the supported states are the right ones.
 
 **Every entry currently says `draft`**, and most were set that way by default rather than assessed. With the values defined they can be.
+
+#### `version` is the release the API shipped in
+
+The full release string — `"0.1.0"`, not `"0.1"` — so that it reads against a git tag without interpretation, and sorts.
+
+**Bumped when the entry's `api` changes**: a property, a value, a default, a state. Not for prose, not for an added finding, not for `last_verified`, and not for appearance. A component whose drawing changed but whose API did not is the same contract, and a version that moves on every edit answers no question worth asking.
+
+**What it is for:** the difference between two library versions, answerable without opening thirty-nine files. That is the only reason to carry the field, and it is why the rule above is narrow.
+
+A contract that has never shipped carries the release it is expected to ship in; `status` already says whether it has. The validator rejects a version ahead of the one in `package.json`.
+
+Versioning rules for the system as a whole are [`ARCHITECTURE.md`](../../../ARCHITECTURE.md) §9.
 
 ### `html`
 
@@ -77,15 +89,19 @@ html: "<label><input type=\"radio\"> Label text</label>"
 
 ### The Figma description is derived, never authored
 
-The three lines that go into a component's Figma `descriptionMarkdown` are composed at build time:
+A component's Figma `descriptionMarkdown` is composed from the entry by [`stylos-description-sync`](../../../skills/src/description-sync/SKILL.md), which is the only thing that writes it:
 
-1. `summary`
-2. the first `use_when`
-3. the first `do_not_use_when`, with its `instead`
+1. `summary`, as a bare opening paragraph
+2. **Use when** — every entry of `use_when`, as a list
+3. **Do not use when** — every entry of `do_not_use_when`, as a list, each with its `instead`
 
 There is no field holding the description, and there must not be one: it has paragraph breaks, which this YAML subset cannot express, and a second copy of text that already exists in three fields is a second copy that drifts.
 
-Writing it into Figma always goes through **`descriptionMarkdown`**, never `description` — writing the latter silently empties the former. See [`figma/mcp-and-connectors.md`](../../../figma/mcp-and-connectors.md).
+**Both lists go in full.** Figma preserves bold, lists and links in `descriptionMarkdown`, and the reader that consumes the whole string — an agent choosing a component from the library — is the one the text is for. A person scanning the Assets panel sees a line or two, which is why `summary` opens it and carries no label. Only bold labels and bullets are added; field text is transferred verbatim.
+
+`purpose`, `limitations`, `api` and accessibility findings stay out. They belong to the generated page, where a component is studied; the description is read while a component is being chosen.
+
+Writing it into Figma always goes through **`descriptionMarkdown`**, never `description` — writing the latter silently empties the former, which since the description carries markup means losing every list. See [`figma/mcp-and-connectors.md`](../../../figma/mcp-and-connectors.md).
 
 ### Relations
 

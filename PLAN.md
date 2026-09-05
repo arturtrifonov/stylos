@@ -1,6 +1,6 @@
-# Stylos — Execution plan to v0.1
+# Stylos — Execution plan
 
-How the project gets from here to a version that can build a real product screen.
+How the project gets from here to a version that can build a real product screen, and which releases mark the way.
 
 **This plan carries sequence, gates and estimates — not status.** What is done is answered by the repository and by git, never by a checkbox here. A plan that also tracks state has to be edited every time work lands, and then it rots between edits like any document that copies facts living elsewhere. This one changes when the *order* or the *destination* changes, which is rare and worth noticing.
 
@@ -10,23 +10,48 @@ Not normative. Rules live in [`ARCHITECTURE.md`](ARCHITECTURE.md) and [`docs/fou
 
 ---
 
-## 1. Definition of done
+## 1. The release ladder
 
-v0.1 is reached when **one dense, real product screen exists twice — in Figma and in code — built entirely from Stylos, with no local overrides in either.**
+Three tags, each a decision about distribution rather than a percentage of work done, and each with a gate that can be checked rather than judged.
 
-That single gate is chosen because it is the only test that exercises the whole chain at once: tokens must be consumable, component contracts complete enough to build against, Figma and code APIs actually matching, and the foundations free of any gap that forces an ad-hoc value.
+| Tag | The decision it makes | Cut at |
+| --- | --- | --- |
+| `0.1.0` | the contracts for the core set are fixed, and the Figma library implementing them is published | end of S4, per [SPEC 0006](docs/specs/0006-versioning-and-release-0-1-0.md) |
+| `0.2.0` | the system renders — tokens are consumable as CSS, and `@stylos/ui` builds the core set | end of S5 |
+| `0.3.0` | the system is proved — one dense screen exists twice, from Stylos alone | end of S6 |
+
+These are releases, not milestones. All three fall inside the `0.1` milestone, whose checklist is §4 below; the versioning rules are [`ARCHITECTURE.md`](ARCHITECTURE.md) §9.
+
+### `0.1.0`
 
 | # | Requirement | Verified by |
 | --- | --- | --- |
-| 1 | No foundation document leaves open a question a component or the CSS build depends on | reading them |
-| 2 | Tokens generate to CSS custom properties from the canonical set | the build command |
-| 3 | Every core-set entry carries a Figma node identifier, and the registry is readable | the registry view |
-| 4 | The v0.1 core component set meets [`STANDARD.md`](docs/components/STANDARD.md) | review against the standard |
-| 5 | `@stylos/ui` builds and renders every documented variant of that set | package build |
-| 6 | Component props map 1:1 onto Figma variant properties | mapping table per component |
-| 7 | The proof screen contains no hardcoded colour, size or spacing | lint rule in the package |
+| 1 | No foundation document leaves open a question a component contract depends on | reading them |
+| 2 | Every core-set entry carries a Figma node identifier, and the registry is readable | the registry view |
+| 3 | The core set meets both gates of [`STANDARD.md`](docs/components/STANDARD.md) | `stylos-component-integrity-check`, then review against the standard |
+| 4 | Every entry the release claims reads `status: published`; every entry it does not claim is named as excluded | the registry view, and the notes |
+| 5 | The Figma library is published, and `Meta / version` in it reads the tag | `npm run tokens:check` |
+| 6 | The repository's own checks pass at the tagged commit | `npm test`, `npm run validate:registry`, `npm run validate:skills` |
 
-**Not required for v0.1:** a native icon set, mobile support, client-brand themes beyond the contract, a public documentation site, a license, or coverage of all 101 registry entries.
+### `0.2.0`
+
+| # | Requirement | Verified by |
+| --- | --- | --- |
+| 1 | No foundation document leaves open a question the CSS build depends on | reading them |
+| 2 | Tokens generate to CSS custom properties from the canonical set | the build command |
+| 3 | `@stylos/ui` builds and renders every documented variant of the core set | package build |
+| 4 | Component props map 1:1 onto Figma variant properties | mapping table per component |
+
+### `0.3.0`
+
+| # | Requirement | Verified by |
+| --- | --- | --- |
+| 1 | One dense, real product screen exists twice — in Figma and in code — built entirely from Stylos, with no local overrides in either | the screen |
+| 2 | It contains no hardcoded colour, size or spacing | lint rule in the package |
+
+**`0.3.0` is the gate this plan was written around.** It is the only test that exercises the whole chain at once: tokens consumable, component contracts complete enough to build against, Figma and code APIs actually matching, and the foundations free of any gap that forces an ad-hoc value. It carried the number `v0.1` until 2026-09-04 — the bar did not move, the number did, because one label was doing duty for two very different bars.
+
+**Not required for any of the three:** a native icon set, mobile support, client-brand themes beyond the contract, a public documentation site, a license, or coverage of all 114 registry entries.
 
 ---
 
@@ -44,12 +69,12 @@ That single gate is chosen because it is the only test that exercises the whole 
 ## 3. Critical path
 
 ```
-S0 truthful baseline ──▶ S4 contracts ──▶ S5 @stylos/ui ──▶ S6 proof ──▶ v0.1
+S0 truthful ──▶ S4 contracts ──▶ 0.1.0 ──▶ S5 @stylos/ui ──▶ 0.2.0 ──▶ S6 proof ──▶ 0.3.0
 ```
 
 **Three stages are gone.** The foundations are confirmed and the registry is readable, so S1 and S2 are behind. S3 — tokens to CSS — was a week of output with no reader: custom properties can only be proved by something rendering with them, and that something is the package. It is now the first step of S5. Stage numbers are kept as they were so that references elsewhere still resolve.
 
-The long pole is now **S4**: twenty-nine component contracts, each needing judgement that cannot be batched — cut into six waves, each ending in something that renders.
+The long pole is **S4**: thirty-nine component contracts, each needing judgement that cannot be batched — cut into six waves, each ending in something that renders.
 
 ---
 
@@ -91,7 +116,7 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 
 **Wave 5 was two reconciliations, not four contracts, and both are done.** Figma holds the labelled buttons as three sets of 100 variants with an identical API — one box, one size run, one type run, one set of properties, three weights — and the icon buttons as three more on the same terms, so each family was read and written in one pass on 2026-09-03 rather than one component at a time. The Figma rename to `Button Base | Outline | Ghost` landed with the first, and `Button Icon` split into three members with the second — one registry entry against three components, the fourth split this registry has seen. `do_not_use_when.instead` now takes a list, which these six contracts are the first to use.
 
-**Out of v0.1, deliberately:** Toast, Tabs Horizontal and Tab Item — the Stage 6 gate names a table, filters, a side panel and a modal, and none of the three appears in it. Everything else follows them, grouped in §9.
+**Out of `0.1.0`, deliberately:** Toast, Tabs Horizontal and Tab Item — the Stage 6 gate names a table, filters, a side panel and a modal, and none of the three appears in it. Everything else follows them, grouped in §9.
 
 - **First**, settle the documentation boundary — which of `STANDARD.md`'s twenty points live in Figma and which in Markdown. Writing twenty documents before that rule exists guarantees rewriting them.
 - Decide the accessibility target and browser baseline. A contract records accessibility findings against the thing each is about, so the target they are judged by cannot wait for Stage 5.
@@ -118,12 +143,11 @@ The long pole is now **S4**: twenty-nine component contracts, each needing judge
 - Shadows composed per [`effects.md`](docs/foundations/effects.md) — cumulative stacks, not one layer per level.
 - Fail on a token that disappeared between runs without acknowledgement.
 
-**Then the package itself. Planned approach**, not yet committed — revisit when the work actually starts:
+**Then the package itself. Svelte is committed** (2026-09-04); the rest is a planned approach to revisit when the work actually starts:
 
 - **One package**, `@stylos/ui`, rather than splitting tokens/icons/components. Simplest to version for a solo maintainer; splitting later is a mechanical extraction, not a redesign.
 - **Plain CSS + custom properties** for component internals, referencing the same properties consumer theming uses. No build-time styling dependency, one styling vocabulary, and a component's internals and a consumer's override become the same mechanism rather than two layers.
 - **A headless behaviour library** for accessible interactive components — Melt UI is the leading candidate, because it supplies behaviour only and leaves anatomy, layer names and DOM structure authored by Stylos. A library that ships its own markup would mean working around its structure instead of authoring ours, which conflicts with the naming rules already in force. Building all interaction logic by hand is too much accessibility surface to get right solo.
-- Svelte, per the project's stated direction.
 
 Work:
 
@@ -140,13 +164,13 @@ Work:
 
 ### Stage 6 — Proof screen and minimum documentation surface
 
-**Why:** the v0.1 gate itself. Nothing before this has been validated by a real build.
+**Why:** the `0.3.0` gate itself. Nothing before this has been validated by a real build.
 
 - Build one dense screen — table view with filters, side panel, modal — in Figma from the library.
 - Build the same screen in code from `@stylos/ui`.
-- Log every deviation forced along the way. Those are the real gaps and they outrank any remaining open question as v0.1.1 input.
+- Log every deviation forced along the way. Those are the real gaps and they outrank any remaining open question as `0.3.1` input.
 - Stand up a minimum documentation surface: one story per core component, a tokens page, foundations rendered from the existing Markdown. Not a public site.
-- Tag v0.1; write release notes against the seven requirements in §1.
+- Tag `0.3.0`; write release notes against §1's `0.3.0` gate.
 
 **Gate:** the screen exists twice, matches, and contains no local overrides.
 **Estimate:** 4 weeks.
@@ -157,14 +181,15 @@ Work:
 
 At 5–10 h/week:
 
-| Stage | Estimate | Cumulative |
-| --- | ---: | ---: |
-| S0 — truthful baseline | <1 wk | 1 wk |
-| S4 — component contracts | 6–8 wk | 9 wk |
-| S5 — `@stylos/ui`, CSS included | 11–13 wk | 22 wk |
-| S6 — proof + docs | 4 wk | **26 wk** |
+| Stage | Estimate | Cumulative | Cuts |
+| --- | ---: | ---: | --- |
+| S0 — truthful baseline | <1 wk | 1 wk | |
+| S4 — component contracts | 6–8 wk | 9 wk | |
+| Release work — [SPEC 0006](docs/specs/0006-versioning-and-release-0-1-0.md) | 2–4 wk | 13 wk | `0.1.0` |
+| S5 — `@stylos/ui`, CSS included | 11–13 wk | 26 wk | `0.2.0` |
+| S6 — proof + docs | 4 wk | **30 wk** | `0.3.0` |
 
-**≈ 6 months.** The total has not moved: the CSS week did not disappear, it moved next to the thing that consumes it. Two stages before it shrank on inspection rather than on optimism, and both are behind. Foundations was budgeted at 6–8 weeks and cost days, being mostly ratification of what Figma already held. S2 was four weeks of automated registry↔Figma reconciliation whose only consumer exists nowhere; what the registry actually needed was to be readable, and that took a day. Treat any plan promising v0.1 sooner at this budget as having cut a gate rather than found efficiency.
+**≈ 7 months.** The total moved by the release row and by nothing else: publishing a library is work that was never priced, and it is priced now rather than discovered. Everything below it is unchanged, including the reasoning that the CSS week did not disappear but moved next to the thing that consumes it. Two stages before it shrank on inspection rather than on optimism, and both are behind. Foundations was budgeted at 6–8 weeks and cost days, being mostly ratification of what Figma already held. S2 was four weeks of automated registry↔Figma reconciliation whose only consumer exists nowhere; what the registry actually needed was to be readable, and that took a day. Treat any plan promising `0.3.0` sooner at this budget as having cut a gate rather than found efficiency.
 
 **Scope levers, in the order to pull them:**
 
@@ -184,17 +209,16 @@ Do **not** pull: the integrity check before documenting, the documentation-bound
 | `tone` values that have no colour behind them | 4 |
 | Component parameters — where the contract records them | 4 |
 | Token name → CSS custom property mapping | 5 |
-| Figma / Markdown documentation boundary | 4 |
 | Accessibility target and browser baseline | 4 |
 | Component-specific token depth | 4 |
 | Component inventory maturity | 4 |
-| Svelte package API and release structure | 5 |
+| Svelte package API | 5 |
 
-**Deliberately unanswered before v0.1:** the project's public contact details, responsive breakpoints (desktop-only scope makes them premature), automated skill installation, and the license and commercial model.
+**Deliberately unanswered before `0.3.0`:** the project's public contact details, responsive breakpoints (desktop-only scope makes them premature), automated skill installation, and the license and commercial model. The license becomes an `alpha` question rather than a `0.3.0` one the moment anyone outside is given the library link — `0.1.0` publishes from a repository marked `UNLICENSED`, which is coherent only while the audience is one person.
 
 **A Stylos Figma plugin is intended**, and the reason is ergonomic rather than technical: it removes the manual export and the JSON handling from the loop entirely, so updating tokens stops being a matter of running scripts over downloaded files. It also opens the direction of authoring the palette outside Figma and having the plugin bring colours in cleanly, which the export path cannot do.
 
-Its scope and timing are open, not its existence. It is not on the critical path to v0.1 — the current pipeline works — so it is scheduled when the manual step becomes the thing slowing the week down.
+Its scope and timing are open, not its existence. It is not on the critical path to `0.3.0` — the current pipeline works — so it is scheduled when the manual step becomes the thing slowing the week down.
 
 ---
 
@@ -202,11 +226,11 @@ Its scope and timing are open, not its existence. It is not on the critical path
 
 | Risk | Signal | Countermeasure |
 | --- | --- | --- |
-| S4 stalls — twenty-nine contracts of judgement work | two sessions on the same component | §2.2: adopt what Figma does, write it down as provisional. The wave's rendered fragment is the forcing function |
+| S4 stalls — thirty-nine contracts of judgement work | two sessions on the same component | §2.2: adopt what Figma does, write it down as provisional. The wave's rendered fragment is the forcing function |
 | Completionism against the 114-entry registry | documenting outside the core set | the Stage 4 table is the scope |
 | The registry drifts from Figma unnoticed | `validate:registry` not run for weeks | make it part of the pre-commit habit |
 | Documentation drifts from the built system | a document describing something that no longer exists | keep facts in one place; documents point rather than copy |
-| The proof screen gets skipped as "obvious" | v0.1 tagged without S6 | it is the gate |
+| The proof screen gets skipped as "obvious" | `0.3.0` tagged without S6 | it is the gate |
 
 ---
 
@@ -216,11 +240,11 @@ A native Stylos icon set (Material Symbols stays interim), mobile support, writi
 
 ---
 
-## 9. After v0.1 — the milestones
+## 9. After the core set — the milestones
 
 The vocabulary — what a milestone is, how it differs from a release and from a wave, and why neither lives on a registry entry — is [`ARCHITECTURE.md`](ARCHITECTURE.md) §8. This section is the content: which decision waits on what.
 
-Two consequences worth restating where they apply. **A milestone is not a size budget**: putting more into one moves the decision later, it does not make the milestone wrong. And **waves do not stop at v0.1** — §4's numbering is continuous, so when v0.1 closes, alpha's checklist is cut into waves 7, 8, 9 and §4 grows. There are no waves inside a milestone here because there is nothing to cut yet.
+Two consequences worth restating where they apply. **A milestone is not a size budget**: putting more into one moves the decision later, it does not make the milestone wrong. And **waves do not stop at the core set** — §4's numbering is continuous, so when the `0.1` milestone closes, alpha's checklist is cut into waves 7, 8, 9 and §4 grows. There are no waves inside a milestone here because there is nothing to cut yet.
 
 | Milestone | The decision it opens | Entries |
 | --- | --- | --- |
@@ -236,4 +260,4 @@ Four notes, so they are not re-derived later:
 - **A big layout component is worth less in a library than its size suggests.** Header and Side Panel Menu are assembled once per product and usually assembled by hand; being in the library early buys little. That is why they sit in beta while much smaller things — Steps, Switcher — sit above or beside them. Hero and Bottom Sheet are the same class of component, and Hero is in beta on that reasoning rather than on its own merits.
 - **The ten `Input *` entries read as one API repeated with a different type.** If that holds when the family is opened in Figma, alpha's checklist is much shorter than its count — nine of those entries would be the same contract written once. That is inference from the registry, where the ten are identical in level, role and size; it has not been checked against the library.
 - **Avatar and Image sit with the table cells** because every cell type names them, not because they belong to the table.
-- **Toast, Tabs Horizontal and Tab Item were cut from v0.1** rather than never wanted.
+- **Toast, Tabs Horizontal and Tab Item were cut from the core set** rather than never wanted.

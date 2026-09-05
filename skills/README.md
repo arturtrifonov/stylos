@@ -26,7 +26,7 @@ Runs [`tools/build-skills.mjs`](../tools/build-skills.mjs), which reads `targets
 | `stylos-naming-cleanup` | 0.9 | Renames directly; reports the resulting state | [src/naming-cleanup/SKILL.md](src/naming-cleanup/SKILL.md) |
 | `stylos-component-integrity-check` | 0.3 | Read-only | [src/component-integrity-check/SKILL.md](src/component-integrity-check/SKILL.md) |
 | `stylos-reference-reconstruction` | 0.2 | Build directly unless material product ambiguity exists | [src/reference-reconstruction/SKILL.md](src/reference-reconstruction/SKILL.md) |
-| `stylos-description-sync` | 0.1 | Writes descriptions from the repository; asks before overwriting a non-empty one | [src/description-sync/SKILL.md](src/description-sync/SKILL.md) |
+| `stylos-description-sync` | 0.2 | Writes descriptions from the repository; asks before overwriting a non-empty one | [src/description-sync/SKILL.md](src/description-sync/SKILL.md) |
 
 **How to tell which build is loaded in Figma.** The `metadata` block is repository-only — Figma does not carry it, so a version cannot round-trip on its own. It carries `description`, so `tools/build-skills.mjs` appends the source's `metadata.version` to each skill's description when it compiles. Figma Agent then shows the version beside the skill, and a loaded build can be identified by reading it.
 
