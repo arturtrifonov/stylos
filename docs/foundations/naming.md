@@ -136,9 +136,7 @@ Prefer `leading`/`trailing` over `left`/`right` — localization and RTL depend 
 
 **Four positions are derived; the rest is convention.** The rule that derives them: a property that changes which values of another make sense stands above it. `type` decides what the thing is. `style` decides its treatment, and a treatment decides which tones are available — an outline and a fill do not offer the same set. `tone` decides nothing about size.
 
-The rule stops there. `state`, `validation` and the condition booleans invalidate nothing below them, and neither does arrangement, so from position 5 down this is a settled order kept for consistency, not a conclusion. **Do not argue positions 5–15 from the principle — it does not reach them**, and re-deriving them is how a list like this gets rewritten every six months to say the same thing.
-
-Where present, in this order.
+The rule stops there. `state`, the condition booleans and arrangement invalidate nothing below them, so from `text case` down this is a settled order kept for consistency, not a conclusion. **Do not re-derive the convention band from the principle** — it does not reach it, and re-deriving it is how a list like this gets rewritten every six months to say the same thing.
 
 **Derived:**
 
@@ -149,26 +147,32 @@ Where present, in this order.
 
 **Convention:**
 
-5. `state`
-6. `validation`
-7. `is checked`
-8. `is filled`
-9. `is expanded`
-10. `orientation`
-11. `alignment`
-12. `position`
-13. `icon position`
-14. `arrows`
-15. `angle`
-16. component-specific properties
+5. `text case`
+6. `state`
+7. `validation`
+8. `is checked`
+9. `is selected`
+10. `is filled`
+11. `is expanded`
+12. `orientation`
+13. `alignment`
+14. `position`
+15. `icon position`
+16. `arrows`
+17. `angle`
+18. component-specific properties
 
-Only properties that exist are included. A property not listed sits at the end, and if it plainly decides which values of a listed property make sense, it belongs in the derived band instead — that is a judgement recorded in the component's contract, not a change to this list.
+`text case` heads the convention band because it is a treatment rather than a state — decided beside `tone`, but invalidating nothing, so it does not reach the derived band.
+
+Only properties that exist are included. A property not listed sits at the end, and if it plainly decides which values of a listed property make sense, it belongs in the derived band instead — a judgement recorded in the component's contract, not a change to this list.
 
 ## 9. Controlled property groups
 
 **If a boolean controls an element's presence, every property for that element immediately follows the boolean.** No unrelated property may split the group.
 
-**Adjacency is required inside a panel section, never across one.** Figma lists variant properties and component properties separately, so a group cannot span both: an element's variant-level setting — `icon position`, for one — keeps its place in §8 and does not join the group in §10. A rule that demanded otherwise would be asking for something the tool cannot render.
+**Adjacency is required inside a panel section, never across one.** Figma lists variant properties and component properties separately, so a group cannot span both: an element's variant-level setting — `icon position`, for one — keeps its place in §8 and does not join the group in §10. A rule demanding otherwise would be asking for something the tool cannot render.
+
+**A boolean leads its element even when §10 names only the element.** Where §10 lists `placeholder text` and a component also exposes `has placeholder`, the boolean takes the element's position and the text follows it. §9 outranks §10's silence; an unnamed boolean is never left to find its own place.
 
 Order inside a group:
 
@@ -189,52 +193,89 @@ Examples:
 
 ## 10. Canonical non-variant property order
 
-**What the component says comes before what decorates it.** Text is what a component means: without it a heading is empty and a field has no name. An icon, an avatar, a badge are additions to something that already means something. So text leads, companion slots follow, condition and optional actions come last.
+**What the component says comes before what decorates it.** Text is what a component means: without it a heading is empty and a field has no name. An icon, an avatar, a badge are additions to something that already means something.
 
-Controlled groups stay intact within this order (§9):
+**This orders the Figma properties panel, not the contract.** Every property the panel shows has a place here, including one that exists only to draw a state in Figma — `has scrollbar` is the case. What a contract's `api` records is a different question and a smaller set ([`registry/README.md`](../components/registry/README.md)); a property being outside the API does not make it unplaced in the panel.
+
+**The bands carry the reasoning; the entries carry the answer.** A band says why a property sits where it does, so a new one can be placed. The entries inside it are enumerated so that placing a rare property is a lookup rather than a judgement — a list that names only the obvious cases has solved the half nobody needed help with. Controlled groups stay intact within the order (§9).
+
+**What names it**
 
 1. `has label` → `label text`
 2. `has heading` → `heading text`
 3. `has title` → `title text`
 4. `has description` → `description text`
-5. `placeholder text`
-6. `input text`
-7. `helper text`
-8. `has additional text` → `additional text`
-9. `has content` → `content`
-10. `has search`
-11. `has back button`
-12. `has leading icon` → `leading icon`
-13. `has icon` → `icon`
-14. `has trailing icon` → `trailing icon`
-15. `has avatar` → `avatar`
-16. `has badge` → `badge`
-17. `has status indicator` → `status indicator`
-18. `is required`
-19. `has close button`
-20. `has buttons` → `has primary button` → `has secondary button` → `has tertiary button`
-21. `has undo button`
-22. `has overflow`
-23. component-specific properties
 
-**A control that operates on the content sits with the content.** `has search` and `has back button` decide how a person reaches what is inside — which item they find, which level they return to — so they belong beside the content rather than among the icons or the closing actions. They are here rather than left component-specific because Select, Multiselect, Tree and the table all reach for them.
+**What it holds**
 
-**`has buttons` leads the row it controls**, by §9 — a boolean that turns a group on stands above the members of that group, never after them. `has close button` and `has undo button` are their own affordances and are not part of that row.
+5. `input text`
+6. `has placeholder` → `placeholder text`
+7. `prefix text`
+8. `has suffix text` → `suffix text`
+9. `helper text`
+10. `has additional text` → `additional text`
+11. `number text`
+12. `cell text`
+13. `tooltip text`
+14. `has content` → `content`
+15. `cells`
 
-**One component's vocabulary does not belong in this list.** `first link type`, `has active page` → `active page text`, `has page 2` … `has page 6`, `has item 1` … `has item 5` and `number text` were here and are not any more: they are component-specific properties, position 23, and they still appear in their own component's order because that order is printed from the properties the component actually has.
+**What operates on the content**
 
-If a listed optional action exposes its own instance, text, type, tone, size, or position settings, those stay immediately after its controlling boolean, per §9.
+16. `has search`
+17. `has back button`
 
-## 11. Rare-property fallback
+**What accompanies it**
 
-When no canonical position exists:
+18. `has leading icon` → `leading icon`
+19. `has icon` → `icon`
+20. `has trailing icon` → `trailing icon`
+21. `has avatar` → `avatar`
+22. `has badge` → `badge`
+23. `has status indicator` → `status indicator`
 
-1. keep the property in the correct top-level group;
-2. place it after the known properties in that group;
-3. order multiple rare properties by anatomy or user-facing importance;
-4. fall back to alphabetical only when anatomy gives no useful order.
+**What condition it is in**
 
-Do not create a global canonical position for a property that appears once or twice.
+24. `is focused`
+25. `is required`
+26. `is sorted`
+27. `is filtered`
+
+**What can be done to it**
+
+28. `has clear button`
+29. `has close button`
+30. `has buttons` → `has primary button` → `has secondary button` → `has tertiary button`
+31. `has undo button`
+
+**How it is presented**
+
+32. `has background`
+33. `has divider`
+34. `has overflow`
+35. `has scrollbar`
+
+**Its own**
+
+36. component-specific properties
+
+Notes worth not re-deriving:
+
+- **The value comes before the hint.** `input text` is what the field holds; `placeholder text` is what stands in when it holds nothing. The reverse order was here until 2026-09-05 and was wrong.
+- **A control that operates on the content sits with the content.** `has search` and `has back button` decide how a person reaches what is inside, so they belong beside it rather than among the icons or the closing actions. Select, Multiselect, Tree and the table all reach for them.
+- **`has buttons` leads the row it controls**, by §9 — a boolean that turns a group on stands above its members, never after them. `has close button`, `has clear button` and `has undo button` are their own affordances and not part of that row.
+- **`is focused` is a condition, not a presentation**, though what it draws is a ring. It sits beside `is required` because that is how it reads, and it is the most common component property in the system — 21 of the contracted components carry it.
+
+## 11. Placing a property this list does not name
+
+The bands above are the answer, in this order:
+
+1. **Choose the band** — what does the property do: name the thing, hold its content, operate on that content, accompany it, state its condition, act on it, or present it?
+2. **Place it inside that band**, beside the entries it resembles.
+3. **Bring its controlled group with it** (§9).
+4. **Add it here** when a second component reaches for it. A property one component has is its own; a property two components have is the system's, and leaving it unnamed means placing it twice by guesswork.
+
+Alphabetical order is not a fallback. It groups nothing and is a way of not deciding.
 
 ---
 

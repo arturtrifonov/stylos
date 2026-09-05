@@ -4,7 +4,7 @@ description: "Clean up naming in a selected Figma component or component set acc
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.11
+  version: 0.12
 ---
 
 # Stylos Naming Cleanup
@@ -402,8 +402,9 @@ Figma already separates variant properties from component properties in the UI. 
 | derived — how it is treated | `style` |
 | derived — what it means | `tone` |
 | derived — how big | `size` |
+| convention — how its text is cased | `text case` |
 | convention — what is happening to it | `state`, `validation` |
-| convention — its internal condition | `is checked`, `is filled`, `is expanded` |
+| convention — its internal condition | `is checked`, `is selected`, `is filled`, `is expanded` |
 | convention — how it is arranged | `orientation`, `alignment`, `position`, `icon position` |
 | convention — its own | `arrows`, `angle`, anything component-specific |
 
@@ -490,9 +491,11 @@ Examples:
 
 Use this order for component properties after variant properties.
 
-**What the component says comes before what decorates it** ([naming.md](../../../docs/foundations/naming.md) §10). Text is what a component means; an icon, an avatar or a badge is an addition to something already meaningful. Text leads, companion slots follow, condition and optional actions come last.
+**This orders the Figma panel, not the contract** ([naming.md](../../../docs/foundations/naming.md) §10). A property that exists only to draw a state in Figma — `has scrollbar` — has a place here even though the component's `api` deliberately omits it. Never move a property out of the order because a contract does not carry it.
 
-Each controlled property group should stay together.
+**The bands carry the reasoning; the entries carry the answer.** Each controlled property group stays together (§9).
+
+*What names it*
 
 1. `has label`
 2. `label text`
@@ -502,46 +505,86 @@ Each controlled property group should stay together.
 6. `title text`
 7. `has description`
 8. `description text`
-9. `placeholder text`
-10. `input text`
-11. `helper text`
-12. `has additional text`
-13. `additional text`
-14. `has content`
-15. `content`
-16. `has leading icon`
-17. `leading icon`
-18. `has icon`
-19. `icon`
-20. `has trailing icon`
-21. `trailing icon`
-22. `has avatar`
-23. `avatar`
-24. `has badge`
-25. `badge`
-26. `has status indicator`
-27. `status indicator`
-28. `is required`
-29. `has close button`
-30. `has buttons`
-31. `has primary button`
-32. `has secondary button`
-33. `has tertiary button`
-34. `has undo button`
-35. `has overflow`
-36. component-specific properties
 
-`has buttons` stands above the three it controls, never after them. `has close button` and `has undo button` are their own affordances, not part of that row.
+*What it holds*
+
+9. `input text`
+10. `has placeholder`
+11. `placeholder text`
+12. `prefix text`
+13. `has suffix text`
+14. `suffix text`
+15. `helper text`
+16. `has additional text`
+17. `additional text`
+18. `number text`
+19. `cell text`
+20. `tooltip text`
+21. `has content`
+22. `content`
+23. `cells`
+
+*What operates on the content*
+
+24. `has search`
+25. `has back button`
+
+*What accompanies it*
+
+26. `has leading icon`
+27. `leading icon`
+28. `has icon`
+29. `icon`
+30. `has trailing icon`
+31. `trailing icon`
+32. `has avatar`
+33. `avatar`
+34. `has badge`
+35. `badge`
+36. `has status indicator`
+37. `status indicator`
+
+*What condition it is in*
+
+38. `is focused`
+39. `is required`
+40. `is sorted`
+41. `is filtered`
+
+*What can be done to it*
+
+42. `has clear button`
+43. `has close button`
+44. `has buttons`
+45. `has primary button`
+46. `has secondary button`
+47. `has tertiary button`
+48. `has undo button`
+
+*How it is presented*
+
+49. `has background`
+50. `has divider`
+51. `has overflow`
+52. `has scrollbar`
+
+*Its own*
+
+53. component-specific properties
+
+`has buttons` stands above the three it controls, never after them. `has close button`, `has clear button` and `has undo button` are their own affordances, not part of that row.
+
+**A boolean leads its element even where this list names only the element** (§9). A component exposing `has placeholder` alongside `placeholder text` gets the boolean at the element's position with the text after it — never the boolean adrift further down, and never in the unordered block.
 
 Only include properties that exist in the component.
 
-**A property this list does not name is component-specific, and you do not order it.** [naming.md](../../../docs/foundations/naming.md) §11 places rare properties by anatomy or by user-facing importance — a judgement, not something readable from the file. Print the named properties in canonical order, then the rest under their own heading, marked as unordered, so nobody reads an accident as a recommendation:
+**A property this list does not name is component-specific, and you do not order it.** [naming.md](../../../docs/foundations/naming.md) §11 places it by choosing a band and then a place inside it — a judgement about what the property does, not something readable from the file. Print the named properties in canonical order, then the rest under their own heading, marked as unordered, so nobody reads an accident as a recommendation. Expect this block to be short: the list above is meant to be complete, and a property landing here twice is a sign it should be added to §10.
 
 ```md
-Then, in no canonical order — §11 places these by anatomy or importance:
+Then, in no canonical order — §11 places these by band, then by resemblance:
 
-- has scrollbar
-- content slot
+- has page 4
+- first link type
 ```
 
 Never interleave them with the numbered list: a named property always precedes an unnamed one.
