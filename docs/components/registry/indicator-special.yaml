@@ -8,7 +8,7 @@ family: "Indicator"
 level: "primitive"
 role: "content"
 html: "no semantic html"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "A dot in a named palette hue, for colour that identifies rather than judges."
 purpose: "Products colour-code things that have no rank: projects, calendars, labels, teams, tags. That colour means \"this one, not that one\", and borrowing a semantic role to say it would claim something the data does not — a green project is not a healthy project. This component exists so categorical colour has somewhere to live that is separate from the status vocabulary, which is the reason the old single Indicator was split in two."
@@ -192,7 +192,7 @@ limitations:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "504-140010"
-  last_verified: "2026-08-27"
+  last_verified: "2026-09-05"
 import:
   batch: 1
   ready: true

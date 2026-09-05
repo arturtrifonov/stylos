@@ -8,7 +8,7 @@ name: "Label"
 level: "primitive"
 role: "content"
 html: "<label>Label text <span>Additional text</span></label>"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "The name of a control, with room for one line of supporting text under it."
 purpose: "A field without a name is a box. Label is that name, authored once so every form in the product spells the relationship the same way: a bold line that names the thing, an optional marker saying it must be filled, and an optional quieter line underneath for the qualification the name alone cannot carry — a format, a limit, a hint."
@@ -200,7 +200,7 @@ limitations:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4373-7431"
-  last_verified: "2026-08-31"
+  last_verified: "2026-09-05"
 notes: "The api block is ordered as the properties read, not as Figma reports them."
 import:
   batch: 1

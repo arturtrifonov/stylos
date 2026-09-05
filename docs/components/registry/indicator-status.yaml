@@ -8,7 +8,7 @@ family: "Indicator"
 level: "primitive"
 role: "content"
 html: "no semantic html"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "A dot reporting one of the system's semantic conditions."
 purpose: "A condition has to be visible down a long list without spending a row, a column or a sentence on it. This is the smallest thing that can carry one. It draws only from the semantic and neutral colour roles, so what it shows is a judgement the system already makes — good, wrong, dangerous, ranked — rather than a category."
@@ -166,7 +166,7 @@ limitations:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4977-20602"
-  last_verified: "2026-08-27"
+  last_verified: "2026-09-05"
 import:
   batch: 1
   ready: true
