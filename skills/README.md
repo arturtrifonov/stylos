@@ -23,7 +23,7 @@ Runs [`tools/build-skills.mjs`](../tools/build-skills.mjs), which reads `targets
 
 | Skill | Version | Mode | Source |
 | --- | ---: | --- | --- |
-| `stylos-naming-cleanup` | 0.10 | Renames directly; reports the resulting state | [src/naming-cleanup/SKILL.md](src/naming-cleanup/SKILL.md) |
+| `stylos-naming-cleanup` | 0.11 | Renames directly; reports the resulting state | [src/naming-cleanup/SKILL.md](src/naming-cleanup/SKILL.md) |
 | `stylos-component-integrity-check` | 0.5 | Read-only | [src/component-integrity-check/SKILL.md](src/component-integrity-check/SKILL.md) |
 | `stylos-reference-reconstruction` | 0.2 | Build directly unless material product ambiguity exists | [src/reference-reconstruction/SKILL.md](src/reference-reconstruction/SKILL.md) |
 | `stylos-description-sync` | 0.2 | Writes descriptions from the repository; asks before overwriting a non-empty one | [src/description-sync/SKILL.md](src/description-sync/SKILL.md) |

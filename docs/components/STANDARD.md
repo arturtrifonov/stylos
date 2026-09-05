@@ -24,7 +24,7 @@ A contract is complete when:
 
 - `summary`, `purpose`, at least one `use_when` and at least one `do_not_use_when` are present;
 - every `do_not_use_when` that names an alternative resolves to a component that exists in the registry;
-- every property in Figma appears in `api`, with the same name, the same values, in the same order;
+- every property in Figma appears in `api`, with the same name, the same values, in the same order — except a property that exists only to draw a state a real component decides for itself, which is recorded in `figma_notes` and named there ([`registry/README.md`](registry/README.md));
 - every property has a `description`, and every default is one of that property's values;
 - any property combination that does not exist is stated as a rule, in `limitations` or on the value it constrains;
 - `sizing_model` has a row per size value and an `intent`, and every dimension and type measure in it is a token name that resolves against `tokens/`, never a number;

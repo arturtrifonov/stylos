@@ -175,6 +175,10 @@ api:
 
 **`controls` is what a "controlled group" is.** [naming.md](../../foundations/naming.md) §9 requires that when a boolean governs an element's presence, that element's properties follow it immediately. Recording which properties it governs makes the adjacency checkable instead of conventional.
 
+**A property that only draws a state in Figma is not part of the API.** Some properties exist so a mockup can show something the real component decides for itself: `has scrollbar` on Dropdown is the case — a scrollbar appears in a browser when the content overflows, and no consumer sets it. Recording it in `api` would put a property in the contract that the Svelte package can never have, and every later check comparing the two would report a divergence that is correct and useless.
+
+Such a property is recorded in [`figma_notes`](#figma_notes) instead, saying what it draws and what decides it in the real component. It is the one allowed exception to *every property in Figma appears in `api`* ([STANDARD.md](../STANDARD.md)), and it is narrow: a property is exempt only when the consumer cannot set it, not when it is merely inconvenient.
+
 **Examples are addresses, not assets.** An example is a property assignment against `figma.node_id`; the generator renders it. Nothing image-like is stored, and an example cannot go stale against the component.
 
 **There is no `variants` block.** It held `count` and `complete_cross_product`, and both were artifacts of the Figma file rather than decisions. `count` is the product of the variant properties' value counts, which are already in `api` — a hand-copied derived number, checked by a validator that was therefore testing the transcription rather than the system. `complete_cross_product` was `true` in all fourteen entries that ever carried it.

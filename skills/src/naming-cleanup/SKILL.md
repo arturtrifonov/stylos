@@ -4,7 +4,7 @@ description: "Clean up naming in a selected Figma component or component set acc
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.10
+  version: 0.11
 ---
 
 # Stylos Naming Cleanup
@@ -533,7 +533,18 @@ Each controlled property group should stay together.
 
 `has buttons` stands above the three it controls, never after them. `has close button` and `has undo button` are their own affordances, not part of that row.
 
-Only include properties that exist in the component. A property this list does not name is component-specific and sits at position 36, in whatever order its own component gives it.
+Only include properties that exist in the component.
+
+**A property this list does not name is component-specific, and you do not order it.** [naming.md](../../../docs/foundations/naming.md) §11 places rare properties by anatomy or by user-facing importance — a judgement, not something readable from the file. Print the named properties in canonical order, then the rest under their own heading, marked as unordered, so nobody reads an accident as a recommendation:
+
+```md
+Then, in no canonical order — §11 places these by anatomy or importance:
+
+- has scrollbar
+- content slot
+```
+
+Never interleave them with the numbered list: a named property always precedes an unnamed one.
 
 ### Slot and icon controlled groups
 

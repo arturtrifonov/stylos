@@ -202,22 +202,26 @@ Controlled groups stay intact within this order (§9):
 7. `helper text`
 8. `has additional text` → `additional text`
 9. `has content` → `content`
-10. `has leading icon` → `leading icon`
-11. `has icon` → `icon`
-12. `has trailing icon` → `trailing icon`
-13. `has avatar` → `avatar`
-14. `has badge` → `badge`
-15. `has status indicator` → `status indicator`
-16. `is required`
-17. `has close button`
-18. `has buttons` → `has primary button` → `has secondary button` → `has tertiary button`
-19. `has undo button`
-20. `has overflow`
-21. component-specific properties
+10. `has search`
+11. `has back button`
+12. `has leading icon` → `leading icon`
+13. `has icon` → `icon`
+14. `has trailing icon` → `trailing icon`
+15. `has avatar` → `avatar`
+16. `has badge` → `badge`
+17. `has status indicator` → `status indicator`
+18. `is required`
+19. `has close button`
+20. `has buttons` → `has primary button` → `has secondary button` → `has tertiary button`
+21. `has undo button`
+22. `has overflow`
+23. component-specific properties
+
+**A control that operates on the content sits with the content.** `has search` and `has back button` decide how a person reaches what is inside — which item they find, which level they return to — so they belong beside the content rather than among the icons or the closing actions. They are here rather than left component-specific because Select, Multiselect, Tree and the table all reach for them.
 
 **`has buttons` leads the row it controls**, by §9 — a boolean that turns a group on stands above the members of that group, never after them. `has close button` and `has undo button` are their own affordances and are not part of that row.
 
-**One component's vocabulary does not belong in this list.** `first link type`, `has active page` → `active page text`, `has page 2` … `has page 6`, `has item 1` … `has item 5` and `number text` were here and are not any more: they are component-specific properties, position 21, and they still appear in their own component's order because that order is printed from the properties the component actually has.
+**One component's vocabulary does not belong in this list.** `first link type`, `has active page` → `active page text`, `has page 2` … `has page 6`, `has item 1` … `has item 5` and `number text` were here and are not any more: they are component-specific properties, position 23, and they still appear in their own component's order because that order is printed from the properties the component actually has.
 
 If a listed optional action exposes its own instance, text, type, tone, size, or position settings, those stay immediately after its controlling boolean, per §9.
 
