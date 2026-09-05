@@ -7,8 +7,11 @@ import path from "node:path";
 
 import {
   checkCollectionIdentity,
+  checkWithdrawals,
   metaDeclaration,
+  parseArgv,
   readLibraryVersion,
+  withdrawnBy,
   writeLibraryRecord,
 } from "./import-tokens.mjs";
 import { parse } from "./lib/yaml.mjs";
@@ -147,4 +150,116 @@ test("writes figma/library.yaml as a generated file the checker can read", () =>
   const record = parse(text, { filename: "figma/library.yaml" });
   assert.equal(record.get("version"), "0.1.0");
   assert.equal(record.get("imported_at"), "2026-09-05");
+});
+
+// --- Withdrawal (SPEC 0007 §6) ---------------------------------------------
+//
+// A token disappears at import, not at build: tokens/*.yaml is committed and
+// is the record, so a withdrawal is a line vanishing from a committed file.
+// The CSS build has no baseline to compare a run against and cannot catch it.
+
+const collection = (name, paths) => [
+  name,
+  { name, tokens: new Map(paths.map((p) => [p, {}])) },
+];
+
+const existing = new Map([
+  collection("radius", ["zero", "extra small", "small"]),
+  collection("border", ["width/normal", "width/thick"]),
+]);
+
+/** One import of `name`, offering exactly these token paths, in one mode. */
+const incoming = (name, paths) =>
+  new Map([[name, new Map([["default", new Map(paths.map((p) => [p, {}]))]])]]);
+
+test("says nothing when the import removes nothing", () => {
+  assert.deepEqual(
+    withdrawnBy(existing, incoming("radius", ["zero", "extra small", "small"])),
+    []
+  );
+});
+
+test("names what disappeared, with its canonical path", () => {
+  assert.deepEqual(withdrawnBy(existing, incoming("radius", ["zero", "small"])), [
+    "radius/extra small",
+  ]);
+});
+
+test("looks only at the collections being imported", () => {
+  assert.deepEqual(withdrawnBy(existing, incoming("border", ["width/normal", "width/thick"])), []);
+});
+
+test("says nothing about a collection imported for the first time", () => {
+  assert.deepEqual(withdrawnBy(existing, incoming("font", ["size/1_000"])), []);
+});
+
+test("refuses an unacknowledged withdrawal, printing the flag to add", () => {
+  assert.throws(() => checkWithdrawals(["radius/extra small"], []), {
+    message:
+      /This import removes 1 token[\s\S]*radius\/extra small[\s\S]*--withdraw "radius\/extra small"/,
+  });
+});
+
+test("quotes a path with a space, so the printed command can be pasted", () => {
+  assert.throws(() => checkWithdrawals(["radius/extra small", "radius/small"], []), {
+    message: /--withdraw "radius\/extra small" --withdraw radius\/small/,
+  });
+});
+
+test("suggests the export may be incomplete, because that is the likelier cause", () => {
+  assert.throws(() => checkWithdrawals(["radius/small"], []), {
+    message: /export is incomplete — export the collection whole/,
+  });
+});
+
+test("lets an acknowledged withdrawal through", () => {
+  assert.deepEqual(
+    checkWithdrawals(["radius/extra small"], ["radius/extra small"]),
+    ["radius/extra small"]
+  );
+});
+
+test("needs one acknowledgement per token, not one for the batch", () => {
+  assert.throws(() => checkWithdrawals(["radius/small", "radius/zero"], ["radius/small"]), {
+    message: /This import removes 1 token[\s\S]*radius\/zero/,
+  });
+});
+
+test("rejects the same acknowledgement twice", () => {
+  assert.throws(() => checkWithdrawals(["radius/small"], ["radius/small", "radius/small"]), {
+    message: /--withdraw radius\/small was given twice\. Once per token\./,
+  });
+});
+
+// A stale --withdraw sitting in a shell history would silently cover the next
+// real withdrawal, which is the same failure mode a stale `mode_dependent`
+// entry has, and it is refused for the same reason.
+test("rejects an acknowledgement for a token that is staying", () => {
+  assert.throws(
+    () => checkWithdrawals([], ["radius/small"], { known: new Set(["radius/small"]) }),
+    { message: /not disappearing — it is in the export and stays[\s\S]*covers the next real withdrawal/ }
+  );
+});
+
+test("says so plainly when the acknowledged path is not a token at all", () => {
+  assert.throws(() => checkWithdrawals([], ["radius/enormous"], { known: new Set() }), {
+    message: /no collection under tokens\/ has it/,
+  });
+});
+
+test("--withdraw takes its value, and refuses to swallow the next option", () => {
+  assert.deepEqual(parseArgv(["--withdraw", "radius/small"]).options.withdraw, ["radius/small"]);
+  assert.throws(() => parseArgv(["--withdraw", "--dry-run"]), {
+    message: /--withdraw needs the canonical path/,
+  });
+  assert.throws(() => parseArgv(["--withdraw"]), { message: /--withdraw needs the canonical path/ });
+});
+
+test("--withdraw does not become an input file of the --collection before it", () => {
+  const { groups, options } = parseArgv([
+    "--collection", "radius", "one.json",
+    "--withdraw", "radius/extra small",
+  ]);
+  assert.deepEqual(groups, [{ name: "radius", files: ["one.json"] }]);
+  assert.deepEqual(options.withdraw, ["radius/extra small"]);
 });

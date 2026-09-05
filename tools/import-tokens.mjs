@@ -4,6 +4,7 @@
 //   npm run tokens:import -- --collection color "Light Mode.tokens.json" "Dark Mode.tokens.json"
 //   npm run tokens:import -- --collection radius radius.json --dry-run
 //   npm run tokens:import -- --collection meta meta.tokens.json
+//   npm run tokens:import -- --collection radius radius.json --withdraw "radius/extra small"
 //
 // The last of those imports no tokens. `meta` is the collection carrying the
 // library's version marker, and it is written to figma/library.yaml rather
@@ -23,6 +24,10 @@
 // you are updating and hand it the files; the name must be one declared in
 // tokens/_naming.yaml, and the modes inside the files must be exactly the ones
 // declared for it.
+//
+// An import that removes a token refuses until each removal is named with
+// --withdraw. A withdrawal is a contract change and happens here, at the only
+// moment tokens/*.yaml loses a line — see docs/specs/0007-tokens-to-css.md §6.
 //
 // Source filenames are ignored entirely: Figma names a file after its mode,
 // not its collection, so a full refresh downloads five files called
@@ -45,17 +50,19 @@ import { verifyCanonical } from "./lib/verify.mjs";
 import { readNaming } from "./check-tokens.mjs";
 
 const USAGE = `Usage:
-  node tools/import-tokens.mjs --collection <name> <file...> [--collection <name> <file...>] [--dry-run]
+  node tools/import-tokens.mjs --collection <name> <file...> [--collection <name> <file...>]
+                               [--withdraw <collection/token>]... [--dry-run]
 
 Every collection is named explicitly and its files handed over directly.
 Run with no arguments to see the collections declared in tokens/_naming.yaml.`;
 
-function parseArgv(argv) {
+export function parseArgv(argv) {
   const groups = [];
-  const options = { dryRun: false, allowNewIds: false };
+  const options = { dryRun: false, allowNewIds: false, withdraw: [] };
   let current = null;
 
-  for (const arg of argv) {
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
     if (arg === "--collection") {
       current = null;
       groups.push((current = { name: null, files: [] }));
@@ -63,6 +70,18 @@ function parseArgv(argv) {
       options.dryRun = true;
     } else if (arg === "--allow-new-ids") {
       options.allowNewIds = true;
+    } else if (arg === "--withdraw") {
+      // Takes its value here rather than trailing a --collection, so that a
+      // withdrawal reads as what it is: a statement about the token set, not
+      // another input file.
+      const value = argv[++i];
+      if (!value || value.startsWith("--")) {
+        throw new Error(
+          `--withdraw needs the canonical path of the token being withdrawn, e.g. ` +
+            `--withdraw "radius/extra small".`
+        );
+      }
+      options.withdraw.push(value);
     } else if (arg.startsWith("--")) {
       throw new Error(`Unknown option "${arg}"`);
     } else if (!current) {
@@ -356,7 +375,88 @@ function referencesFrom(canonical, byMode, figmaOf, problems) {
   return refs;
 }
 
-/** A line per import, so "when did font last change" has an answer. */
+/**
+ * Which tokens this import removes — present in tokens/ now, absent from the
+ * export being imported.
+ *
+ * A withdrawal happens here and nowhere else. The CSS build cannot catch one:
+ * it is a build result, is not committed, and so has no baseline to compare a
+ * run against. tokens/*.yaml is committed and is the record, so a token
+ * disappearing is a line vanishing from a committed file, and this is the
+ * moment it vanishes (docs/specs/0007-tokens-to-css.md §6).
+ *
+ * @returns {string[]} canonical paths, `collection/token`
+ */
+export function withdrawnBy(existingByName, canonicalGroups) {
+  const gone = [];
+  for (const [canonical, byMode] of canonicalGroups) {
+    const before = existingByName.get(canonical);
+    if (!before) continue;
+    // Mode parity is checked separately, so any one mode answers for the set.
+    const incoming = new Set([...byMode.values()][0].keys());
+    for (const tokenPath of before.tokens.keys()) {
+      if (!incoming.has(tokenPath)) gone.push(`${canonical}/${tokenPath}`);
+    }
+  }
+  return gone;
+}
+
+const quoteArg = (value) => (/[\s"]/.test(value) ? JSON.stringify(value) : value);
+
+/**
+ * A withdrawal must be said out loud, once per token.
+ *
+ * Removing a token is a contract change — something downstream references a
+ * name that will not exist after this runs — and an import that did it in
+ * silence would make the record quieter than the change. So the import
+ * refuses and prints the flags to add. A `--withdraw` for a token that is not
+ * disappearing fails too: a stale acknowledgement sitting in someone's shell
+ * history would silently cover the next real withdrawal.
+ */
+export function checkWithdrawals(disappearing, acknowledged, { known = null } = {}) {
+  const seen = new Set();
+  for (const value of acknowledged) {
+    if (seen.has(value)) {
+      throw new Error(`--withdraw ${quoteArg(value)} was given twice. Once per token.`);
+    }
+    seen.add(value);
+  }
+
+  const unacknowledged = disappearing.filter((p) => !seen.has(p));
+  if (unacknowledged.length > 0) {
+    const n = unacknowledged.length;
+    throw new Error(
+      `This import removes ${n} token${n > 1 ? "s" : ""} from the canonical set:\n` +
+        unacknowledged.map((p) => `  ${p}`).join("\n") +
+        `\n  A withdrawal is a contract change, so it is named rather than noticed. ` +
+        `Acknowledge each and re-run with:\n` +
+        `  ${unacknowledged.map((p) => `--withdraw ${quoteArg(p)}`).join(" ")}\n` +
+        `  If they should still exist, the export is incomplete — export the collection whole.`
+    );
+  }
+
+  const stale = [...seen].filter((p) => !disappearing.includes(p));
+  if (stale.length > 0) {
+    throw new Error(
+      stale
+        .map(
+          (p) =>
+            `--withdraw ${quoteArg(p)} names a token that is not disappearing` +
+            (known && !known.has(p) ? ` — no collection under tokens/ has it` : ` — it is in the export and stays`) +
+            `.`
+        )
+        .join("\n") +
+        `\n  Remove it: a stale acknowledgement covers the next real withdrawal in silence.`
+    );
+  }
+
+  return disappearing;
+}
+
+/**
+ * A line per import, so "when did font last change" has an answer — and, where
+ * one happened, which tokens the import withdrew.
+ */
 function appendHistory(root, stamp, entries) {
   const file = path.join(root, "tokens/_history.yaml");
   let imports = [];
@@ -490,6 +590,16 @@ async function main(root, argv) {
     canonicalGroups.set(canonical, new Map(wanted.map((m) => [m, byMode.get(m)])));
   }
 
+  // Before anything is written: does this import remove a token, and was that
+  // said out loud? See docs/specs/0007-tokens-to-css.md §6.
+  const disappearing = withdrawnBy(existingByName, canonicalGroups);
+  const everyKnownToken = new Set(
+    existing.flatMap((c) => [...c.tokens.keys()].map((t) => `${c.name}/${t}`))
+  );
+  checkWithdrawals(disappearing, options.withdraw, { known: everyKnownToken });
+  const withdrawnFrom = (canonical) =>
+    disappearing.filter((p) => p.startsWith(`${canonical}/`)).map((p) => p.slice(canonical.length + 1));
+
   // For each Figma collection: which canonical collection it feeds, and —
   // when it feeds exactly one canonical mode — which. `palette.light` is
   // pinned to the light mode; `color` carries two modes of its own, so a
@@ -542,8 +652,17 @@ async function main(root, argv) {
       : sameValues(before, document)
         ? "unchanged"
         : "changed";
-    report.push({ collection: canonical, tokens: count, status });
-    console.error(`  ${canonical}  ${count} tokens  ${status}`);
+    const withdrawn = withdrawnFrom(canonical);
+    report.push({
+      collection: canonical,
+      tokens: count,
+      status,
+      ...(withdrawn.length ? { withdrawn } : {}),
+    });
+    console.error(
+      `  ${canonical}  ${count} tokens  ${status}` +
+        (withdrawn.length ? `  — withdrew ${withdrawn.join(", ")}` : ``)
+    );
   }
 
   if (libraryVersion !== null) {
