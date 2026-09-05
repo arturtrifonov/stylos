@@ -158,7 +158,7 @@ test("derives documented from the contract's own fields, and linked from a node 
   }
 });
 
-test("reads the two flags as one word — ready needs both", () => {
+test("reads the two flags as one word — complete needs both", () => {
   const root = fixture({
     "docs/components/registry/badge.yaml": badge,
     "docs/components/registry/table/td-text.yaml": `${tdText}${contract}`,
@@ -169,7 +169,7 @@ test("reads the two flags as one word — ready needs both", () => {
     assert.equal(readiness(entries[1]), "in progress");
 
     entries[1].figma = { file_key: "WUc07ZBtjRvypXtsOlbVut", node_id: "4479-13507" };
-    assert.equal(readiness(entries[1]), "ready");
+    assert.equal(readiness(entries[1]), "complete");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

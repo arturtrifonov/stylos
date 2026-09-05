@@ -205,7 +205,7 @@ export function plannedIds(plan, entries) {
 }
 
 function tally(rows) {
-  const done = rows.filter((entry) => readiness(entry) === "ready").length;
+  const done = rows.filter((entry) => readiness(entry) === "complete").length;
   const started = rows.filter((entry) => readiness(entry) === "in progress").length;
   return {
     total: rows.length,

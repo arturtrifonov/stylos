@@ -168,10 +168,13 @@ td.flag { color: var(--fg-disabled); }
 td.flag[data-on="true"] { color: var(--ok); }
 /* Colour is the second cue, never the only one: the word is the answer and the
    dot only makes the column scannable. Two tones plus the muted foreground —
-   the same three the generated component page uses for its verdicts. */
+   the same three the generated component page uses for its verdicts.
+   The dot is on Status, the authored column, because that is the one that
+   decides whether a component is in the release. Contract is derived and
+   cheaper, and it reads as plain text beside it. */
 .status[data-status="ready"] { color: var(--ok); }
-.status[data-status="in progress"] { color: var(--warn); }
-.status[data-status="not started"] { color: var(--fg-faint); }
+.status[data-status="draft"] { color: var(--warn); }
+.status[data-status="deprecated"] { color: var(--fg-faint); }
 .status .dot {
   display: inline-block;
   width: 7px;
@@ -181,14 +184,13 @@ td.flag[data-on="true"] { color: var(--ok); }
   margin-right: 8px;
   vertical-align: baseline;
 }
-/* The authored lifecycle sits beside the derived readiness and both can read
-   "ready". They are deliberately drawn differently: readiness is the dotted
-   pill above, this is plain text. Same word, same row, two different facts —
-   if they looked alike the column heading would be the only thing separating
-   them, and nobody reads a heading twice. */
-td.lifecycle { color: var(--fg-quiet); }
-td.lifecycle[data-status="ready"] { color: var(--fg); }
-td.lifecycle[data-status="deprecated"] { color: var(--warn); }
+/* The derived contract state, plain text beside the dotted Status. The two
+   vocabularies no longer share a word — complete / in progress / not started
+   against draft / ready / deprecated — so the pair reads as a sentence:
+   "Contract: complete · Status: ready". */
+td.contract { color: var(--fg-quiet); }
+td.contract[data-contract="complete"] { color: var(--fg); }
+td.contract[data-contract="not started"] { color: var(--fg-faint); }
 td.milestone { color: var(--fg-quiet); font-variant-numeric: tabular-nums; }
 td.wave { text-align: right; font-variant-numeric: tabular-nums; color: var(--fg-quiet); }
 td.page a { color: var(--accent); text-decoration: none; }
@@ -385,8 +387,8 @@ var COLUMNS = [
   { key: "name", label: "Component" },
   {
     key: "readiness",
-    label: "Readiness",
-    title: "Derived, and about the entry: ready = the contract is written and the entry is linked to Figma — the two columns on the right. Not the component's lifecycle, which is Status, the column beside this one",
+    label: "Contract",
+    title: "Derived, and about the record: complete = STANDARD.md's first gate holds, the prose is written and the entry is linked to Figma — the Written and Figma columns on the right. It says nothing about the component itself; that is Status, beside it",
   },
   {
     key: "status",
@@ -406,7 +408,10 @@ var COLUMNS = [
   { key: "level", label: "Level" },
   { key: "role", label: "Role" },
   { key: "flow", label: "Flow" },
-  { key: "documented", label: "Contract", title: "The contract is written: summary, purpose, use_when and a description on every property" },
+  // Renamed from "Contract" on 2026-09-05: it is one of the two inputs the
+  // Contract column is derived from, and calling an input by the name of the
+  // result was what made the two unreadable side by side.
+  { key: "documented", label: "Written", title: "One half of Contract: the prose is written — summary, purpose, use_when and a description on every property. The other half is Figma, beside it" },
   { key: "linked", label: "Figma" },
   { key: "page", label: "Page", title: "The generated component page — npm run components:view" },
 ];
@@ -442,7 +447,7 @@ function renderFilters() {
 
   host.appendChild(group("Level", LEVELS, state.levels, countBy("level")));
   host.appendChild(group("Role", ROLES, state.roles, countBy("role")));
-  host.appendChild(group("Readiness", READINESS, state.readiness, countBy("readiness")));
+  host.appendChild(group("Contract", READINESS, state.readiness, countBy("readiness")));
   // Beside it deliberately, because the two are asked about together: "what is
   // documented and linked" and "what has been judged ready" are the two halves
   // of the same question during a release pass, and neither answers the other.
@@ -541,15 +546,15 @@ function renderTable() {
         onclick: function () { select(entry.id); },
       });
       tr.appendChild(el("td", { class: "name", text: entry.name }));
-      tr.appendChild(el("td", { class: "status", "data-status": entry.readiness }, [
-        el("span", { class: "dot" }),
-        el("span", { text: entry.readiness }),
-      ]));
       tr.appendChild(el("td", {
-        class: "lifecycle",
-        "data-status": entry.status || "",
-        text: entry.status || "\u2014",
+        class: "contract",
+        "data-contract": entry.readiness,
+        text: entry.readiness,
       }));
+      tr.appendChild(el("td", { class: "status", "data-status": entry.status || "" }, [
+        el("span", { class: "dot" }),
+        el("span", { text: entry.status || "\u2014" }),
+      ]));
       tr.appendChild(el("td", { class: "milestone", text: entry.milestone === null ? "—" : entry.milestone }));
       tr.appendChild(el("td", { class: "wave", text: entry.wave === null ? "—" : String(entry.wave) }));
       tr.appendChild(el("td", { text: entry.level || "—" }));
@@ -567,17 +572,16 @@ function renderTable() {
 
 function renderStatus() {
   var shown = visible().length;
-  // Deliberately the derived count, and deliberately not called "ready": the
-  // authored one is per-value in the Status facet, where the heading says which
-  // fact it is. One bare number cannot carry that.
-  var ready = entries.filter(function (e) { return e.readiness === "ready"; }).length;
+  // The derived count. The authored one is per-value in the Status facet, where
+  // the heading says which fact it is; one bare number cannot carry that.
+  var ready = entries.filter(function (e) { return e.readiness === "complete"; }).length;
   var documented = entries.filter(function (e) { return e.documented; }).length;
   var linked = entries.filter(function (e) { return e.linked; }).length;
   var host = document.getElementById("status");
   host.textContent = "";
   [
     [String(shown) + " of " + entries.length, "shown"],
-    [String(ready), "complete records"],
+    [String(ready), "complete contracts"],
     [String(documented), "with a contract"],
     [String(linked), "linked to Figma"],
   ].forEach(function (pair, index) {
@@ -592,12 +596,16 @@ function renderStatus() {
   host.appendChild(document.createTextNode(" moves the selection"));
 }
 
-// The same word and colour the row carries, so the panel cannot read as a
-// second opinion about the same entry.
-function readinessTag(value) {
-  return el("span", { class: "status", "data-status": value }, [
+// The same word and treatment the row carries, so the panel cannot read as a
+// second opinion about the same entry: Contract plain, Status dotted.
+function contractTag(value) {
+  return el("span", { class: "contract", "data-contract": value, text: value });
+}
+
+function statusTag(value) {
+  return el("span", { class: "status", "data-status": value || "" }, [
     el("span", { class: "dot" }),
-    el("span", { text: value }),
+    el("span", { text: value || "\u2014" }),
   ]);
 }
 
@@ -653,20 +661,21 @@ function renderDetail() {
     ["Level", entry.level || "—"],
     ["Role", entry.role || "—"],
     ["Flow", entry.flow_behavior.join(", ") || "—"],
-    // Authored lifecycle. The table carries it too, beside the derived
-    // readiness; here it sits under the authored facts and readiness under
-    // Derived, which is the same separation stated a second way.
-    ["Status", entry.status || "—"],
   ].forEach(function (pair) {
     facts.appendChild(el("dt", { text: pair[0] }));
     facts.appendChild(el("dd", { text: pair[1] }));
   });
+  // Authored lifecycle, and the one fact on this panel that decides whether the
+  // component is in a release — so it carries the dot here exactly as it does
+  // in the table. Contract sits under Derived below, plain, same as its column.
+  facts.appendChild(el("dt", { text: "Status" }));
+  facts.appendChild(el("dd", {}, [statusTag(entry.status)]));
   host.appendChild(facts);
 
   host.appendChild(el("h3", { text: "Derived" }));
   var derived = el("dl", {});
-  derived.appendChild(el("dt", { text: "Readiness" }));
-  derived.appendChild(el("dd", {}, [readinessTag(entry.readiness)]));
+  derived.appendChild(el("dt", { text: "Contract" }));
+  derived.appendChild(el("dd", {}, [contractTag(entry.readiness)]));
   // Where the plan puts it, not a field on the entry — see lib/plan.mjs.
   derived.appendChild(el("dt", { text: "Milestone" }));
   derived.appendChild(

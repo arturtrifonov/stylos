@@ -207,7 +207,7 @@ function percentLabel({ done, percent }) {
 
 export function renderHome({ entries, theme = null, logo = "", generated, column = false, plan = null }) {
   const total = entries.length;
-  const ready = entries.filter((entry) => readiness(entry) === "ready").length;
+  const ready = entries.filter((entry) => readiness(entry) === "complete").length;
   const documented = entries.filter((entry) => derive(entry).documented).length;
 
   const queue = plan ? waveProgress(plan, entries) : [];

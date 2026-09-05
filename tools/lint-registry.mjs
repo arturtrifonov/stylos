@@ -28,6 +28,8 @@ import { fileURLToPath } from "node:url";
 
 import {
   loadRegistry,
+  derive,
+  readiness,
   registryPathFor,
   insteadIds,
   levelRank,
@@ -260,6 +262,32 @@ function checkContract(entry, byId, errors, resolveToken, systemVersion) {
   }
 
   checkVersion(file, entry.version, systemVersion, errors);
+
+  // The two columns of the index, and the one direction they are allowed to
+  // disagree in. `status: ready` asserts both gates of STANDARD.md hold, and
+  // the first of them — *Complete enough to publish* — is exactly what the
+  // derived contract state computes: the prose written and `figma.node_id`
+  // present. So a `ready` component whose contract is not complete is the
+  // registry contradicting itself, not a judgement call.
+  //
+  // The converse is not a finding. A complete contract on a `draft` component
+  // is the ordinary state of a written-up entry nobody has checked in Figma
+  // yet, which is most of the core set between a wave closing and the release
+  // pass reaching it.
+  if (entry.status === "ready") {
+    const contract = readiness(entry);
+    if (contract !== "complete") {
+      errors.push(
+        `${file}: status is "ready" but the contract is "${contract}" — ` +
+          `"ready" claims both gates of STANDARD.md, and the first of them is ` +
+          `this contract being complete. ${
+            derive(entry).documented
+              ? "figma.node_id is missing"
+              : "the prose is incomplete: summary, purpose, a use_when, and a description on every property"
+          }.`
+      );
+    }
+  }
 
   for (const finding of entry.a11y) {
     checkFinding(file, "a11y", finding, errors);

@@ -231,16 +231,16 @@ use_when:
   - "A row carries a short state."
 `,
   });
-  assert.equal(after.data.entries.find((e) => e.id === "Badge").readiness, "ready");
+  assert.equal(after.data.entries.find((e) => e.id === "Badge").readiness, "complete");
 });
 
-test("offers readiness as its own vocabulary, most complete first", () => {
+test("offers the contract state as its own vocabulary, most complete first", () => {
   const { data, html } = build();
-  assert.deepEqual(data.readiness, ["ready", "in progress", "not started"]);
-  assert.match(html, /text: "Readiness"/);
+  assert.deepEqual(data.readiness, ["complete", "in progress", "not started"]);
+  assert.match(html, /label: "Contract"/);
 });
 
-test("colours readiness in both themes, and never by colour alone", () => {
+test("colours the authored status in both themes, and never by colour alone", () => {
   const { html } = build();
   // The word is in the cell; the colour and the dot only make it scannable.
   // Both tones come from tokens/ — text/success in each mode — so the pair
@@ -248,7 +248,7 @@ test("colours readiness in both themes, and never by colour alone", () => {
   assert.match(html, /--ok: #166534;/);
   assert.match(html, /--ok: #8aeeae;/);
   assert.match(html, /\.status\[data-status="ready"\] \{ color: var\(--ok\); \}/);
-  assert.match(html, /el\("span", \{ text: entry\.readiness \}\)/);
+  assert.match(html, /el\("span", \{ text: entry\.status \|\| "\u2014" \}\)/);
 });
 
 test("dresses the page from tokens/ rather than from a hex written here", () => {
@@ -278,17 +278,27 @@ test("carries the authored status as its own column, facet and sort", () => {
   assert.deepEqual(data.statuses, ["draft", "ready", "deprecated"]);
   assert.match(html, /label: "Status"/);
   assert.match(html, /group\("Status", STATUSES, state\.statuses/);
+  assert.match(html, /group\("Contract", READINESS, state\.readiness/);
   assert.match(html, /state\.sort === "status"/);
-  assert.match(html, /class: "lifecycle"/);
+  assert.match(html, /class: "contract"/);
 });
 
-// Both columns can read "ready" and mean different things, so they must not be
-// drawn alike: readiness keeps the dot, the authored status is plain text.
-test("draws the two ready-bearing columns differently", () => {
+// The dot is the visual weight and it belongs on the column that decides
+// whether a component is in a release — the authored Status. Contract is
+// derived and cheaper, and reads as plain text beside it.
+test("puts the marker on the authored status, not the derived contract", () => {
   const { html } = build();
-  assert.match(html, /el\("td", \{ class: "status", "data-status": entry\.readiness \}, \[/);
-  assert.match(html, /td\.lifecycle \{/);
-  assert.doesNotMatch(html, /class: "lifecycle"[\s\S]{0,80}class: "dot"/);
+  assert.match(html, /el\("td", \{ class: "status", "data-status": entry\.status \|\| "" \}, \[/);
+  assert.match(html, /td\.contract \{/);
+  assert.doesNotMatch(html, /class: "contract",[\s\S]{0,120}class: "dot"/);
+});
+
+// The two vocabularies must not share a word: side by side they are read as a
+// sentence, and "ready / ready" was two different facts wearing one label.
+test("keeps the two vocabularies disjoint", () => {
+  const { data } = build();
+  const overlap = data.readiness.filter((v) => data.statuses.includes(v));
+  assert.deepEqual(overlap, []);
 });
 
 test("groups by level, on by default, and by nothing else", () => {

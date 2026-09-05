@@ -236,23 +236,29 @@ export function derive(entry) {
   };
 }
 
-// The two flags above, read as one word — how far the *record* has been taken,
-// not where the component is in its life. Lifecycle is the authored `status`
-// field (draft / ready / deprecated) and stays separate: an entry can be a
-// complete record of a draft component.
+// The two flags above, read as one word: how complete the *contract* is. Both
+// halves are STANDARD.md's first gate, *Complete enough to publish* — the prose
+// fields and `figma.node_id` are named by it together — so `complete` here
+// means that gate holds, and nothing more.
 //
-// `ready` appears in both vocabularies and means two different things. Here it
-// says the entry is documented and linked — a fact about the file, computed.
-// In `STATUSES` it says the component passed both gates of STANDARD.md — a
-// judgement about the component, authored. Anything rendering both must label
-// which it is showing; neither is derivable from the other.
+// It says nothing about the component. That is the authored `status` field
+// (draft / ready / deprecated), which is a judgement about both gates and
+// cannot be computed. The two are read as a pair and in one direction only:
+// `Contract: complete · Status: ready` is a component that is written down and
+// checked; `Contract: complete · Status: draft` is one written down and not yet
+// checked; `Contract: in progress · Status: ready` is a contradiction, and
+// `npm run validate:registry` fails it.
 //
-// Most complete first, so a sort on the index puts what is ready at the top.
-export const READINESS = ["ready", "in progress", "not started"];
+// The value was `ready` until 2026-09-05, which put the same word in both
+// vocabularies meaning two different things — and put it on the cheaper of the
+// two, since the column that decides whether a component ships is `status`.
+//
+// Most complete first, so a sort on the index puts the finished records first.
+export const READINESS = ["complete", "in progress", "not started"];
 
 export function readiness(entry) {
   const { documented, linked } = derive(entry);
-  if (documented && linked) return "ready";
+  if (documented && linked) return "complete";
   if (documented || linked) return "in progress";
   return "not started";
 }
