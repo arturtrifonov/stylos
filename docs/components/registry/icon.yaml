@@ -8,7 +8,7 @@ family: "Icon"
 level: "primitive"
 role: "content"
 html: "<svg>"
-status: "draft"
+status: "ready"
 version: "0.1.0"
 summary: "A single mark from the system set, chosen by what it means rather than by how it is drawn."
 purpose: "Interfaces need a small vocabulary of marks that a person recognises faster than they read: close, search, expand, the direction a thing will move. Icon is that vocabulary. It is deliberately small and deliberately curated — every entry exists because a component needed it — so that choosing one is choosing a meaning the system already has, not shopping in an icon library. The drawing is an implementation of the meaning and can be replaced without any consumer changing."
@@ -106,12 +106,12 @@ api:
   -
     name: "name"
     kind: "variant"
-    default: "Placeholder"
+    default: "Icon"
     description: "Which mark. The value names a meaning the set carries, not a particular drawing — a consumer asking for Search is asking for whatever the system currently uses to mean search, and is not entitled to the shape behind it."
     values:
       -
-        value: "Placeholder"
-        note: "The default in every icon slot in the system, and the mark that stays in the set whatever else changes. An instance left on it has not been chosen."
+        value: "Icon"
+        note: "The base component, and the default in every icon slot in the system. It carries no meaning of its own: an instance still showing it has not been chosen. Named Placeholder until 2026-09-05."
       -
         value: "Add"
       -
@@ -175,12 +175,13 @@ limitations:
   - "Error, Success and Warning name marks in the same words the validation vocabulary uses for outcomes. Nothing states whether picture names and property values share a namespace."
 figma_notes:
   - "The set is thirty separate components rather than one component set with a property, because swapping an instance is how a designer picks a mark in Figma. They are not thirty components in any other sense: the contract is identical for all of them and only the drawing differs."
-  - "There is therefore no single node to address. figma.node_id points at Placeholder as a representative, because it is the default in every icon slot and stays in the set whatever else changes — not because Placeholder is the component this file describes."
+  - "figma.node_id points at the base component, Icon — the default in every icon slot and the one member that carries no meaning of its own. It is a real address rather than a representative one, which it was not while that component was named Placeholder."
+  - "The twenty-nine marks carry one description between them, because they differ in nothing but the drawing and a per-mark description would have to invent a difference. Its job is not findability — the names already do that at this size of set — but preventing the one misuse there is: A mark from the Stylos icon set. Swap it into an icon, leading icon or trailing icon slot — it is not placed on its own. What the set is and how a mark is chosen: Icon. Typed once and pasted; it is not worth a rule in stylos-description-sync for one family."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "2840-130810"
-  last_verified: "2026-08-29"
-notes: "children and uses are absent because the mark is a drawing rather than a component. parents is carried unchanged from the pre-contract entry and still names Radio, which is no longer an id in the registry."
+  last_verified: "2026-09-05"
+notes: "children and uses are absent because the mark is a drawing rather than a component."
 import:
   batch: 1
   ready: true
