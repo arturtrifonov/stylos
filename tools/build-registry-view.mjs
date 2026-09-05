@@ -33,6 +33,7 @@ import {
   LEVELS,
   ROLES,
   READINESS,
+  STATUSES,
 } from "./lib/registry.mjs";
 import { readPlan, waveById, milestoneById, milestoneNames } from "./lib/plan.mjs";
 import { loadTheme, themeCss } from "./lib/theme.mjs";
@@ -180,6 +181,14 @@ td.flag[data-on="true"] { color: var(--ok); }
   margin-right: 8px;
   vertical-align: baseline;
 }
+/* The authored lifecycle sits beside the derived readiness and both can read
+   "ready". They are deliberately drawn differently: readiness is the dotted
+   pill above, this is plain text. Same word, same row, two different facts —
+   if they looked alike the column heading would be the only thing separating
+   them, and nobody reads a heading twice. */
+td.lifecycle { color: var(--fg-quiet); }
+td.lifecycle[data-status="ready"] { color: var(--fg); }
+td.lifecycle[data-status="deprecated"] { color: var(--warn); }
 td.milestone { color: var(--fg-quiet); font-variant-numeric: tabular-nums; }
 td.wave { text-align: right; font-variant-numeric: tabular-nums; color: var(--fg-quiet); }
 td.page a { color: var(--accent); text-decoration: none; }
@@ -250,6 +259,7 @@ var DATA = window.__REGISTRY__;
 var LEVELS = DATA.levels;
 var ROLES = DATA.roles;
 var READINESS = DATA.readiness;
+var STATUSES = DATA.statuses;
 var entries = DATA.entries;
 var byId = new Map(entries.map(function (e) { return [e.id, e]; }));
 
@@ -257,6 +267,7 @@ var state = {
   levels: new Set(),
   roles: new Set(),
   readiness: new Set(),
+  statuses: new Set(),
   waves: new Set(),
   milestones: new Set(),
   sort: "name",
@@ -283,6 +294,7 @@ function clearFilters() {
   state.levels.clear();
   state.roles.clear();
   state.readiness.clear();
+  state.statuses.clear();
   state.waves.clear();
   state.milestones.clear();
 }
@@ -291,6 +303,7 @@ function matches(entry) {
   if (state.levels.size > 0 && !state.levels.has(entry.level)) return false;
   if (state.roles.size > 0 && !state.roles.has(entry.role)) return false;
   if (state.readiness.size > 0 && !state.readiness.has(entry.readiness)) return false;
+  if (state.statuses.size > 0 && !state.statuses.has(entry.status)) return false;
   if (state.waves.size > 0 && !state.waves.has(entry.wave)) return false;
   if (state.milestones.size > 0 && !state.milestones.has(entry.milestone)) return false;
   return true;
@@ -322,6 +335,12 @@ function sortKey(entry) {
   if (state.sort === "level") return String(LEVELS.indexOf(entry.level));
   if (state.sort === "role") return entry.role || "";
   if (state.sort === "readiness") return String(READINESS.indexOf(entry.readiness));
+  // In the vocabulary's order — draft, ready, deprecated — not alphabetically.
+  // An entry carrying no status at all is not a draft; it is seventy-two
+  // inventory records that were never assessed, and they sort last.
+  if (state.sort === "status") {
+    return entry.status === null ? "z" : String(STATUSES.indexOf(entry.status));
+  }
   if (state.sort === "flow") return entry.flow_behavior.join(", ");
   if (state.sort === "milestone") return milestoneRank(entry);
   if (state.sort === "wave") return waveRank(entry);
@@ -367,7 +386,12 @@ var COLUMNS = [
   {
     key: "readiness",
     label: "Readiness",
-    title: "Derived from the two columns on the right: ready = the contract is written and the entry is linked to Figma. Not the component's lifecycle — that is Status, in the panel",
+    title: "Derived, and about the entry: ready = the contract is written and the entry is linked to Figma — the two columns on the right. Not the component's lifecycle, which is Status, the column beside this one",
+  },
+  {
+    key: "status",
+    label: "Status",
+    title: "Authored, and about the component: ready = it passes both gates of STANDARD.md and can be built against. Nothing derives it — it is a judgement, written on the entry by hand. A dash means the entry has never been assessed",
   },
   {
     key: "milestone",
@@ -419,6 +443,10 @@ function renderFilters() {
   host.appendChild(group("Level", LEVELS, state.levels, countBy("level")));
   host.appendChild(group("Role", ROLES, state.roles, countBy("role")));
   host.appendChild(group("Readiness", READINESS, state.readiness, countBy("readiness")));
+  // Beside it deliberately, because the two are asked about together: "what is
+  // documented and linked" and "what has been judged ready" are the two halves
+  // of the same question during a release pass, and neither answers the other.
+  host.appendChild(group("Status", STATUSES, state.statuses, countBy("status")));
   // The waves are the queue, so the index offers them. They come from PLAN.md
   // on every build; a view built without a plan simply has no wave filter.
   // Independent of each other on purpose: "wave 3" with no milestone chosen is
@@ -517,6 +545,11 @@ function renderTable() {
         el("span", { class: "dot" }),
         el("span", { text: entry.readiness }),
       ]));
+      tr.appendChild(el("td", {
+        class: "lifecycle",
+        "data-status": entry.status || "",
+        text: entry.status || "\u2014",
+      }));
       tr.appendChild(el("td", { class: "milestone", text: entry.milestone === null ? "—" : entry.milestone }));
       tr.appendChild(el("td", { class: "wave", text: entry.wave === null ? "—" : String(entry.wave) }));
       tr.appendChild(el("td", { text: entry.level || "—" }));
@@ -534,6 +567,9 @@ function renderTable() {
 
 function renderStatus() {
   var shown = visible().length;
+  // Deliberately the derived count, and deliberately not called "ready": the
+  // authored one is per-value in the Status facet, where the heading says which
+  // fact it is. One bare number cannot carry that.
   var ready = entries.filter(function (e) { return e.readiness === "ready"; }).length;
   var documented = entries.filter(function (e) { return e.documented; }).length;
   var linked = entries.filter(function (e) { return e.linked; }).length;
@@ -541,7 +577,7 @@ function renderStatus() {
   host.textContent = "";
   [
     [String(shown) + " of " + entries.length, "shown"],
-    [String(ready), "ready"],
+    [String(ready), "complete records"],
     [String(documented), "with a contract"],
     [String(linked), "linked to Figma"],
   ].forEach(function (pair, index) {
@@ -617,7 +653,9 @@ function renderDetail() {
     ["Level", entry.level || "—"],
     ["Role", entry.role || "—"],
     ["Flow", entry.flow_behavior.join(", ") || "—"],
-    // Authored lifecycle, not the derived readiness above it in the table.
+    // Authored lifecycle. The table carries it too, beside the derived
+    // readiness; here it sits under the authored facts and readiness under
+    // Derived, which is the same separation stated a second way.
     ["Status", entry.status || "—"],
   ].forEach(function (pair) {
     facts.appendChild(el("dt", { text: pair[0] }));
@@ -787,6 +825,7 @@ export function buildViewData(root, entries) {
     levels: LEVELS,
     roles: ROLES,
     readiness: READINESS,
+    statuses: STATUSES,
     milestones,
     waves,
     entries: entries.map((entry) => {

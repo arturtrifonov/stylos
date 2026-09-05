@@ -271,6 +271,26 @@ test("keeps the authored lifecycle apart from the derived readiness", () => {
   assert.equal(data.entries.find((e) => e.id === "Table / TD Text").status, null);
 });
 
+test("carries the authored status as its own column, facet and sort", () => {
+  const { html, data } = build({
+    "docs/components/registry/badge.yaml": badge.replace('name: "Badge"', 'name: "Badge"\nstatus: "draft"'),
+  });
+  assert.deepEqual(data.statuses, ["draft", "ready", "deprecated"]);
+  assert.match(html, /label: "Status"/);
+  assert.match(html, /group\("Status", STATUSES, state\.statuses/);
+  assert.match(html, /state\.sort === "status"/);
+  assert.match(html, /class: "lifecycle"/);
+});
+
+// Both columns can read "ready" and mean different things, so they must not be
+// drawn alike: readiness keeps the dot, the authored status is plain text.
+test("draws the two ready-bearing columns differently", () => {
+  const { html } = build();
+  assert.match(html, /el\("td", \{ class: "status", "data-status": entry\.readiness \}, \[/);
+  assert.match(html, /td\.lifecycle \{/);
+  assert.doesNotMatch(html, /class: "lifecycle"[\s\S]{0,80}class: "dot"/);
+});
+
 test("groups by level, on by default, and by nothing else", () => {
   const { html } = build();
   assert.match(html, /group: true,/);
