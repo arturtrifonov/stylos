@@ -9,7 +9,7 @@
 
 Compiled skill document for manual import into Figma Agent. Contains:
 
-- `stylos-component-integrity-check` v0.4
+- `stylos-component-integrity-check` v0.5
 - `stylos-description-sync` v0.2
 - `stylos-naming-cleanup` v0.10
 - `stylos-reference-reconstruction` v0.2
@@ -22,7 +22,7 @@ description: "Audit selected Figma components, component sets, instances, or sev
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.4
+  version: 0.5
 ---
 
 # Stylos Component Integrity Check
@@ -247,11 +247,12 @@ Apply these dimension classifications, in order, before producing a raw-numeric 
 
 1. **A hidden layer's `width` and `height` are not evidence.** Figma takes a hidden layer out of the auto-layout flow, so it reports `layoutSizingHorizontal: FIXED` — and, for text, `textAutoResize: NONE` — with whatever number it last held, whatever it will do when visible. Judge a layer's dimensions on the variants where it is visible: if the same layer is visible anywhere in the set, that occurrence carries the finding and the hidden ones are silent. If it is hidden in every variant, emit one information finding saying its sizing could not be established, and no warning.
 2. **A fixed `width` or `height` above the top of the scale is deliberately raw.** Where the value is larger than the largest the `dimension` collection defines, there is no token to bind it to and none is wanted — do not warn. Read the top of the scale and **state the value you read, once, in the report**, so the basis is visible; if you cannot read the collection, say so instead of guessing, and skip this class rather than warning through it. A fixed dimension *inside* the scale's range that matches no step is not covered by this and stays a warning.
-3. If exactly one of `width` or `height` is bound to a valid variable, the other is a fixed numeric value, and the layer's aspect ratio is locked, treat the unbound dimension as derived from the bound dimension. Do not warn about it. If the rendered layer is non-square, emit the aspect-ratio information finding defined below; if it is square, emit no finding.
-4. Otherwise, if an unbound fixed width belongs to a verified icon container, emit the icon-container information finding defined below instead of a warning for that width.
-5. Apply the ordinary raw-numeric warning to dimensions that meet none of these.
+3. **A scale-constrained axis outside auto layout is allowed to be raw.** Where the layer's parent is not an auto-layout frame and the layer's constraint on that axis is `SCALE`, emit the scale-constraint information finding defined below instead of a warning for that axis. A bound variable pins a value and leaves scaling nothing to move, so the two are alternatives; this is how `adjustable: true` is built. Judge each axis on its own constraint.
+4. If exactly one of `width` or `height` is bound to a valid variable, the other is a fixed numeric value, and the layer's aspect ratio is locked, treat the unbound dimension as derived from the bound dimension. Do not warn about it. If the rendered layer is non-square, emit the aspect-ratio information finding defined below; if it is square, emit no finding.
+5. Otherwise, if an unbound fixed width belongs to a verified icon container, emit the icon-container information finding defined below instead of a warning for that width.
+6. Apply the ordinary raw-numeric warning to dimensions that meet none of these.
 
-**Classifications 1 and 2 cover `width` and `height` only.** A hidden layer's padding, gap, radius, stroke weight and type are as real as any other layer's, and a padding or radius above the top of the scale is suspicious rather than exempt. Do not suppress unrelated raw numeric properties on the same layer. A raw icon-container height, padding, gap, radius, or other property still follows the normal rules unless it independently qualifies for an exception.
+**Classifications 1, 2 and 3 cover `width` and `height` only.** A hidden layer's padding, gap, radius, stroke weight and type are as real as any other layer's, and a padding or radius above the top of the scale is suspicious rather than exempt. Do not suppress unrelated raw numeric properties on the same layer. A raw icon-container height, padding, gap, radius, or other property still follows the normal rules unless it independently qualifies for an exception.
 
 For several occurrences of the same property and value, group the affected paths instead of repeating identical entries.
 
@@ -336,6 +337,20 @@ Use this information finding instead of a raw-numeric warning when all of the fo
 
 Do not infer this role merely because an arbitrary frame contains a vector. Do not extend this exception to the icon container's height, padding, gap, corner radius, or other numeric properties.
 
+### Scale-constrained dimension
+
+Example summary:
+
+`Info: A scale-constrained dimension is unbound so that the layer can scale with its parent`
+
+Use this information finding — never a warning — when the layer's parent is not an auto-layout frame, the layer's constraint on the affected axis is `SCALE`, and the dimension on that axis is an unbound non-zero number. Name the axis, the constraint, and the value. See [sizing.md](../../../docs/foundations/sizing.md).
+
+It is information rather than silence because the value is a real decision with a cost: it will not follow the scale when the scale moves, and a person reading the report should see where those places are.
+
+Judge each axis separately — a layer set to `SCALE` horizontally and `MIN` vertically gets this finding for its width and the ordinary rules for its height. The exemption does not reach the layer's padding, corner radius, stroke weight or type. A parent that is a plain frame is not enough on its own; without `SCALE` on that axis, apply the normal rules.
+
+Where this and the locked-aspect-ratio finding would both apply to the same dimension, report this one — it names the mechanism, and the aspect-ratio finding assumes a bound dimension that is not there.
+
 ### Derived dimension with locked aspect ratio
 
 Example summary:
@@ -368,6 +383,7 @@ This exemption covers geometry and position only. The ring's stroke colour, stro
 - Do not treat zero as a missing numeric binding.
 - Do not warn about a dimension derived through a locked aspect ratio from the other variable-bound dimension.
 - Do not warn about a verified icon container's unbound width; classify it as information.
+- Do not warn about an unbound dimension on an axis constrained to `SCALE` outside auto layout; classify it as information.
 - Do not report the same property as both a broken style and a raw color.
 - Do not report the same dimension under both information exceptions.
 - Do not warn about a focus ring's unbound width, height or position; classify it as information. Its colour, weight and radius bindings are still checked.

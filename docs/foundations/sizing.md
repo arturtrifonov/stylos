@@ -89,3 +89,15 @@ Figma does not preserve fill sizing on a hidden layer: taken out of the auto-lay
 **A layer's dimensions are judged where the layer is visible, and nowhere else.** Where the same layer is visible in another variant, that occurrence carries the finding. Where it is hidden in every variant, its sizing cannot be established at all and that is what gets said, once, instead of a warning per variant.
 
 This is about sizing only. A hidden layer's colours, radii, stroke weights and type are as real as any other layer's — they are not distorted by being hidden, and they become visible with it.
+
+## Scale constraints need a raw number
+
+A layer that has to grow with its parent does it through constraints, not through auto layout: the parent is a plain frame, the child's constraint on that axis is `SCALE`, and Figma multiplies the child's dimension as the frame is resized. A dimension bound to a variable does not participate in that — the variable pins the value and the scaling has nothing to move. The two mechanisms are alternatives, and choosing one means giving up the other.
+
+So **a layer outside auto layout whose constraint on an axis is `SCALE` may carry an unbound number on that axis.** It is how the behaviour is built, not a binding somebody forgot.
+
+This is what `adjustable: true` in a contract's `sizing_model` costs. A component that a consumer resizes by setting one number — Button Inner, Loader, Indicator — needs its interior to follow that number, and inside Figma that means scale constraints and raw values beneath them.
+
+The exemption is per axis and no wider. A layer scaling horizontally has no claim on its height, and the parent being a plain frame does not exempt anything by itself — the constraint has to be `SCALE`. Padding, radius, stroke weight and type are unaffected: nothing about scaling requires them to be raw.
+
+**This one is worth seeing.** Unlike a dimension above the scale, a scale-constrained value is a real design decision with a cost — it will not follow a token when the scale moves — so it is reported as information rather than passed over in silence.
