@@ -8,7 +8,7 @@ level: "object"
 role: "input"
 html: "<li role=\"option\"><button role=\"switch\">"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "An option that takes effect the moment it is switched, at either end of the row."
 purpose: "For a list of things a person turns on and off rather than picks — a menu of settings rather than a menu of answers. The switch reads as immediate where a checkbox reads as collected, and it sits at either end of the row: leading where it is the point of the row, trailing where the option is named first and the switch answers it."
 use_when:

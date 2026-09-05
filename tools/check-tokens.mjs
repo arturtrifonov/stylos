@@ -29,6 +29,55 @@ export function readNaming(root) {
   return parse(readFileSync(file, "utf8"), { filename: "tokens/_naming.yaml" });
 }
 
+/**
+ * Does the library still report the version the repository is on?
+ *
+ * `Meta / version` in *Stylos / Styles* is the only place a reader — a person
+ * in the Assets panel, or an agent reading variables — meets the version of
+ * the published library. `npm run tokens:import` records what it said into
+ * figma/library.yaml; this compares that with package.json, so a forgotten
+ * bump stops being invisible at exactly the moment it matters.
+ *
+ * Because the export is manual, this answers what the library reported at the
+ * last export, never what it reports right now. That is enough: the moment it
+ * has to be right is the release, and the release is when it is exported.
+ *
+ * See docs/specs/0006-versioning-and-release-0-1-0.md §6.
+ */
+export function checkLibraryVersion(root, problems) {
+  const system = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8")).version;
+  const file = path.join(root, "figma/library.yaml");
+
+  if (!existsSync(file)) {
+    problems.warnings.push(
+      `figma/library.yaml does not exist, so nothing records what version the published Figma ` +
+        `library reports. Add the Meta collection and its "version" variable in Stylos / Styles, ` +
+        `then import it: npm run tokens:import -- --collection Meta <file>`
+    );
+    return;
+  }
+
+  const version = parse(readFileSync(file, "utf8"), { filename: "figma/library.yaml" }).get(
+    "version"
+  );
+
+  if (typeof version !== "string" || version === "") {
+    problems.errors.push(
+      `figma/library.yaml carries no version. It is generated — re-run ` +
+        `npm run tokens:import -- --collection Meta <file> rather than editing it.`
+    );
+    return;
+  }
+
+  if (version !== system) {
+    problems.errors.push(
+      `the Figma library reported version "${version}" at its last export; package.json says ` +
+        `the system is "${system}". One of the two was not bumped. Correct Meta / version in ` +
+        `Stylos / Styles and re-import it, or correct package.json.`
+    );
+  }
+}
+
 export function runCheck({ root, strict = false }) {
   const problems = { errors: [], warnings: [] };
 
@@ -80,6 +129,8 @@ export function runCheck({ root, strict = false }) {
     { collections, modeDependent: naming.get("mode_dependent") ?? [] },
     problems
   );
+
+  checkLibraryVersion(root, problems);
 
   // Every canonical file must survive a YAML round-trip. This is what keeps
   // the writer and reader in tools/lib/yaml.mjs a matched pair.

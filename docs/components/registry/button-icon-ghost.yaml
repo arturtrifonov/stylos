@@ -11,7 +11,7 @@ level: "object"
 role: "trigger"
 html: "<button type=\"button\">"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "The unboxed icon action — a mark that becomes a button under the pointer."
 purpose: "This is the member for the actions a dense interface accumulates and cannot afford to draw: the controls on every row of a table, the icons along a toolbar, the small operations that have to be there without being counted. It draws nothing at rest — no fill, no border, no shadow — so a strip of them reads as a row of marks rather than a row of boxes, and the surface stays quiet until someone points at it. It keeps the full square while drawing none of it, so the pointer target is the size the run says rather than the size of the glyph, and swapping it for a filled or outlined sibling moves nothing."
 use_when:

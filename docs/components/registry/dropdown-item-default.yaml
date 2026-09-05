@@ -8,7 +8,7 @@ level: "object"
 role: "input"
 html: "<li role=\"option\">"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "One option in a dropdown list, with a mark when it is the chosen one."
 purpose: "The plain row of a dropdown: a label, optionally a second line under it and a mark before it, and a tick at the end once it has been chosen. It carries the four ways a row answers a pointer, a ring for where the keyboard is, and nothing else — what it is inside, how many of it there are and what happens when it is pressed all belong to the list."
 use_when:

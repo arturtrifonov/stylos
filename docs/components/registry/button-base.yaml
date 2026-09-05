@@ -14,7 +14,7 @@ level: "object"
 role: "trigger"
 html: "<button type=\"button\">"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "The filled action button — the one a view is built around."
 purpose: "Every screen has an action it exists to let someone take, and that action has to be found before it is read. This is the member of the family that fills its box with its tone and knocks the label out of it, so it is located by scanning a screen rather than by reading one. That weight is the whole of what separates it from its siblings: the box, the run of sizes, the label, the two icon slots and the states are the same in all three, and choosing between them is choosing how loudly the action should speak, not what it does."
 use_when:

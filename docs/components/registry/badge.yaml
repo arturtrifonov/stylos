@@ -8,7 +8,7 @@ level: "primitive"
 role: "content"
 html: "no semantic html"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "A compact numeric counter that takes its meaning from what it sits with."
 purpose: "A count is never about itself: \"3\" means nothing until something nearby says three of what. Badge exists so a number can be placed where that subject is already stated, without introducing a second colour language to do it. It is drawn as a visual extension of text rather than as an object of its own — its surface takes the text colour roles, so it continues the typography around it instead of sitting on top of it."
 use_when:

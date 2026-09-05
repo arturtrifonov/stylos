@@ -9,7 +9,7 @@ level: "primitive"
 role: "content"
 html: "<svg>"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "A single mark from the system set, chosen by what it means rather than by how it is drawn."
 purpose: "Interfaces need a small vocabulary of marks that a person recognises faster than they read: close, search, expand, the direction a thing will move. Icon is that vocabulary. It is deliberately small and deliberately curated — every entry exists because a component needed it — so that choosing one is choosing a meaning the system already has, not shopping in an icon library. The drawing is an implementation of the meaning and can be replaced without any consumer changing."
 use_when:

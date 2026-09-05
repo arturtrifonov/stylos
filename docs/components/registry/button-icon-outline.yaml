@@ -11,7 +11,7 @@ level: "object"
 role: "trigger"
 html: "<button type=\"button\">"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "The bordered action button with no label — an icon in a squared outline."
 purpose: "A strip of controls usually has one action that matters more than the rest and several that are simply available. This is the member for the ones that are simply available: the same square as its siblings, drawn as a pale surface inside a border in its own tone rather than as a filled block. The border is what makes it work where a ghost would not — in a toolbar over a busy or coloured background, an edge says the square is pressable before anyone points at it, and every button in the strip keeps the same footprint whether it is filled, outlined or empty."
 use_when:

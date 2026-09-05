@@ -9,7 +9,7 @@ level: "object"
 role: "input"
 html: "<label>Label text <span>Additional text</span></label><select>"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "A form control showing the option currently chosen, which opens a list to change it."
 purpose: "A select shows the option currently chosen and a chevron saying there are others. That pair is the whole of it: the value in a box, the mark that the box opens, and an optional control for putting it back to nothing. What opens is not here — the list, its options and every way of moving through them belong to whatever draws it, which is why this entry describes a closed control and stops there."
 use_when:

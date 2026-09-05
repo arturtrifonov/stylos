@@ -8,7 +8,7 @@ level: "object"
 role: "trigger"
 html: "<li role=\"menuitem\" aria-haspopup=\"true\">"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "A row that opens a further list instead of settling the question."
 purpose: "The row that is a door rather than an answer. It reads like every other option and ends in an arrow pointing on, and pressing it opens another list rather than choosing anything — which is why it has no chosen state to carry and no tick to show."
 use_when:

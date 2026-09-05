@@ -10,7 +10,7 @@ level: "object"
 role: "trigger"
 html: "<button type=\"button\">"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "The unboxed action button, for an action that should wait to be looked for."
 purpose: "A dense interface accumulates actions that have to be available without being present — the third option in a dialog, the actions on a table row, the controls in a toolbar that would become a wall of boxes if each of them had one. This is the member of the family that draws nothing at rest: no fill, no border, no shadow, just the label in its tone, so a row of them reads as a row of words and the interface stays quiet until the pointer arrives. It occupies the same box as its siblings even while drawing none of it, so a ghost button and a filled one of the same size line up and swapping one for the other moves nothing."
 use_when:

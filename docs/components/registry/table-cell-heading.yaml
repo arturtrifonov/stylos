@@ -10,7 +10,7 @@ level: "object"
 role: "output"
 html: "<th scope=\"col\">"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "The cell that names a column and carries the controls the column is ordered and narrowed by."
 purpose: "A column is only readable if something says what is in it, and only usable if the thing that says so is also where you go to sort and filter it. This is that cell. It is built on the same box as the value cells so the header row lines up with the body without anyone arranging it, and it is set a shade quieter than the values because a header is read once and the column is read a hundred times. Sorting and filtering live here rather than in a toolbar because they belong to one column, and a control that belongs to one column belongs in that column's head."
 use_when:

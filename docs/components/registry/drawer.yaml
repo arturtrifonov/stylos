@@ -12,7 +12,7 @@ level: "layout"
 role: "container"
 html: "<dialog>"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "A full-height panel that slides in from one edge and holds a task beside the page."
 purpose: "Some work is too big for a dialog and too small for a page: editing a record while its list stays visible, filtering a table while the table is still there, reading a detail without losing your place in what led to it. A drawer is the frame for that. It takes one edge of the screen and the full height of it, keeps the heading, the content and the answers in the same three bands the dialog uses, and leaves the page behind it in view. It is squared off against the edge it comes from and carries a single border on the side that faces the page — the only line in it, and the one that says where the panel stops and the page resumes."
 use_when:

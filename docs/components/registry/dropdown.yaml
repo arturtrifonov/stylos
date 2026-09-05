@@ -8,7 +8,7 @@ level: "widget"
 role: "container"
 html: "<ul role=\"listbox\">"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "The panel a dropdown opens: a list of options with optional search, a way back, and buttons under it."
 purpose: "Everything a list of options needs around the options themselves. The rows are their own components and go in a slot; what this adds is the surface they sit on, the four bands that can appear around them — a way back out of a submenu, a field to narrow the list, the list itself, and buttons to apply or cancel — and one decision about how tall the thing is allowed to get before it starts scrolling."
 use_when:

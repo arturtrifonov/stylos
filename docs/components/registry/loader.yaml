@@ -8,7 +8,7 @@ level: "primitive"
 role: "content"
 html: "no semantic html"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "A spinning mark that says work is under way when there is no figure to report."
 purpose: "Most waits have no number attached: the operation either finishes or it does not, and there is nothing meaningful to show in between. Loader is what stands in that gap. It is deliberately mute — it says something is happening and nothing about what, how far along, or how much longer — so that the surrounding interface can say those things where it actually knows them."
 use_when:

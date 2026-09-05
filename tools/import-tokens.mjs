@@ -3,6 +3,12 @@
 //
 //   npm run tokens:import -- --collection color "Light Mode.tokens.json" "Dark Mode.tokens.json"
 //   npm run tokens:import -- --collection radius radius.json --dry-run
+//   npm run tokens:import -- --collection Meta Meta.tokens.json
+//
+// The last of those imports no tokens. `Meta` is the collection carrying the
+// library's version marker, and it is written to figma/library.yaml rather
+// than to tokens/, because a version is not a token — see
+// docs/specs/0006-versioning-and-release-0-1-0.md §6.
 //
 // The exported files are read and discarded. Nothing raw is stored: what
 // survives is tokens/*.yaml, which is the record. An earlier design kept the
@@ -73,6 +79,108 @@ function parseArgv(argv) {
     if (g.files.length === 0) throw new Error(`--collection ${g.name} was given no files`);
   }
   return { groups, options };
+}
+
+/**
+ * The library version marker's declaration, or null if none is made.
+ *
+ * `Meta` is a Figma collection that holds no tokens: one STRING variable
+ * naming the release the published library belongs to. It is imported by this
+ * command because it arrives by the same manual export, and recorded in
+ * figma/library.yaml because tokens/ is for tokens.
+ */
+export function metaDeclaration(naming) {
+  const meta = naming.get("meta");
+  if (!meta) return null;
+  return {
+    from: meta.get("from"),
+    mode: meta.get("mode"),
+    variable: meta.get("variable"),
+  };
+}
+
+/** Read the one string out of a Meta export. Throws with an actionable message. */
+export function readLibraryVersion(group, meta) {
+  if (group.files.length !== 1) {
+    throw new Error(
+      `--collection ${group.name} takes one file — it is a single variable, not a collection ` +
+        `of tokens. ${group.files.length} were given.`
+    );
+  }
+  const file = group.files[0];
+  if (!existsSync(file)) throw new Error(`${file}: no such file`);
+
+  const raw = readFileSync(file, "utf8");
+  if (!raw.includes("com.figma.variableId")) {
+    throw new Error(
+      `${file}: not a Figma variable export — no token in it carries ` +
+        `$extensions."com.figma.variableId".`
+    );
+  }
+
+  let document;
+  try {
+    document = JSON.parse(raw);
+  } catch (error) {
+    throw new Error(`${file}: not valid JSON — ${error.message}`);
+  }
+
+  const mode = documentMode(document);
+  if (mode !== meta.mode) {
+    throw new Error(
+      `${file}: this is mode "${mode ?? "(none stated)"}", and tokens/_naming.yaml declares ` +
+        `"${meta.from}" as mode "${meta.mode}". Pass the right file, or correct the declaration ` +
+        `if the collection was built with a different mode name.`
+    );
+  }
+
+  const record = flattenDocument(document).get(meta.variable);
+  if (!record) {
+    throw new Error(
+      `${file}: no variable "${meta.variable}" in "${meta.from}". That variable is where the ` +
+        `published library states its version — add it in Figma and export again.`
+    );
+  }
+  if (typeof record.value !== "string" || record.value.trim() === "") {
+    throw new Error(
+      `${file}: "${meta.from}/${meta.variable}" is ${JSON.stringify(record.value)}, not a ` +
+        `release string. It must read the release the library belongs to, e.g. "0.1.0".`
+    );
+  }
+  return record.value.trim();
+}
+
+/**
+ * The version the library reported at the last export, and when that was.
+ *
+ * Generated, so figma/README.md's rule against a hand-edited file claiming
+ * current Figma state is not broken by it. It answers what the library said at
+ * the last export and nothing about right now — the export is manual, so it
+ * cannot answer more. `npm run tokens:check` compares it with package.json,
+ * which catches a forgotten bump at the moment that matters, the release.
+ */
+export function writeLibraryRecord(root, version, date) {
+  mkdirSync(path.join(root, "figma"), { recursive: true });
+  writeFileSync(
+    path.join(root, "figma/library.yaml"),
+    stringify(
+      new Map([
+        ["version", version],
+        ["imported_at", date],
+      ]),
+      {
+        comments: [
+          "GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export",
+          "of the Meta collection in Stylos / Styles.",
+          "",
+          "What the published library reported at the last export, not what it is right now:",
+          "the export is made by hand, one collection at a time. npm run tokens:check fails when",
+          "this disagrees with package.json.",
+        ],
+      }
+    ),
+    "utf8"
+  );
 }
 
 /** Every Figma collection declared in _naming.yaml, with its expected modes. */
@@ -282,20 +390,31 @@ function appendHistory(root, stamp, entries) {
 async function main(root, argv) {
   const naming = readNaming(root);
   const declared = declaredFigmaCollections(naming);
+  const meta = metaDeclaration(naming);
   const { groups, options } = parseArgv(argv);
 
   const listDeclared = () =>
     [...declared]
       .map(([n, modes]) => `  ${n}  (modes: ${[...modes.keys()].join(", ")})`)
-      .join("\n");
+      .join("\n") + (meta ? `\n  ${meta.from}  (the library version marker, not tokens)` : "");
 
   if (groups.length === 0) {
     throw new Error(`${USAGE}\n\nDeclared collections:\n${listDeclared()}`);
   }
 
+  // The version marker is not a token collection and takes none of the
+  // machinery below — no modes to reconcile, no aliases, no ids to match.
+  // Split it off before any of that runs.
+  const metaGroups = meta ? groups.filter((g) => g.name === meta.from) : [];
+  if (metaGroups.length > 1) {
+    throw new Error(`"${meta.from}" was given twice — pass its one file under one --collection.`);
+  }
+  const tokenGroups = metaGroups.length ? groups.filter((g) => g !== metaGroups[0]) : groups;
+  const libraryVersion = metaGroups.length ? readLibraryVersion(metaGroups[0], meta) : null;
+
   // Validate everything before writing anything.
   const staged = new Map();
-  for (const group of groups) {
+  for (const group of tokenGroups) {
     if (!declared.has(group.name)) {
       throw new Error(
         `"${group.name}" is not a collection declared in tokens/_naming.yaml.\n` +
@@ -427,10 +546,16 @@ async function main(root, argv) {
     console.error(`  ${canonical}  ${count} tokens  ${status}`);
   }
 
+  if (libraryVersion !== null) {
+    console.error(`  ${meta.from}  library version ${libraryVersion}  → figma/library.yaml`);
+  }
+
   if (options.dryRun) {
     console.error(`\nDry run — nothing written.`);
     return 0;
   }
+
+  if (libraryVersion !== null) writeLibraryRecord(root, libraryVersion, stamp.slice(0, 10));
 
   mkdirSync(path.join(root, "tokens"), { recursive: true });
   for (const [canonical, document] of documents) {
@@ -445,7 +570,7 @@ async function main(root, argv) {
       "utf8"
     );
   }
-  appendHistory(root, stamp, report);
+  if (report.length > 0) appendHistory(root, stamp, report);
 
   // Verify the whole canonical set, not just what was imported: a change in
   // one collection can break an alias declared in another.
@@ -467,7 +592,11 @@ async function main(root, argv) {
     return 1;
   }
 
-  console.error(`OK: ${documents.size} collection(s) imported, alias contract holds.`);
+  const done = [
+    documents.size > 0 ? `${documents.size} collection(s) imported` : null,
+    libraryVersion !== null ? `library version ${libraryVersion} recorded` : null,
+  ].filter(Boolean);
+  console.error(`OK: ${done.join(", ")}, alias contract holds.`);
   return 0;
 }
 

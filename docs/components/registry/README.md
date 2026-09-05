@@ -29,7 +29,7 @@ Files are read and written by the restricted YAML subset in [`tools/lib/yaml.mjs
 | `level` | `primitive` \| `element` \| `object` \| `widget` \| `layout` |
 | `role` | `content` \| `trigger` \| `input` \| `toolbar` \| `output` \| `container` |
 | `html` | the semantic structure it stands for, or `"no semantic html"` — see below |
-| `status` | `draft` \| `published` \| `deprecated` — see below |
+| `status` | `draft` \| `ready` \| `deprecated` — see below |
 | `version` | the release in which this contract's current API shipped — see below |
 
 #### `status` describes the component, not its entry
@@ -39,10 +39,12 @@ The two are independent: a component can be finished in Figma with a thin entry,
 | Value | Means |
 | --- | --- |
 | `draft` | does not yet pass *Ready to publish* in [STANDARD.md](../STANDARD.md) |
-| `published` | passes both gates there and is in the published Figma library |
+| `ready` | passes both gates there — the component can be built against |
 | `deprecated` | superseded. Name the replacement — the same obligation `do_not_use_when.instead` carries |
 
 It stays authored rather than computed because readiness turns on judgements a tool cannot make: whether existing instances have an understood migration path, whether the supported states are the right ones.
+
+**The value is `ready`, not `published`, and the reason is not taste.** Figma publishes a *file*: everything in it goes out at once, and there is no per-component publish state to mirror. A `published` value would have been a fact maintained by hand about something the tool does not have, and it would have gone stale the first time the file was published without it being updated. Which release a component's API shipped in is answered by `version`; what moved in the library at that release is answered by `CHANGELOG.md`. `status` answers the one question neither of those does — can this be built against.
 
 **Every entry currently says `draft`**, and most were set that way by default rather than assessed. With the values defined they can be.
 
@@ -267,9 +269,9 @@ Keep it to what a reader would otherwise misread. Layer names, auto-layout setti
 
   Set it when the comparison is real: the run of [`stylos-component-integrity-check`](../../../skills/src/component-integrity-check/SKILL.md) and [`stylos-naming-cleanup`](../../../skills/src/naming-cleanup/SKILL.md) is done, findings are fixed **in Figma**, and the entry has been brought back into line with what is now there. Not for a glance, not for a description sync, and not because the file was open. The date is the whole record — no report is stored, because a stored report is a changelog of a check nobody re-reads.
 
-  Two things depend on it. [`STANDARD.md`](../STANDARD.md) requires it to be no older than the component's last change, which is what makes a contract *complete*. And `npm run validate:registry` reports a `published` entry verified more than 90 days ago — a finding for a person, not a contradiction, because staleness is a judgement about how much the component has moved since.
+  Two things depend on it. [`STANDARD.md`](../STANDARD.md) requires it to be no older than the component's last change, which is what makes a contract *complete*. And `npm run validate:registry` reports a `ready` entry verified more than 90 days ago — a finding for a person, not a contradiction, because staleness is a judgement about how much the component has moved since.
 
-  **It is not the same fact as `status`.** `last_verified` says when someone looked; `status: published` says the component passed both gates of `STANDARD.md` and is in the published library. A component can be freshly verified and still `draft`. Order on a pass: fix Figma → correct the entry → `version` if the `api` moved → `last_verified` → `status`.
+  **It is not the same fact as `status`.** `last_verified` says when someone looked; `status: ready` says the component passed both gates of `STANDARD.md`. A component can be freshly verified and still `draft`. Order on a pass: fix Figma → correct the entry → `version` if the `api` moved → `last_verified` → `status`.
 
 `notes` — freeform, one line. Where a decision is deliberately pending, this is where that is said.
 

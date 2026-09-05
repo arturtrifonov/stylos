@@ -9,7 +9,7 @@ level: "element"
 role: "input"
 html: "<label><input type=\"checkbox\"> Label text</label>"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "A checkbox tied to wrapping copy in a column of fixed width, the box aligned to the first line."
 purpose: "Some checkboxes carry a paragraph — a data-processing agreement, a permission with a qualifier, a confirmation that has to state what is being confirmed. That text wraps at a width the layout decides, and the box has to stay where the reader's eye starts rather than float in the vertical middle of four lines. Checkbox Label can do neither, because it hugs and centres."
 use_when:

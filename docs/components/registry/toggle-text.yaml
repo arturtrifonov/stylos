@@ -9,7 +9,7 @@ level: "element"
 role: "input"
 html: "<label><input type=\"checkbox\" role=\"switch\"> Label text</label>"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "A switch tied to wrapping copy in a column of fixed width, the track aligned to the first line."
 purpose: "Some settings need a sentence: what the switch turns on, and what that costs. That text wraps at a width the layout decides, and the track has to stay where the reader's eye starts rather than float in the vertical middle of three lines. Toggle Label can do neither, because it hugs and centres."
 use_when:

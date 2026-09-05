@@ -60,4 +60,4 @@ Most of these are what `stylos-component-integrity-check` and `stylos-naming-cle
 
 ## Status
 
-The inventory exists under [`registry/`](registry/README.md); how many of its entries carry a contract is derived rather than restated here — the registry view counts them, under Contract. The v0.1 core set is scheduled in [`PLAN.md`](../../PLAN.md) Stage 4, wave by wave.
+The inventory exists under [`registry/`](registry/README.md); how many of its entries carry a contract is derived rather than restated here — the registry view counts them, under Contract. The `0.1.0` core set is scheduled in [`PLAN.md`](../../PLAN.md) Stage 4, wave by wave.

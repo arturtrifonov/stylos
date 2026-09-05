@@ -39,7 +39,7 @@ Add to `tools/lint-registry.mjs`. Each fails the run with exit 1.
 
 | Condition |
 | --- |
-| `status` outside `draft` \| `published` \| `deprecated` |
+| `status` outside `draft` \| `ready` \| `deprecated` |
 | `api[].kind` outside `variant` \| `text` \| `boolean` \| `instance` |
 | `a11y.status` outside `warning` \| `fail` \| `open` \| `requires` |
 | a variant property whose `default` is not one of its `values[].value` |
@@ -64,7 +64,7 @@ Exit 0. These are judgements.
 | a property with no `description` |
 | an entry with `api` and no `sizing_model`, or a `sizing_model` with no `intent` |
 | an `a11y` finding whose `status` is `warning` or `fail` and whose `note` does not name a criterion |
-| `figma.last_verified` older than 90 days on an entry whose `status` is `published` |
+| `figma.last_verified` older than 90 days on an entry whose `status` is `ready` |
 | an entry with `family` set where no other entry shares that family |
 
 ### 3.3 Legacy entries must not fail

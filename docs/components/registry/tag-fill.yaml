@@ -9,7 +9,7 @@ level: "element"
 role: "content"
 html: "no semantic html"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "A short label on a filled band, in one of five tones."
 purpose: "A tag says what kind of thing something is, in one or two words, without the reader having to parse a sentence. This is the loud half of the pair: the tone fills the band and the label is knocked out of it, so the tag holds its place on a busy or coloured surface and is found by scanning rather than by reading."
 use_when:

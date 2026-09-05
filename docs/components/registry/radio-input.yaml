@@ -9,7 +9,7 @@ level: "element"
 role: "input"
 html: "<input type=\"radio\">"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "The radio control alone — the circle and its selection state, with no label."
 purpose: "A radio is never one control. It is one member of a set where choosing any member unchooses the rest, and that set is the unit a person reasons about. This component exists for the places where the set is already drawn by something else — a table of plans, a list of options, a row of cards — so the circle can be authored once and reused by everything that needs one, without carrying a label it would only duplicate."
 use_when:

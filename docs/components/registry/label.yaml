@@ -9,7 +9,7 @@ level: "primitive"
 role: "content"
 html: "<label>Label text <span>Additional text</span></label>"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "The name of a control, with room for one line of supporting text under it."
 purpose: "A field without a name is a box. Label is that name, authored once so every form in the product spells the relationship the same way: a bold line that names the thing, an optional marker saying it must be filled, and an optional quieter line underneath for the qualification the name alone cannot carry — a format, a limit, a hint."
 use_when:

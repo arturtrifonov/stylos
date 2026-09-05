@@ -29,7 +29,7 @@ These are releases, not milestones. All three fall inside the `0.1` milestone, w
 | 1 | No foundation document leaves open a question a component contract depends on | reading them |
 | 2 | Every core-set entry carries a Figma node identifier, and the registry is readable | the registry view |
 | 3 | The core set meets both gates of [`STANDARD.md`](docs/components/STANDARD.md) | `stylos-component-integrity-check`, then review against the standard |
-| 4 | Every entry the release claims reads `status: published`; every entry it does not claim is named as excluded | the registry view, and the notes |
+| 4 | Every entry the release claims reads `status: ready`; every entry it does not claim is named as excluded | the registry view, and the notes |
 | 5 | The Figma library is published, and `Meta / version` in it reads the tag | `npm run tokens:check` |
 | 6 | The repository's own checks pass at the tagged commit | `npm test`, `npm run validate:registry`, `npm run validate:skills` |
 

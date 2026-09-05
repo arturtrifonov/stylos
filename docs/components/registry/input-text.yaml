@@ -9,7 +9,7 @@ level: "object"
 role: "input"
 html: "<label>Label text <span>Additional text</span></label><input type=\"text\">"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "A single-line text field with its label, for building forms."
 purpose: "A text field is a label, a box, and a message that appears when the value is checked, with room inside the box for a mark and for a unit. They are one component because a field assembled from separate parts spaces itself differently in every form, and because a field built without a place for the message has nowhere to put one when validation is added."
 use_when:

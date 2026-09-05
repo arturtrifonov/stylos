@@ -8,7 +8,7 @@ level: "object"
 role: "input"
 html: "<li role=\"option\"><input type=\"checkbox\">"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "An option that can be switched on without leaving the list."
 purpose: "For lists where choosing is not finishing: several options can be on at once, so the row leads with a checkbox a person sets and unsets while the list stays open. Moving to a row and switching it are two separate acts, which is why the ring and the chosen state are separate here and both show at the same time."
 use_when:

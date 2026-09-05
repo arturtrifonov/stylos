@@ -10,7 +10,7 @@ level: "object"
 role: "trigger"
 html: "<button type=\"button\">"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "The bordered action button, for the action beside the main one."
 purpose: "A surface usually has one action it is for and one or two that go with it — cancel beside save, back beside continue, export beside apply. Those need to be as easy to hit and as easy to read as the main action while being visibly not it, and the way this family draws that distinction is weight rather than size or position. This member keeps the box, the run and the label of its siblings and replaces the filled band with a pale surface and a border in its own tone, so it holds its shape and its edge on any background without claiming the eye first."
 use_when:

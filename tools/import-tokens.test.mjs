@@ -1,7 +1,17 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { checkCollectionIdentity } from "./import-tokens.mjs";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+
+import {
+  checkCollectionIdentity,
+  metaDeclaration,
+  readLibraryVersion,
+  writeLibraryRecord,
+} from "./import-tokens.mjs";
+import { parse } from "./lib/yaml.mjs";
 
 // Figma names an export after its mode, so five collections all download as
 // "Mode 1.tokens.json" and three as "Value.tokens.json". Nothing in the file
@@ -59,4 +69,82 @@ test("accepts a multi-mode collection whose ids are pooled across its modes", ()
   const known = new Map([["color", new Set(["v:31", "v:32"])]]);
 
   assert.doesNotThrow(() => checkCollectionIdentity(twoModes, known));
+});
+
+// --- The library version marker (SPEC 0006 §6) -----------------------------
+//
+// `Meta` is a Figma collection carrying one STRING variable and no tokens. It
+// goes to figma/library.yaml, never to tokens/, and every way the export can
+// be wrong has to say so rather than record something plausible.
+
+const meta = { from: "Meta", mode: "Mode 1", variable: "version" };
+
+const metaExport = (value, { mode = "Mode 1", name = "version" } = {}) =>
+  JSON.stringify({
+    $extensions: { "com.figma.modeName": mode },
+    [name]: {
+      $type: "string",
+      $value: value,
+      $extensions: { "com.figma.variableId": "VariableID:1:1" },
+    },
+  });
+
+function withExport(text, run) {
+  const file = path.join(mkdtempSync(path.join(tmpdir(), "stylos-meta-")), "Meta.tokens.json");
+  writeFileSync(file, text, "utf8");
+  return run({ name: "Meta", files: [file] });
+}
+
+test("reads the version out of a Meta export", () => {
+  assert.equal(withExport(metaExport("0.1.0"), (g) => readLibraryVersion(g, meta)), "0.1.0");
+});
+
+test("trims the version, because a variable is typed by hand", () => {
+  assert.equal(withExport(metaExport("  0.2.0 "), (g) => readLibraryVersion(g, meta)), "0.2.0");
+});
+
+test("rejects an export made in a mode the declaration does not name", () => {
+  assert.throws(
+    () => withExport(metaExport("0.1.0", { mode: "Value" }), (g) => readLibraryVersion(g, meta)),
+    { message: /this is mode "Value", and tokens\/_naming\.yaml declares "Meta" as mode "Mode 1"/ }
+  );
+});
+
+test("rejects an export with no version variable in it", () => {
+  assert.throws(
+    () => withExport(metaExport("0.1.0", { name: "release" }), (g) => readLibraryVersion(g, meta)),
+    { message: /no variable "version" in "Meta"/ }
+  );
+});
+
+test("rejects a version that is not a string", () => {
+  assert.throws(
+    () => withExport(metaExport(1), (g) => readLibraryVersion(g, meta)),
+    { message: /is 1, not a release string/ }
+  );
+});
+
+test("takes one file, because it is one variable", () => {
+  assert.throws(
+    () => readLibraryVersion({ name: "Meta", files: ["a.json", "b.json"] }, meta),
+    { message: /takes one file — it is a single variable/ }
+  );
+});
+
+test("reads the declaration, and says nothing when none is made", () => {
+  const naming = new Map([["meta", new Map(Object.entries(meta))]]);
+  assert.deepEqual(metaDeclaration(naming), meta);
+  assert.equal(metaDeclaration(new Map()), null);
+});
+
+test("writes figma/library.yaml as a generated file the checker can read", () => {
+  const root = mkdtempSync(path.join(tmpdir(), "stylos-lib-"));
+  writeLibraryRecord(root, "0.1.0", "2026-09-05");
+
+  const text = readFileSync(path.join(root, "figma/library.yaml"), "utf8");
+  assert.match(text, /GENERATED FILE/);
+
+  const record = parse(text, { filename: "figma/library.yaml" });
+  assert.equal(record.get("version"), "0.1.0");
+  assert.equal(record.get("imported_at"), "2026-09-05");
 });

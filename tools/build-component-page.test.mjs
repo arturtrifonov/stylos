@@ -66,7 +66,7 @@ function contract(fields = {}) {
   return legacy("Checkbox Input", {
     family: "Checkbox",
     status: "draft",
-    version: "0.1",
+    version: "0.1.0",
     summary: "The checkbox control alone.",
     purpose: "Selection has to be shown where the surroundings already explain themselves.",
     useWhen: ["The surrounding content identifies what is being selected."],
@@ -146,8 +146,32 @@ test("passes a contract that carries every field correctly", () => {
 test("fails a status outside the three", () => {
   assert.match(
     check(contract({ status: "wip" })).errors.join("\n"),
-    /status "wip" is not one of draft, published, deprecated/
+    /status "wip" is not one of draft, ready, deprecated/
   );
+});
+
+test("fails a version that is not a full release string", () => {
+  assert.match(
+    check(contract({ version: "0.1" })).errors.join("\n"),
+    /version "0.1" is not a release/
+  );
+});
+
+test("fails a version ahead of the release package.json names", () => {
+  assert.match(
+    check(contract({ version: "0.2.0" }), { systemVersion: "0.1.0" }).errors.join("\n"),
+    /version "0.2.0" is ahead of package.json \(0.1.0\)/
+  );
+});
+
+test("accepts a version at or behind the release package.json names", () => {
+  for (const version of ["0.1.0", "0.0.9"]) {
+    assert.deepEqual(check(contract({ version }), { systemVersion: "0.1.0" }).errors, []);
+  }
+});
+
+test("says nothing about version when there is no package.json version to check against", () => {
+  assert.deepEqual(check(contract({ version: "9.9.9" })).errors, []);
 });
 
 test("fails a property kind outside the four", () => {
@@ -388,8 +412,8 @@ test("reports a warning that names no criterion", () => {
   );
 });
 
-test("reports a published contract whose Figma record has gone stale", () => {
-  const fresh = contract({ status: "published" });
+test("reports a ready contract whose Figma record has gone stale", () => {
+  const fresh = contract({ status: "ready" });
   const today = new Date("2026-09-30T00:00:00Z");
   assert.deepEqual(
     check(fresh, { today }).reports.filter((line) => line.includes("last verified")),
@@ -397,7 +421,7 @@ test("reports a published contract whose Figma record has gone stale", () => {
   );
   assert.match(
     check(fresh, { today: new Date("2027-01-01T00:00:00Z") }).reports.join("\n"),
-    /is published and was last verified against Figma \d+ days ago \(2026-08-26\)/
+    /is ready and was last verified against Figma \d+ days ago \(2026-08-26\)/
   );
 });
 

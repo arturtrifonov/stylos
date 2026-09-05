@@ -8,7 +8,7 @@ level: "layout"
 role: "container"
 html: "<dialog>"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "A dialog that takes over the screen until the person answers it."
 purpose: "Some decisions cannot be deferred, and the only honest way to say so is to stop everything else. A modal is that stop: a titled panel over the page with the task in the middle and the answers along the bottom, and nothing behind it reachable until one of them is chosen. Everything in it follows from that. It has one heading because a dialog asks one question. It has a close in the corner because refusing to answer has to be as easy as answering. It has a slot rather than a fixed body because what is being asked varies completely while the frame around it does not. And it has no state, because a dialog is not a control — it is either there or it is not."
 use_when:

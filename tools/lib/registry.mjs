@@ -24,7 +24,7 @@ export const ROLES = ["content", "trigger", "input", "toolbar", "output", "conta
 // They live here rather than in the linter because the page generator reads
 // them too — a glyph per kind, a colour per a11y status — and a second copy
 // would be a second thing to update when one of them grows.
-export const STATUSES = ["draft", "published", "deprecated"];
+export const STATUSES = ["draft", "ready", "deprecated"];
 export const PROPERTY_KINDS = ["variant", "text", "boolean", "instance", "slot"];
 export const A11Y_STATUSES = ["warning", "fail", "open", "requires"];
 export const SIZING_AXES = ["hug", "fixed", "fill", "absolute"];
@@ -238,8 +238,14 @@ export function derive(entry) {
 
 // The two flags above, read as one word — how far the *record* has been taken,
 // not where the component is in its life. Lifecycle is the authored `status`
-// field (draft / published / deprecated) and stays separate: an entry can be a
+// field (draft / ready / deprecated) and stays separate: an entry can be a
 // complete record of a draft component.
+//
+// `ready` appears in both vocabularies and means two different things. Here it
+// says the entry is documented and linked — a fact about the file, computed.
+// In `STATUSES` it says the component passed both gates of STANDARD.md — a
+// judgement about the component, authored. Anything rendering both must label
+// which it is showing; neither is derivable from the other.
 //
 // Most complete first, so a sort on the index puts what is ready at the top.
 export const READINESS = ["ready", "in progress", "not started"];

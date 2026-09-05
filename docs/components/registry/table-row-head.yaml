@@ -9,7 +9,7 @@ level: "widget"
 role: "container"
 html: "<tr>"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "The band across the top of a table that holds its column headings and separates them from the data."
 purpose: "A table needs one row that is not data — the row that names the columns, carries whatever ordering and narrowing is applied to them, and is visibly not part of the body. This is that row. It exists as a component rather than as a rule the table follows so that the band, its padding and the line under it are decided once and cannot drift between one table and the next, and so that the cells inside it are placed by a slot rather than arranged by hand."
 use_when:

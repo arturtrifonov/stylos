@@ -56,7 +56,7 @@ No change to what any milestone contains, none to `PLAN.md` §4 or §9, and none
 1. No foundation document leaves open a question a **component contract** depends on.
 2. Every core-set entry carries a Figma node identifier, and the registry is readable — the registry view.
 3. The core set meets [`STANDARD.md`](../components/STANDARD.md), both gates: *Complete enough to publish* and *Ready to publish*.
-4. Every core entry reads `status: published`. An entry that does not is not in the release and is named as excluded in the notes.
+4. Every core entry reads `status: ready`. An entry that does not is not in the release and is named as excluded in the notes.
 5. The Figma library is published, and `Meta / version` in it reads the tag.
 6. `npm test`, `npm run validate:registry` and `npm run validate:skills` exit 0.
 
@@ -196,7 +196,7 @@ Stylos 0.1.0 — 39 core components, contracts fixed. Notes: <release URL>
 
 ### C — Fix the milestone
 
-10. Flip `status: draft → published` on every entry that passed B. Anything that did not stays `draft` and is named in the notes as excluded — the release is allowed to be smaller than thirty-nine, it is not allowed to be vague about which.
+10. Flip `status: draft → ready` on every entry that passed B. Anything that did not stays `draft` and is named in the notes as excluded — the release is allowed to be smaller than thirty-nine, it is not allowed to be vague about which.
 11. Normalise `version` to `"0.1.0"` across the set, and add its definition to `registry/README.md` (§7).
 
 ### D — Documents
@@ -236,7 +236,7 @@ Against the plan's remaining road: `0.1.0` in 2–4 weeks, `0.2.0` at S5 (11–1
 - `ARCHITECTURE.md` §9 answers, without reference to any other document: what carries a version, what major/minor/patch mean here, what breaks a Figma instance, and what is not promised before 1.0.
 - `git tag` lists `v0.1.0`; the GitHub release body and the `CHANGELOG.md` section are the same text.
 - The published Figma library's `Meta / version` reads `0.1.0`, and `npm run tokens:check` passes against it.
-- Every entry the release claims reads `status: published` and `version: "0.1.0"`; every entry it does not claim is named in the notes.
+- Every entry the release claims reads `status: ready` and `version: "0.1.0"`; every entry it does not claim is named in the notes.
 - `npm test`, `npm run validate:registry`, `npm run validate:skills` exit 0 at the tagged commit.
 
 ## 12. Left open, deliberately

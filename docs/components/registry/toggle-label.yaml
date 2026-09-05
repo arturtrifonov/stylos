@@ -9,7 +9,7 @@ level: "element"
 role: "input"
 html: "<label><input type=\"checkbox\" role=\"switch\"> Label text</label>"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "A switch with a short single-line label, sized by its text."
 purpose: "Most switches in a product are a track and two or three words, stacked into a list of settings. This is that case, authored so the label is part of the same component: clickable, aligned to the track at every size, and associated without the consumer arranging it."
 use_when:

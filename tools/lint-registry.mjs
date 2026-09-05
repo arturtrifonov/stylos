@@ -22,6 +22,7 @@
 // real reader in lib/yaml.mjs rather than the regexes this script used to
 // carry. The regexes could not have seen inside a `figma:` block.
 
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -62,7 +63,10 @@ function daysSince(date, today) {
   return Math.floor((today.getTime() - then) / 86400000);
 }
 
-export function checkRegistry(entries, { today = new Date(), resolveToken = null, planned = null } = {}) {
+export function checkRegistry(
+  entries,
+  { today = new Date(), resolveToken = null, planned = null, systemVersion = null } = {}
+) {
   const errors = [];
   const reports = [];
 
@@ -188,11 +192,57 @@ export function checkRegistry(entries, { today = new Date(), resolveToken = null
 
   for (const entry of entries) {
     if (!entry.id) continue;
-    checkContract(entry, byId, errors, resolveToken);
+    checkContract(entry, byId, errors, resolveToken, systemVersion);
     reportContract(entry, entries, reports, today);
   }
 
   return { ok: errors.length === 0, errors, reports };
+}
+
+// --- `version` (docs/specs/0006-versioning-and-release-0-1-0.md §7) --------
+//
+// The release in which this contract's current API shipped. Two things make it
+// checkable and this checks both: it is a full release string, so it reads
+// against a git tag without interpretation and sorts; and it names a release
+// that exists. A version ahead of `package.json` claims the API shipped in
+// something that has not been cut, which is the one way this field can lie
+// without anyone noticing — a forgotten bump reads as `draft` somewhere else,
+// an invented one reads as nothing at all.
+
+const RELEASE = /^(\d+)\.(\d+)\.(\d+)$/;
+
+/** -1, 0 or 1. Both arguments have already matched RELEASE. */
+export function compareRelease(a, b) {
+  const [, ...left] = RELEASE.exec(a);
+  const [, ...right] = RELEASE.exec(b);
+  for (let i = 0; i < 3; i += 1) {
+    const diff = Number(left[i]) - Number(right[i]);
+    if (diff !== 0) return diff < 0 ? -1 : 1;
+  }
+  return 0;
+}
+
+function checkVersion(file, version, systemVersion, errors) {
+  if (version === null || version === undefined) return;
+
+  if (typeof version !== "string" || !RELEASE.test(version)) {
+    errors.push(
+      `${file}: version "${version}" is not a release — write the full string, ` +
+        `"0.1.0" rather than "0.1", so it reads against a git tag and sorts`
+    );
+    return;
+  }
+
+  // No package.json to read means no opinion, not a pass by default: the
+  // callers that supply one are the ones that can have one.
+  if (!systemVersion || !RELEASE.test(systemVersion)) return;
+
+  if (compareRelease(version, systemVersion) > 0) {
+    errors.push(
+      `${file}: version "${version}" is ahead of package.json (${systemVersion}) — ` +
+        `a contract cannot have shipped in a release that has not been cut`
+    );
+  }
 }
 
 // --- The contract (docs/specs/0003-component-page.md §3) -------------------
@@ -201,13 +251,15 @@ export function checkRegistry(entries, { today = new Date(), resolveToken = null
 // legacy entry carries none of them and must pass; a contract that carries a
 // field carries it correctly or fails.
 
-function checkContract(entry, byId, errors, resolveToken) {
+function checkContract(entry, byId, errors, resolveToken, systemVersion) {
   const file = entry.file;
   const api = properties(entry);
 
   if (entry.status !== null && !STATUSES.includes(entry.status)) {
     errors.push(`${file}: status "${entry.status}" is not one of ${STATUSES.join(", ")}`);
   }
+
+  checkVersion(file, entry.version, systemVersion, errors);
 
   for (const finding of entry.a11y) {
     checkFinding(file, "a11y", finding, errors);
@@ -431,11 +483,11 @@ function reportContract(entry, entries, reports, today) {
     }
   }
 
-  if (entry.status === "published" && entry.figma?.last_verified) {
+  if (entry.status === "ready" && entry.figma?.last_verified) {
     const age = daysSince(entry.figma.last_verified, today);
     if (age !== null && age > CONTRACT_STALE_DAYS) {
       reports.push(
-        `"${entry.id}" is published and was last verified against Figma ${age} days ago ` +
+        `"${entry.id}" is ready and was last verified against Figma ${age} days ago ` +
           `(${entry.figma.last_verified})`
       );
     }
@@ -459,6 +511,7 @@ if (isMain) {
   const { ok, errors, reports } = checkRegistry(entries, {
     resolveToken: createTokenResolver(root),
     planned: plan ? plannedIds(plan, entries) : null,
+    systemVersion: JSON.parse(readFileSync(path.join(root, "package.json"), "utf8")).version,
   });
 
   for (const report of reports) console.error(`REPORT  ${report}`);

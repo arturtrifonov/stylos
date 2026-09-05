@@ -8,7 +8,7 @@ level: "element"
 role: "trigger"
 html: "<a href=\"…\">Label text</a>"
 status: "draft"
-version: "0.1"
+version: "0.1.0"
 summary: "An underlined text control that takes the person somewhere rather than acting on what is in front of them."
 purpose: "A link goes somewhere. What this component settles is how it behaves in a dense interface: it takes only the room its own text needs, it is sized from the same run as the text around it, and it carries no fill, border or reserved footprint that would make it compete with the actions on the view."
 use_when:
