@@ -230,7 +230,7 @@ api:
     default: "Drawer heading"
     description: "What the panel is for, as a phrase rather than a sentence. It is the only text the component guarantees and the first thing read, so a heading that names the container rather than the work — Details, Panel — spends the most valuable line on nothing. It wraps rather than truncates."
   -
-    name: "content"
+    name: "content slot"
     kind: "slot"
     description: "Everything between the heading and the buttons, supplied by whoever places the drawer. It takes the height the header and footer leave, which is what makes it the part that scrolls. What is allowed in it is the composition recorded in children, which is nearly the whole library."
   -

@@ -1,0 +1,8 @@
+# GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export
+# of the meta collection in Stylos / Styles.
+#
+# What the published library reported at the last export, not what it is right now:
+# the export is made by hand, one collection at a time. npm run tokens:check fails when
+# this disagrees with package.json.
+version: "0.1.0"
+imported_at: "2026-09-05"

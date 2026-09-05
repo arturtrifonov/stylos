@@ -20,12 +20,14 @@ The keys are the segment of each URL after `/design/`. They are what the Figma R
 
 ## What version the library is
 
-The published library states its own version, in one place: a `Meta` collection in *Stylos / Styles* holding a single `STRING` variable, `version`, set to the release the publish belongs to. One field, edited once per release.
+The published library states its own version, in one place: a `meta` collection in *Stylos / Styles* holding a single `STRING` variable, `version`, set to the release the publish belongs to. One field, edited once per release.
 
 It is a variable rather than a cover frame because **an agent reads variables**. The plugin API, the REST API and `get_variable_defs` all reach it; a hand-maintained frame reaches none of them, and is a second copy of a fact besides. The other place a person meets the version is the publish description, which is written at publish time and points at the release notes ([`ARCHITECTURE.md`](../ARCHITECTURE.md) §9).
 
+**It is hidden from publishing, so it is read from this file rather than from a library that subscribes to it.** A version is not a token and has no business appearing in someone else's variable list. Anything that needs the number opens *Stylos / Styles* by the key above and reads it there — which every one of those APIs can do — rather than looking for it among the variables the library hands out.
+
 ```bash
-npm run tokens:import -- --collection Meta ~/Downloads/Meta.tokens.json
+npm run tokens:import -- --collection meta ~/Downloads/meta.tokens.json
 npm run tokens:check   # fails if that version and package.json disagree
 ```
 

@@ -30,8 +30,10 @@ These are releases, not milestones. All three fall inside the `0.1` milestone, w
 | 2 | Every core-set entry carries a Figma node identifier, and the registry is readable | the registry view |
 | 3 | The core set meets both gates of [`STANDARD.md`](docs/components/STANDARD.md) | `stylos-component-integrity-check`, then review against the standard |
 | 4 | Every entry the release claims reads `status: ready`; every entry it does not claim is named as excluded | the registry view, and the notes |
-| 5 | The Figma library is published, and `Meta / version` in it reads the tag | `npm run tokens:check` |
+| 5 | `meta/version` in the library reads the tag, and the library is published | `npm run tokens:check`, then the publish |
 | 6 | The repository's own checks pass at the tagged commit | `npm test`, `npm run validate:registry`, `npm run validate:skills` |
+
+**Requirement 5 closes last, and after the tag.** The publish description points at the release, and the release needs the tag, so the order is tag → release → publish. The tag is cut when 1–4 and 6 hold; 5 closes minutes later. A publish that fails leaves a tag that was never announced — fix and publish, do not leave the release standing on a library nobody got.
 
 ### `0.2.0`
 

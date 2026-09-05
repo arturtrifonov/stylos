@@ -32,7 +32,7 @@ export function readNaming(root) {
 /**
  * Does the library still report the version the repository is on?
  *
- * `Meta / version` in *Stylos / Styles* is the only place a reader — a person
+ * `meta/version` in *Stylos / Styles* is the only place a reader — a person
  * in the Assets panel, or an agent reading variables — meets the version of
  * the published library. `npm run tokens:import` records what it said into
  * figma/library.yaml; this compares that with package.json, so a forgotten
@@ -51,8 +51,8 @@ export function checkLibraryVersion(root, problems) {
   if (!existsSync(file)) {
     problems.warnings.push(
       `figma/library.yaml does not exist, so nothing records what version the published Figma ` +
-        `library reports. Add the Meta collection and its "version" variable in Stylos / Styles, ` +
-        `then import it: npm run tokens:import -- --collection Meta <file>`
+        `library reports. Add the meta collection and its "version" variable in Stylos / Styles, ` +
+        `then import it: npm run tokens:import -- --collection meta <file>`
     );
     return;
   }
@@ -64,7 +64,7 @@ export function checkLibraryVersion(root, problems) {
   if (typeof version !== "string" || version === "") {
     problems.errors.push(
       `figma/library.yaml carries no version. It is generated — re-run ` +
-        `npm run tokens:import -- --collection Meta <file> rather than editing it.`
+        `npm run tokens:import -- --collection meta <file> rather than editing it.`
     );
     return;
   }
@@ -72,7 +72,7 @@ export function checkLibraryVersion(root, problems) {
   if (version !== system) {
     problems.errors.push(
       `the Figma library reported version "${version}" at its last export; package.json says ` +
-        `the system is "${system}". One of the two was not bumped. Correct Meta / version in ` +
+        `the system is "${system}". One of the two was not bumped. Correct meta/version in ` +
         `Stylos / Styles and re-import it, or correct package.json.`
     );
   }

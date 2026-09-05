@@ -2,7 +2,25 @@
 
 All notable changes to the Stylos Design System project (foundations, components, skills, documentation, and — later — the code package) are recorded here. Format is loosely [Keep a Changelog](https://keepachangelog.com/); the versioning rules — what one version line covers, what major, minor and patch mean here, and what is not promised before `1.0` — are [`ARCHITECTURE.md`](ARCHITECTURE.md) §9. **This file is the only source of release notes**: the GitHub release body and the Figma publish description are copies of a section below, made when the release is cut.
 
-## [Unreleased]
+## [0.1.0] — 2026-09-05
+
+The first release, and the first thing in this project carrying a number. It fixes the contracts for the thirty-nine components a dense product screen needs, and the Figma library that implements them.
+
+**What it is.** Thirty-nine registry entries carry a complete contract — what the component is for, where it must not be used and what to reach for instead, its public API property by property, its sizing model written in token names rather than numbers, its accessibility findings and the reason anything ships despite one. Each was checked against the live component on 2026-09-05, reads `status: ready` and `version: "0.1.0"`, and records the node it is implemented by.
+
+**What it is not.** There is no code package: `@stylos/ui` and the CSS build arrive at `0.2.0`, and the screen that proves the whole chain at `0.3.0` ([`PLAN.md`](PLAN.md) §1). The other seventy-five registry entries carry an inventory record only — they are placed in [`PLAN.md`](PLAN.md) §9 and nothing here promises them. No public documentation surface, no native icon set, no mobile support, and no license: the repository is `UNLICENSED` and the library is private.
+
+**What is promised.** Below `1.0`, very little, and deliberately ([`ARCHITECTURE.md`](ARCHITECTURE.md) §9): a breaking change may ship in a minor release, and the only undertaking is that these notes name it when it does. What the tag means is that the thirty-nine contracts describe the library as it stands, and that a change to one of them from here on is recorded rather than silent.
+
+### Figma library
+
+- **Thirty-nine components are covered.** The library holds more than that; the rest are in it because they are drawn, not because this release says anything about them.
+- **Names lead from the registry.** The twenty-one ids that carried a slash group became compound names on 2026-09-02, and the library was renamed to match as each contract was written. `id` and the Figma name are equal for every component this release covers.
+- **Descriptions are composed, never authored.** Each covered component's `descriptionMarkdown` is built from its entry's `summary`, `use_when` and `do_not_use_when` by `stylos-description-sync`. The twenty-nine icon marks share one line instead: they differ in nothing but the drawing, and what they need said is that they are swapped into a slot rather than placed.
+- **The library states its own version.** `meta/version` in *Stylos / Styles* reads `0.1.0`. It is hidden from publishing — a version is not a token and does not belong in a consumer's variable list — so it is read from that file by its key ([`figma/README.md`](figma/README.md)).
+- **Nothing here removes a component, a variant or a property.** What would, and what would not, break an instance is [`ARCHITECTURE.md`](ARCHITECTURE.md) §9.
+
+Everything below, down to the next version heading, is the record of the work this release is made of, newest first. **The release body is this section down to the first dated heading** — above it is what `0.1.0` is, below it is how it came to be, which is worth keeping and not worth pasting into GitHub.
 
 ### Changed — 2026-09-05 (what a version means here, and the road cut into three)
 

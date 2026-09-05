@@ -204,10 +204,10 @@ That is what the table above means when the change is made in Figma rather than 
 | `package.json` | the number itself |
 | a git tag | annotated, on the commit that is the release |
 | `CHANGELOG.md` | the notes, with a `### Figma library` subsection recording the publish and what moved in it |
-| `Meta / version` in *Stylos / Styles* | a string variable naming the release the published library belongs to |
+| `meta/version` in *Stylos / Styles* | a string variable naming the release the published library belongs to |
 
 **`CHANGELOG.md` is the only source of notes.** The GitHub release body and the Figma publish description are copies of it, made at the moment of release and never edited afterwards.
 
-**`Meta / version` is checked, not trusted.** `npm run tokens:import` records it in `figma/library.yaml` and `npm run tokens:check` fails when it disagrees with `package.json`. Because the export is manual, it answers what the library reported at the last export and nothing about right now — which is enough, since the moment it matters is the release.
+**`meta/version` is checked, not trusted.** `npm run tokens:import` records it in `figma/library.yaml` and `npm run tokens:check` fails when it disagrees with `package.json`. Because the export is manual, it answers what the library reported at the last export and nothing about right now — which is enough, since the moment it matters is the release.
 
 **The milestone list is not duplicated outside `PLAN.md` §9**, GitHub Milestones included. §8 says why.

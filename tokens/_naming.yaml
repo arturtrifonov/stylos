@@ -15,12 +15,13 @@ source:
 # belongs to, and `npm run tokens:import` records it in figma/library.yaml
 # instead. It is declared here because this file is the whitelist — a
 # collection nobody declared cannot be imported, and that has to hold for this
-# one too. `mode` is Figma's default name for a collection's only mode; if the
-# collection is built with another, the import says so rather than guessing.
-# See docs/specs/0006-versioning-and-release-0-1-0.md §6.
+# one too. Collection and mode are both lowercase, as every collection in this
+# file is; the mode is named for the collection rather than left at Figma's
+# default. If either is built with another name the import says so rather than
+# guessing. See docs/specs/0006-versioning-and-release-0-1-0.md §6.
 meta:
-  from: "Meta"
-  mode: "Mode 1"
+  from: "meta"
+  mode: "meta"
   variable: "version"
 
 # Semantic collection -> the primitive collection it aliases into.

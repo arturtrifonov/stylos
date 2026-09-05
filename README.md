@@ -2,7 +2,7 @@
 
 A design system for dense, desktop-oriented web product interfaces. Its visual language draws on antiquity, classical architecture and constructed proportion — strict and structural rather than decorative.
 
-**Pre-alpha. Private, owner-led. Not released.**
+**`0.1.0` — the contracts for the core set are fixed, and the Figma library implements them.** Private and owner-led. No code package yet, and nothing outside the core set is promised — see [`CHANGELOG.md`](CHANGELOG.md) and [`PLAN.md`](PLAN.md) §1.
 
 | | |
 | --- | --- |

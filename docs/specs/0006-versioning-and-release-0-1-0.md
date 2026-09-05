@@ -57,7 +57,7 @@ No change to what any milestone contains, none to `PLAN.md` §4 or §9, and none
 2. Every core-set entry carries a Figma node identifier, and the registry is readable — the registry view.
 3. The core set meets [`STANDARD.md`](../components/STANDARD.md), both gates: *Complete enough to publish* and *Ready to publish*.
 4. Every core entry reads `status: ready`. An entry that does not is not in the release and is named as excluded in the notes.
-5. The Figma library is published, and `Meta / version` in it reads the tag.
+5. `meta/version` in the library reads the tag, and the library is published. This one closes after the tag: the publish description points at the release, which needs the tag to exist. Cut on 1–4 and 6; 5 follows minutes later.
 6. `npm test`, `npm run validate:registry` and `npm run validate:skills` exit 0.
 
 ### 3.2 `0.2.0`
@@ -127,7 +127,7 @@ The publish description is where a person meets the version, and it is written o
 
 **An agent reads variables.** So:
 
-1. **`Stylos / Styles` gains a `Meta` collection with one `STRING` variable, `version`,** set to the release it belongs to. One field, edited once per release, readable through the plugin API, the REST API and `get_variable_defs`.
+1. **`Stylos / Styles` gains a `meta` collection with one `STRING` variable, `version`,** set to the release it belongs to. One field, edited once per release, readable through the plugin API, the REST API and `get_variable_defs`.
 2. **`npm run tokens:import` records it** — not into `tokens/`, because a version is not a token, but into a generated `figma/library.yaml`:
 
    ```yaml
@@ -191,7 +191,7 @@ Stylos 0.1.0 — 39 core components, contracts fixed. Notes: <release URL>
 5. Run `stylos-component-integrity-check` and `stylos-naming-cleanup` over the thirty-nine. Fix findings **in Figma before recording them**, or the defect becomes the contract.
 6. Confirm every core `id` matches its Figma component name. Twenty-one ids became compound names on 2026-09-02 and the renames were scheduled inside the wave that wrote each contract; all thirty-nine now have contracts, so all core renames are due. The list is in each entry's header comment. A rename does not break instances (§5) and is free before the first publish.
 7. `documentationLinks` — `Button Inner` points at a node in *Default Kit: Components* rather than at the repository. Check the set, fix the targets.
-8. Add the `Meta` collection and `version` variable (§6). Export, import, confirm `figma/library.yaml`.
+8. Add the `meta` collection and `version` variable (§6). Export, import, confirm `figma/library.yaml`.
 9. Re-verify `figma.last_verified` on every entry touched by 5–7.
 
 ### C — Fix the milestone
@@ -235,12 +235,12 @@ Against the plan's remaining road: `0.1.0` in 2–4 weeks, `0.2.0` at S5 (11–1
 - `PLAN.md` names three tags with three gates, and no document defines `v0.1` as a destination.
 - `ARCHITECTURE.md` §9 answers, without reference to any other document: what carries a version, what major/minor/patch mean here, what breaks a Figma instance, and what is not promised before 1.0.
 - `git tag` lists `v0.1.0`; the GitHub release body and the `CHANGELOG.md` section are the same text.
-- The published Figma library's `Meta / version` reads `0.1.0`, and `npm run tokens:check` passes against it.
+- The published Figma library's `meta/version` reads `0.1.0`, and `npm run tokens:check` passes against it.
 - Every entry the release claims reads `status: ready` and `version: "0.1.0"`; every entry it does not claim is named in the notes.
 - `npm test`, `npm run validate:registry`, `npm run validate:skills` exit 0 at the tagged commit.
 
 ## 12. Left open, deliberately
 
-- **The variant-property rename behaviour** (§5), until it is tested in the Playground. Everything else in that section is settled.
+- **The variant-property rename behaviour** (§5). `content` became `content slot` on Drawer and Modal on 2026-09-05 with nothing visibly broken, but neither component had instances, so that is an absence of evidence rather than evidence. It stays open until a rename lands on a component something actually uses.
 - **A license.** `0.1.0` publishes a Figma library from a repository marked `UNLICENSED`. That is coherent while the library is private and stops being coherent the moment anyone else is given the link — an `alpha` question, named here so it is not discovered there.
 - **What `alpha` requires beyond its checklist.** §9 lists its entries; whether internal distribution also needs a changelog discipline, a support expectation or a migration note is not decided and does not block this release.

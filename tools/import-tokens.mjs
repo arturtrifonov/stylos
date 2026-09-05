@@ -3,9 +3,9 @@
 //
 //   npm run tokens:import -- --collection color "Light Mode.tokens.json" "Dark Mode.tokens.json"
 //   npm run tokens:import -- --collection radius radius.json --dry-run
-//   npm run tokens:import -- --collection Meta Meta.tokens.json
+//   npm run tokens:import -- --collection meta meta.tokens.json
 //
-// The last of those imports no tokens. `Meta` is the collection carrying the
+// The last of those imports no tokens. `meta` is the collection carrying the
 // library's version marker, and it is written to figma/library.yaml rather
 // than to tokens/, because a version is not a token — see
 // docs/specs/0006-versioning-and-release-0-1-0.md §6.
@@ -84,7 +84,7 @@ function parseArgv(argv) {
 /**
  * The library version marker's declaration, or null if none is made.
  *
- * `Meta` is a Figma collection that holds no tokens: one STRING variable
+ * `meta` is a Figma collection that holds no tokens: one STRING variable
  * naming the release the published library belongs to. It is imported by this
  * command because it arrives by the same manual export, and recorded in
  * figma/library.yaml because tokens/ is for tokens.
@@ -99,7 +99,7 @@ export function metaDeclaration(naming) {
   };
 }
 
-/** Read the one string out of a Meta export. Throws with an actionable message. */
+/** Read the one string out of a meta export. Throws with an actionable message. */
 export function readLibraryVersion(group, meta) {
   if (group.files.length !== 1) {
     throw new Error(
@@ -171,7 +171,7 @@ export function writeLibraryRecord(root, version, date) {
       {
         comments: [
           "GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export",
-          "of the Meta collection in Stylos / Styles.",
+          "of the meta collection in Stylos / Styles.",
           "",
           "What the published library reported at the last export, not what it is right now:",
           "the export is made by hand, one collection at a time. npm run tokens:check fails when",
