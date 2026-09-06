@@ -38,6 +38,7 @@ function legacy(id, fields = {}) {
     family: null,
     level: "element",
     role: "input",
+    html: null,
     status: null,
     version: null,
     summary: null,
@@ -52,8 +53,10 @@ function legacy(id, fields = {}) {
     a11y: [],
     sizingModel: null,
     variants: null,
+    motion: null,
     api: [],
     limitations: [],
+    figmaNotes: [],
     notes: "",
     figma: null,
     import: null,
@@ -65,6 +68,7 @@ function legacy(id, fields = {}) {
 function contract(fields = {}) {
   return legacy("Checkbox Input", {
     family: "Checkbox",
+    html: '<input type="checkbox">',
     status: "draft",
     version: "0.1.0",
     summary: "The checkbox control alone.",
@@ -384,6 +388,31 @@ test("fails a line height family outside the four", () => {
   );
 });
 
+test("fails a motion key outside the three the block owns", () => {
+  const entry = contract({ motion: { loop: true, intent: "It turns.", duration: "1.2s" } });
+  assert.match(check(entry).errors.join("\n"), /motion\.duration is not one of drives, loop, intent/);
+});
+
+test("fails a motion loop that is not true or false", () => {
+  const entry = contract({ motion: { loop: "yes", intent: "It turns." } });
+  assert.match(check(entry).errors.join("\n"), /motion\.loop is "yes", not true or false/);
+});
+
+test("fails a motion drives naming a property the component does not have", () => {
+  const entry = contract({ motion: { drives: "angle", loop: true, intent: "It turns." } });
+  assert.match(
+    check(entry).errors.join("\n"),
+    /motion\.drives is "angle", which is not a property of this component/
+  );
+  const named = contract({ motion: { drives: "size", loop: true, intent: "It turns." } });
+  assert.deepEqual(check(named).errors, []);
+});
+
+test("fails a figma_notes entry that is not a string", () => {
+  const entry = contract({ figmaNotes: ["A note.", { text: "A mapping." }] });
+  assert.match(check(entry).errors.join("\n"), /figma_notes\[1\] is .* the block is a sequence of strings/);
+});
+
 // §3.2 — judgements, and none of them stops a build.
 
 test("reports a contract missing its narrative, without failing", () => {
@@ -425,6 +454,24 @@ test("reports a ready contract whose Figma record has gone stale", () => {
   );
 });
 
+test("reports a ready entry that records no html", () => {
+  // "no semantic html" is a value; absence means nobody has looked yet.
+  const silent = contract({ status: "ready", html: null });
+  assert.equal(check(silent).ok, true);
+  assert.match(check(silent).reports.join("\n"), /is ready and records no html/);
+  assert.deepEqual(
+    check(contract({ status: "ready", html: "no semantic html" })).reports.filter((line) =>
+      line.includes("no html")
+    ),
+    []
+  );
+});
+
+test("reports a motion block with no intent", () => {
+  const entry = contract({ motion: { loop: true } });
+  assert.match(check(entry).reports.join("\n"), /has a motion block with no intent/);
+});
+
 test("reports a family with only one member in it", () => {
   const result = checkRegistry([contract(), legacy("Toggle")]);
   assert.match(result.reports.join("\n"), /is the only member of family "Checkbox"/);
@@ -464,6 +511,33 @@ test("groups and orders the sections as §4.1 fixes them", () => {
     "Limitations",
     "Record",
   ]);
+});
+
+test("renders html, motion and figma_notes, each where it is read", () => {
+  const entry = contract({
+    motion: { drives: "size", loop: true, intent: "Stopped, it is a shape with no meaning." },
+    figmaNotes: ["has scrollbar draws the bar; it is not part of the API."],
+  });
+  const html = renderComponentPage(entry, pageContext([entry, alternative], { resolveToken }));
+
+  const headings = [...html.matchAll(/<h2>([^<]+)<\/h2>/g)].map((match) => match[1]);
+  assert.deepEqual(headings, [
+    "Purpose",
+    "Use when / do not use when",
+    "Requirements",
+    "Public API",
+    "Sizing and type",
+    "Motion",
+    "Limitations",
+    "Notes on the Figma implementation",
+    "Record",
+  ]);
+
+  // The semantic sketch is markup as text, and it is escaped like every other
+  // string out of the YAML.
+  assert.match(html, /<dt>HTML<\/dt><dd><span class="mono">&lt;input type=&quot;checkbox&quot;&gt;/);
+  assert.match(html, /Stopped, it is a shape with no meaning\./);
+  assert.match(html, /has scrollbar draws the bar/);
 });
 
 test("resolves every token name and prints the value with the name", () => {

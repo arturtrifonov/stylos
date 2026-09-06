@@ -1,6 +1,6 @@
 # SPEC 0003 — Component page
 
-**Status:** Not started
+**Status:** Built — 2026-08-27; extended 2026-09-06 with `html`, `figma_notes` and `motion`
 **Date:** 2026-08-26
 
 A work order. The component contract became data ([`STANDARD.md`](../components/STANDARD.md), [`registry/README.md`](../components/registry/README.md)); this builds the page that makes it readable, extends the validator to enforce the new schema, and sweeps the repository for what the change left stale.
@@ -53,6 +53,9 @@ Add to `tools/lint-registry.mjs`. Each fails the run with exit 1.
 | a token name in `sizing_model` that does not resolve against `tokens/` |
 | `sizing_model.horizontal` / `vertical` outside `hug` \| `fixed` \| `fill` \| `absolute` |
 | `line_height_family` outside `text` \| `string` \| `heading` \| `code` |
+| a key inside `motion` outside `drives` \| `loop` \| `intent` — durations, easing curves and per-step timings do not belong there ([registry/README.md](../components/registry/README.md)) |
+| `motion.loop` that is not `true` or `false`, or `motion.drives` naming a property the component does not have |
+| a `figma_notes` entry that is not a string — the block is a sequence of strings and nothing else |
 
 ### 3.2 New REPORT conditions
 
@@ -66,6 +69,8 @@ Exit 0. These are judgements.
 | an `a11y` finding whose `status` is `warning` or `fail` and whose `note` does not name a criterion |
 | `figma.last_verified` older than 90 days on an entry whose `status` is `ready` |
 | an entry with `family` set where no other entry shares that family |
+| a `ready` entry with no `html` — `"no semantic html"` is a value, and absence means nobody has looked ([registry/README.md](../components/registry/README.md)) |
+| a `motion` block with no `intent`, the same gap `sizing_model` has without one |
 
 ### 3.3 Legacy entries must not fail
 
@@ -96,8 +101,10 @@ What is fixed is the information and its grouping, in this order:
 4. **Requirements** — the component-level `a11y` sequence, if present. `requires` entries read as obligations on the consumer and belong above the API, not buried under it.
 5. **Public API** — one card per `api` entry, in file order. See §4.2.
 6. **Sizing model** — `horizontal`, `vertical` and `adjustable` as a short definition list, `intent` as prose, then `sizes[]` as a table with a column per key present. This is also where typography lives; there is no separate typography section, because size, gap, font size and line height move together and a reader comparing them across sizes needs them on one row. See §4.3 on resolving the token names — a table of bare token names is unreadable and fails this spec.
-7. **Limitations** — `limitations` as a list.
-8. **Footer** — the Figma link built from `figma.file_key` and `figma.node_id`, `last_verified`, `uses` and the derived `used_by`, and `children` / `parents` as links, and `notes`.
+7. **Motion** — `drives` and `loop` as short facts, `intent` as prose. Present only on a component whose animation is part of what it is. No duration and no curve: the block does not hold them, because those are how one implementation runs the idea.
+8. **Limitations** — `limitations` as a list.
+9. **Notes on the Figma implementation** — `figma_notes` as a list, set quieter than the contract above it. Nothing in it constrains an implementation, which is why it sits below the contract rather than inside it; a reader must not take a fact about Figma's model for a requirement.
+10. **Footer** — the Figma link built from `figma.file_key` and `figma.node_id`, `last_verified`, `uses` and the derived `used_by`, `children` / `parents` as links, `html` as the semantic structure the component stands for, and `notes`.
 
 Sections whose fields are absent are omitted entirely — no empty headings.
 

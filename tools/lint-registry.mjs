@@ -39,6 +39,7 @@ import {
   A11Y_STATUSES,
   SIZING_AXES,
   LINE_HEIGHT_FAMILIES,
+  MOTION_FIELDS,
   COMPONENT_FILE_KEYS,
 } from "./lib/registry.mjs";
 import { SIZING_TOKEN_FIELDS, createTokenResolver } from "./lib/sizing.mjs";
@@ -376,6 +377,49 @@ function checkContract(entry, byId, errors, resolveToken, systemVersion) {
     }
   });
 
+  // `motion` is present only where the animation is part of what the component
+  // is, and its key set is closed — see MOTION_FIELDS. `drives` names the
+  // property the animation steps through, so it is an anchor into `api` the
+  // same way `controls` is, and a renamed property has to break here.
+  const motion = entry.motion;
+  if (motion) {
+    for (const key of Object.keys(motion)) {
+      if (!MOTION_FIELDS.includes(key)) {
+        errors.push(
+          `${file}: motion.${key} is not one of ${MOTION_FIELDS.join(", ")} — durations, easing ` +
+            `curves and per-step timings are how one implementation runs the idea, and recording ` +
+            `them here makes a specification out of whatever the prototype happens to do`
+        );
+      }
+    }
+    if (motion.loop !== undefined && typeof motion.loop !== "boolean") {
+      errors.push(`${file}: motion.loop is ${JSON.stringify(motion.loop)}, not true or false`);
+    }
+    if (motion.drives !== undefined) {
+      if (typeof motion.drives !== "string") {
+        errors.push(
+          `${file}: motion.drives is ${JSON.stringify(motion.drives)}, not the name of a property`
+        );
+      } else if (!names.has(motion.drives)) {
+        errors.push(
+          `${file}: motion.drives is "${motion.drives}", which is not a property of this component`
+        );
+      }
+    }
+  }
+
+  // A sequence of strings, each one a fact about how Figma happens to
+  // implement this component. A mapping here is someone reaching for a shape
+  // the block does not have.
+  entry.figmaNotes.forEach((note, index) => {
+    if (typeof note !== "string") {
+      errors.push(
+        `${file}: figma_notes[${index}] is ${JSON.stringify(note)} — the block is a sequence of ` +
+          `strings, nothing else`
+      );
+    }
+  });
+
   const variants = entry.variants;
   if (variants?.complete_cross_product === true && typeof variants.count === "number") {
     const variantProperties = api.filter((property) => property?.kind === "variant");
@@ -509,6 +553,22 @@ function reportContract(entry, entries, reports, today) {
         `"${entry.id}" records an a11y ${finding.status} on ${where} without naming a criterion`
       );
     }
+  }
+
+  // Every entry is expected to carry `html`, and `"no semantic html"` is a
+  // value — saying so records that the question was asked. An absent one means
+  // nobody has looked yet, which on a component claiming both gates of
+  // STANDARD.md is a gap rather than a silence.
+  if (entry.status === "ready" && !entry.html) {
+    reports.push(
+      `"${entry.id}" is ready and records no html — "no semantic html" is a value, absence is not`
+    );
+  }
+
+  // Without it the page says the component loops and the reason a stopped
+  // instance is wrong is gone — the same thing `sizing_model.intent` carries.
+  if (entry.motion && !entry.motion.intent) {
+    reports.push(`"${entry.id}" has a motion block with no intent`);
   }
 
   if (entry.status === "ready" && entry.figma?.last_verified) {

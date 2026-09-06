@@ -238,7 +238,7 @@ Its scope and timing are open, not its existence. It is not on the critical path
 
 ## 8. Explicitly not in this plan
 
-A native Stylos icon set (Material Symbols stays interim), mobile support, writing to Figma from the repository, an Airtable sync, a public documentation site, and any licensing or commercial work.
+A native Stylos icon set (Material Icons stays interim — Google's older set, not Symbols; [`icons.md`](docs/foundations/icons.md)), mobile support, writing to Figma from the repository, an Airtable sync, a public documentation site, and any licensing or commercial work.
 
 ---
 

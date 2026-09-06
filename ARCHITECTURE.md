@@ -4,7 +4,7 @@ How the system is put together: what lives where, which source is authoritative 
 
 **This document is normative.** It describes the system as it actually is on the date below — not as it is intended to become. Anything that does not exist is listed as not existing. Intent, rationale, and history belong in [`docs/decisions/`](docs/decisions/README.md); rules of the design language belong in [`docs/foundations/`](docs/foundations/README.md).
 
-**Status:** Pre-alpha · private, owner-led · last verified 4 September 2026
+**Status:** Pre-alpha · private, owner-led · last verified 6 September 2026
 
 ---
 
@@ -41,14 +41,14 @@ The relationship stays **one-directional**: the repository never writes to Figma
 ### 2.1 Tokens
 
 ```
-Figma Variables ──manual export──▶ tokens/*.yaml ──✗──▶ CSS ──✗──▶ @stylos/ui
+Figma Variables ──manual export──▶ tokens/*.yaml ──tokens:css──▶ packages/ui/dist/ ──✗──▶ @stylos/ui
                                         ▲       │
-   tokens/_naming.yaml, _aliases.yaml ──┘       └──▶ npm run tokens:report
+                  tokens/_naming.yaml ──┘       └──▶ npm run tokens:report
 ```
 
 Variables are authored in Figma. An export is made by hand and handed to `npm run tokens:import`, which folds Figma's nine collections into eight canonical ones and writes `tokens/*.yaml` — the record everything else reads. **The exported files are not committed**: read once, then discarded. `npm run tokens:check` verifies the record against itself, since `ref` and `values` are deliberately redundant.
 
-The CSS conversion (`tokens:build`) and the package are both planned but unbuilt — see [`PLAN.md`](PLAN.md) Stages 3 and 5.
+`npm run tokens:css` projects the record onto CSS custom properties — `tools/build-css.mjs`, writing `packages/ui/dist/tokens.css` and a `tokens.json` manifest beside it ([SPEC 0007](docs/specs/0007-tokens-to-css.md)). It is a projection, not a second record: it reads `tokens/*.yaml` and nothing else, improves no value on the way through, refuses to run on a set that fails `tokens:check`, and its output is not committed. The command is `tokens:css`; there is no `tokens:build`. **The package is still unbuilt** — see [`PLAN.md`](PLAN.md) Stage 5, which is where the CSS build's output finally gets a reader.
 
 **Break:** the export is still manual and has no cadence. Nothing detects that Figma has moved on, so `tokens/` is only as current as the last person to import. What `npm run tokens:check` does catch is drift *within* the record — an alias that no longer agrees with the value beside it, or a mode dependence that is not declared.
 
@@ -66,7 +66,7 @@ Components themselves live in Figma. Their whole contract — level, role, purpo
 
 `npm run validate:registry` checks the registry **against itself**: references resolve, ids are unique, each file sits at the path its id implies, any `figma:` block could address a real node, and every contract field that is present is internally consistent — a status or kind inside its vocabulary, a default among its property's values, a variant count that matches the product, a controlled group that is adjacent, a sizing run written as token names that resolve against `tokens/`, a value with a finding and a reason for shipping it. It separates contradictions (exit 1) from findings a human has to settle — a one-sided relation, a child at or above its parent's level, a contract missing narrative fields (exit 0). It does not check the registry against Figma.
 
-`npm run build` renders the whole set into `build/` — a home page, the registry view, one page per component, and `assets/` beside them — and it is the only command that produces an uploadable tree. `npm run registry:view` renders the registry view alone as one self-contained HTML file, where relations are links rather than files to open, and every row links to that component's page. `npm run components:view` writes those pages — one per entry under `build/components/`, the contract laid out to be read rather than parsed. It is also the one place the two records meet: a contract records dimensions as token names, and the page resolves them against `tokens/` at build time and shows the value with the name, so the scale stays legible without a number ever being copied into a contract. The pages are also the token set's first consumer in the other direction: colour, radius, the type scale and both families are resolved from `tokens/` by `tools/lib/theme.mjs` on every build and emitted as custom properties, so no Stylos value is transcribed into a stylesheet. That is a theme, not the CSS build of [`PLAN.md`](PLAN.md) Stage 3 — the pages are hand-written HTML and use no Stylos component. Two flags are derived at build time and never authored: `documented` (the contract carries a summary, a purpose, a `use_when` and a description on every property) and `linked` (a Figma node is recorded). Neither output is committed — both are cheap to rebuild and would put a diff the size of the whole registry into every registry change.
+`npm run build` renders the whole set into `build/` — a home page, the registry view, one page per component, and `assets/` beside them — and it is the only command that produces an uploadable tree. `npm run registry:view` renders the registry view alone as one self-contained HTML file, where relations are links rather than files to open, and every row links to that component's page. `npm run components:view` writes those pages — one per entry under `build/components/`, the contract laid out to be read rather than parsed. It is also the one place the two records meet: a contract records dimensions as token names, and the page resolves them against `tokens/` at build time and shows the value with the name, so the scale stays legible without a number ever being copied into a contract. The pages are also the token set's first consumer in the other direction: colour, radius, the type scale and both families are resolved from `tokens/` by `tools/lib/theme.mjs` on every build and emitted as custom properties, so no Stylos value is transcribed into a stylesheet. That is a theme, not the CSS build of [`PLAN.md`](PLAN.md) Stage 5 — the pages are hand-written HTML and use no Stylos component. Two flags are derived at build time and never authored: `documented` (the contract carries a summary, a purpose, a `use_when` and a description on every property) and `linked` (a Figma node is recorded). Neither output is committed — both are cheap to rebuild and would put a diff the size of the whole registry into every registry change.
 
 An entry carries a `figma:` block naming the file and node it is implemented by, with a `last_verified` date. A complete contract requires it ([`STANDARD.md`](docs/components/STANDARD.md)), so an entry has the address exactly when it has a contract — 39 of 114 at the time of writing — and it arrives with the contract rather than in a sweep of its own.
 
@@ -78,11 +78,11 @@ An entry carries a `figma:` block naming the file and node it is implemented by,
 skills/src/*/SKILL.md  ──build──▶  skills/dist/stylos-figma-agent.md  ──copy/paste──▶  Figma Agent  ──▶  edits Figma
 ```
 
-Four skills are authored as modular Markdown under `skills/src/`, combined with the target wrapper in `skills/targets/`, and compiled by `tools/build-skills.mjs` into a single importable document (~71 KB). The Agent then performs auditable operations on the Figma library.
+Four skills are authored as modular Markdown under `skills/src/`, combined with the target wrapper in `skills/targets/`, and compiled by `tools/build-skills.mjs` into a single importable document. The Agent then performs auditable operations on the Figma library.
 
 This is the only closed loop in the system, and the only automated step anywhere in it.
 
-**Break:** installation is manual and unversioned. Which build is currently loaded into the Agent is not recorded anywhere.
+**Break:** installation is manual. The document is pasted into the Agent by hand, on no cadence, and nothing here can tell that it was. It is no longer *unversioned* — the build has appended each source's `metadata.version` to its description since 2026-08-24, so the loaded build names itself (§5).
 
 ---
 
@@ -96,6 +96,9 @@ This is the only closed loop in the system, and the only automated step anywhere
 | `build/registry.html` | `docs/components/registry/*.yaml` | `tools/build-registry-view.mjs` | no — derived, rebuilt on demand |
 | `docs/components/registry/import-source/*.csv` | Airtable | manual export | yes — immutable snapshot |
 | `tokens/*.yaml` | a Figma export and `tokens/_naming.yaml` | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
+| `tokens/_history.yaml` | each import run | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
+| `figma/library.yaml` | a Figma export of the `meta` collection | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
+| `packages/ui/dist/tokens.css`, `tokens.json` | `tokens/*.yaml` | `tools/build-css.mjs` | no — derived, rebuilt on demand |
 
 The registry importer ran once, on 2026-08-20. It deletes and rewrites every file rather than merging, so it is kept as the record of how the registry came to exist and refuses to run without `--overwrite-hand-edits`.
 
@@ -106,7 +109,6 @@ The registry importer ran once, on 2026-08-20. It deletes and rewrites every fil
 Stated explicitly so it is never assumed.
 
 - **A front-end library.** No package, no dependencies, no component code. The intended structure is sketched in [`PLAN.md`](PLAN.md) Stage 5; building it before the Figma contracts stabilise would create maintenance without delivering anything.
-- **CSS token output.** The token pipeline exists and produces the canonical set (`tokens/*.yaml`), but no script converts it into CSS custom properties yet — that is `tokens:build`, a later spec.
 - **Any published documentation surface.** No site, no Storybook, no designer-facing portal. Documentation is Markdown in git, read in an editor.
 - **Per-component contracts.** The standard, the schema, the validator and the page generator exist; most entries still carry the inventory record only. How many is derived — `documented` in the registry view — rather than restated here.
 

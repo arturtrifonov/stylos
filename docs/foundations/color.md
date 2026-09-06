@@ -76,7 +76,7 @@ Repointing an individual role is deliberately outside this. With 110 roles acros
 
 ## What this settles for the CSS build
 
-The contract above is what [Stage 3](../../PLAN.md) generates from, and it fixes three things that are otherwise a guess:
+The contract above is what the CSS build generates from — `npm run tokens:css`, [SPEC 0007](../specs/0007-tokens-to-css.md), the first half of [Stage 5](../../PLAN.md) — and it fixes three things that are otherwise a guess:
 
 - **The palette is not mode-scoped.** Both palettes are emitted flat and unconditionally as two independent sets. No selector switches them.
 - **The semantic layer is emitted twice** — once in the light scope, once in the dark — with *every* role declared in both, including the ones whose value does not change. If the dark scope only redeclared the roles that differ, a client override in the light scope would inherit into dark.

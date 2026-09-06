@@ -1,6 +1,6 @@
 # docs/components/
 
-**A component is described by exactly one file: its registry entry.** [`registry/<path>.yaml`](registry/README.md), at the path its `id` implies — `Icon Button` → `registry/icon-button.yaml`, `Table / TD Text` → `registry/table/td-text.yaml`. There is no companion Markdown document and no template for one; that model was withdrawn on 2026-08-26, and [`STANDARD.md`](STANDARD.md) says what replaced it and why.
+**A component is described by exactly one file: its registry entry.** [`registry/<path>.yaml`](registry/README.md), at the path its `id` implies — `Button Icon Base` → `registry/button-icon-base.yaml`, `Table Cell Text` → `registry/table-cell-text.yaml`. There is no companion Markdown document and no template for one; that model was withdrawn on 2026-08-26, and [`STANDARD.md`](STANDARD.md) says what replaced it and why.
 
 Two files here, then, and both are normative:
 
@@ -42,11 +42,11 @@ The repository still never writes to Figma ([`ARCHITECTURE.md`](../../ARCHITECTU
 
 A visual treatment that shares anatomy and API with another is a `style` value, not a separate component — that is what the property is for.
 
-**Except where the variant matrix would make the set too large.** Button's treatments — base, hollow, ghost — are conceptually `style` values, and they are separate components because adding a third dimension to `tone` × `size` × `state` multiplies the set threefold, and Figma's performance suffers on sets that size. Decomposition is preferred over a set that is slow to open.
+**Except where the variant matrix would make the set too large.** Button's treatments — `Button Base`, `Button Outline`, `Button Ghost` — are conceptually `style` values, and they are separate components because adding a third dimension to `tone` × `size` × `state` multiplies the set threefold, and Figma's performance suffers on sets that size. Decomposition is preferred over a set that is slow to open.
 
 This is a declared exception in the sense §"Exceptions are declared, not permitted" means: the contract records that these are separate components, and records that the reason is a Figma limit rather than a difference in the components themselves. A Svelte implementation has no such limit and may expose them as one component with a `style` prop — which is exactly the kind of divergence the contract exists to carry.
 
-Related-but-separate components share a name prefix — `Button Base`, `Button Hollow`. That prefix is how Figma itself decides components are related, and it survives into instance names, which a slash path does not ([`naming.md`](../foundations/naming.md) §2).
+Related-but-separate components share a name prefix — `Button Base`, `Button Outline`. That prefix is how Figma itself decides components are related, and it survives into instance names, which a slash path does not ([`naming.md`](../foundations/naming.md) §2).
 
 ### Where a thing is written down
 
