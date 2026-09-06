@@ -15,20 +15,29 @@ source:
 # belongs to, and `npm run tokens:import` records it in figma/library.yaml
 # instead. It is declared here because this file is the whitelist — a
 # collection nobody declared cannot be imported, and that has to hold for this
-# one too. Collection and mode are both lowercase, as every collection in this
-# file is; the mode is named for the collection rather than left at Figma's
-# default. If either is built with another name the import says so rather than
+# one too. If either is built with another name the import says so rather than
 # guessing. See docs/specs/0006-versioning-and-release-0-1-0.md §6.
 meta:
   from: "meta"
   mode: "meta"
   variable: "version"
 
-# Semantic collection -> the primitive collection it aliases into.
+# Semantic collection -> the primitive collection it aliases into. Corrected
+# 2026-09-05: it said `space: "space-scale"`, and neither name has existed
+# since the collection became `dimension`. Nothing read the field, which is why
+# it could be wrong for that long; docs/specs/0007-tokens-to-css.md gives it its
+# first reader.
 draws_from:
   color: "palette"
-  space: "space-scale"
+  dimension: "dimension-scale"
 
+# Every collection and every mode in Figma is lowercase, and a mode is named
+# after the collection it belongs to — `radius` has one mode called "radius",
+# `color` has "color.light" and "color.dark". Figma's defaults ("Mode 1",
+# "Value") are gone as of 2026-09-05, which is what makes an export
+# self-identifying: the mode inside the file now says which collection it came
+# from, so a file handed to the wrong --collection is caught by the mode check
+# rather than by the variable-id check behind it.
 collections:
   # Two Figma collections, one canonical palette with two modes. They are
   # separate in Figma so a semantic role can bind to a *different step* per
@@ -38,55 +47,55 @@ collections:
     modes:
       light:
         from: "palette.light"
-        mode: "Value"
+        mode: "palette.light"
       dark:
         from: "palette.dark"
-        mode: "Value"
+        mode: "palette.dark"
   color:
     layer: "semantic"
     modes:
       light:
         from: "color"
-        mode: "Light Mode"
+        mode: "color.light"
       dark:
         from: "color"
-        mode: "Dark Mode"
+        mode: "color.dark"
   dimension-scale:
     layer: "primitive"
     modes:
       default:
         from: "dimension.scale"
-        mode: "Mode 1"
+        mode: "dimension.scale"
   dimension:
     layer: "semantic"
     modes:
       default:
         from: "dimension"
-        mode: "Value"
+        mode: "dimension"
   font:
     layer: "primitive"
     modes:
       default:
         from: "font"
-        mode: "Mode 1"
+        mode: "font"
   radius:
     layer: "primitive"
     modes:
       default:
         from: "radius"
-        mode: "Mode 1"
+        mode: "radius"
   effect:
     layer: "primitive"
     modes:
       default:
         from: "effect"
-        mode: "Mode 1"
+        mode: "effect"
   border:
     layer: "primitive"
     modes:
       default:
         from: "border"
-        mode: "Mode 1"
+        mode: "border"
 
 # Roles allowed to reference a different token per mode. A role that does so
 # without being listed here fails the build; so does a role listed here that
@@ -95,6 +104,18 @@ collections:
 # Shadow colours are not here: Figma cannot bind a variable and change its
 # opacity, so they arrive as literals and are stored exactly as given.
 mode_dependent:
+  # Anchored to the ends of the ramp, so each mode takes the opposite end.
   - "color/text/static-light"
   - "color/text/static-dark"
   - "color/background/base"
+  # Perceptual equivalence, not inversion: a bold disabled surface has to read
+  # as a filled surface, and slate/100 is two steps off white in light but only
+  # two steps off near-black in dark, where it would sink into the background.
+  # Declared 2026-09-05. `surface/subtle/*/disabled` is slate/25 in both modes
+  # and is deliberately not here — a subtle surface sits on the background, so
+  # the same step works in either.
+  - "color/surface/bold/base/disabled"
+  - "color/surface/bold/primary/disabled"
+  - "color/surface/bold/success/disabled"
+  - "color/surface/bold/warning/disabled"
+  - "color/surface/bold/danger/disabled"

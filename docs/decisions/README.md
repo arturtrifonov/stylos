@@ -14,7 +14,7 @@ Six records lived here and were removed on 2026-08-23. Not because they were wro
 | --- | --- |
 | Skill version supersession (v0.5 → v0.7) | a note in [`skills/README.md`](../../skills/README.md) |
 | Component levels; size grids are Element/Object only | a rule in [`sizing.md`](../foundations/sizing.md) |
-| Frontend library foundations (Svelte, Melt UI, plain CSS) | the planned approach in [`PLAN.md`](../../PLAN.md) Stage 5 |
+| Frontend library foundations (Svelte, Melt UI, plain CSS) | the planned approach in [`PLAN.md`](../../PLAN.md) Stage 5; the stack choice itself came back as [0002](0002-frontend-stack.md) on 2026-09-06, when Stage 5's package work made it expensive to reverse |
 | Proportional logic — the base-8 scale | a rule in [`spacing.md`](../foundations/spacing.md) |
 | Token normalization and canonical storage | [SPEC 0001](../specs/0001-token-pipeline.md) and [`tokens/README.md`](../../tokens/README.md) |
 
@@ -37,5 +37,6 @@ A rule carries its own justification in a sentence. A rule nobody can justify ge
 | # | Title | Status |
 | --- | --- | --- |
 | [0001](0001-figma-connection-model.md) | Figma connection model | Accepted |
+| [0002](0002-frontend-stack.md) | Frontend stack: Svelte 5, TypeScript, Zag.js for behaviour | Accepted |
 
 Numbers are never reused, including by the removed records.

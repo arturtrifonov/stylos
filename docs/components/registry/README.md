@@ -46,7 +46,7 @@ It stays authored rather than computed because readiness turns on judgements a t
 
 **The value is `ready`, not `published`, and the reason is not taste.** Figma publishes a *file*: everything in it goes out at once, and there is no per-component publish state to mirror. A `published` value would have been a fact maintained by hand about something the tool does not have, and it would have gone stale the first time the file was published without it being updated. Which release a component's API shipped in is answered by `version`; what moved in the library at that release is answered by `CHANGELOG.md`. `status` answers the one question neither of those does — can this be built against.
 
-**Every entry currently says `draft`**, and most were set that way by default rather than assessed. With the values defined they can be.
+**Thirty-nine entries say `ready`** — the `0.1.0` core set, each assessed against both gates on 2026-09-05. The rest say `draft` or say nothing: the inventory rows were never set at all, and setting one is an assessment rather than a default.
 
 #### `version` is the release the API shipped in
 
@@ -126,7 +126,7 @@ These are two different questions and both are worth answering. The Airtable-der
 
 #### When a component is split
 
-**Decomposition is expected, not exceptional.** A component that has grown complicated gets divided into two or more, and an existing entry becoming several is a normal event in the life of this registry rather than a correction of a mistake. It has happened three times so far — Checkbox, Radio, Indicator — and two of the three left damage the validator only found weeks later. These steps are fixed so that the next one does not.
+**Decomposition is expected, not exceptional.** A component that has grown complicated gets divided into two or more, and an existing entry becoming several is a normal event in the life of this registry rather than a correction of a mistake. It has happened six times so far — Checkbox, Indicator, Radio, Toggle, Tag and Button Icon — and the early ones left damage the validator only found weeks later. These steps are fixed so that the next one does not.
 
 1. **Each member is its own entry**, at the path its `id` implies, with `family` set to the shared label. No entry is created for the family itself, and no slash group is introduced — see *Families* above.
 2. **Every member inherits the old entry's `children` and `parents` in full.** The allowed axis states what the system permits; until someone judges otherwise it permits, for each member, what it permitted for the whole. Narrowing it is a later per-member judgement recorded with its reason, not a blank the split leaves behind.

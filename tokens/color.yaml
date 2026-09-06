@@ -1,9 +1,9 @@
 # GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export.
-# Imported 2026-08-23 18:55Z from Stylos / Styles.
+# Imported 2026-09-05 22:22Z from Stylos / Styles.
 collection: "color"
 layer: "semantic"
 source:
-  imported: "2026-08-23 18:55Z"
+  imported: "2026-09-05 22:22Z"
   figma_file: "Stylos / Styles"
   figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
 modes:
@@ -41,7 +41,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/slate/100"
+      light: "palette/slate/100"
+      dark: "palette/slate/200"
   "surface/bold/base/default":
     type: "color"
     id: "VariableID:1943:1238"
@@ -73,7 +74,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/slate/100"
+      light: "palette/slate/100"
+      dark: "palette/slate/200"
   "surface/bold/warning/default":
     type: "color"
     id: "VariableID:1943:1250"
@@ -105,7 +107,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/slate/100"
+      light: "palette/slate/100"
+      dark: "palette/slate/200"
   "surface/bold/danger/default":
     type: "color"
     id: "VariableID:1943:1244"
@@ -137,7 +140,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/slate/100"
+      light: "palette/slate/100"
+      dark: "palette/slate/200"
   "surface/bold/success/default":
     type: "color"
     id: "VariableID:1943:1247"
@@ -169,7 +173,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/slate/100"
+      light: "palette/slate/100"
+      dark: "palette/slate/200"
   "surface/subtle/base/default":
     type: "color"
     id: "VariableID:1943:1232"
@@ -595,7 +600,7 @@ tokens:
       - "SHAPE_FILL"
       - "TEXT_FILL"
     ref:
-      default: "palette/slate/300"
+      default: "palette/slate/400"
   "text/special/slate":
     type: "color"
     id: "VariableID:2398:2392"

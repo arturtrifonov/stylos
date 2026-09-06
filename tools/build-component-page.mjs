@@ -40,6 +40,7 @@ import {
   slugPath,
   insteadIds,
   LEVELS,
+  MOTION_FIELDS,
 } from "./lib/registry.mjs";
 import { SIZING_TOKEN_FIELDS, createTokenResolver } from "./lib/sizing.mjs";
 import { loadTheme, themeCss } from "./lib/theme.mjs";
@@ -232,6 +233,14 @@ table.run tbody tr:last-child td { border-bottom: 0; }
 table.run .size { font-family: var(--font-mono); font-size: var(--text-meta); }
 table.run .value-px { display: block; font-size: var(--text-body); font-variant-numeric: tabular-nums; }
 table.run .token { display: block; font-family: var(--font-mono); font-size: var(--text-micro); color: var(--fg-faint); margin-top: .1rem; }
+
+/* Notes about the Figma implementation, and the motion facts. Both are set
+   quieter than the contract around them: neither constrains an implementation,
+   and a reader must not take either for a requirement. */
+ul.remarks { list-style: none; padding: 0; max-width: var(--measure); }
+ul.remarks li { position: relative; padding-left: 1.1rem; color: var(--fg-quiet); margin-bottom: .55rem; }
+ul.remarks li:last-child { margin-bottom: 0; }
+ul.remarks li::before { content: "—"; position: absolute; left: 0; color: var(--fg-faint); }
 
 dl.facts { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .3rem 1.5rem; margin: 0; font-size: var(--text-meta); }
 dl.facts dt { color: var(--fg-faint); }
@@ -659,6 +668,44 @@ function renderSizing(entry, resolveToken) {
   return band("Sizing and type", parts.join(""));
 }
 
+// The block records that the component is animated at all, that it loops, and
+// which property carries it — never a duration or a curve, which are how one
+// implementation runs the idea (registry/README.md). `intent` is why a stopped
+// instance is wrong, and it is the part the contract owns.
+function renderMotion(entry) {
+  const motion = entry.motion;
+  if (!motion) return "";
+
+  const facts = MOTION_FIELDS.filter((field) => field !== "intent")
+    .map((field) => [field, motion[field]])
+    .filter(([, value]) => value !== undefined && value !== null)
+    .map(([field, value]) => [field === "drives" ? "Drives" : "Loops", String(value)]);
+
+  const parts = [];
+  if (facts.length > 0) {
+    parts.push(
+      `<div class="axes">${facts
+        .map(([term, value]) => `<div><span class="k">${esc(term)}</span><span class="v">${esc(value)}</span></div>`)
+        .join("")}</div>`
+    );
+  }
+  if (motion.intent) parts.push(paragraph(motion.intent));
+  if (parts.length === 0) return "";
+
+  return band("Motion", parts.join(""));
+}
+
+// How the Figma library happens to implement this component, where that would
+// otherwise be read as a requirement. Nothing here constrains @stylos/ui, which
+// is why it sits below the contract rather than inside it.
+function renderFigmaNotes(entry) {
+  if (entry.figmaNotes.length === 0) return "";
+  return band(
+    "Notes on the Figma implementation",
+    `<ul class="remarks">${entry.figmaNotes.map((note) => `<li>${esc(note)}</li>`).join("")}</ul>`
+  );
+}
+
 function renderLimitations(entry) {
   if (entry.limitations.length === 0) return "";
   return band("Limitations", `<ul>${entry.limitations.map((text) => `<li>${esc(text)}</li>`).join("")}</ul>`);
@@ -701,6 +748,10 @@ function renderRecord(entry, context) {
     ],
     ["Id", entry.id && `<span class="mono">${esc(entry.id)}</span>`],
     ["Role", entry.role && `<span class="mono">${esc(entry.role)}</span>`],
+    // The semantic structure it stands for, or "no semantic html" — a value,
+    // and the reason a whole a11y paragraph is missing where the element
+    // already supplies what it would have said (registry/README.md).
+    ["HTML", entry.html && `<span class="mono">${esc(entry.html)}</span>`],
     ["Family", entry.family && `<span class="mono">${esc(entry.family)}</span>`],
     [
       "Flow behaviour",
@@ -770,7 +821,9 @@ ${renderUseWhen(entry, context)}
 ${renderRequirements(entry)}
 ${renderApi(entry, context.resolveToken)}
 ${renderSizing(entry, context.resolveToken)}
+${renderMotion(entry)}
 ${renderLimitations(entry)}
+${renderFigmaNotes(entry)}
 ${renderRelations(entry, context)}
 ${renderRecord(entry, context)}
 </body>

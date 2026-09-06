@@ -14,7 +14,7 @@ How it works and why it is shaped this way: [SPEC 0001](../docs/specs/0001-token
 | `_history.yaml` | **generated.** A line per import: when, which collection, how many tokens, what it did. |
 | everything else | **generated.** Overwritten by `npm run tokens:import`. Never hand-edit — your change is gone at the next import, and the file says so at the top. |
 
-The `_` prefix marks the authored ones.
+The `_` prefix marks the files the pipeline treats specially, not the authored ones: `_naming.yaml` is authored and `_history.yaml` is generated. Everything without the prefix is a canonical collection, and every one of those is generated.
 
 ## The eight canonical collections
 

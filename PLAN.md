@@ -121,7 +121,7 @@ The long pole is **S4**: thirty-nine component contracts, each needing judgement
 **Out of `0.1.0`, deliberately:** Toast, Tabs Horizontal and Tab Item — the Stage 6 gate names a table, filters, a side panel and a modal, and none of the three appears in it. Everything else follows them, grouped in §9.
 
 - **First**, settle the documentation boundary — which of `STANDARD.md`'s twenty points live in Figma and which in Markdown. Writing twenty documents before that rule exists guarantees rewriting them.
-- Decide the accessibility target and browser baseline. A contract records accessibility findings against the thing each is about, so the target they are judged by cannot wait for Stage 5.
+- The accessibility target and browser baseline **are decided** — WCAG 2.2 AA and Baseline Widely available, fixed in [`accessibility.md`](docs/foundations/accessibility.md) on 2026-09-06. A contract records accessibility findings against the thing each is about, which is why the target could not wait for Stage 5.
 - Decide the depth of component-specific tokens.
 - **Review the skill set before running any of it**: what each remaining skill is for, what to repair, whether it is detailed enough to be followed. `text-sizing` is already gone; `component-integrity-check` and `naming-cleanup` both carry text that predates `docs/foundations/`. A skill that runs on a stale contract writes the stale contract into the library.
 - Run `stylos-component-integrity-check` over the set and **fix findings in Figma before documenting** — otherwise the defect gets written down as the contract.
@@ -136,20 +136,20 @@ The long pole is **S4**: thirty-nine component contracts, each needing judgement
 
 ### Stage 5 — `@stylos/ui`
 
-**First, generate the CSS** — what used to be Stage 3, moved here because its output has no reader until something renders with it:
+**First, generate the CSS** — what used to be Stage 3, moved here because its output has no reader until something renders with it. Specified in full by [SPEC 0007](docs/specs/0007-tokens-to-css.md):
 
 - `tokens/*.yaml` → CSS custom properties, preserving the primitive/semantic indirection so palette overrides propagate.
 - One deterministic, documented rule for token name → custom property name.
 - Mode scoping per [`color.md`](docs/foundations/color.md): palette emitted flat and unscoped; the semantic layer emitted once per mode with every role declared in both; one global switch.
 - The slot layer emitted as its own indirection, so a client rebrand is five bindings rather than 110 overrides.
 - Shadows composed per [`effects.md`](docs/foundations/effects.md) — cumulative stacks, not one layer per level.
-- Fail on a token that disappeared between runs without acknowledgement.
+- Fail on a token that disappeared without acknowledgement. **This moved to `tokens:import`**, where the withdrawal actually happens: the CSS is a build result and is not committed, so it has no baseline to compare a run against. The CSS build's whole responsibility for disappearance is refusing to run on a set that fails `tokens:check` ([SPEC 0007](docs/specs/0007-tokens-to-css.md) §6).
 
-**Then the package itself. Svelte is committed** (2026-09-04); the rest is a planned approach to revisit when the work actually starts:
+**Then the package itself. The stack is decided** — Svelte 5, TypeScript, and Zag.js for behaviour, fixed by [decision 0002](docs/decisions/0002-frontend-stack.md) on 2026-09-06, when the work reached the point the old "revisit when the work actually starts" was waiting for. The shape below stays a planned approach:
 
 - **One package**, `@stylos/ui`, rather than splitting tokens/icons/components. Simplest to version for a solo maintainer; splitting later is a mechanical extraction, not a redesign.
 - **Plain CSS + custom properties** for component internals, referencing the same properties consumer theming uses. No build-time styling dependency, one styling vocabulary, and a component's internals and a consumer's override become the same mechanism rather than two layers.
-- **A headless behaviour library** for accessible interactive components — Melt UI is the leading candidate, because it supplies behaviour only and leaves anatomy, layer names and DOM structure authored by Stylos. A library that ships its own markup would mean working around its structure instead of authoring ours, which conflicts with the naming rules already in force. Building all interaction logic by hand is too much accessibility surface to get right solo.
+- **Zag.js supplies behaviour** for accessible interactive components — framework-agnostic state machines consumed through a Svelte adapter, rendering nothing and naming nothing in the DOM, so anatomy, layer names and structure stay authored by Stylos. Why it, and not the candidate this paragraph used to name, is argued once in [decision 0002](docs/decisions/0002-frontend-stack.md) and not repeated here.
 
 Work:
 
@@ -157,7 +157,7 @@ Work:
 - Implement in dependency order — primitives → elements → objects → widgets → layouts. The registry's `children` field gives the order.
 - Per component, a prop ↔ Figma variant property mapping table. Divergence is a bug in one side, not a translation detail.
 - A lint rule rejecting hex colours and raw px outside the generated token file.
-- Accessibility tests against the baseline set in Stage 4.
+- Accessibility tests against [`accessibility.md`](docs/foundations/accessibility.md) — the target set in Stage 4.
 
 **Gate:** the package builds, every documented variant renders, the lint rule passes.
 **Estimate:** 10–12 weeks.
@@ -196,8 +196,7 @@ At 5–10 h/week:
 **Scope levers, in the order to pull them:**
 
 1. Ship wave 5 as `Button Base` alone, leaving Outline and Ghost undocumented, and drop Tooltip from wave 6. Saves ~2 weeks across S4 and S5. Drawer, Modal and the table are named by the gate and are not available to cut.
-2. Ship the documentation surface as rendered Markdown instead of Storybook. Saves ~2 weeks in S6.
-3. Defer component-token depth by adopting "no component-specific tokens" as the provisional answer. Saves ~1 week.
+2. Defer component-token depth by adopting "no component-specific tokens" as the provisional answer. Saves ~1 week.
 
 Do **not** pull: the integrity check before documenting, the documentation-boundary decision before writing documents, or the proof screen.
 
@@ -238,7 +237,7 @@ Its scope and timing are open, not its existence. It is not on the critical path
 
 ## 8. Explicitly not in this plan
 
-A native Stylos icon set (Material Symbols stays interim), mobile support, writing to Figma from the repository, an Airtable sync, a public documentation site, and any licensing or commercial work.
+A native Stylos icon set (Material Icons stays interim — Google's older set, not Symbols; [`icons.md`](docs/foundations/icons.md)), mobile support, writing to Figma from the repository, an Airtable sync, a public documentation site, and any licensing or commercial work.
 
 ---
 

@@ -1,12 +1,14 @@
 # 0001 — Figma connection model
 
-> **Amended 2026-08-23.** Two things in this record have since changed, and the decision it records — that the connection is one-directional and the repository never writes to Figma — is unaffected by both.
+> **Amended 2026-08-23, extended 2026-09-06.** Several things in this record have since changed, and the decision it records — that the connection is one-directional and the repository never writes to Figma — is unaffected by all of them. **The body below is left as it was written.** A decision record says what was decided and on what understanding; correcting its body would rewrite the understanding along with the fact. What is no longer true is listed here instead.
 >
 > **Components.** This record treats Figma as the source of truth for components. It is not: a component's contract is authored in `docs/components/`, and Figma is one implementation of it, checked against it ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §1). Figma still holds the *values*.
 >
-> **Snapshots.** `figma/variables/exports/` no longer exists. Variable exports are read once by `npm run tokens:import` and discarded; `tokens/` verifies against itself ([`figma/README.md`](../../figma/README.md)).
+> **Snapshots.** `figma/variables/exports/` no longer exists, so every mention of it below — in *Options considered*, in *Decision*, and in *Follow-up* — addresses a directory that is gone. Variable exports are read once by `npm run tokens:import` and discarded; `tokens/` verifies against itself ([`figma/README.md`](../../figma/README.md)).
 >
-> Citations to `master-document.md` are removed — that file was deleted and its content redistributed. Phase numbers refer to a roadmap that [`PLAN.md`](../../PLAN.md) replaced.
+> **Names.** The third library file is *Stylos / GUI components*, not "GUI Helpers". The name below is the one it carried in August 2026.
+>
+> Citations to `master-document.md` are removed — that file was deleted and its content redistributed. Phase numbers — *Phase 1*, *Phase 3*, *Phase 4*, *Phase 5*, and the "revisit in Phase 4/5" in the status line — refer to a roadmap that [`PLAN.md`](../../PLAN.md) replaced, and none of them maps onto a stage in it.
 
 **Status:** Accepted (for the Alpha stage; revisit in Phase 4/5)
 **Date:** 2026-08-20

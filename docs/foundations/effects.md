@@ -17,7 +17,7 @@ Three separate Figma collections, each single-mode:
 | --- | --- |
 | `radius` | seven steps — `zero`, the five full-word sizes, and `round` |
 | `border` | `width/normal`, `width/thick` |
-| `effect` | `shadow/elevation/Level 1`…`Level 6`, `shadow/spread/Level 1`…`Level 6`, `shadow/color/base`, `shadow/color/primary` |
+| `effect` | `shadow/elevation/level-1`…`level-6`, `shadow/spread/level-1`…`level-6`, `shadow/color/base`, `shadow/color/primary` |
 
 Radius step names are already the full-word canonical size values required by [naming.md](naming.md) §4 — nothing to normalise there.
 
@@ -59,6 +59,6 @@ Two consequences worth stating, because both are easy to get wrong:
 
 - **When to use which level.** The scale is defined; what an elevation *means* — which surface sits at which level — is not, and belongs with the components that use them.
 - **Shadows and a rebrand.** `shadow/color/primary` is a literal, so a slot rebinding leaves every shadow behind. Either shadows follow the slot, or the system states that they do not participate in a rebrand ([color.md](color.md)).
-- **Two names for one thing.** The variables say `Level 1`…`Level 6`; the styles say `Elevation 1`…`Elevation 6`. Both are Title Case, against [naming.md](naming.md) §4 — variable names are not component properties, so the rule does not strictly reach them, but nothing here is deliberate.
+- **Two names for one thing.** The variables say `level-1`…`level-6`; the styles say `Elevation 1`…`Elevation 6`. The Title Case on the variables was fixed on 2026-09-05; the two vocabularies remain, and the styles are the half still to settle. The CSS build reads neither — it composes the six stacks from the two number scales ([SPEC 0007](../specs/0007-tokens-to-css.md) §4.5) — so this costs nothing downstream and everything in a Figma panel.
 
 Border *colour* roles live in the semantic `color` collection, not here — see [color.md](color.md).

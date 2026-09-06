@@ -25,7 +25,7 @@ This is why `palette.light` and `palette.dark` are separate collections in Figma
 Two consequences that are easy to miss:
 
 - A `ref` such as `palette/indigo/700` names a step, **not a collection**. The collection is supplied by the role's mode. The mapping mode name → palette collection is declared in [`tokens/_naming.yaml`](../../tokens/_naming.yaml) and is part of the contract, not an implementation detail.
-- A role that resolves to a *different token* per mode must be declared in `mode_dependent`. Three are: `text/static-light`, `text/static-dark`, `background/base`. Undeclared divergence fails the check — and so does a declared role that turns out not to diverge, so the list cannot go stale.
+- A role that resolves to a *different token* per mode must be declared in `mode_dependent`. Eight are, for two different reasons. Three are anchored to the ends of the ramp and take the opposite end per mode: `text/static-light`, `text/static-dark`, `background/base`. Five are the bold disabled surfaces — `surface/bold/{base,primary,success,warning,danger}/disabled` — which take `slate/100` in light and `slate/200` in dark, because the step that reads as a filled-but-inert surface is not the same distance from the background in both modes. `surface/subtle/*/disabled` is `slate/25` in both and is deliberately not among them: a subtle surface sits on the background rather than over it. Undeclared divergence fails the check — and so does a declared role that turns out not to diverge, so the list cannot go stale.
 
 **Shadow colours are literals.** Figma cannot bind a variable and change its opacity, so `shadow/base` and `shadow/primary` arrive as values rather than references and are stored exactly as given. They are not mode-dependent roles; they are not references at all. `effect/shadow/color/*` aliases them, so the colour is defined here once and the effect collection points at it.
 
@@ -76,7 +76,7 @@ Repointing an individual role is deliberately outside this. With 110 roles acros
 
 ## What this settles for the CSS build
 
-The contract above is what [Stage 3](../../PLAN.md) generates from, and it fixes three things that are otherwise a guess:
+The contract above is what the CSS build generates from — `npm run tokens:css`, [SPEC 0007](../specs/0007-tokens-to-css.md), the first half of [Stage 5](../../PLAN.md) — and it fixes three things that are otherwise a guess:
 
 - **The palette is not mode-scoped.** Both palettes are emitted flat and unconditionally as two independent sets. No selector switches them.
 - **The semantic layer is emitted twice** — once in the light scope, once in the dark — with *every* role declared in both, including the ones whose value does not change. If the dark scope only redeclared the roles that differ, a client override in the light scope would inherit into dark.

@@ -2,6 +2,41 @@
 # When each collection was last imported, and what it did. The values are in git.
 imports:
   -
+    at: "2026-09-05 22:22Z"
+    collections:
+      -
+        collection: "palette"
+        tokens: 288
+        status: "unchanged"
+      -
+        collection: "color"
+        tokens: 110
+        status: "changed"
+      -
+        collection: "dimension-scale"
+        tokens: 33
+        status: "unchanged"
+      -
+        collection: "dimension"
+        tokens: 37
+        status: "unchanged"
+      -
+        collection: "font"
+        tokens: 107
+        status: "changed"
+      -
+        collection: "radius"
+        tokens: 7
+        status: "unchanged"
+      -
+        collection: "effect"
+        tokens: 14
+        status: "changed"
+      -
+        collection: "border"
+        tokens: 2
+        status: "unchanged"
+  -
     at: "2026-08-23 21:09Z"
     collections:
       -

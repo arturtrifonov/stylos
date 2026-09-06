@@ -1,6 +1,6 @@
 # SPEC 0006 — Versioning, and the 0.1.0 release
 
-**Status:** Open — written 2026-09-04
+**Status:** Built — 2026-09-06. `0.1.0` is tagged, the library is published, and every entry it covers reads `status: ready`.
 **Date:** 2026-09-04
 
 A work order. Stage 4 closed on 2026-09-04: all thirty-nine core contracts are written. Nothing in the repository marks that, and the one number the plan reserved — `v0.1` — was defined as something else entirely, four months of work away. This spec fixes what a version means here, cuts `0.1.0`, and leaves the road with three tags instead of one.

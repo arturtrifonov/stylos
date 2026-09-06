@@ -2,15 +2,20 @@
 
 One document per foundation: the confirmed rules, the naming patterns, the constraints — detailed enough that neither a designer nor a Figma Agent skill has to reverse-engineer intent from the Figma file.
 
+Each row states what its file states. This table is an index over them, not a second opinion: where the two disagree the file wins, because the file is what gets read.
+
 | Foundation | State |
 | --- | --- |
-| [color.md](color.md) | structure confirmed; the dark transform rule and the theme contract are open |
+| [color.md](color.md) | confirmed |
 | [typography.md](typography.md) | confirmed |
-| [spacing.md](spacing.md) | scale and naming model confirmed; which steps stay is open |
-| [sizing.md](sizing.md) | rules confirmed; the Element/Object scale is open |
+| [spacing.md](spacing.md) | confirmed |
+| [sizing.md](sizing.md) | confirmed |
 | [naming.md](naming.md) | confirmed — the naming contract for components, layers and properties |
 | [icons.md](icons.md) | usage rules confirmed; the icon source is interim |
-| [effects.md](effects.md) | structure confirmed; the shadow scale is open |
+| [effects.md](effects.md) | confirmed |
+| [accessibility.md](accessibility.md) | confirmed — the conformance target and the browser floor |
+
+**Confirmed means the structure and the rules are settled, not that nothing is left.** `color.md` and `effects.md` each keep an *Open* section naming the gaps that remain — a sixth status colour, two unrelated meanings of `base`, what an elevation level means for a given surface. Those are questions inside a settled model, and they are listed where they belong rather than held against the whole document.
 
 ## What belongs here
 

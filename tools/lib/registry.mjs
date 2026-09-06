@@ -30,6 +30,13 @@ export const A11Y_STATUSES = ["warning", "fail", "open", "requires"];
 export const SIZING_AXES = ["hug", "fixed", "fill", "absolute"];
 export const LINE_HEIGHT_FAMILIES = ["text", "string", "heading", "code"];
 
+// The whole key set of the `motion` block, and it is closed on purpose.
+// Durations, easing curves and per-step timings are how one implementation
+// runs the idea; recording them here would turn whatever the Figma prototype
+// happens to be doing into a specification. What the block owns is that the
+// component is animated at all, that it loops, and which property carries it.
+export const MOTION_FIELDS = ["drives", "loop", "intent"];
+
 // The two Figma files that hold components, from figma/README.md. A node id
 // recorded against any other file is a mistake — Styles and Playground hold no
 // components, and the icon kit is external.
@@ -44,6 +51,7 @@ const KNOWN_FIELDS = new Set([
   "family",
   "level",
   "role",
+  "html",
   "status",
   "version",
   "summary",
@@ -58,8 +66,10 @@ const KNOWN_FIELDS = new Set([
   "a11y",
   "sizing_model",
   "variants",
+  "motion",
   "api",
   "limitations",
+  "figma_notes",
   "notes",
   "figma",
   "import",
@@ -171,6 +181,7 @@ function toEntry(root, file) {
   const imported = parsed.get("import");
   const sizingModel = parsed.get("sizing_model");
   const variants = parsed.get("variants");
+  const motion = parsed.get("motion");
 
   return {
     file: relative,
@@ -179,6 +190,7 @@ function toEntry(root, file) {
     family: parsed.get("family") ?? null,
     level: parsed.get("level") ?? null,
     role: parsed.get("role") ?? null,
+    html: parsed.get("html") ?? null,
     status: parsed.get("status") ?? null,
     version: parsed.get("version") ?? null,
     summary: parsed.get("summary") ?? null,
@@ -193,8 +205,10 @@ function toEntry(root, file) {
     a11y: list(parsed, "a11y").map(plain),
     sizingModel: sizingModel instanceof Map ? plain(sizingModel) : null,
     variants: variants instanceof Map ? plain(variants) : null,
+    motion: motion instanceof Map ? plain(motion) : null,
     api: list(parsed, "api").map(plain),
     limitations: list(parsed, "limitations"),
+    figmaNotes: list(parsed, "figma_notes").map(plain),
     notes: parsed.get("notes") ?? "",
     figma: figma instanceof Map ? plain(figma) : null,
     import: imported instanceof Map ? plain(imported) : null,
