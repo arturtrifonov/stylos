@@ -149,7 +149,7 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
+    default: "medium"
     description: "Steps the height, the gap and both type runs together. The name and the supporting line do not step at the same rate: the supporting measure repeats across extra small and small, and again across medium and large, so it never reaches the bottom of the scale while the name keeps climbing."
     values:
       -

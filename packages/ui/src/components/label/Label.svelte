@@ -20,7 +20,7 @@
     isRequired = false,
     hasAdditionalText = false,
     additionalText = "Additional text",
-    size = "extra small",
+    size = "medium",
     state = "default",
     validation = "off",
   }: LabelProps = $props();
@@ -39,4 +39,4 @@
   data-validation={validation}
   data-is-required={isRequired}
   data-has-additional-text={hasAdditionalText}
->{labelText}{#if isRequired}<span aria-hidden="true"> *</span>{/if}{#if showsAdditional}<span>{additionalText}</span>{/if}</label>
+>{labelText}{#if isRequired}<span aria-hidden="true">{" "}*</span>{/if}{#if showsAdditional}<span>{additionalText}</span>{/if}</label>
