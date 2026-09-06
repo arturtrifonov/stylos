@@ -149,6 +149,9 @@ An open question is anything not settled by a rule in `docs/foundations/` or by 
 - **Generated output is never edited by hand.** Change the source and rebuild.
 - **Figma exports are not kept.** `npm run tokens:import` reads one and writes `tokens/`; the export itself is discarded. History lives in git.
 - **Figma is never written to from this repository.** Explicit non-goal until a reliable round trip exists.
+- **`master` is the release line, reached only by pull request.** Nothing is committed to it directly and nothing is merged into it locally: work branches from `master`, goes up with `gh pr create`, passes CI, and lands by squash-merge on GitHub. The git hooks in `.githooks/` and the shared `.claude/settings.json` enforce this locally; branch protection enforces it on the server. Built by [SPEC 0008](docs/specs/0008-development-and-release-flow.md).
+- **A pull request is not a release.** A release is a decision, taken when a stage gate in [`PLAN.md`](PLAN.md) §1 is met, or when one of the three versioned things — a registry contract's `api`, the `tokens/` set, the published Figma library (§9) — changed in a way that has to be named and handed to a consumer. Everything else accumulates under `## [Unreleased]` in `CHANGELOG.md` until a release carries it out, and bumps no version.
+- **Definition of done for a pull request:** `npm test`, `npm run validate:registry`, `npm run validate:skills` and `npm run tokens:check` all pass; every document describing a capability the PR changes is corrected in the same PR; a `## [Unreleased]` line is added when the change is worth a release note; generated output changes only by rebuilding its source.
 
 ---
 
@@ -177,7 +180,7 @@ Two invariants, both mechanical:
 
 **One version line covers the system** — the contracts in `docs/components/registry/`, the canonical set in `tokens/`, and the Figma library that implements them. They cannot drift by design: a registry entry *is* that library's contract and holds its `figma.node_id`, so versioning them apart would track a difference that must not be allowed to exist. The number lives in `package.json`, and a git tag names it.
 
-**`@stylos/ui` carries its own semver.** It is published on its own schedule and declares in one line which system version it implements. That is the only place two numbers meet, and the relationship runs one way: the package names the system, never the reverse.
+**`@stylos/ui` shares the system's number, in lockstep, until `1.0`.** The package's `0.2.0` implements the system's `0.2.0`; one number, one line. A separate schedule — the package carrying its own semver and declaring in one line which system version it implements — returns as an option to revisit at `1.0`.
 
 **Semver is read against the contract, not against the code.**
 

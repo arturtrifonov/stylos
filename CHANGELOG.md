@@ -4,6 +4,15 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-06 (the development and release flow exists)
+
+Built to [SPEC 0008](docs/specs/0008-development-and-release-flow.md). On 2026-09-05 an agent's command fast-forward-merged a branch into `master` because there was nothing to refuse it; this is the flow that refuses it. **No component, token or contract value changed.**
+
+- **`master` is the release line, reached only by pull request** — normative in [`ARCHITECTURE.md`](ARCHITECTURE.md) §7. Work branches from `master`, goes up with `gh pr create`, and lands by squash-merge on GitHub; a release is a decision cut by the ritual in the spec, not a side effect of a merge. `.githooks/` refuses a commit on `master` and a push to it without `STYLOS_RELEASE=1` (enabled per clone by `git config core.hooksPath .githooks`); the shared `.claude/settings.json` denies `git merge`, `git tag` and force-push in agent sessions; `CLAUDE.md` states the rules an agent follows.
+- **CI on every pull request** — `.github/workflows/ci.yml` runs the four checks (`npm test`, `validate:registry`, `validate:skills`, `tokens:check`) and proves the two generators (`tokens:css`, `build`) on Node 22.
+- **`@stylos/ui` moves to lockstep versioning** — `ARCHITECTURE.md` §9 amended: the package shares the system's number until `1.0`, when a separate schedule returns as an option.
+- **The definition of done is the pull-request template** — the four checks, documents corrected in the same PR, an `[Unreleased]` line when the change earns one, generated output never hand-edited.
+
 ### Added — 2026-09-06 (the accessibility target and browser baseline are decided)
 
 - **[`accessibility.md`](docs/foundations/accessibility.md) — WCAG 2.2 Level AA, WAI-ARIA 1.2 with APG patterns, and Baseline Widely available as the browser floor.** A rule in `foundations/`, not a decision record, per the bar `docs/decisions/` sets. The target ratifies what the registry already does — every criterion citation reads WCAG 2.2 and every cited criterion is A or AA — so no existing finding is re-judged; what changes is that `warning` now names the bar it fails against. The browser floor is Baseline rather than an authored version list because Baseline is checkable mechanically and maintained by someone else, with per-case named exceptions working the way raw values do in Figma. An assistive-technology matrix is deferred, in as many words, until Stage 5's tests give it a reader. [`PLAN.md`](PLAN.md) Stage 4 and Stage 5 now point at the document instead of carrying the open question.

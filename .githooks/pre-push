@@ -1,0 +1,11 @@
+#!/bin/sh
+# A push to master is a release ritual act, never ordinary work (ARCHITECTURE.md §7).
+# The ritual sets STYLOS_RELEASE=1; see docs/specs/0008-development-and-release-flow.md §7.
+while read -r local_ref local_sha remote_ref remote_sha; do
+	if [ "$remote_ref" = "refs/heads/master" ] && [ "$STYLOS_RELEASE" != "1" ]; then
+		echo "pre-push: refusing to push to master." >&2
+		echo "pre-push: work goes to a branch and gh pr create; a release sets STYLOS_RELEASE=1." >&2
+		exit 1
+	fi
+done
+exit 0
