@@ -88,3 +88,7 @@ A component-specific mapping, where one is documented, always overrides its leve
 | `extra large` | `1_875` |
 
 These are authored rules, not exported values, which is why they are written here rather than left to `npm run tokens:report`. This is now the only copy — `stylos-text-sizing` restated them and has been removed.
+
+## Open
+
+- **The display width axis, in two halves.** The heading styles in Figma set Georama's width axis to 110, and `text.css` already says `font-stretch: 110%` — but the committed woff2 subsets under `assets/fonts/` were built without the `wdth` axis, so a browser renders headings at normal width and says nothing. Two decisions pending, in order: *whether* display keeps the 110 width at all (Artur is reviewing examples, 2026-09-06), and only then a re-subset of Georama with the axis. Nothing blocks on it: everything else about a heading — size, leading, `weight/strong`, the family itself — renders to contract; only the widening is missing. If 110 is withdrawn, the fix is in Figma and a style re-read, and the `font-stretch` line disappears on the next build.
