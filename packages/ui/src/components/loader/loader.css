@@ -1,19 +1,22 @@
 /* Loader — docs/components/registry/loader.yaml.
  *
- * Selectors are keyed on the data attributes that carry the contract's values
- * (ADR 0002). The element is the footprint, one dimension bound to its token
- * and adjustable; the mark is a ::before at 5/6 of it, so it follows the
- * footprint wherever a layout sets it — the opposite of Indicator, and the
- * entry's sizing model verbatim. The arc is the Figma mark's geometry as an
- * SVG mask (ring of outer radius 10 and thickness 2 in a 20-box, 270 degrees,
- * round caps, gap in the north-east quadrant), painted with `text/primary` —
- * the one colour the contract fixes.
+ * One class and no data attributes: the contract has no properties. The
+ * element is the footprint, its one dimension bound to the token and
+ * adjustable — a consumer that wants another size sets width and height in
+ * CSS, there is no parameter — and the mark is a ::before at 5/6 of the
+ * element itself, by percentage, so it follows whatever the footprint is set
+ * to. That is the entry's sizing model: one dimension, the mark a fixed
+ * fraction of it, the opposite of Indicator.
+ *
+ * The arc is the Figma mark's geometry as an SVG mask (ring of outer radius
+ * 10 and thickness 2 in a 20-box, 270 degrees, round caps, gap in the
+ * north-east quadrant), painted with `text/primary` — the one colour the
+ * contract fixes.
  *
  * The animation is the component. The contract leaves speed and curve to the
  * implementation, and this one decides: one full turn per second, linear —
  * a looping arc reads as constant angular velocity, and any easing on a loop
- * shows up as a stutter. `angle` is the prototype's stepping variant; here it
- * is the phase the turn starts from, so no value of it ever stands still.
+ * shows up as a stutter.
  *
  * Where the person has asked for reduced motion, the rotation is replaced —
  * not merely stopped, because a stopped loader is the one thing this
@@ -27,43 +30,23 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--_stylos-loader-footprint);
-  height: var(--_stylos-loader-footprint);
-  --_stylos-loader-footprint: var(--stylos-dimension-size-s-3_000);
+  width: var(--stylos-dimension-size-s-3_000);
+  height: var(--stylos-dimension-size-s-3_000);
 }
 
 .stylos-loader::before {
   content: "";
-  width: calc(var(--_stylos-loader-footprint) * 5 / 6);
-  height: calc(var(--_stylos-loader-footprint) * 5 / 6);
+  width: calc(100% * 5 / 6);
+  height: calc(100% * 5 / 6);
   background-color: var(--stylos-color-text-primary);
   mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M10 1 A9 9 0 1 0 19 10" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
   mask-size: 100% 100%;
-  transform: rotate(var(--_stylos-loader-angle));
   animation: stylos-loader-turn 1s linear infinite;
-}
-
-/* angles — the prototype's four steps, as the phase the turn starts from */
-
-.stylos-loader[data-angle="0"] {
-  --_stylos-loader-angle: 0deg;
-}
-
-.stylos-loader[data-angle="90"] {
-  --_stylos-loader-angle: 90deg;
-}
-
-.stylos-loader[data-angle="180"] {
-  --_stylos-loader-angle: 180deg;
-}
-
-.stylos-loader[data-angle="270"] {
-  --_stylos-loader-angle: 270deg;
 }
 
 @keyframes stylos-loader-turn {
   to {
-    transform: rotate(calc(var(--_stylos-loader-angle) + 360deg));
+    transform: rotate(360deg);
   }
 }
 

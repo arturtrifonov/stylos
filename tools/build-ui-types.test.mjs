@@ -73,6 +73,8 @@ test("renderProps imports svelte types only when a slot or instance needs them",
   assert.match(rendered, /children\?: Snippet;/);
 });
 
-test("renderProps refuses an entry with no api", () => {
-  assert.throws(() => renderProps({ id: "Ghost", api: [] }), /no api/);
+test("renderProps renders a contract with no properties as a type that rejects every prop", () => {
+  const rendered = renderProps({ id: "Loader", api: [] });
+  assert.match(rendered, /export type LoaderProps = Record<string, never>;/);
+  assert.match(rendered, /The contract has no properties\./);
 });
