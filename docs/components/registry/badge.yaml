@@ -208,7 +208,7 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra large"
+    default: "medium"
     description: "Height, horizontal padding and text measure together. Width is never set: it follows the number, floored at the height."
     values:
       -

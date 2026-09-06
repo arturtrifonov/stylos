@@ -9,7 +9,7 @@
   import "./badge.css";
   import type { BadgeProps } from "./props.ts";
 
-  let { numberText = "1", tone = "base", size = "extra large" }: BadgeProps = $props();
+  let { numberText = "1", tone = "base", size = "medium" }: BadgeProps = $props();
 </script>
 
 <span class="stylos-badge" data-tone={tone} data-size={size}>{numberText}</span>
