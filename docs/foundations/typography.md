@@ -51,6 +51,10 @@ Georama for `family/normal` and `family/display`, JetBrains Mono for `family/cod
 
 Georama covers the Google Fonts Latin Plus glyph set: Latin, Western European and Vietnamese. That is the supported range.
 
+## Text styles
+
+The Figma text styles — the 32 named compositions over this collection (`text/*`, `label/*`, `heading/*`, `code/*`) — are recorded in [`figma/text-styles.yaml`](../../figma/text-styles.yaml), written by `tools/import-styles.mjs` from a Plugin API read, since Styles have no Variables export. The record stores aliases into `tokens/`, never values, per the rule in [effects.md](effects.md). `@stylos/ui/text.css` projects each onto a class (`.stylos-heading-h2`, `.stylos-text-normal-medium`, …), rebuilt by `npm run ui:generate`.
+
 ## Stale variable names elsewhere
 
 Figma holds the variable names, and they are currently `font/size/[measure]` and `font/line height/[family]/[measure]`.

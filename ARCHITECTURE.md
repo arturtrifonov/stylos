@@ -104,6 +104,8 @@ This is the only closed loop in the system, and the only automated step anywhere
 | `packages/ui/dist/package/` | `packages/ui/src/` | `svelte-package` | no — derived, rebuilt on demand |
 | `packages/ui/dist/css/<name>.css`, `dist/css/stylos.css` — the CSS export, per component and in aggregate, consumable without Svelte | `packages/ui/src/components/<name>/<name>.css` | `tools/build-ui-css.mjs` | no — derived, rebuilt on demand |
 | `packages/ui/dist/fonts.css`, `dist/assets/fonts/` — the font export: the `@font-face` rules and woff2 subsets behind the families `tokens.css` names | `assets/fonts/`, `FONT_FACES` in `tools/lib/theme.mjs` | `tools/build-ui-fonts.mjs` | no — derived, rebuilt on demand |
+| `figma/text-styles.yaml` — the record of the Figma text styles, aliases into `tokens/`, never raw values | a Plugin API read of the Styles file (Figma has no export for Styles) | `tools/import-styles.mjs` | yes — generated, never hand-edited |
+| `packages/ui/dist/text.css` — the text-style export: one class per recorded style, every value a `var()` into `tokens.css` | `figma/text-styles.yaml` | `tools/build-text-css.mjs` | no — derived, rebuilt on demand |
 
 The registry importer ran once, on 2026-08-20. It deletes and rewrites every file rather than merging, so it is kept as the record of how the registry came to exist and refuses to run without `--overwrite-hand-edits`.
 

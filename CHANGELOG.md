@@ -4,6 +4,12 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-06 (the text styles are recorded, and shipped as CSS)
+
+- **`figma/text-styles.yaml`** — the record of the 32 Figma text styles, which Variables exports cannot carry: `tools/import-styles.mjs` takes a Plugin API read of the Styles file and writes aliases into `tokens/`, never raw values; each alias is cross-checked against the value the style actually renders, and a binding that does not resolve is recorded under `unresolved` rather than dropped or invented. Elevation needed no record of its own — the live effect styles were verified layer-by-layer against `foundations/effects.md`'s composition rule, and the rule is the record; `focus/*` is out of scope by decision.
+- **`@stylos/ui/text.css`** — one class per recorded style (`.stylos-heading-h2`, `.stylos-text-normal-medium`, …), every declaration a `var()` into `tokens.css`, written by `tools/build-text-css.mjs` in `ui:generate`. Uppercase labels become `text-transform`; the headings' 110 width axis becomes `font-stretch: 110%`; paragraph spacing, which has no non-opinionated CSS analog, rides along as `--stylos-paragraph-spacing` for the consumer to apply. A style with an unresolved binding is skipped loudly in the file header, not projected with a dangling `var()`.
+- **`assets/avatars/`** — the 25 avatar paint styles are image fills, not values; exported once at 256×256 JPEG (~1.5 MB total, from ~50 MB of originals). They enter the package when the Avatar component slice needs them.
+
 ### Added — 2026-09-06 (the Indicator family — two components, as the registry split them)
 
 - **`IndicatorStatus` and `IndicatorSpecial`** — the second and third components of `@stylos/ui`, built to their registry entries on the pattern Badge proved: authored CSS keyed on data attributes, a thin Svelte wrapper, generated `props.ts` and stories. Two components, not one: the registry split the old Indicator deliberately — semantic colour that judges (`text/*`) against categorical colour that identifies (`text/special/*`) — and one code component would re-merge the vocabularies into a 30-value tone prop where a category compiles in a status seat. The element is the footprint and the dot is a `::before` that keeps its own dimension when a layout resizes the footprint — the entry's sizing model, decoupled runs and all. Static primitives on slice 1's proven chain; slice 2 (Checkbox Input, first interactive) is still next.

@@ -22,6 +22,8 @@ Part A can land while the package is still three components deep; it costs a bui
 
 ## 2. Part A — the code surface
 
+> **Amended 2026-09-06 (second): `./text.css` joins the map.** The Figma text styles were recorded nowhere — Styles have no Variables export, so `tokens:import` never saw them. They are now read over the Plugin API and recorded in `figma/text-styles.yaml` as aliases into `tokens/` (`tools/import-styles.mjs`), then projected by `tools/build-text-css.mjs` onto one class per style, every declaration a `var()` into `tokens.css`. Elevation needed no new record: the effect styles follow `docs/foundations/effects.md`'s composition rule exactly, and `--stylos-shadow-elevation-1…6` already carry it. The avatar paint styles are image fills, exported once at 256×256 to `assets/avatars/`; they will enter the package when the Avatar component slice needs them.
+>
 > **Amended 2026-09-06: `./fonts.css` joins the map.** Discovered mounting the first component in the workshop: `tokens.css` names Georama and JetBrains Mono but nothing in the package supplied them, so every consumer fell back to the system stack. The package that names the families ships the faces — `tools/build-ui-fonts.mjs` copies the committed subsets from `assets/fonts/` to `dist/assets/fonts/` and writes `dist/fonts.css` with the `@font-face` rules, rendered by the same `fontFacesCss` the registry-viewer pages use, so the two cannot drift. Copied, never fetched at build: a font update is a deliberate commit with a diff, not a side effect of a build. A separate file from `tokens.css` deliberately — a client theme with its own brand face links its own faces and skips this export.
 
 ### 2.1 The exports map
@@ -33,6 +35,7 @@ Part A can land while the package is still three components deep; it costs a bui
   ".":                { "svelte": "./src/index.ts" },
   "./tokens.css":     "./dist/tokens.css",
   "./fonts.css":      "./dist/fonts.css",
+  "./text.css":       "./dist/text.css",
   "./tokens.json":    "./dist/tokens.json",
   "./css":            "./dist/css/stylos.css",
   "./css/*.css":      "./dist/css/*.css",

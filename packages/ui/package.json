@@ -16,6 +16,7 @@
     },
     "./tokens.css": "./dist/tokens.css",
     "./fonts.css": "./dist/fonts.css",
+    "./text.css": "./dist/text.css",
     "./tokens.json": "./dist/tokens.json",
     "./css": "./dist/css/stylos.css",
     "./css/*.css": "./dist/css/*.css",

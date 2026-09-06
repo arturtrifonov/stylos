@@ -3,3 +3,5 @@
 import "@stylos/ui/tokens.css";
 // The faces behind the families tokens.css names — the package supplies them.
 import "@stylos/ui/fonts.css";
+// The recorded text styles as classes (figma/text-styles.yaml).
+import "@stylos/ui/text.css";
