@@ -145,7 +145,7 @@ The long pole is **S4**: thirty-nine component contracts, each needing judgement
 - Shadows composed per [`effects.md`](docs/foundations/effects.md) — cumulative stacks, not one layer per level.
 - Fail on a token that disappeared without acknowledgement. **This moved to `tokens:import`**, where the withdrawal actually happens: the CSS is a build result and is not committed, so it has no baseline to compare a run against. The CSS build's whole responsibility for disappearance is refusing to run on a set that fails `tokens:check` ([SPEC 0007](docs/specs/0007-tokens-to-css.md) §6).
 
-**Then the package itself. The stack is decided** — Svelte 5, TypeScript, and Zag.js for behaviour, fixed by [decision 0002](docs/decisions/0002-frontend-stack.md) on 2026-09-06, when the work reached the point the old "revisit when the work actually starts" was waiting for. The shape below stays a planned approach:
+**Then the package itself. The stack is decided** — Svelte 5, TypeScript, and Zag.js for behaviour, fixed by [decision 0002](docs/decisions/0002-frontend-stack.md) on 2026-09-06, when the work reached the point the old "revisit when the work actually starts" was waiting for. The work order is [SPEC 0009](docs/specs/0009-stylos-ui-package.md); the first vertical slice (Badge) is built — the npm workspace, the generators (`props.ts` and the Storybook stories, from the registry), the Stylelint rules and the workshop:
 
 - **One package**, `@stylos/ui`, rather than splitting tokens/icons/components. Simplest to version for a solo maintainer; splitting later is a mechanical extraction, not a redesign.
 - **Plain CSS + custom properties** for component internals, referencing the same properties consumer theming uses. No build-time styling dependency, one styling vocabulary, and a component's internals and a consumer's override become the same mechanism rather than two layers.
@@ -155,7 +155,7 @@ Work:
 
 - Scaffold the package; consume the generated CSS as the only source of visual values.
 - Implement in dependency order — primitives → elements → objects → widgets → layouts. The registry's `children` field gives the order.
-- Per component, a prop ↔ Figma variant property mapping table. Divergence is a bug in one side, not a translation detail.
+- Per component, props ↔ the entry's `api`, 1:1 under the rule of [SPEC 0009](docs/specs/0009-stylos-ui-package.md) §3 — `props.ts` is generated from the entry, so the compiler checks the mapping. Divergence is a bug in one side, not a translation detail.
 - A lint rule rejecting hex colours and raw px outside the generated token file.
 - Accessibility tests against [`accessibility.md`](docs/foundations/accessibility.md) — the target set in Stage 4.
 

@@ -106,6 +106,16 @@ Three things in it are authored rather than read, because Figma has no field for
 
 `tokens-report.mjs` renders `tokens/*.yaml` as Markdown. This is why no foundation document transcribes a token value — a copied value is wrong at the next tweak in Figma.
 
+## `build-ui-types.mjs` and `build-ui-stories.mjs`
+
+The `@stylos/ui` generators ([SPEC 0009](../docs/specs/0009-stylos-ui-package.md) §4), run together with `tokens:css` by `npm run ui:generate`. Both read the registry through `lib/registry.mjs` and generate only for components that have a directory under `packages/ui/src/components/` — a directory appears when a component's `.svelte` is written, and a directory matching no registry entry fails the build.
+
+`build-ui-types.mjs` writes `props.ts` per component from the entry's `api`, under the §3 mapping rule — variant values as a string union, verbatim — so a wrong prop value is a compile error and the 1:1 props ↔ `api` mapping is checked by the compiler rather than by eye. This is the condition under which TypeScript was accepted ([ADR 0002](../docs/decisions/0002-frontend-stack.md)): types are generated, never hand-written.
+
+`build-ui-stories.mjs` writes one Svelte CSF story file per component into `apps/workshop/stories/generated/`, with a `default` case and a case per documented variant value, every other prop at its contract default. The directory is regenerated wholesale, so a story survives exactly as long as its contract does.
+
+Both outputs are gitignored and rebuilt, like every generated thing.
+
 The CSS build fails loudly on: two token names that slugify to one custom property, naming both; a role whose alias contradicts its slot; a `var()` referencing a name the file does not define; the two scopes declaring different sets of properties; a string token with no authored fallback stack; and a token in `tokens/` that did not reach the output — there is no allowlist and no pruning by current usage, because that would make the CSS a function of the component set rather than of the token set.
 
 `tokens:check` and `tokens:import` fail loudly on: a reference that does not resolve or that loops; a token with neither a value nor a reference; a reference bound across modes (a dark-mode variable pointing into `palette.light`); a role referencing a different token per mode without being declared `mode_dependent`, and the converse; a stale `mode_dependent` entry; token names differing between a collection's modes; a colour space other than sRGB, which cannot be stored as hex; and a YAML round-trip that does not reproduce what was intended. Colours that are not 8-bit representable are warnings, not failures — `--strict` promotes them.

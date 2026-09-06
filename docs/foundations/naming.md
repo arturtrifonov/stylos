@@ -50,7 +50,7 @@ Lowercase, both names and values.
 
 | Property | Values | For |
 | --- | --- | --- |
-| `state` | `default`, `hover`, `active`, `focus`, `disabled` | interaction only |
+| `state` | `default`, `hover`, `active`, `focus`, `disabled`, `read only` | interaction only |
 | `tone` | drawn from the colour vocabulary — see below | which semantic colour the component takes |
 | `validation` | `off`, `error`, `warning`, `success` | form outcome |
 | `is checked` | `false`, `true`, `mixed` | checkbox / radio selection |
