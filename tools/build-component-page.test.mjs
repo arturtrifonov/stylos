@@ -665,3 +665,83 @@ test("carries no token value onto the page", () => {
   const body = html.replace(/<style>[\s\S]*?<\/style>/, "");
   assert.doesNotMatch(body, /--stylos|tokens\//);
 });
+
+// --- real previews (SPEC 0011 §5: a sample is real or it is absent) ----------
+
+const PREVIEW = {
+  tokensCss: ":root { --stylos-color-text-base: #1a2a3a; }",
+  byId: new Map([["Checkbox Input", ".stylos-checkbox-input { color: var(--stylos-color-text-base); }"]]),
+};
+
+test("an implemented component opens on a live preview and ships its CSS", () => {
+  const entry = contract();
+  const html = renderComponentPage(entry, pageContext([entry], { resolveToken, preview: PREVIEW }));
+  assert.match(html, /class="preview-hero"><span class="stylos-checkbox-input" data-size="extra small" data-is-checked="false">/);
+  assert.match(html, /class="slot live"/);
+  assert.doesNotMatch(html, /class="slot" style="width:/);
+  assert.ok(html.includes(PREVIEW.tokensCss), "the token sheet is inlined");
+  assert.ok(html.includes(PREVIEW.byId.get("Checkbox Input")), "the component's own CSS is inlined");
+});
+
+test("a component that is not implemented keeps its placeholders", () => {
+  const entry = contract();
+  const html = renderComponentPage(entry, pageContext([entry], { resolveToken }));
+  assert.doesNotMatch(html, /class="slot live"|class="preview-hero"/);
+  assert.match(html, /class="slot" style="width:/);
+});
+
+test("an assignment the contract refuses falls back to the placeholder", () => {
+  const entry = withApi((api) => [
+    {
+      ...api[0],
+      examples: [{ verdict: "dont", caption: "…", props: { "no such prop": "x" } }],
+    },
+    ...api.slice(1),
+  ]);
+  const html = renderComponentPage(entry, pageContext([entry], { resolveToken, preview: PREVIEW }));
+  assert.match(html, /class="example-col dont">\s*<p class="verdict">✕ Do not<\/p>\s*<div class="canvas"><div class="ex"><div class="slot" style="width:/);
+});
+
+test("a live value row rides on the contract's defaults", () => {
+  const entry = contract();
+  const html = renderComponentPage(entry, pageContext([entry], { resolveToken, preview: PREVIEW }));
+  // the `size: medium` row still carries the default `is checked`
+  assert.match(html, /<span class="stylos-checkbox-input" data-size="medium" data-is-checked="false"><\/span>/);
+});
+
+test("a boolean shows both states, and switches on the property it controls", () => {
+  const entry = withApi((api) => [
+    api[0],
+    { name: "has note", kind: "boolean", default: false, controls: ["note"], description: "The gate." },
+    { name: "note", kind: "text", default: "A hint", description: "The line." },
+  ]);
+  const html = renderComponentPage(entry, pageContext([entry], { resolveToken, preview: PREVIEW }));
+  assert.match(html, /class="val">false</);
+  assert.match(html, /class="val">true</);
+  assert.match(html, /data-has-note="true"/);
+  // the `note` row renders with its gate on, so the line is actually visible
+  assert.match(html, /data-has-note="true"[^>]*>A hint<\/span>/);
+});
+
+test("do and do-not examples sit in their own columns", () => {
+  const entry = withApi((api) => [
+    {
+      ...api[0],
+      examples: [
+        { verdict: "do", props: { size: "medium" } },
+        { verdict: "dont", caption: "…", props: { size: "extra small" } },
+        { verdict: "do", props: { size: "extra small" } },
+      ],
+    },
+    ...api.slice(1),
+  ]);
+  const html = renderComponentPage(entry, pageContext([entry], { resolveToken }));
+  assert.deepEqual(
+    [...html.matchAll(/class="example-col (do|dont)"/g)].map((m) => m[1]),
+    ["do", "dont"],
+    "one column per verdict, do first"
+  );
+  const doCol = html.slice(html.indexOf('class="example-col do"'), html.indexOf('class="example-col dont"'));
+  assert.equal([...doCol.matchAll(/class="ex"/g)].length, 2, "both do-examples share the one field");
+  assert.doesNotMatch(doCol, /Do not/);
+});

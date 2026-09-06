@@ -71,12 +71,16 @@ npm test                  # tool tests
 npm run build:skills      # skills/src/ → skills/dist/, imported into Figma Agent by hand
 npm run validate:registry # component registry: contradictions fail, judgements are reported
 npm run build             # → build/, the whole publishable site
+npm run build:publish     # the same, plus the Storybook workshop at build/storybook/
 npm run registry:view     # → build/registry.html alone, while editing YAML
 npm run components:view   # → build/components/ alone, one page per component
 ```
 
-`npm run build` is the one that produces something uploadable: it writes the
-home page, the registry view and every component page, and copies `assets/` in
-beside them. The other two are the same renderers on their own, for the loop
-where a rebuild of 101 pages is not worth waiting for — they do not copy the
-fonts, so a page built that way falls back to the system stack.
+`npm run build` produces something uploadable: it writes the front page, the
+registry view and every component page, and copies `assets/` in beside them.
+`npm run build:publish` is the tree the site is published from — it builds the
+workshop first and copies it in ([SPEC 0011](docs/specs/0011-project-website.md));
+the deploy itself is a manual upload. The last two are the same renderers on
+their own, for the loop where a rebuild of 101 pages is not worth waiting
+for — they do not copy the fonts, so a page built that way falls back to the
+system stack.

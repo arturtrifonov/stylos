@@ -43,6 +43,8 @@ import {
   MOTION_FIELDS,
 } from "./lib/registry.mjs";
 import { SIZING_TOKEN_FIELDS, createTokenResolver } from "./lib/sizing.mjs";
+import { CHROME_CSS, renderSiteHeader, renderSiteFooter } from "./lib/chrome.mjs";
+import { sampleHtml, defaultAssignment, buildPreviewAssets } from "./lib/preview.mjs";
 import { loadTheme, themeCss } from "./lib/theme.mjs";
 
 // The page is opened by one person, from disk, on a wide screen, to read one
@@ -173,24 +175,76 @@ h2 { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: 
 .property > .label .desc { font-size: var(--text-meta); line-height: 1.55; color: var(--fg-quiet); margin-top: .7rem; }
 .property > .label .finding { margin-top: .9rem; font-size: var(--text-meta); }
 
-.value {
+/* One panel per property, every value on it. The panel is one grid and each
+   row spans it on subgrid, so the samples share a column and the assignments
+   line up down the page — the reading the owner asked for: components on one
+   field, parameters on one vertical. */
+.values {
   display: grid;
-  grid-template-columns: auto minmax(0, 20ch) minmax(0, 1fr);
-  column-gap: 1.5rem;
+  /* The component's field first and widest — the render is the subject and
+     it gets the air; the assignment is set small and quiet a track away, so
+     a two-dot indicator is not crowded by its own caption. */
+  grid-template-columns: minmax(15rem, 22rem) minmax(0, 20ch) minmax(0, 1fr);
+  column-gap: 2.5rem;
+  padding: .35rem 1.5rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+.value {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
   align-items: center;
-  padding: .42rem 0;
+  padding: .7rem 0;
   border-bottom: 1px solid var(--rule);
 }
 .value:last-of-type { border-bottom: 0; }
-.value .assign { font-family: var(--font-mono); font-size: var(--text-meta); }
-.value .assign .val { font-weight: 600; }
-.value .aside { font-size: var(--text-meta); line-height: 1.45; color: var(--fg-quiet); padding: .15rem 0; }
+.value .assign { font-family: var(--font-mono); font-size: var(--text-small); color: var(--fg-faint); }
+.value .assign .val { font-weight: 500; color: var(--fg-quiet); }
+.value .aside { font-size: var(--text-meta); line-height: 1.5; color: var(--fg-quiet); padding: .15rem 0; min-width: 0; }
 .value .aside .status { color: var(--tone, var(--fg-quiet)); margin-right: .4rem; }
 .value .aside .criterion { color: var(--fg-faint); }
-.value .aside dl { margin: .2em 0 0; }
-.value .aside dt { display: none; }
-.value .aside dd { margin: .25em 0 0; }
-.value .aside dd::before { content: attr(data-label); color: var(--fg-faint); margin-right: .35em; }
+/* One line per remark, the rest a click away — a paragraph in the aside makes
+   the row about the paragraph instead of the component. The line is a
+   <details> summary washed with the sunken background so it reads as
+   clickable; the full text opens as a small popover under it. No script:
+   the disclosure is the browser's own. */
+.value .aside .clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.value .aside .clip-label { color: var(--fg-faint); }
+.value .aside .note { position: relative; }
+.value .aside .note + .note, .value .aside .note + .flat, .value .aside .flat + .note { margin-top: .25em; }
+.value .aside .note summary {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+  list-style: none;
+  cursor: pointer;
+  background: var(--bg-sunken);
+  border-radius: var(--radius-xs);
+  padding: .12em .55em;
+}
+.value .aside .note summary::-webkit-details-marker { display: none; }
+.value .aside .note summary:hover { background: var(--bg-raised); }
+.value .aside .note[open] summary { background: var(--bg-raised); }
+.value .aside .note .pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 30;
+  width: min(46ch, 70vw);
+  background: var(--bg);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-md);
+  padding: .8rem 1rem;
+  box-shadow: 0 10px 28px rgb(0 0 0 / .16);
+  color: var(--fg);
+  white-space: normal;
+  line-height: 1.55;
+}
+.value .aside .note .pop p { margin: 0; }
+.value .aside .note .pop p + p { margin-top: .55em; }
+.value .aside .flat { display: block; padding: .12em 0; }
 
 /* The placeholder a rendered sample will replace. Dimensions come from the
    contract's own tokens, so nothing about the layout moves when it does. */
@@ -208,12 +262,48 @@ h2 { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: 
   flex: none;
 }
 .slot span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* The live slot is the component itself, bare — no box of its own, because a
+   border around a Label reads as part of the Label. The ground it stands on
+   is the panel (.values, .canvas), which is the page's own surface: the
+   render is the truth about the size and the colour, and nothing may frame
+   it into looking like something else. */
+.slot.live {
+  width: auto;
+  height: auto;
+  min-height: 26px;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
+  color: var(--fg);
+  font: 400 var(--text-body)/1.4 var(--font-sans);
+}
+.preview .preview-hero {
+  display: flex;
+  align-items: center;
+  padding: 1.8rem 1.6rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
 
-.examples { margin-top: 1.2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1.2rem; }
-.example .verdict { font-weight: 600; font-size: var(--text-meta); margin-bottom: .45rem; }
-.example.do .verdict { color: var(--do); }
-.example.dont .verdict { color: var(--dont); }
-.example .caption { font-size: var(--text-meta); line-height: 1.5; color: var(--fg-quiet); margin-top: .45rem; }
+.examples { margin-top: 1.2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1.6rem; align-items: start; }
+.example-col { min-width: 0; }
+.example-col .verdict { font-weight: 600; font-size: var(--text-meta); margin-bottom: .45rem; }
+.example-col.do .verdict { color: var(--do); }
+.example-col.dont .verdict { color: var(--dont); }
+/* One field per verdict, the examples on it separated the way the value rows
+   are — the same white ground, so the component stands on the page rather
+   than in a box of unclear ownership. */
+.example-col .canvas {
+  padding: .2rem 1.2rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+.example-col .ex { padding: .9rem 0; border-bottom: 1px solid var(--rule); }
+.example-col .ex:last-child { border-bottom: 0; }
+.example-col .caption { font-size: var(--text-meta); line-height: 1.5; color: var(--fg-quiet); margin-top: .55rem; }
 
 /* The sizing run. The resolved value leads and the token name sits under it:
    the numbers make the run legible as a run, the names say where they came
@@ -320,9 +410,19 @@ export function esc(value) {
   return String(value ?? "").replace(/[&<>"']/g, (c) => ESCAPES[c]);
 }
 
+/**
+ * Prose out of the YAML, escaped, with the one bit of markup the entries
+ * actually use: backticks around a token, a property or a value. Rendered as
+ * the mono span rather than printed — a literal backtick on the page is the
+ * file format showing through.
+ */
+function prose(text) {
+  return esc(text).replace(/`([^`]+)`/g, '<span class="mono">$1</span>');
+}
+
 /** A prose field is one line in the file by necessity; it is a paragraph here. */
 function paragraph(text, className) {
-  return `<p${className ? ` class="${className}"` : ""}>${esc(text)}</p>`;
+  return `<p${className ? ` class="${className}"` : ""}>${prose(text)}</p>`;
 }
 
 /**
@@ -333,7 +433,22 @@ function paragraph(text, className) {
  * structural. This is the only unfinished thing on the page and the only
  * function that has to change when it is finished.
  */
-export function previewSlot(entry, assignment, resolveToken) {
+export function previewSlot(entry, assignment, resolveToken, live = false) {
+  // The real render, where the component is implemented (SPEC 0011 §5): the
+  // shipped CSS is on the page, so the DOM-contract markup is the preview.
+  // An assignment the contract refuses — a registry example is the contract's
+  // to state, not this function's to correct — falls back to the placeholder.
+  if (live) {
+    try {
+      // The row's assignment rides on top of the contract's defaults: a tone
+      // row still needs the default count to have anything to paint, and a
+      // boolean row needs the rest of the component around it.
+      return `<div class="slot live">${sampleHtml(entry, { ...defaultAssignment(entry), ...assignment })}</div>`;
+    } catch {
+      // fall through to the placeholder
+    }
+  }
+
   const { width, height } = slotSize(entry, assignment.size, resolveToken);
   const text = Object.entries(assignment)
     .map(([name, value]) => `${name}=${value}`)
@@ -379,11 +494,44 @@ function number(value) {
  */
 function assignmentFor(entry, property, value) {
   const assignment = { [property.name]: value };
+  // A boolean that `controls` this property gates whether it draws at all —
+  // a row about `additional text` with the line switched off shows nothing.
+  // The row is about the property, so its gate is on.
+  for (const other of entry.api) {
+    if (other?.kind !== "boolean" || other.name === property.name) continue;
+    if (Array.isArray(other.controls) && other.controls.includes(property.name)) {
+      assignment[other.name] = true;
+    }
+  }
   for (const other of entry.api) {
     if (other?.kind !== "variant" || other.name === property.name) continue;
     if (other.default !== undefined) assignment[other.name] = other.default;
   }
   return assignment;
+}
+
+/**
+ * The rows a property without a variant list shows. A boolean has exactly two
+ * states and shows both; a text property shows its default and up to two more
+ * values borrowed from its own do-examples — free text has no value list to
+ * mirror, and the examples are the values the contract already vouches for.
+ */
+function valueRowsFor(property) {
+  if (property.kind === "boolean") return [{ value: false }, { value: true }];
+
+  const seen = new Set();
+  const rows = [];
+  const add = (value) => {
+    if (value === undefined || seen.has(value)) return;
+    seen.add(value);
+    rows.push({ value });
+  };
+  add(property.default);
+  for (const example of Array.isArray(property.examples) ? property.examples : []) {
+    if (example.verdict === "dont") continue;
+    add(example.props?.[property.name]);
+  }
+  return rows.slice(0, 3);
 }
 
 function findingBlock(finding, className = "finding") {
@@ -481,64 +629,86 @@ function renderRequirements(entry) {
   return band("Requirements", entry.a11y.map((finding) => findingBlock(finding)).join(""));
 }
 
-function renderValueRow(entry, property, value, resolveToken) {
-  const slot = previewSlot(entry, assignmentFor(entry, property, value.value), resolveToken);
+function renderValueRow(entry, property, value, resolveToken, live = false) {
+  const slot = previewSlot(entry, assignmentFor(entry, property, value.value), resolveToken, live);
   const label =
     `<span class="assign"><span class="faint">${esc(property.name)}:</span> ` +
     `<span class="val">${esc(value.value)}</span></span>`;
 
-  // Set in the outer column: a reader scanning the value list sees at a glance
-  // which values carry a finding, and a reader going down the list never has to
-  // read through one.
-  const aside = [];
+  // Set in the outer column, one line per value, so the row stays the height
+  // of the component. The line is the trigger and everything the value has to
+  // say — the a11y note, the note, the rationale — is one popover a click
+  // away, via <details>, so the page keeps its no-script rule. An a11y
+  // finding's title — the status and the criterion — outranks any prose as
+  // the line; without one, the first remark is the line.
+  const remarks = [];
+  if (value.a11y?.note) remarks.push(prose(value.a11y.note));
+  if (value.note) remarks.push(prose(value.note));
+  if (value.rationale) remarks.push(`<span class="clip-label">Why it ships — </span>${prose(value.rationale)}`);
+  const body = remarks.map((remark) => `<p>${remark}</p>`).join("");
+
+  let summary = "";
   if (value.a11y) {
-    aside.push(`<span class="status caps">a11y ${esc(value.a11y.status)}</span>`);
-    if (value.a11y.criterion) aside.push(`<span class="criterion mono">${esc(value.a11y.criterion)}</span>`);
+    summary =
+      `<span class="status caps">a11y ${esc(value.a11y.status)}</span>` +
+      (value.a11y.criterion ? ` <span class="criterion mono">${esc(value.a11y.criterion)}</span>` : "");
+  } else if (value.note) {
+    summary = `<span class="clip">${prose(value.note)}</span>`;
+  } else if (value.rationale) {
+    summary = `<span class="clip"><span class="clip-label">Why it ships — </span>${prose(value.rationale)}</span>`;
   }
-  const detail = [];
-  if (value.note) detail.push(["", value.note]);
-  if (value.a11y?.note) detail.push(["", value.a11y.note]);
-  if (value.rationale) detail.push(["Why it ships", value.rationale]);
-  if (detail.length > 0) {
-    aside.push(
-      `<dl>${detail
-        .map(
-          ([label_, text]) =>
-            `<dt>${esc(label_ || "Note")}</dt><dd${
-              label_ ? ` data-label="${esc(label_)} —"` : ""
-            }>${esc(text)}</dd>`
-        )
-        .join("")}</dl>`
-    );
-  }
+
+  const aside = !summary
+    ? []
+    : [
+        body
+          ? `<details class="note"><summary>${summary}</summary><div class="pop">${body}</div></details>`
+          : `<span class="flat">${summary}</span>`,
+      ];
 
   const tone = value.a11y ? ` t-${esc(value.a11y.status)}` : "";
-  return `<div class="value${tone}">${slot}${label}<div class="aside">${aside.join(" ")}</div></div>`;
+  return `<div class="value${tone}">${slot}${label}<div class="aside">${aside.join("")}</div></div>`;
 }
 
-function renderExamples(entry, property, resolveToken) {
+function renderExamples(entry, property, resolveToken, live = false) {
   const examples = Array.isArray(property.examples) ? property.examples : [];
   if (examples.length === 0) return "";
 
-  const blocks = examples.map((example) => {
+  const item = (example) => {
     const props = example.props ?? {};
     // What the example sets comes first: it is the point of the example, and
     // the slot is narrow enough that what comes last is what gets cut.
     const assignment = { ...props, ...assignmentFor(entry, property, property.default ?? "") };
     for (const name of Object.keys(props)) assignment[name] = props[name];
 
-    const dont = example.verdict === "dont";
-    return `<div class="example ${dont ? "dont" : "do"}">
-<p class="verdict">${dont ? "✕ Do not" : "✓ Do"}</p>
-${previewSlot(entry, assignment, resolveToken)}
-${example.caption ? paragraph(example.caption, "caption") : ""}
-</div>`;
-  });
+    return `<div class="ex">${previewSlot(entry, assignment, resolveToken, live)}${
+      example.caption ? paragraph(example.caption, "caption") : ""
+    }</div>`;
+  };
 
-  return `<div class="examples">${blocks.join("")}</div>`;
+  // Two columns, two verdicts, one heading each: everything to do on the
+  // left, everything not to on the right, the examples inside separated by
+  // the same hairline the value rows use.
+  const column = (list, cls, title) =>
+    list.length > 0
+      ? `<div class="example-col ${cls}">
+<p class="verdict">${title}</p>
+<div class="canvas">${list.map(item).join("")}</div>
+</div>`
+      : "";
+
+  return `<div class="examples">${column(
+    examples.filter((example) => example.verdict !== "dont"),
+    "do",
+    "✓ Do"
+  )}${column(
+    examples.filter((example) => example.verdict === "dont"),
+    "dont",
+    "✕ Do not"
+  )}</div>`;
 }
 
-function renderProperty(entry, property, resolveToken, first = false) {
+function renderProperty(entry, property, resolveToken, first = false, live = false) {
   const label = [
     `<span class="name mono">${esc(property.name)}</span>`,
     `<div class="kind caps">${esc(KIND_GLYPHS[property.kind] ?? "·")} ${esc(property.kind ?? "")}</div>`,
@@ -553,26 +723,21 @@ function renderProperty(entry, property, resolveToken, first = false) {
         .join(", ")}</div>`
     );
   }
-  if (property.description) label.push(`<div class="desc">${esc(property.description)}</div>`);
+  if (property.description) label.push(`<div class="desc">${prose(property.description)}</div>`);
   if (property.a11y) label.push(findingBlock(property.a11y));
 
-  const values = Array.isArray(property.values) ? property.values : [];
-  const body =
-    values.length > 0
-      ? values.map((value) => renderValueRow(entry, property, value, resolveToken)).join("")
-      : // text and instance properties have no values: what there is to show is
-        // the default, and then whatever examples were chosen.
-        (property.default !== undefined
-          ? renderValueRow(entry, property, { value: property.default }, resolveToken)
-          : "");
+  // A variant shows its list; a boolean shows both states; text shows the
+  // default and what its own do-examples vouch for (valueRowsFor).
+  const values = Array.isArray(property.values) && property.values.length > 0 ? property.values : valueRowsFor(property);
+  const body = values.map((value) => renderValueRow(entry, property, value, resolveToken, live)).join("");
 
   return `<div class="band property${first ? " first" : ""}">
 <div class="label">${label.join("")}</div>
-<div class="body">${body}${renderExamples(entry, property, resolveToken)}</div>
+<div class="body">${body ? `<div class="values">${body}</div>` : ""}${renderExamples(entry, property, resolveToken, live)}</div>
 </div>`;
 }
 
-function renderApi(entry, resolveToken) {
+function renderApi(entry, resolveToken, live = false) {
   if (entry.api.length === 0) return "";
 
   const count =
@@ -587,7 +752,7 @@ function renderApi(entry, resolveToken) {
   return (
     band("Public API", count) +
     entry.api
-      .map((property, index) => renderProperty(entry, property, resolveToken, index === 0))
+      .map((property, index) => renderProperty(entry, property, resolveToken, index === 0, live))
       .join("")
   );
 }
@@ -799,39 +964,93 @@ function renderUnwritten(entry) {
  * back to the browser's own colours rather than failing to build.
  */
 function chromeFor(context, up) {
-  return context.theme ? themeCss(context.theme, { prefix: `${up}../` }) : "";
+  const theme = context.theme ? themeCss(context.theme, { prefix: `${up}../` }) : "";
+  return `${theme}${context.site ? CHROME_CSS : ""}`;
+}
+
+/**
+ * The shared site header and footer, at this page's depth — SPEC 0011 §3.
+ * A context without site facts (a fixture, a standalone `components:view`)
+ * renders neither, and the page stands alone the way it always did.
+ */
+function siteChrome(context, up) {
+  if (!context.site) return { header: "", footer: "" };
+  const prefix = `${up}../`;
+  return {
+    header: renderSiteHeader({
+      prefix,
+      active: "components",
+      logo: context.logo,
+      storybook: context.site.storybook,
+      figmaUrl: context.site.figmaMain ?? context.site.figma?.[0]?.url ?? null,
+      repoUrl: context.site.repo,
+    }),
+    footer: renderSiteFooter({
+      generated: context.generated,
+      version: context.site.version,
+      repoUrl: context.site.repo,
+    }),
+  };
+}
+
+/**
+ * The page's opening render, where the component is implemented: the thing
+ * itself at every property's default, from the shipped CSS. Absent for
+ * everything else — the placeholder slots below say what would render.
+ */
+function renderPreviewBand(entry, live) {
+  if (!live) return "";
+  let html;
+  try {
+    html = sampleHtml(entry, defaultAssignment(entry));
+  } catch {
+    return "";
+  }
+  return band(
+    "Preview",
+    `<div class="preview-hero">${html}</div>
+<p class="quiet">Rendered from the shipped CSS at every property's default — the same file <span class="mono">@stylos/ui/css</span> exports, on the public DOM contract. Every value row and example below renders the same way.</p>`,
+    "preview"
+  );
 }
 
 export function renderComponentPage(entry, context) {
   const up = "../".repeat(slugPath(entry.id).split("/").length - 1);
+  const site = siteChrome(context, up);
+  const live = context.preview?.byId.has(entry.id) ?? false;
+  const previewCss = live ? `\n<style>${context.preview.tokensCss}${context.preview.byId.get(entry.id)}</style>` : "";
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(entry.name)} — Stylos component</title>
-<style>${chromeFor(context, up)}${CSS}</style>
+<style>${chromeFor(context, up)}${CSS}</style>${previewCss}
 </head>
 <body>
-<a class="back" href="${esc(`${up}index.html`)}">${context.logo}<span>← All components</span></a>
+${site.header}
+<a class="back" href="${esc(`${up}index.html`)}">${site.header ? "" : context.logo}<span>← All components</span></a>
 ${renderHeader(entry, context)}
+${renderPreviewBand(entry, live)}
 ${renderUnwritten(entry)}
 ${renderPurpose(entry)}
 ${renderUseWhen(entry, context)}
 ${renderRequirements(entry)}
-${renderApi(entry, context.resolveToken)}
+${renderApi(entry, context.resolveToken, live)}
 ${renderSizing(entry, context.resolveToken)}
 ${renderMotion(entry)}
 ${renderLimitations(entry)}
 ${renderFigmaNotes(entry)}
 ${renderRelations(entry, context)}
 ${renderRecord(entry, context)}
+${site.footer}
 </body>
 </html>
 `;
 }
 
 export function renderIndex(entries, context) {
+  const site = siteChrome(context, "");
   const groups = [...LEVELS, null]
     .map((level) => ({
       level,
@@ -869,7 +1088,8 @@ export function renderIndex(entries, context) {
 <style>${chromeFor(context, "")}${CSS}</style>
 </head>
 <body>
-<a class="back" href="../index.html">${context.logo}<span>← Home</span></a>
+${site.header}
+<a class="back" href="../index.html">${site.header ? "" : context.logo}<span>← Home</span></a>
 <header class="masthead">
 <h1>Components</h1>
 <p class="summary">${entries.length} entries, ${written} of them with a contract written.</p>
@@ -877,6 +1097,7 @@ export function renderIndex(entries, context) {
 <p class="family">The filterable index over the same data — relations, Figma links and the Airtable history — is <a href="../registry.html">the registry</a>.</p>
 </header>
 ${body}
+${site.footer}
 </body>
 </html>
 `;
@@ -890,6 +1111,8 @@ export function pageContext(
     resolveToken = () => undefined,
     theme = null,
     logo = "",
+    site = null,
+    preview = null,
   } = {}
 ) {
   const family = new Map();
@@ -905,6 +1128,8 @@ export function pageContext(
     resolveToken,
     theme,
     logo,
+    site,
+    preview,
     importDate: "2026-08-20",
   };
 }
@@ -945,6 +1170,7 @@ if (isMain) {
     resolveToken: createTokenResolver(root),
     theme,
     logo: readLogo(root),
+    preview: buildPreviewAssets(root, entries),
   });
 
   const out = path.join(root, "build/components");

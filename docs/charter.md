@@ -66,11 +66,11 @@ Customization happens through documented semantic variables and supported compon
 - Figma Agent skills for repeatable operations and audits
 - a reproducible build compiling modular skill sources into an importable Figma Agent document
 - a repository structure for documentation, tokens, skills, and build tools
+- a generated web documentation surface — the site, built from the registry, the tokens and the plan, published by hand ([SPEC 0011](specs/0011-project-website.md))
 
 ### Planned
 
 - a Svelte component package
-- a web documentation surface
 - design-to-code mapping between Figma assets and Svelte components
 - automated validation and linting where Figma's APIs allow reliable checks
 - commercial packaging, licensing and support rules, if the system is released externally

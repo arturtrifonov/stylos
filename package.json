@@ -3,12 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "description": "Stylos Design System \u2014 documentation, canonical design tokens, and Figma Agent skill sources.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arturtrifonov/stylos"
+  },
   "workspaces": [
     "packages/ui",
     "apps/workshop"
   ],
   "scripts": {
     "build": "node tools/build-site.mjs",
+    "build:publish": "npm run workshop:build && npm run build",
     "build:skills": "node tools/build-skills.mjs",
     "validate:skills": "node tools/build-skills.mjs --check",
     "validate:registry": "node tools/lint-registry.mjs",

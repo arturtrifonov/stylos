@@ -15,13 +15,16 @@
 //
 // The output is derived. build/ stays gitignored and is rebuilt, never edited.
 
-import { cpSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { loadRegistry } from "./lib/registry.mjs";
 import { createTokenResolver } from "./lib/sizing.mjs";
 import { loadTheme, themeCss } from "./lib/theme.mjs";
+import { renderSiteFooter, renderSiteHeader } from "./lib/chrome.mjs";
+import { siteFacts } from "./lib/site.mjs";
+import { buildPreviewAssets } from "./lib/preview.mjs";
 import { buildViewData, renderView } from "./build-registry-view.mjs";
 import { buildPages, readLogo } from "./build-component-page.mjs";
 import { renderHome, hasColumn } from "./build-home.mjs";
@@ -40,6 +43,7 @@ const entries = loadRegistry(root);
 const theme = loadTheme(root);
 const logo = readLogo(root);
 const generated = new Date().toISOString().slice(0, 10);
+const site = siteFacts(root, entries);
 
 if (theme.missing.length > 0) {
   console.warn(`theme: ${theme.missing.length} token(s) did not resolve: ${theme.missing.join(", ")}`);
@@ -57,20 +61,54 @@ cpSync(path.join(root, "assets"), path.join(out, "assets"), {
   filter: (source) => path.basename(source) !== "README.md",
 });
 
-write("index.html", renderHome({ entries, theme, logo, generated, column: hasColumn(root), plan: readPlan(root) }));
+// The built workshop rides along when it exists — SPEC 0011 §6. Absent, the
+// tree is built without the link (siteFacts derives both from the same check),
+// which is what `npm run build` without `workshop:build` should produce.
+const storybook = path.join(root, "apps/workshop/storybook-static");
+if (site.storybook) {
+  cpSync(storybook, path.join(out, "storybook"), { recursive: true });
+} else if (!existsSync(storybook)) {
+  console.warn(
+    "storybook: apps/workshop/storybook-static/ is absent — run npm run build:publish to include the workshop"
+  );
+}
+
+write(
+  "index.html",
+  renderHome({ entries, theme, logo, generated, column: hasColumn(root), plan: readPlan(root), site })
+);
 // registry.html sits at the root of build/, so its font URLs need no prefix.
-write("registry.html", renderView(buildViewData(root, entries), { themeCss: themeCss(theme, { prefix: "" }), logo }));
+write(
+  "registry.html",
+  renderView(buildViewData(root, entries), {
+    themeCss: themeCss(theme, { prefix: "" }),
+    logo,
+    siteHeader: renderSiteHeader({
+      prefix: "",
+      active: "registry",
+      logo,
+      storybook: site.storybook,
+      figmaUrl: site.figmaMain,
+      repoUrl: site.repo,
+      bleed: true,
+    }),
+    siteFooter: renderSiteFooter({ generated, version: site.version, repoUrl: site.repo, bleed: true }),
+  })
+);
 
 const pages = buildPages(entries, {
   generated,
   resolveToken: createTokenResolver(root),
   theme,
   logo,
+  site,
+  preview: buildPreviewAssets(root, entries),
 });
 for (const [relative, html] of pages) write(path.join("components", relative), html);
 
 console.log(
   `build/ — index.html, registry.html, ${pages.size - 1} component pages, assets/` +
+    (site.storybook ? ", storybook/" : "") +
     (hasColumn(root) ? "" : "\nassets/column.png is absent; the home page is built without the capital")
 );
 

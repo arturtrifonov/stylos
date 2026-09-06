@@ -63,8 +63,9 @@ const RADII = new Map([
 /**
  * The type scale the pages use, as `--text-*`, addressed into `font`.
  *
- * A page needs seven steps, not nineteen. These are the seven, named by the
+ * A page needs eight steps, not nineteen. These are the eight, named by the
  * job rather than by the number so that moving one is a one-line change here.
+ * `display` is the front page's hero measure (SPEC 0011) and nothing else's.
  */
 const TYPE_SCALE = new Map([
   ["micro", "size/0_625"],
@@ -74,6 +75,7 @@ const TYPE_SCALE = new Map([
   ["lead", "size/1_125"],
   ["section", "size/1_500"],
   ["title", "size/2_500"],
+  ["display", "size/3_000"],
 ]);
 
 /** What a family falls back to. Tokens name a family; they cannot name this. */
