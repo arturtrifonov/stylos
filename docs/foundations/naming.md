@@ -285,4 +285,4 @@ Alphabetical order is not a fallback. It groups nothing and is a way of not deci
 
 ## Relationship to the Svelte package
 
-Component props in `@stylos/ui` are intended to map 1:1 onto the variant and component properties defined here — see [`PLAN.md`](../../PLAN.md) Stage 5 for the planned approach. Whatever supplies interaction behaviour, anatomy and naming stay authored by Stylos. Where a prop name and a Figma property name diverge, one of the two is wrong — that is a defect, not a translation ([`PLAN.md`](../../PLAN.md) Stage 5).
+Component props in `@stylos/ui` are intended to map 1:1 onto the variant and component properties defined here — see [`PLAN.md`](../../PLAN.md) Stage 5 for the approach. Behaviour comes from Zag.js ([decision 0002](../decisions/0002-frontend-stack.md)); anatomy and naming stay authored by Stylos. Where a prop name and a Figma property name diverge, one of the two is wrong — that is a defect, not a translation ([`PLAN.md`](../../PLAN.md) Stage 5).

@@ -4,6 +4,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-06 (the frontend stack is decided)
+
+- **Decision record [0002](docs/decisions/0002-frontend-stack.md) — Svelte 5, TypeScript, Zag.js for behaviour.** The first record since the purge of 2026-08-23, and kept because the choice now clears the bar `docs/decisions/` sets: Stage 5's package work is starting, every component will be written against this stack, and reversing it later rewrites the package rather than adjusting it. Melt UI stops being named as the leading candidate anywhere — the argument for Zag's state machines over a Svelte-bound builder library is made once, in the record. [`PLAN.md`](PLAN.md) Stage 5 and [`naming.md`](docs/foundations/naming.md) now point at it instead of carrying a provisional answer.
+
 ### Added — 2026-09-06 (the record renders as CSS)
 
 Built to [SPEC 0007](docs/specs/0007-tokens-to-css.md), and the first half of [`PLAN.md`](PLAN.md) Stage 5. `tokens/` has been the canonical record since Stage 1 and nothing outside this repository could read it; this is what makes it consumable without transcribing a value.
