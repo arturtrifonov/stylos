@@ -1,165 +1,164 @@
 # GENERATED FILE — do not edit. Written by tools/import-styles.mjs from a Plugin API read.
-# Read 2026-09-06 15:30Z from Stylos / Styles. Aliases into tokens/, never raw values.
+# Read 2026-09-06 16:20Z from Stylos / Styles. Aliases into tokens/, never raw values.
 collection: "text styles"
 source:
-  read: "2026-09-06 15:30Z"
+  read: "2026-09-06 16:20Z"
   figma_file: "Stylos / Styles"
   figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
 styles:
-  "text/normal/extra small":
+  "text/base/extra small":
     "font family": "font/family/normal"
-    "font weight": "font/weight/normal"
+    "font weight": "font/weight/base"
     "font size": "font/size/0_750"
     "line height": "font/line height/text/0_750"
     "letter spacing": "font/letter spacing/style/normal"
     "paragraph spacing": "font/paragraph spacing/0_875"
     "text case": "original"
-  "text/normal/small":
+  "text/base/small":
     "font family": "font/family/normal"
-    "font weight": "font/weight/normal"
+    "font weight": "font/weight/base"
     "font size": "font/size/0_875"
     "line height": "font/line height/text/0_875"
     "letter spacing": "font/letter spacing/style/normal"
     "paragraph spacing": "font/paragraph spacing/1_000"
     "text case": "original"
-  "text/normal/medium":
+  "text/base/medium":
     "font family": "font/family/normal"
-    "font weight": "font/weight/normal"
+    "font weight": "font/weight/base"
     "font size": "font/size/1_000"
     "line height": "font/line height/text/1_000"
     "letter spacing": "font/letter spacing/style/normal"
     "paragraph spacing": "font/paragraph spacing/1_125"
     "text case": "original"
-  "text/normal/large":
+  "text/base/large":
     "font family": "font/family/normal"
-    "font weight": "font/weight/normal"
+    "font weight": "font/weight/base"
     "font size": "font/size/1_125"
     "line height": "font/line height/text/1_125"
     "letter spacing": "font/letter spacing/style/normal"
     "paragraph spacing": "font/paragraph spacing/1_250"
     "text case": "original"
-  "text/normal/extra large":
+  "text/base/extra large":
     "font family": "font/family/normal"
-    "font weight": "font/weight/normal"
+    "font weight": "font/weight/base"
     "font size": "font/size/1_250"
     "line height": "font/line height/text/1_250"
     "letter spacing": "font/letter spacing/style/normal"
     "paragraph spacing": "font/paragraph spacing/1_500"
     "text case": "original"
-  "text/semibold/extra small":
+  "text/emphasis/extra small":
     "font family": "font/family/normal"
-    "font weight": "font/weight/semibold"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/0_750"
     "line height": "font/line height/text/0_750"
     "letter spacing": "font/letter spacing/style/normal"
     "paragraph spacing": "font/paragraph spacing/0_875"
     "text case": "original"
-  "text/semibold/small":
+  "text/emphasis/small":
     "font family": "font/family/normal"
-    "font weight": "font/weight/semibold"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/0_875"
     "line height": "font/line height/text/0_875"
     "letter spacing": "font/letter spacing/style/normal"
     "paragraph spacing": "font/paragraph spacing/1_000"
     "text case": "original"
-  "text/semibold/medium":
+  "text/emphasis/medium":
     "font family": "font/family/normal"
-    "font weight": "font/weight/semibold"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/1_000"
     "line height": "font/line height/text/1_000"
     "letter spacing": "font/letter spacing/style/normal"
     "paragraph spacing": "font/paragraph spacing/1_125"
     "text case": "original"
-  "text/semibold/large":
+  "text/emphasis/large":
     "font family": "font/family/normal"
-    "font weight": "font/weight/semibold"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/1_125"
     "line height": "font/line height/text/1_125"
     "letter spacing": "font/letter spacing/style/normal"
-    "paragraph spacing": "font/paragraph spacing/1_500"
+    "paragraph spacing": "font/paragraph spacing/1_250"
     "text case": "original"
-  "text/semibold/extra large":
+  "text/emphasis/extra large":
     "font family": "font/family/normal"
-    "font weight": "font/weight/semibold"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/1_250"
     "line height": "font/line height/text/1_250"
     "letter spacing": "font/letter spacing/style/normal"
     "paragraph spacing": "font/paragraph spacing/1_500"
     "text case": "original"
-  "label/normal/extra small":
+  "label/base/extra small":
     "font family": "font/family/normal"
-    "font weight": "font/weight/semibold"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/0_750"
     "line height": "font/line height/string/0_750"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
-  "label/normal/small":
+  "label/base/small":
     "font family": "font/family/normal"
-    "font weight": "font/weight/semibold"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/0_875"
     "line height": "font/line height/string/0_875"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
-  "label/normal/medium":
+  "label/base/medium":
     "font family": "font/family/normal"
-    "font weight": "font/weight/semibold"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/1_000"
     "line height": "font/line height/string/1_000"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
-  "label/normal/large":
+  "label/base/large":
     "font family": "font/family/normal"
-    "font weight": "font/weight/semibold"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/1_125"
     "line height": "font/line height/string/1_125"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
-  "label/normal/extra large":
-    "font weight": "font/weight/semibold"
+  "label/base/extra large":
+    "font family": "font/family/normal"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/1_250"
     "line height": "font/line height/string/1_250"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
-    unresolved:
-      - "font family: font/family/string"
-  "label/uppercase/extra small":
+  "label/emphasis/extra small":
     "font family": "font/family/normal"
-    "font weight": "font/weight/semibold"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/0_750"
     "line height": "font/line height/string/0_750"
     "letter spacing": "font/letter spacing/style/uppercase"
     "text case": "uppercase"
-  "label/uppercase/small":
+  "label/emphasis/small":
     "font family": "font/family/normal"
-    "font weight": "font/weight/semibold"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/0_875"
     "line height": "font/line height/string/0_875"
     "letter spacing": "font/letter spacing/style/uppercase"
     "text case": "uppercase"
-  "label/uppercase/medium":
+  "label/emphasis/medium":
     "font family": "font/family/normal"
-    "font weight": "font/weight/semibold"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/1_000"
     "line height": "font/line height/string/1_000"
     "letter spacing": "font/letter spacing/style/uppercase"
     "text case": "uppercase"
-  "label/uppercase/large":
+  "label/emphasis/large":
     "font family": "font/family/normal"
-    "font weight": "font/weight/semibold"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/1_125"
     "line height": "font/line height/string/1_125"
     "letter spacing": "font/letter spacing/style/uppercase"
     "text case": "uppercase"
-  "label/uppercase/extra large":
+  "label/emphasis/extra large":
     "font family": "font/family/normal"
-    "font weight": "font/weight/semibold"
+    "font weight": "font/weight/emphasis"
     "font size": "font/size/1_250"
     "line height": "font/line height/string/1_250"
     "letter spacing": "font/letter spacing/style/uppercase"
     "text case": "uppercase"
   "heading/hl1":
     "font family": "font/family/display"
-    "font weight": "font/weight/bold"
+    "font weight": "font/weight/strong"
     "font size": "font/size/4_000"
     "line height": "font/line height/heading/4_000"
     "letter spacing": "font/letter spacing/style/normal"
@@ -167,7 +166,7 @@ styles:
     width: 110
   "heading/hl2":
     "font family": "font/family/display"
-    "font weight": "font/weight/bold"
+    "font weight": "font/weight/strong"
     "font size": "font/size/3_500"
     "line height": "font/line height/heading/3_500"
     "letter spacing": "font/letter spacing/style/normal"
@@ -175,7 +174,7 @@ styles:
     width: 110
   "heading/hl3":
     "font family": "font/family/display"
-    "font weight": "font/weight/bold"
+    "font weight": "font/weight/strong"
     "font size": "font/size/3_000"
     "line height": "font/line height/heading/3_000"
     "letter spacing": "font/letter spacing/style/normal"
@@ -183,7 +182,7 @@ styles:
     width: 110
   "heading/h1":
     "font family": "font/family/display"
-    "font weight": "font/weight/bold"
+    "font weight": "font/weight/strong"
     "font size": "font/size/2_500"
     "line height": "font/line height/heading/2_500"
     "letter spacing": "font/letter spacing/style/normal"
@@ -191,7 +190,7 @@ styles:
     width: 110
   "heading/h2":
     "font family": "font/family/display"
-    "font weight": "font/weight/bold"
+    "font weight": "font/weight/strong"
     "font size": "font/size/2_000"
     "line height": "font/line height/heading/2_000"
     "letter spacing": "font/letter spacing/style/normal"
@@ -199,7 +198,7 @@ styles:
     width: 110
   "heading/h3":
     "font family": "font/family/display"
-    "font weight": "font/weight/bold"
+    "font weight": "font/weight/strong"
     "font size": "font/size/1_750"
     "line height": "font/line height/heading/1_750"
     "letter spacing": "font/letter spacing/style/normal"
@@ -207,7 +206,7 @@ styles:
     width: 110
   "heading/h4":
     "font family": "font/family/display"
-    "font weight": "font/weight/bold"
+    "font weight": "font/weight/strong"
     "font size": "font/size/1_500"
     "line height": "font/line height/heading/1_500"
     "letter spacing": "font/letter spacing/style/normal"
@@ -215,7 +214,7 @@ styles:
     width: 110
   "heading/h5":
     "font family": "font/family/display"
-    "font weight": "font/weight/bold"
+    "font weight": "font/weight/strong"
     "font size": "font/size/1_250"
     "line height": "font/line height/heading/1_250"
     "letter spacing": "font/letter spacing/style/normal"
@@ -223,7 +222,7 @@ styles:
     width: 110
   "heading/h6":
     "font family": "font/family/display"
-    "font weight": "font/weight/bold"
+    "font weight": "font/weight/strong"
     "font size": "font/size/1_125"
     "line height": "font/line height/heading/1_125"
     "letter spacing": "font/letter spacing/style/normal"
@@ -231,21 +230,21 @@ styles:
     width: 110
   "code/small":
     "font family": "font/family/code"
-    "font weight": "font/weight/normal"
+    "font weight": "font/weight/base"
     "font size": "font/size/0_875"
     "line height": "font/line height/code/0_875"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
   "code/normal":
     "font family": "font/family/code"
-    "font weight": "font/weight/normal"
+    "font weight": "font/weight/base"
     "font size": "font/size/1_000"
     "line height": "font/line height/code/1_000"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
   "code/large":
     "font family": "font/family/code"
-    "font weight": "font/weight/normal"
+    "font weight": "font/weight/base"
     "font size": "font/size/1_125"
     "line height": "font/line height/code/1_125"
     "letter spacing": "font/letter spacing/style/normal"

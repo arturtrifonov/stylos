@@ -4,6 +4,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-09-06 (weight roles say what they mean: base / emphasis / strong)
+
+- **`weight/normal`/`semibold`/`bold` → `weight/base`/`emphasis`/`strong`** (400/450/600) — the old words were typeface-weight vocabulary and two of them lied in it: CSS `bold` means 700 (ours is 600), the industry's `semibold` means 600 (ours is 450). The role is a level of accent; `emphasis`/`strong` carry the ordering HTML authors know from `em`/`strong`. Renamed in Figma, withdrawn and re-imported through the ritual, cascaded through `badge.css`, the Badge contract and `typography.md` — which also stops claiming bold is 700; 600 is the decision. The text styles were regrouped in Figma to match (`text/base|emphasis/*`, `label/base|emphasis/*` — labels' pair is case, not weight) and the record and `text.css` follow. All 32 styles now resolve: the `family/string`/Manrope binding and the drifted paragraph spacing are fixed at the source, so `text.css` no longer skips anything.
+
 ### Added — 2026-09-06 (the text styles are recorded, and shipped as CSS)
 
 - **`figma/text-styles.yaml`** — the record of the 32 Figma text styles, which Variables exports cannot carry: `tools/import-styles.mjs` takes a Plugin API read of the Styles file and writes aliases into `tokens/`, never raw values; each alias is cross-checked against the value the style actually renders, and a binding that does not resolve is recorded under `unresolved` rather than dropped or invented. Elevation needed no record of its own — the live effect styles were verified layer-by-layer against `foundations/effects.md`'s composition rule, and the rule is the record; `focus/*` is out of scope by decision.

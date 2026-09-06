@@ -13,7 +13,7 @@
 //
 //   { "read": "…Z", "figma_file": "…", "figma_key": "…",
 //     "text_styles": [ { "name": "text/normal/medium",
-//       "bound": { "fontFamily": "family/normal", "fontWeight": "weight/normal",
+//       "bound": { "fontFamily": "family/normal", "fontWeight": "weight/base",
 //                  "fontSize": "size/1_000", "lineHeight": "line height/text/1_000",
 //                  "letterSpacing": "letter spacing/style/normal",
 //                  "paragraphSpacing": "paragraph spacing/1_125" },

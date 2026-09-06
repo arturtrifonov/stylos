@@ -104,7 +104,7 @@ sizing_model:
   horizontal: "hug"
   vertical: "fixed"
   adjustable: false
-  intent: "The pill rule is the sizing model: minimum width equals height at every size, so a single digit renders as a circle and two or more digits stretch it into a pill. Height is the Primitive run from sizing.md exactly, unmodified. Corner radius is the `round` token at every size and does not scale, which is what keeps the ends semicircular rather than merely very rounded. Weight is `weight/semibold` at every size — a counter is read at a glance, not in a sentence. Resolve token values with `npm run tokens:report`."
+  intent: "The pill rule is the sizing model: minimum width equals height at every size, so a single digit renders as a circle and two or more digits stretch it into a pill. Height is the Primitive run from sizing.md exactly, unmodified. Corner radius is the `round` token at every size and does not scale, which is what keeps the ends semicircular rather than merely very rounded. Weight is `weight/emphasis` at every size — a counter is read at a glance, not in a sentence. Resolve token values with `npm run tokens:report`."
   type_ramp_intent: "The type ramp is deliberately shorter than the height ramp. Five distinct measures under five heights would put extra small at `size/0_500`, which is not readable, so the ramp bottoms out at `size/0_625` and repeats `size/0_875` across medium and large instead. Height steps at every size; type does not, and the repeat is the decision rather than a gap."
   sizes:
     -

@@ -37,13 +37,15 @@ Do not "fix" this by adding `text` and `string` to `family`.
 
 ## Weight
 
-Three named roles: `weight/normal` 400, `weight/semibold` 450, `weight/bold` 700. The name carries the role, the value carries the number — there is no third layer, and none is wanted.
+Three named roles: `weight/base` 400, `weight/emphasis` 450, `weight/strong` 600. The name carries the role, the value carries the number — there is no third layer, and none is wanted.
+
+The roles were renamed from `normal`/`semibold`/`bold` on 2026-09-06, because those words are typeface-weight vocabulary and two of the three lied in it: CSS `bold` means 700 (ours is 600) and the industry's `semibold` means 600 (ours is 450). The role is a level of accent, not a weight name — `base` for running text, `emphasis` for what stands out in it, `strong` for what leads it — and `emphasis`/`strong` carry the ordering every HTML author already knows from `em`/`strong`. This section previously said bold was 700; the record and Figma say 600, and 600 is the decision.
 
 **The typeface is variable, and off-scale weights are allowed.** 450 exists only because the weight axis is continuous; so does 437 if a design genuinely calls for it. This is a deliberate exception to the usual rule that a value off the scale is not a value — the variable axis is the point of choosing a variable font, and refusing to use it would be ceremony.
 
 The exception is specific to weight. It does not extend to size, line height or spacing.
 
-If the family is ever swapped for static instances, this breaks quietly: 450 resolves to whatever is nearest and the distinction between `normal` and `semibold` disappears without an error. Check the weights when changing the family, not after.
+If the family is ever swapped for static instances, this breaks quietly: 450 resolves to whatever is nearest and the distinction between `base` and `emphasis` disappears without an error. Check the weights when changing the family, not after.
 
 ## Typeface
 

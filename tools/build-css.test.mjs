@@ -77,13 +77,13 @@ test("two tokens slugifying to one name fail, naming both", () => {
 
 test("every number is px except a font weight, and values pass through verbatim", () => {
   const d = declarations(built.css);
-  assert.equal(d.get("--stylos-font-weight-normal"), "400");
+  assert.equal(d.get("--stylos-font-weight-base"), "400");
   assert.equal(d.get("--stylos-font-size-0_875"), "14px");
   assert.equal(d.get("--stylos-border-width-normal"), "1px");
   // 1000px, not 9999px: a generator that improves a value is a second record.
   assert.equal(d.get("--stylos-radius-round"), "1000px");
   assert.equal(cssNumber(24, "line height/text/1_000"), "24px");
-  assert.equal(cssNumber(450, "weight/semibold"), "450");
+  assert.equal(cssNumber(450, "weight/emphasis"), "450");
 });
 
 test("a colour is hex, and rgb() only where alpha is under 1", () => {
