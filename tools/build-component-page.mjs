@@ -242,6 +242,8 @@ h2 { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: 
   white-space: normal;
   line-height: 1.55;
 }
+.value .aside .note .pop p { margin: 0; }
+.value .aside .note .pop p + p { margin-top: .55em; }
 .value .aside .flat { display: block; padding: .12em 0; }
 
 /* The placeholder a rendered sample will replace. Dimensions come from the
@@ -633,32 +635,36 @@ function renderValueRow(entry, property, value, resolveToken, live = false) {
     `<span class="assign"><span class="faint">${esc(property.name)}:</span> ` +
     `<span class="val">${esc(value.value)}</span></span>`;
 
-  // Set in the outer column, one line each, so the row stays the height of
-  // the component. The line is the trigger and the full text is a popover a
-  // click away — <details>, so the page keeps its no-script rule. An a11y
-  // finding already has a title of its own — the status and the criterion —
-  // so that alone is its line, and the note lives in the popover.
-  const pop = (summary, body) =>
-    body
-      ? `<details class="note"><summary>${summary}</summary><div class="pop">${prose(body)}</div></details>`
-      : `<span class="flat">${summary}</span>`;
+  // Set in the outer column, one line per value, so the row stays the height
+  // of the component. The line is the trigger and everything the value has to
+  // say — the a11y note, the note, the rationale — is one popover a click
+  // away, via <details>, so the page keeps its no-script rule. An a11y
+  // finding's title — the status and the criterion — outranks any prose as
+  // the line; without one, the first remark is the line.
+  const remarks = [];
+  if (value.a11y?.note) remarks.push(prose(value.a11y.note));
+  if (value.note) remarks.push(prose(value.note));
+  if (value.rationale) remarks.push(`<span class="clip-label">Why it ships — </span>${prose(value.rationale)}`);
+  const body = remarks.map((remark) => `<p>${remark}</p>`).join("");
 
-  const aside = [];
+  let summary = "";
   if (value.a11y) {
-    aside.push(
-      pop(
-        `<span class="status caps">a11y ${esc(value.a11y.status)}</span>` +
-          (value.a11y.criterion ? ` <span class="criterion mono">${esc(value.a11y.criterion)}</span>` : ""),
-        value.a11y.note
-      )
-    );
+    summary =
+      `<span class="status caps">a11y ${esc(value.a11y.status)}</span>` +
+      (value.a11y.criterion ? ` <span class="criterion mono">${esc(value.a11y.criterion)}</span>` : "");
+  } else if (value.note) {
+    summary = `<span class="clip">${prose(value.note)}</span>`;
+  } else if (value.rationale) {
+    summary = `<span class="clip"><span class="clip-label">Why it ships — </span>${prose(value.rationale)}</span>`;
   }
-  if (value.note) aside.push(pop(`<span class="clip">${prose(value.note)}</span>`, value.note));
-  if (value.rationale) {
-    aside.push(
-      pop(`<span class="clip"><span class="clip-label">Why it ships — </span>${prose(value.rationale)}</span>`, value.rationale)
-    );
-  }
+
+  const aside = !summary
+    ? []
+    : [
+        body
+          ? `<details class="note"><summary>${summary}</summary><div class="pop">${body}</div></details>`
+          : `<span class="flat">${summary}</span>`,
+      ];
 
   const tone = value.a11y ? ` t-${esc(value.a11y.status)}` : "";
   return `<div class="value${tone}">${slot}${label}<div class="aside">${aside.join("")}</div></div>`;
