@@ -25,3 +25,4 @@ If a spec finds itself arguing for an approach rather than describing one, that 
 | [0007](0007-tokens-to-css.md) | Tokens to CSS | `PLAN.md` §Stage 5, `docs/foundations/color.md`, `effects.md` | Built |
 | [0008](0008-development-and-release-flow.md) | Development and release flow | `ARCHITECTURE.md` §7 | Built |
 | [0009](0009-stylos-ui-package.md) | `@stylos/ui` | `PLAN.md` §Stage 5, [ADR 0002](../decisions/0002-frontend-stack.md) | Open |
+| [0010](0010-distribution-surface.md) | The distribution surface | `PLAN.md` §2, §4.3 — the `0.3.0` gate | Open |

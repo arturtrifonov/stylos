@@ -4,6 +4,14 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-06 (the code surface of the distribution — SPEC 0010 Part A)
+
+[SPEC 0010](docs/specs/0010-distribution-surface.md) specifies everything `@stylos/ui` hands to a consumer, split in two: Part A, the code surface, lands now; Part B — `registry.json`, the consumer skill, the design-system bundle, the exported lint config — is Stage 6 work toward `0.3.0`. `PLAN.md` is rewritten around the sharpened `0.3.0` gate: the code half of the proof screen is built **by an agent from the published artifacts alone**, without access to this repository.
+
+- **The exports map** — `packages/ui/package.json` declares the full target surface of SPEC 0010 §2.1: `./tokens.json`, `./css`, `./css/*.css`, `./registry.json`, `./registry/*.json`, `./stylelint` and `./skill` join `.` and `./tokens.css`. The `dist/` paths are generated; the Part B paths resolve when Part B lands.
+- **The CSS export, per component and in aggregate** — `tools/build-ui-css.mjs` copies each built component's authored CSS to `packages/ui/dist/css/<name>.css` unchanged and concatenates them, in registry order, into `dist/css/stylos.css`. Neither file contains `tokens.css` — a consumer links tokens separately, because that is the file a client theme overrides. Runs in `ui:generate`, so every package build carries it.
+- **The DOM contract is public** (SPEC 0010 §2.3) — entry `id` → class `stylos-<slug>`, `api` variant/boolean → `data-<kebab-name>` verbatim, text/slot → element content. It is what `Badge.svelte` already writes; stating it makes hand-written HTML and the Svelte wrapper's output the same string.
+
 ### Added — 2026-09-06 (`@stylos/ui` exists — the first vertical slice)
 
 Built to [SPEC 0009](docs/specs/0009-stylos-ui-package.md). The repository is now an npm workspace: `packages/ui` is the Svelte 5 component package, `apps/workshop` is its Storybook.
