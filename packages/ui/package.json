@@ -15,6 +15,7 @@
       "svelte": "./src/index.ts"
     },
     "./tokens.css": "./dist/tokens.css",
+    "./fonts.css": "./dist/fonts.css",
     "./tokens.json": "./dist/tokens.json",
     "./css": "./dist/css/stylos.css",
     "./css/*.css": "./dist/css/*.css",

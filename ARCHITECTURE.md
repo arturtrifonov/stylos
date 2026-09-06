@@ -103,6 +103,7 @@ This is the only closed loop in the system, and the only automated step anywhere
 | `apps/workshop/stories/generated/` | `docs/components/registry/*.yaml` | `tools/build-ui-stories.mjs` | no — derived, rebuilt on demand |
 | `packages/ui/dist/package/` | `packages/ui/src/` | `svelte-package` | no — derived, rebuilt on demand |
 | `packages/ui/dist/css/<name>.css`, `dist/css/stylos.css` — the CSS export, per component and in aggregate, consumable without Svelte | `packages/ui/src/components/<name>/<name>.css` | `tools/build-ui-css.mjs` | no — derived, rebuilt on demand |
+| `packages/ui/dist/fonts.css`, `dist/assets/fonts/` — the font export: the `@font-face` rules and woff2 subsets behind the families `tokens.css` names | `assets/fonts/`, `FONT_FACES` in `tools/lib/theme.mjs` | `tools/build-ui-fonts.mjs` | no — derived, rebuilt on demand |
 
 The registry importer ran once, on 2026-08-20. It deletes and rewrites every file rather than merging, so it is kept as the record of how the registry came to exist and refuses to run without `--overwrite-hand-edits`.
 

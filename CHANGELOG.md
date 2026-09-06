@@ -4,6 +4,14 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-06 (the package supplies its fonts)
+
+- **The font export** — `@stylos/ui/fonts.css` plus the woff2 subsets under `dist/assets/fonts/`, written by `tools/build-ui-fonts.mjs` in `ui:generate`. `tokens.css` names Georama and JetBrains Mono; until now nothing in the package supplied them, and every consumer — the workshop first — silently fell back to the system stack. The faces are rendered by the same `fontFacesCss` (`tools/lib/theme.mjs`) the registry-viewer pages use, from the same committed files under `assets/fonts/` — copied at build, never fetched, so a font update is a deliberate commit with a diff. SPEC 0010 §2.1 is amended in place; the workshop now imports the export it tests.
+
+### Changed — 2026-09-06 (Badge's default size is medium)
+
+- **`size` defaults to `medium`, not `extra large`** — in the registry entry, the wrapper and everything generated from them. `extra large` was the import's accident, not a decision; `medium` is the middle of the ramp and the size a badge dropped into running text should take.
+
 ### Added — 2026-09-06 (the code surface of the distribution — SPEC 0010 Part A)
 
 [SPEC 0010](docs/specs/0010-distribution-surface.md) specifies everything `@stylos/ui` hands to a consumer, split in two: Part A, the code surface, lands now; Part B — `registry.json`, the consumer skill, the design-system bundle, the exported lint config — is Stage 6 work toward `0.3.0`. `PLAN.md` is rewritten around the sharpened `0.3.0` gate: the code half of the proof screen is built **by an agent from the published artifacts alone**, without access to this repository.

@@ -112,6 +112,25 @@ export const FONT_FACES = [
   },
 ];
 
+/**
+ * The `@font-face` rules for the self-hosted subsets, one per FONT_FACES
+ * entry, each `src` pointing at `${prefix}assets/fonts/`. The one renderer
+ * for both consumers: `themeCss` for the registry-viewer pages and
+ * `build-ui-fonts.mjs` for the package's fonts.css export.
+ */
+export function fontFacesCss(prefix = "") {
+  return FONT_FACES.map(
+    (face) => `@font-face {
+  font-family: "${face.family}";
+  font-style: normal;
+  font-weight: ${face.weight};${face.stretch ? `\n  font-stretch: ${face.stretch};` : ""}
+  font-display: swap;
+  src: url("${prefix}assets/fonts/${face.file}") format("woff2");
+  unicode-range: ${face.range};
+}`
+  ).join("\n");
+}
+
 /** `#5752f1` at .04 → `rgb(87 82 241 / 0.04)`. A full-alpha colour is left alone. */
 function css(value, alpha) {
   if (typeof value !== "string" || !value.startsWith("#")) return String(value);
@@ -198,16 +217,7 @@ export function loadTheme(root) {
  * tree copied or zipped keeps working, which is the case that was promised.
  */
 export function themeCss(theme, { prefix = "" } = {}) {
-  const faces = FONT_FACES.map(
-    (face) => `@font-face {
-  font-family: "${face.family}";
-  font-style: normal;
-  font-weight: ${face.weight};${face.stretch ? `\n  font-stretch: ${face.stretch};` : ""}
-  font-display: swap;
-  src: url("${prefix}assets/fonts/${face.file}") format("woff2");
-  unicode-range: ${face.range};
-}`
-  ).join("\n");
+  const faces = fontFacesCss(prefix);
 
   const lines = [];
   for (const [role, value] of theme.light) lines.push(`  --${role}: ${value};`);

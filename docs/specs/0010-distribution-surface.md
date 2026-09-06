@@ -22,6 +22,8 @@ Part A can land while the package is still three components deep; it costs a bui
 
 ## 2. Part A — the code surface
 
+> **Amended 2026-09-06: `./fonts.css` joins the map.** Discovered mounting the first component in the workshop: `tokens.css` names Georama and JetBrains Mono but nothing in the package supplied them, so every consumer fell back to the system stack. The package that names the families ships the faces — `tools/build-ui-fonts.mjs` copies the committed subsets from `assets/fonts/` to `dist/assets/fonts/` and writes `dist/fonts.css` with the `@font-face` rules, rendered by the same `fontFacesCss` the registry-viewer pages use, so the two cannot drift. Copied, never fetched at build: a font update is a deliberate commit with a diff, not a side effect of a build. A separate file from `tokens.css` deliberately — a client theme with its own brand face links its own faces and skips this export.
+
 ### 2.1 The exports map
 
 `packages/ui/package.json` today exports `.` and `./tokens.css`. Target:
@@ -30,6 +32,7 @@ Part A can land while the package is still three components deep; it costs a bui
 "exports": {
   ".":                { "svelte": "./src/index.ts" },
   "./tokens.css":     "./dist/tokens.css",
+  "./fonts.css":      "./dist/fonts.css",
   "./tokens.json":    "./dist/tokens.json",
   "./css":            "./dist/css/stylos.css",
   "./css/*.css":      "./dist/css/*.css",
