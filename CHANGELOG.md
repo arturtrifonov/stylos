@@ -4,6 +4,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-06 (Loader — the first animated component)
+
+- **`Loader`** — the fourth component of `@stylos/ui`, and the first whose animation is the component. The DOM stays one empty span: the arc is the Figma mark's geometry as an SVG mask in the CSS (ring of thickness 2 in a 20-box, 270°, round caps), painted `text/primary` — the one colour the contract fixes — at 5/6 of a footprint that follows its token and any resize. The contract's open timing question is decided in the implementation: one turn per second, linear, because easing on a loop reads as a stutter; the prototype's `angle` variant becomes the phase the turn starts from, so no value of it ever stands still. Under `prefers-reduced-motion` the rotation is replaced — not stopped — by a slow opacity pulse, which is the entry's "stop or be replaced" obligation; announcing the wait stays the consumer's.
+
 ### Changed — 2026-09-06 (weight roles say what they mean: base / emphasis / strong)
 
 - **`weight/normal`/`semibold`/`bold` → `weight/base`/`emphasis`/`strong`** (400/450/600) — the old words were typeface-weight vocabulary and two of them lied in it: CSS `bold` means 700 (ours is 600), the industry's `semibold` means 600 (ours is 450). The role is a level of accent; `emphasis`/`strong` carry the ordering HTML authors know from `em`/`strong`. Renamed in Figma, withdrawn and re-imported through the ritual, cascaded through `badge.css`, the Badge contract and `typography.md` — which also stops claiming bold is 700; 600 is the decision. The text styles were regrouped in Figma to match (`text/base|emphasis/*`, `label/base|emphasis/*` — labels' pair is case, not weight) and the record and `text.css` follow. All 32 styles now resolve: the `family/string`/Manrope binding and the drifted paragraph spacing are fixed at the source, so `text.css` no longer skips anything.
