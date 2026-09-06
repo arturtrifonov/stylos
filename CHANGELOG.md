@@ -4,6 +4,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-06 (the accessibility target and browser baseline are decided)
+
+- **[`accessibility.md`](docs/foundations/accessibility.md) — WCAG 2.2 Level AA, WAI-ARIA 1.2 with APG patterns, and Baseline Widely available as the browser floor.** A rule in `foundations/`, not a decision record, per the bar `docs/decisions/` sets. The target ratifies what the registry already does — every criterion citation reads WCAG 2.2 and every cited criterion is A or AA — so no existing finding is re-judged; what changes is that `warning` now names the bar it fails against. The browser floor is Baseline rather than an authored version list because Baseline is checkable mechanically and maintained by someone else, with per-case named exceptions working the way raw values do in Figma. An assistive-technology matrix is deferred, in as many words, until Stage 5's tests give it a reader. [`PLAN.md`](PLAN.md) Stage 4 and Stage 5 now point at the document instead of carrying the open question.
+
 ### Added — 2026-09-06 (the frontend stack is decided)
 
 - **Decision record [0002](docs/decisions/0002-frontend-stack.md) — Svelte 5, TypeScript, Zag.js for behaviour.** The first record since the purge of 2026-08-23, and kept because the choice now clears the bar `docs/decisions/` sets: Stage 5's package work is starting, every component will be written against this stack, and reversing it later rewrites the package rather than adjusting it. Melt UI stops being named as the leading candidate anywhere — the argument for Zag's state machines over a Svelte-bound builder library is made once, in the record. [`PLAN.md`](PLAN.md) Stage 5 and [`naming.md`](docs/foundations/naming.md) now point at it instead of carrying a provisional answer.

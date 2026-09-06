@@ -121,7 +121,7 @@ The long pole is **S4**: thirty-nine component contracts, each needing judgement
 **Out of `0.1.0`, deliberately:** Toast, Tabs Horizontal and Tab Item — the Stage 6 gate names a table, filters, a side panel and a modal, and none of the three appears in it. Everything else follows them, grouped in §9.
 
 - **First**, settle the documentation boundary — which of `STANDARD.md`'s twenty points live in Figma and which in Markdown. Writing twenty documents before that rule exists guarantees rewriting them.
-- Decide the accessibility target and browser baseline. A contract records accessibility findings against the thing each is about, so the target they are judged by cannot wait for Stage 5.
+- The accessibility target and browser baseline **are decided** — WCAG 2.2 AA and Baseline Widely available, fixed in [`accessibility.md`](docs/foundations/accessibility.md) on 2026-09-06. A contract records accessibility findings against the thing each is about, which is why the target could not wait for Stage 5.
 - Decide the depth of component-specific tokens.
 - **Review the skill set before running any of it**: what each remaining skill is for, what to repair, whether it is detailed enough to be followed. `text-sizing` is already gone; `component-integrity-check` and `naming-cleanup` both carry text that predates `docs/foundations/`. A skill that runs on a stale contract writes the stale contract into the library.
 - Run `stylos-component-integrity-check` over the set and **fix findings in Figma before documenting** — otherwise the defect gets written down as the contract.
@@ -157,7 +157,7 @@ Work:
 - Implement in dependency order — primitives → elements → objects → widgets → layouts. The registry's `children` field gives the order.
 - Per component, a prop ↔ Figma variant property mapping table. Divergence is a bug in one side, not a translation detail.
 - A lint rule rejecting hex colours and raw px outside the generated token file.
-- Accessibility tests against the baseline set in Stage 4.
+- Accessibility tests against [`accessibility.md`](docs/foundations/accessibility.md) — the target set in Stage 4.
 
 **Gate:** the package builds, every documented variant renders, the lint rule passes.
 **Estimate:** 10–12 weeks.

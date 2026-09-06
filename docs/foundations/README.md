@@ -13,6 +13,7 @@ Each row states what its file states. This table is an index over them, not a se
 | [naming.md](naming.md) | confirmed — the naming contract for components, layers and properties |
 | [icons.md](icons.md) | usage rules confirmed; the icon source is interim |
 | [effects.md](effects.md) | confirmed |
+| [accessibility.md](accessibility.md) | confirmed — the conformance target and the browser floor |
 
 **Confirmed means the structure and the rules are settled, not that nothing is left.** `color.md` and `effects.md` each keep an *Open* section naming the gaps that remain — a sixth status colour, two unrelated meanings of `base`, what an elevation level means for a given surface. Those are questions inside a settled model, and they are listed where they belong rather than held against the whole document.
 
