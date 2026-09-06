@@ -102,6 +102,7 @@ This is the only closed loop in the system, and the only automated step anywhere
 | `packages/ui/src/components/*/props.ts` | `docs/components/registry/*.yaml` | `tools/build-ui-types.mjs` | no — derived, rebuilt on demand |
 | `apps/workshop/stories/generated/` | `docs/components/registry/*.yaml` | `tools/build-ui-stories.mjs` | no — derived, rebuilt on demand |
 | `packages/ui/dist/package/` | `packages/ui/src/` | `svelte-package` | no — derived, rebuilt on demand |
+| `packages/ui/dist/css/<name>.css`, `dist/css/stylos.css` — the CSS export, per component and in aggregate, consumable without Svelte | `packages/ui/src/components/<name>/<name>.css` | `tools/build-ui-css.mjs` | no — derived, rebuilt on demand |
 
 The registry importer ran once, on 2026-08-20. It deletes and rewrites every file rather than merging, so it is kept as the record of how the registry came to exist and refuses to run without `--overwrite-hand-edits`.
 

@@ -116,6 +116,10 @@ The `@stylos/ui` generators ([SPEC 0009](../docs/specs/0009-stylos-ui-package.md
 
 Both outputs are gitignored and rebuilt, like every generated thing.
 
+## `build-ui-css.mjs`
+
+The independent CSS export ([SPEC 0010](../docs/specs/0010-distribution-surface.md) §2.2), run by `npm run ui:generate` after the two generators above. It copies each built component's authored `src/components/<name>/<name>.css` to `packages/ui/dist/css/<name>.css` unchanged, and concatenates all of them, in registry order, into `dist/css/stylos.css` with a generated header naming the version and the components inside. No transform, no minification, no autoprefixing — a build that improved a value on the way through would be a second source of it. Neither output contains `tokens.css`: a consumer links tokens separately, because that is the file a client theme overrides. A component directory without its authored CSS fails the build.
+
 The CSS build fails loudly on: two token names that slugify to one custom property, naming both; a role whose alias contradicts its slot; a `var()` referencing a name the file does not define; the two scopes declaring different sets of properties; a string token with no authored fallback stack; and a token in `tokens/` that did not reach the output — there is no allowlist and no pruning by current usage, because that would make the CSS a function of the component set rather than of the token set.
 
 `tokens:check` and `tokens:import` fail loudly on: a reference that does not resolve or that loops; a token with neither a value nor a reference; a reference bound across modes (a dark-mode variable pointing into `palette.light`); a role referencing a different token per mode without being declared `mode_dependent`, and the converse; a stale `mode_dependent` entry; token names differing between a collection's modes; a colour space other than sRGB, which cannot be stored as hex; and a YAML round-trip that does not reproduce what was intended. Colours that are not 8-bit representable are warnings, not failures — `--strict` promotes them.

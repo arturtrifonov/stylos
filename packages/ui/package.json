@@ -15,6 +15,13 @@
       "svelte": "./src/index.ts"
     },
     "./tokens.css": "./dist/tokens.css",
+    "./tokens.json": "./dist/tokens.json",
+    "./css": "./dist/css/stylos.css",
+    "./css/*.css": "./dist/css/*.css",
+    "./registry.json": "./dist/registry.json",
+    "./registry/*.json": "./dist/registry/*.json",
+    "./stylelint": "./stylelint.config.js",
+    "./skill": "./skill/SKILL.md",
     "./package.json": "./package.json"
   },
   "peerDependencies": {
