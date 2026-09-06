@@ -4,6 +4,16 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-06 (the website — SPEC 0011)
+
+- **The site is publishable** ([SPEC 0011](docs/specs/0011-project-website.md)). The placeholder front page is replaced by a real one: a hero with the derived version pill, a live sample of the implemented components rendered from the shipped CSS on the public DOM contract (nothing on the page is a mockup — a build-time guard refuses any sample the registry's contracts do not back), the charter's character in four cards, a quick start, the state-of-the-system charts, and the resources — GitHub, the Stylos Figma libraries read from `figma/README.md`, the workshop, the package. Everything the page claims about what exists is **derived at build time** (`tools/lib/site.mjs`): `npm install` is *Planned* exactly while `packages/ui/package.json` is `private`, the agent artifacts are *Planned* while SPEC 0010's row is Open, the Storybook link appears exactly when the workshop is in the tree.
+- **One chrome for every page** (`tools/lib/chrome.mjs`) — a shared script-free header and footer on the front page, the registry view and all 114 component pages, every link relative, external links (Figma, GitHub) allowlisted by exact origin in the tests. The type scale gains a `display` step for the hero, resolved from `tokens/` like the other seven.
+- **The workshop is published** — `npm run build:publish` builds Storybook and copies it into the tree at `build/storybook/`; `npm run build` alone still produces the site without it, links consistently absent. Deploying the tree (Netlify, `stylos.arturtrifonov.com`) stays the owner's manual act.
+
+### Changed — 2026-09-06 (the paper record follows the decision)
+
+- `ARCHITECTURE.md` §1/§2/§4, `PLAN.md` §8, SPEC 0010 §8 and the charter's scope are amended in place, dated: the published documentation surface moves from *does not exist* to *derived, uploaded by hand* — the decision was the owner's, made explicitly in the implementation session per `CLAUDE.md`.
+
 ### Added — 2026-09-06 (Label — the first component with rules between its properties)
 
 - **`Label`** — a semantic `<label>`: the name as its bare text, the required marker as a `span[aria-hidden]` beside it (presentational — the requiredness lives on the control), the supporting line as the span without it; the entry's `html` now records that shape. The rules split by who decides: the wrapper renders the line when `validation` is not `off` — a label with validation is a label with a message, so the boolean has nothing left to decide there — while the CSS owns how things draw, so `state=disabled` hides the marker and takes every run to the disabled role *for hand-written HTML too*, with disabled beating validation by rule order, which is the contract's "the two do not combine". Two type runs stepping at different rates, gaps and measures from the entry's table verbatim.

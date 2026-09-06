@@ -43,6 +43,7 @@ import {
   MOTION_FIELDS,
 } from "./lib/registry.mjs";
 import { SIZING_TOKEN_FIELDS, createTokenResolver } from "./lib/sizing.mjs";
+import { CHROME_CSS, renderSiteHeader, renderSiteFooter } from "./lib/chrome.mjs";
 import { loadTheme, themeCss } from "./lib/theme.mjs";
 
 // The page is opened by one person, from disk, on a wide screen, to read one
@@ -799,11 +800,38 @@ function renderUnwritten(entry) {
  * back to the browser's own colours rather than failing to build.
  */
 function chromeFor(context, up) {
-  return context.theme ? themeCss(context.theme, { prefix: `${up}../` }) : "";
+  const theme = context.theme ? themeCss(context.theme, { prefix: `${up}../` }) : "";
+  return `${theme}${context.site ? CHROME_CSS : ""}`;
+}
+
+/**
+ * The shared site header and footer, at this page's depth — SPEC 0011 §3.
+ * A context without site facts (a fixture, a standalone `components:view`)
+ * renders neither, and the page stands alone the way it always did.
+ */
+function siteChrome(context, up) {
+  if (!context.site) return { header: "", footer: "" };
+  const prefix = `${up}../`;
+  return {
+    header: renderSiteHeader({
+      prefix,
+      active: "components",
+      logo: context.logo,
+      storybook: context.site.storybook,
+      figmaUrl: context.site.figmaMain ?? context.site.figma?.[0]?.url ?? null,
+      repoUrl: context.site.repo,
+    }),
+    footer: renderSiteFooter({
+      generated: context.generated,
+      version: context.site.version,
+      repoUrl: context.site.repo,
+    }),
+  };
 }
 
 export function renderComponentPage(entry, context) {
   const up = "../".repeat(slugPath(entry.id).split("/").length - 1);
+  const site = siteChrome(context, up);
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -813,7 +841,8 @@ export function renderComponentPage(entry, context) {
 <style>${chromeFor(context, up)}${CSS}</style>
 </head>
 <body>
-<a class="back" href="${esc(`${up}index.html`)}">${context.logo}<span>← All components</span></a>
+${site.header}
+<a class="back" href="${esc(`${up}index.html`)}">${site.header ? "" : context.logo}<span>← All components</span></a>
 ${renderHeader(entry, context)}
 ${renderUnwritten(entry)}
 ${renderPurpose(entry)}
@@ -826,12 +855,14 @@ ${renderLimitations(entry)}
 ${renderFigmaNotes(entry)}
 ${renderRelations(entry, context)}
 ${renderRecord(entry, context)}
+${site.footer}
 </body>
 </html>
 `;
 }
 
 export function renderIndex(entries, context) {
+  const site = siteChrome(context, "");
   const groups = [...LEVELS, null]
     .map((level) => ({
       level,
@@ -869,7 +900,8 @@ export function renderIndex(entries, context) {
 <style>${chromeFor(context, "")}${CSS}</style>
 </head>
 <body>
-<a class="back" href="../index.html">${context.logo}<span>← Home</span></a>
+${site.header}
+<a class="back" href="../index.html">${site.header ? "" : context.logo}<span>← Home</span></a>
 <header class="masthead">
 <h1>Components</h1>
 <p class="summary">${entries.length} entries, ${written} of them with a contract written.</p>
@@ -877,6 +909,7 @@ export function renderIndex(entries, context) {
 <p class="family">The filterable index over the same data — relations, Figma links and the Airtable history — is <a href="../registry.html">the registry</a>.</p>
 </header>
 ${body}
+${site.footer}
 </body>
 </html>
 `;
@@ -890,6 +923,7 @@ export function pageContext(
     resolveToken = () => undefined,
     theme = null,
     logo = "",
+    site = null,
   } = {}
 ) {
   const family = new Map();
@@ -905,6 +939,7 @@ export function pageContext(
     resolveToken,
     theme,
     logo,
+    site,
     importDate: "2026-08-20",
   };
 }

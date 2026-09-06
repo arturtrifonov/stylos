@@ -40,7 +40,7 @@ export function readPlan(root) {
 }
 
 /** The rows under a Markdown table header, as trimmed cells. */
-function rowsUnder(lines, header) {
+export function rowsUnder(lines, header) {
   const rows = [];
   for (const line of lines.slice(header + 2)) {
     if (!line.startsWith("|")) break;

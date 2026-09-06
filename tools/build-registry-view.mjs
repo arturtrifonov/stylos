@@ -20,7 +20,7 @@
 //
 // This renders; it does not edit. The YAML is edited in an editor.
 
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -36,7 +36,7 @@ import {
   STATUSES,
 } from "./lib/registry.mjs";
 import { readPlan, waveById, milestoneById, milestoneNames } from "./lib/plan.mjs";
-import { loadTheme, themeCss } from "./lib/theme.mjs";
+import { CHROME_CSS, loadChrome } from "./lib/chrome.mjs";
 
 // Plain, but no longer anonymous. The layout is a tool's — a table, a filter
 // bar and a panel — and everything that gives it a colour, a radius, a family
@@ -877,6 +877,8 @@ export function buildViewData(root, entries) {
 export function renderView(data, chrome = {}) {
   const theme = chrome.themeCss ?? "";
   const logo = chrome.logo ?? "";
+  const siteHeader = chrome.siteHeader ?? "";
+  const siteFooter = chrome.siteFooter ?? "";
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -884,14 +886,14 @@ export function renderView(data, chrome = {}) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Component registry — Stylos</title>
-<style>${theme}${CSS}</style>
+<style>${theme}${siteHeader ? CHROME_CSS : ""}${CSS}</style>
 </head>
 <body>
+${siteHeader}
 <header>
   <div class="masthead">
     <div class="identity">
-      ${logo ? `<a href="index.html" class="logo-link">${logo}</a>` : ""}
-      <span class="divider"></span>
+      ${logo && !siteHeader ? `<a href="index.html" class="logo-link">${logo}</a>\n      <span class="divider"></span>` : ""}
       <div>
         <h1>Component registry</h1>
         <p class="meta">
@@ -920,6 +922,7 @@ export function renderView(data, chrome = {}) {
   </div>
   <aside id="detail"></aside>
 </main>
+${siteFooter}
 <script>window.__REGISTRY__ = ${inlineJson(data)};</script>
 <script>${APP}</script>
 </body>
@@ -927,21 +930,9 @@ export function renderView(data, chrome = {}) {
 `;
 }
 
-/** The theme and the wordmark, read from the repository at build time. */
-export function loadChrome(root, { prefix = "" } = {}) {
-  const theme = loadTheme(root);
-  if (theme.missing.length > 0) {
-    console.warn(`theme: ${theme.missing.length} token(s) did not resolve: ${theme.missing.join(", ")}`);
-  }
-  let logo = "";
-  try {
-    logo = readFileSync(path.join(root, "assets/logo.svg"), "utf8").trim().replace(/^<\?xml[^>]*>\s*/, "");
-    logo = logo.replace("<svg ", '<svg class="logo" ');
-  } catch {
-    // The wordmark is decoration. A build without it is a build without it.
-  }
-  return { themeCss: themeCss(theme, { prefix }), logo };
-}
+// loadChrome lived here until the site grew a shared header; it is now
+// tools/lib/chrome.mjs, re-exported so the old import path keeps working.
+export { loadChrome } from "./lib/chrome.mjs";
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
 

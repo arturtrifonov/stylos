@@ -1,15 +1,17 @@
 #!/usr/bin/env node
-// The site's front door.
+// The site's front door — SPEC 0011.
 //
-// Deliberately a placeholder. The registry viewer and the component pages are
-// working views over real data; this is neither, and it exists so that the
-// published tree opens on something that says what Stylos is instead of on the
-// registry table. When there is a documentation surface (PLAN.md Stage 6) this
-// page is the first thing it replaces.
+// No longer a placeholder: this is the designer's first page of the published
+// site. It presents the system as designed and derives every mark of what
+// exists — the version pill, the Planned badges, the counts, the charts, the
+// sample, the Storybook link — from the repository at build time
+// (tools/lib/site.mjs, tools/lib/showcase.mjs), so a project step flips a
+// badge at the next `npm run build` and the page is never edited to match
+// reality.
 //
-// So: no data of its own beyond three counts derived from the registry, no
-// script, nothing to keep in sync by hand. Same constraints as the other two
-// builders — everything inlined, nothing fetched, opened from disk or served.
+// Same constraints as the other builders — everything inlined, nothing
+// fetched to render, no Stylos value transcribed into a stylesheet. The links
+// out (Figma, GitHub) are navigation, allowlisted by origin in the tests.
 
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -18,6 +20,9 @@ import { fileURLToPath } from "node:url";
 import { derive, loadRegistry, readiness } from "./lib/registry.mjs";
 import { milestoneProgress, readPlan, waveProgress, whereWeAre } from "./lib/plan.mjs";
 import { loadTheme, themeCss } from "./lib/theme.mjs";
+import { CHROME_CSS, renderSiteHeader, renderSiteFooter } from "./lib/chrome.mjs";
+import { siteFacts } from "./lib/site.mjs";
+import { buildShowcase } from "./lib/showcase.mjs";
 import { readLogo } from "./build-component-page.mjs";
 
 const CSS = `
@@ -30,9 +35,9 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 .page {
-  max-width: 72rem;
+  max-width: 76rem;
   margin: 0 auto;
-  padding: 4rem 3rem 5rem;
+  padding: 0 3rem 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -40,25 +45,39 @@ body {
 a { color: var(--accent); }
 .mono { font-family: var(--font-mono); font-size: .88em; }
 
-.logo { display: block; width: 208px; height: auto; color: var(--brand); }
+/* The section label is the page's structural grammar: a quiet uppercase line
+   over a hairline, repeated for every section, the way an inscription band
+   repeats on a facade. */
+section { margin: 4.5rem 0 0; }
+.section-label {
+  font-size: var(--text-small);
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  margin: 0 0 1.4rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--rule-strong);
+}
 
-/* The capital sits beside the text at the width it can afford and behind it
-   when there is no room. It is decoration and carries no information, so it is
-   the first thing the layout is allowed to lose. */
-.top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 20rem); gap: 3rem; align-items: center; }
+/* --- Hero ----------------------------------------------------------------- */
+
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 20rem); gap: 3rem; align-items: center; margin-top: 3.5rem; }
+.logo { display: block; width: 208px; height: auto; color: var(--brand); }
 .column-figure { margin: 0; justify-self: end; }
 .column-figure img { display: block; width: 100%; height: auto; }
 /* Pale marble on black already reads; inverting it would sink it into the page. */
 
 .lede {
-  font-size: var(--text-section);
-  line-height: 1.35;
-  letter-spacing: -.015em;
-  max-width: 30ch;
-  margin: 2.5rem 0 1.25rem;
-  font-weight: 500;
+  font-size: var(--text-display);
+  font-stretch: 110%;
+  line-height: 1.16;
+  letter-spacing: -.022em;
+  max-width: 22ch;
+  margin: 2.2rem 0 1.4rem;
+  font-weight: 560;
 }
-.state { color: var(--fg-quiet); max-width: 46ch; margin: 0; }
+.state { color: var(--fg-quiet); max-width: 52ch; margin: 0; }
 .state .flag {
   display: inline-block;
   font-size: var(--text-micro);
@@ -71,18 +90,90 @@ a { color: var(--accent); }
   padding: 3px 9px;
   margin-right: .6rem;
   vertical-align: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.cta { display: flex; gap: .8rem; flex-wrap: wrap; margin: 2rem 0 0; }
+.cta a {
+  display: inline-block;
+  padding: .62rem 1.25rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--fg);
+  font-weight: 550;
+  font-size: var(--text-meta);
+  letter-spacing: .01em;
+}
+.cta a:hover { border-color: var(--accent); color: var(--accent); }
+.cta a.primary { background: var(--brand); border-color: var(--brand); color: var(--fg-on-brand); }
+.cta a.primary:hover { filter: brightness(1.08); color: var(--fg-on-brand); }
+
+/* The Planned mark. One shape for every fact that is designed but not built —
+   derived, never authored per badge (SPEC 0011 §2). */
+.planned {
+  display: inline-block;
+  font-size: var(--text-micro);
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--radius-round);
+  padding: 2px 9px;
+  vertical-align: 2px;
 }
 
-.doors { display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1px; margin: 3.5rem 0 0; background: var(--rule); border: 1px solid var(--rule); }
-.door { display: block; padding: 1.5rem 1.6rem; background: var(--bg); text-decoration: none; color: inherit; }
-.door:hover { background: var(--bg-sunken); }
-.door h2 { margin: 0 0 .35rem; font-size: var(--text-lead); font-weight: 600; letter-spacing: -.01em; color: var(--accent); }
-.door p { margin: 0; font-size: var(--text-meta); color: var(--fg-quiet); }
-.door .count { display: block; margin-top: .9rem; font-family: var(--font-mono); font-size: var(--text-small); color: var(--fg-faint); font-variant-numeric: tabular-nums; }
+/* --- The sample ----------------------------------------------------------- */
 
-/* Three numbers, because a front page that says nothing about the state of the
-   work is a poster. Each is the same derivation the registry viewer makes. */
-.tally { display: flex; flex-wrap: wrap; gap: 0 3rem; margin: 3.5rem 0 0; }
+.showcase .stage {
+  border: 1px solid var(--rule);
+  background: var(--bg-sunken);
+  border-radius: var(--radius-md);
+  padding: 2rem 2.2rem .8rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: 1.6rem 3rem;
+}
+.showcase .group { margin-bottom: 1.4rem; }
+.showcase .group h3 { margin: 0 0 .2rem; font-size: var(--text-body); font-weight: 600; letter-spacing: -.01em; }
+.showcase .group .note { margin: 0 0 .9rem; font-size: var(--text-small); color: var(--fg-quiet); max-width: 44ch; }
+.showcase .row { display: flex; flex-wrap: wrap; gap: .9rem 1.1rem; align-items: flex-end; }
+.showcase .sample { display: inline-flex; flex-direction: column; align-items: center; gap: .45rem; }
+.showcase .sample-label { font-size: var(--text-micro); color: var(--fg-faint); font-family: var(--font-mono); }
+.showcase .caveat { margin: 1rem 0 0; font-size: var(--text-meta); color: var(--fg-quiet); max-width: 66ch; }
+
+/* --- Character ------------------------------------------------------------ */
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.card { background: var(--bg); padding: 1.5rem 1.6rem; }
+.card h3 { margin: 0 0 .45rem; font-size: var(--text-lead); font-weight: 600; letter-spacing: -.01em; }
+.card p { margin: 0; font-size: var(--text-meta); color: var(--fg-quiet); }
+
+/* --- Quick start ---------------------------------------------------------- */
+
+.quickstart .qs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(21rem, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); }
+.qs { background: var(--bg); padding: 1.5rem 1.6rem; }
+.qs h3 { margin: 0 0 .9rem; font-size: var(--text-lead); font-weight: 600; letter-spacing: -.01em; display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; }
+.qs pre {
+  margin: 0 0 .9rem;
+  padding: 1rem 1.1rem;
+  background: var(--bg-sunken);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-small);
+  line-height: 1.7;
+  overflow-x: auto;
+}
+.qs p { margin: 0; font-size: var(--text-meta); color: var(--fg-quiet); }
+
+/* --- State of the system -------------------------------------------------- */
+
+.here { margin: 0 0 .5rem; font-size: var(--text-lead); line-height: 1.4; letter-spacing: -.01em; }
+.here .to { font-weight: 600; }
+.here .rest { color: var(--fg-quiet); }
+
+.tally { display: flex; flex-wrap: wrap; gap: 0 3rem; margin: 2rem 0 0; }
 .tally div { padding-top: .8rem; border-top: 2px solid var(--rule-strong); min-width: 9rem; }
 .tally .n { display: block; font-size: var(--text-title); line-height: 1.05; font-weight: 600; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
 .tally .k { font-size: var(--text-small); text-transform: uppercase; letter-spacing: .09em; color: var(--fg-faint); font-weight: 600; }
@@ -92,14 +183,7 @@ a { color: var(--accent); }
    and the progress through it are the same picture. The count and the percent
    are written out beside every bar: the bar is the second cue, never the only
    one, which is how readiness is shown everywhere else in these pages. */
-/* Where the work is, in one sentence. First on the page because it is the
-   question the page exists to answer; the two charts below are the detail
-   behind it. */
-.here { margin: 2.5rem 0 0; font-size: var(--text-lead); line-height: 1.4; letter-spacing: -.01em; }
-.here .to { font-weight: 600; }
-.here .rest { color: var(--fg-quiet); }
-
-.queue { margin: 3.5rem 0 0; }
+.queue { margin: 3rem 0 0; }
 .queue h2 {
   font-size: var(--text-small);
   font-weight: 700;
@@ -166,14 +250,27 @@ a { color: var(--accent); }
   .queue .of { display: none; }
 }
 
-footer { margin-top: auto; padding-top: 3.5rem; color: var(--fg-faint); font-size: var(--text-small); }
-footer p { margin: .2rem 0; }
+/* --- Resources ------------------------------------------------------------ */
+
+.doors { display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1px; margin: 0; background: var(--rule); border: 1px solid var(--rule); }
+.door { display: block; padding: 1.5rem 1.6rem; background: var(--bg); text-decoration: none; color: inherit; }
+a.door:hover { background: var(--bg-sunken); }
+.door h2 { margin: 0 0 .35rem; font-size: var(--text-lead); font-weight: 600; letter-spacing: -.01em; color: var(--accent); display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; }
+.door.flat h2 { color: var(--fg); }
+.door p { margin: 0; font-size: var(--text-meta); color: var(--fg-quiet); }
+.door .count { display: block; margin-top: .9rem; font-family: var(--font-mono); font-size: var(--text-small); color: var(--fg-faint); font-variant-numeric: tabular-nums; }
+.door ul { list-style: none; margin: .9rem 0 0; padding: 0; font-size: var(--text-meta); }
+.door li { margin: .25rem 0; }
+.door li .what { color: var(--fg-faint); }
+
+.page > .site-footer { margin-top: 4.5rem; }
 
 @media (max-width: 56rem) {
-  .page { padding: 2.5rem 1.5rem 3rem; }
-  .top { grid-template-columns: minmax(0, 1fr); }
+  .page { padding: 0 1.5rem; }
+  .hero { grid-template-columns: minmax(0, 1fr); margin-top: 2.5rem; }
   .column-figure { display: none; }
   .logo { width: 160px; }
+  .lede { font-size: var(--text-title); }
 }
 `;
 
@@ -191,21 +288,206 @@ const inline = (value) =>
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
     .replace(/`([^`]+)`/g, '<span class="mono">$1</span>');
 
-/**
- * @param {object} options
- * @param {import("./lib/registry.mjs").Entry[]} options.entries
- * @param {object|null} options.theme   from loadTheme; omitted in a fixture
- * @param {string} options.logo         inline SVG, or ""
- * @param {boolean} options.column      whether assets/column.png was found
- * @param {string|null} options.plan    PLAN.md, for the wave table; omitted in a fixture
- */
 /** `0` only when nothing is ready — a rounded-away fraction says so instead. */
 function percentLabel({ done, percent }) {
   if (done > 0 && percent === 0) return "&lt;1%";
   return `${percent}%`;
 }
 
-export function renderHome({ entries, theme = null, logo = "", generated, column = false, plan = null }) {
+/** The four character cards — the one hand-authored copy on the site, from docs/charter.md. */
+const CHARACTER = [
+  [
+    "Classical, not fashionable",
+    "The visual language draws on antiquity, classical architecture and constructed proportion — strict and structural rather than decorative. A system that can be configured into anything has no character to preserve, and preserving a character is the point.",
+  ],
+  [
+    "Contracts before implementations",
+    "Every component is a public API: one authored contract in the registry, implemented twice — by the Figma library and by the code. Values are authored where they are judged by eye; contracts are authored where they can bind more than one implementation.",
+  ],
+  [
+    "Variables before raw values",
+    "Anything the system has a token for resolves to a variable or a style. Exceptions are named and stay the size of the case they cover — explicit exceptions over hidden inconsistency.",
+  ],
+  [
+    "Dense by design",
+    "Built for complex, tool-like products — data tables, toolbars, crowded forms — rather than marketing pages. Desktop-oriented, measured rather than arbitrary, reusable but recognizably authored.",
+  ],
+];
+
+function heroSection({ logo, column, site }) {
+  const figure = column
+    ? `<figure class="column-figure"><img src="assets/column.png" alt="" width="510" height="510" loading="lazy"></figure>`
+    : "";
+  const flag = site?.version ? `v${esc(site.version)}` : "Pre-alpha";
+  const workshopDoor = site?.storybook ? `<a href="storybook/">Open the workshop</a>` : "";
+
+  return `<section class="hero">
+    <div>
+      ${logo}
+      <h1 class="lede">A design system for dense, desktop&#8209;oriented web product interfaces.</h1>
+      <p class="state">
+        <span class="flag">${flag}</span>
+        Its visual language draws on antiquity, classical architecture and constructed
+        proportion — strict and structural rather than decorative. Pre-alpha and owner-led:
+        the contracts are fixed ahead of the code, and what is designed but not built yet
+        is marked <span class="planned">Planned</span> rather than pretended.
+      </p>
+      <div class="cta">
+        <a class="primary" href="components/index.html">Browse the components</a>
+        ${workshopDoor}
+      </div>
+    </div>
+    ${figure}
+  </section>`;
+}
+
+function showcaseSection(showcase, total) {
+  if (!showcase) return "";
+  const groups = showcase.groups
+    .map(
+      (group) => `<div class="group">
+<h3>${esc(group.name)}</h3>
+<p class="note">${esc(group.note)}</p>
+<div class="row">${group.samples
+        .map(
+          (sample) =>
+            `<span class="sample">${sample.html}${sample.label ? `<span class="sample-label">${esc(sample.label)}</span>` : ""}</span>`
+        )
+        .join("")}</div>
+</div>`
+    )
+    .join("\n");
+
+  return `<section class="showcase">
+    <h2 class="section-label">Built and shipping</h2>
+    <div class="stage">${groups}</div>
+    <p class="caveat">
+      Rendered from the shipped CSS — the same files <span class="mono">@stylos/ui/css</span> exports,
+      painted by the generated token sheet, on the public DOM contract. Nothing on this page is a mockup:
+      ${showcase.built} of ${total} components are implemented in code so far, and the charts below carry the rest.
+    </p>
+  </section>`;
+}
+
+function characterSection() {
+  const cards = CHARACTER.map(([title, body]) => `<div class="card"><h3>${title}</h3><p>${body}</p></div>`).join("\n");
+  return `<section class="character">
+    <h2 class="section-label">Character</h2>
+    <div class="cards">${cards}</div>
+  </section>`;
+}
+
+function quickstartSection(site) {
+  if (!site?.npm) return "";
+  const name = esc(site.npm.name);
+  const install = site.npm.private
+    ? `<h3>The package <span class="planned">Planned</span></h3>
+<pre>npm install ${name}</pre>
+<p>The channel is decided with the licence, at alpha. Until then the package is private,
+consumed as a git dependency, and versioned in lockstep with the system — one number
+covers the contracts, the tokens, the Figma library and the code.</p>`
+    : `<h3>The package</h3>
+<pre>npm install ${name}</pre>
+<p>One number covers the contracts, the tokens, the Figma library and the code.</p>`;
+
+  const agents =
+    site.distribution === "planned"
+      ? `<p><span class="planned">Planned</span> <span class="mono">registry.json</span> and the consumer
+skill — the contracts, machine-readable, for an agent building on Stylos without this repository — land with <span class="mono">0.3.0</span>.</p>`
+      : `<p><span class="mono">registry.json</span> and the consumer skill ship with the package — the
+contracts, machine-readable, for an agent building on Stylos without this repository.</p>`;
+
+  return `<section class="quickstart">
+    <h2 class="section-label">Quick start</h2>
+    <div class="qs-grid">
+      <div class="qs">
+        <h3>The CSS surface</h3>
+<pre>@import "${name}/tokens.css";
+@import "${name}/fonts.css";
+@import "${name}/css";
+
+&lt;span class="stylos-badge"
+      data-tone="primary"
+      data-size="medium"&gt;3&lt;/span&gt;</pre>
+        <p>Every component is plain CSS on a public DOM contract — a class, data attributes
+        carrying the contract's values verbatim, text as content. Hand-written HTML and the
+        Svelte wrapper's output are the same string.</p>
+      </div>
+      <div class="qs">
+        ${install}
+        ${agents}
+      </div>
+    </div>
+  </section>`;
+}
+
+function resourcesSection({ site, total, documented }) {
+  const doors = [
+    `<a class="door" href="registry.html">
+      <h2>Component registry →</h2>
+      <p>Every entry, filterable by level, role, readiness, milestone and wave, with what each one is composed from and used inside.</p>
+      <span class="count">${total} entries</span>
+    </a>`,
+    `<a class="door" href="components/index.html">
+      <h2>Component pages →</h2>
+      <p>One page per component: purpose, when to use it and when not to, its properties, and the sizes it comes in.</p>
+      <span class="count">${documented} contracts written</span>
+    </a>`,
+  ];
+
+  if (site?.storybook) {
+    doors.push(`<a class="door" href="storybook/">
+      <h2>Storybook →</h2>
+      <p>The workshop: every built component with a story per documented variant, generated from the registry rather than authored.</p>
+    </a>`);
+  }
+
+  if (site?.figma?.length) {
+    doors.push(`<div class="door flat">
+      <h2>Figma libraries</h2>
+      <p>The design half of the system — the same contracts, implemented in Figma.</p>
+      <ul>${site.figma
+        .map(
+          (library) =>
+            `<li><a href="${esc(library.url)}">${esc(library.name)} ↗</a><br><span class="what">${inline(library.contents)}</span></li>`
+        )
+        .join("")}</ul>
+    </div>`);
+  }
+
+  if (site?.repo) {
+    doors.push(`<a class="door" href="${esc(site.repo)}">
+      <h2>GitHub ↗</h2>
+      <p>The repository: the contracts, the tokens, the foundations, the tools — and every page of this site, generated from them.</p>
+    </a>`);
+  }
+
+  return `<section class="resources">
+    <h2 class="section-label">Resources</h2>
+    <nav class="doors">${doors.join("\n")}</nav>
+  </section>`;
+}
+
+/**
+ * @param {object} options
+ * @param {import("./lib/registry.mjs").Entry[]} options.entries
+ * @param {object|null} options.theme    from loadTheme; omitted in a fixture
+ * @param {string} options.logo          inline SVG, or ""
+ * @param {boolean} options.column       whether assets/column.png was found
+ * @param {string|null} options.plan     PLAN.md, for the wave table; omitted in a fixture
+ * @param {object|null} options.site     the derived facts (lib/site.mjs); omitted in a fixture
+ * @param {object|null} options.showcase the sample payload (lib/showcase.mjs); omitted in a fixture
+ */
+export function renderHome({
+  entries,
+  theme = null,
+  logo = "",
+  generated,
+  column = false,
+  plan = null,
+  site = null,
+  showcase = null,
+}) {
   const total = entries.length;
   const ready = entries.filter((entry) => readiness(entry) === "complete").length;
   const documented = entries.filter((entry) => derive(entry).documented).length;
@@ -231,7 +513,7 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
 
   // No plan to read from means no section, rather than an empty chart or a
   // hardcoded fallback order that would outlive the file it came from.
-  const queueSection = queue.length === 0 ? "" : `<section class="queue">
+  const queueSection = queue.length === 0 ? "" : `<div class="queue">
     <h2>The core set, wave by wave</h2>
     <p class="caveat">
       Stage 4 of the plan, read from <span class="mono">PLAN.md</span> rather than copied — a wave is
@@ -240,7 +522,7 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
       done in; it is not a schedule, and nothing here reports a date.
     </p>
     <ol>${rows}</ol>
-  </section>`;
+  </div>`;
 
   // One bar per milestone, in the plan's order. Parked is not charted: nothing
   // waits on it, and a progress bar would imply something does.
@@ -263,7 +545,7 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
     })
     .join("");
 
-  const milestoneSection = charted.length === 0 ? "" : `<section class="queue milestones">
+  const milestoneSection = charted.length === 0 ? "" : `<div class="queue milestones">
     <h2>The road, milestone by milestone</h2>
     <p class="caveat">
       §9 of the plan. A milestone is a decision about distribution, and the list under it is the
@@ -272,7 +554,7 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
       <span class="mono">Parked</span> is not charted: no decision waits on it.
     </p>
     <ol>${milestoneRows}</ol>
-  </section>`;
+  </div>`;
 
   const here = plan ? whereWeAre(plan, entries) : null;
   const hereLine = !here?.milestone
@@ -283,9 +565,17 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
           : "no wave open, "
       }${here.milestone.done} of ${here.milestone.total} components ready.</span></p>`;
 
-  const figure = column
-    ? `<figure class="column-figure"><img src="assets/column.png" alt="" width="510" height="510" loading="lazy"></figure>`
-    : "";
+  const inCode = showcase ? `<div><span class="n">${showcase.built}</span><span class="k">in code</span></div>` : "";
+
+  const header = renderSiteHeader({
+    prefix: "",
+    active: "home",
+    logo,
+    storybook: site?.storybook ?? false,
+    figmaUrl: site?.figmaMain ?? site?.figma?.[0]?.url ?? null,
+    repoUrl: site?.repo ?? null,
+  });
+  const footer = renderSiteFooter({ generated, version: site?.version ?? null, repoUrl: site?.repo ?? null });
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -294,53 +584,38 @@ export function renderHome({ entries, theme = null, logo = "", generated, column
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stylos</title>
 <meta name="description" content="A design system for dense, desktop-oriented web product interfaces.">
-<style>${theme ? themeCss(theme, { prefix: "" }) : ""}${CSS}</style>
+<style>${theme ? themeCss(theme, { prefix: "" }) : ""}${CHROME_CSS}${CSS}</style>${
+    showcase ? `\n<style>${showcase.css}</style>` : ""
+  }
 </head>
 <body>
 <div class="page">
-  <div class="top">
-    <div>
-      ${logo}
-      <p class="lede">A design system for dense, desktop-oriented web product interfaces.</p>
-      <p class="state">
-        <span class="flag">Pre-alpha</span>
-        Its visual language draws on antiquity, classical architecture and constructed
-        proportion — strict and structural rather than decorative. Private and owner-led;
-        nothing here is released, and none of it is stable.
-      </p>
+  ${header}
+
+  ${heroSection({ logo, column, site })}
+
+  ${showcaseSection(showcase, total)}
+
+  ${characterSection()}
+
+  ${quickstartSection(site)}
+
+  <section class="system">
+    <h2 class="section-label">State of the system</h2>
+    ${hereLine}
+    <div class="tally">
+      <div><span class="n">${total}</span><span class="k">components</span></div>
+      <div><span class="n">${documented}</span><span class="k">with a contract</span></div>
+      <div><span class="n">${ready}</span><span class="k">ready</span></div>
+      ${inCode}
     </div>
-    ${figure}
-  </div>
+    ${queueSection}
+    ${milestoneSection}
+  </section>
 
-  ${hereLine}
+  ${resourcesSection({ site, total, documented })}
 
-  <div class="tally">
-    <div><span class="n">${total}</span><span class="k">components</span></div>
-    <div><span class="n">${documented}</span><span class="k">with a contract</span></div>
-    <div><span class="n">${ready}</span><span class="k">ready</span></div>
-  </div>
-
-  <nav class="doors">
-    <a class="door" href="registry.html">
-      <h2>Component registry →</h2>
-      <p>Every entry, filterable by level, role, readiness, milestone and wave, with what each one is composed from and used inside.</p>
-      <span class="count">${total} entries</span>
-    </a>
-    <a class="door" href="components/index.html">
-      <h2>Component pages →</h2>
-      <p>One page per component: purpose, when to use it and when not to, its properties, and the sizes it comes in.</p>
-      <span class="count">${documented} contracts written</span>
-    </a>
-  </nav>
-
-  ${queueSection}
-
-  ${milestoneSection}
-
-  <footer>
-    <p>Generated ${esc(generated)} from <span class="mono">docs/components/registry/</span> and <span class="mono">tokens/</span>.</p>
-    <p>Colour, radius, type scale and both families are resolved from the token set on every build. The pages are hand-written HTML — no Stylos component is used in them.</p>
-  </footer>
+  ${footer}
 </div>
 </body>
 </html>
@@ -368,6 +643,8 @@ if (isMain) {
     generated: new Date().toISOString().slice(0, 10),
     column: hasColumn(root),
     plan: readPlan(root),
+    site: siteFacts(root),
+    showcase: buildShowcase(root, entries),
   });
 
   const out = path.join(root, "build/index.html");

@@ -37,8 +37,116 @@ test("renders without a theme or a wordmark rather than failing to build", () =>
   assert.doesNotMatch(html, /<svg/);
 });
 
-test("reaches nothing over the network", () => {
-  assert.deepEqual([...home().matchAll(/(https?:)?\/\/[^"'\s)]+/g)].map((m) => m[0]), []);
+// SPEC 0011 §4: a site may link out; a page still may not load anything
+// remote. The allowlist is exact origins, all of them navigation.
+const site = {
+  figma: [
+    {
+      name: "Stylos / Components",
+      url: "https://www.figma.com/design/bbb/Stylos--Components",
+      key: "bbb",
+      contents: "component definitions",
+    },
+  ],
+  npm: { name: "@stylos/ui", version: "0.1.0", private: true },
+  repo: "https://github.com/arturtrifonov/stylos",
+  storybook: true,
+  version: "0.1.0",
+  distribution: "planned",
+};
+
+const ALLOWED_REMOTE = (url) =>
+  url.startsWith("https://www.figma.com/design/") ||
+  url === site.repo ||
+  url === "http://www.w3.org/2000/svg";
+
+test("reaches nothing over the network — the only remote URLs are the allowlisted links out", () => {
+  for (const html of [home(), home({ site })]) {
+    const remote = [...html.matchAll(/(https?:)?\/\/[^"'\s)]+/g)].map((m) => m[0]);
+    assert.ok(
+      remote.every(ALLOWED_REMOTE),
+      `unexpected remote reference: ${remote.filter((u) => !ALLOWED_REMOTE(u))}`
+    );
+    assert.doesNotMatch(html, /<script/);
+    assert.doesNotMatch(html, /<link[^>]+stylesheet/);
+    assert.doesNotMatch(html, /fetch\(/);
+  }
+});
+
+test("a fixture without site facts carries no external link at all", () => {
+  assert.deepEqual([...home().matchAll(/https?:\/\/[^"'\s)]+/g)].map((m) => m[0]), []);
+});
+
+// --- the derived facts (SPEC 0011 §2) ----------------------------------------
+
+test("the header links what the tree holds and nothing more", () => {
+  const html = home({ site });
+  assert.match(html, /href="storybook\/"/);
+  assert.match(html, /href="https:\/\/www\.figma\.com\/design\/bbb\/Stylos--Components"/);
+  assert.match(html, /href="https:\/\/github\.com\/arturtrifonov\/stylos"/);
+
+  const without = home({ site: { ...site, storybook: false, repo: null, figma: [] } });
+  assert.doesNotMatch(without, /storybook\//);
+  assert.doesNotMatch(without, /github\.com/);
+  assert.doesNotMatch(without, /figma\.com/);
+});
+
+test("the version pill is derived, and Pre-alpha is the fallback", () => {
+  assert.match(home({ site }), /<span class="flag">v0\.1\.0<\/span>/);
+  assert.match(home(), /<span class="flag">Pre-alpha<\/span>/);
+});
+
+test("npm install is Planned exactly while the package is private", () => {
+  const planned = home({ site });
+  assert.match(planned, /npm install @stylos\/ui/);
+  const block = planned.slice(planned.indexOf("The package"), planned.indexOf("npm install") + 40);
+  assert.match(block, /Planned/);
+
+  const published = home({ site: { ...site, npm: { ...site.npm, private: false } } });
+  const pubBlock = published.slice(published.indexOf("The package"), published.indexOf("npm install") + 40);
+  assert.doesNotMatch(pubBlock, /Planned/);
+});
+
+test("the agent artifacts flip with SPEC 0010's status", () => {
+  assert.match(home({ site }), /registry\.json/);
+  const shipped = home({ site: { ...site, distribution: "built" } });
+  const agents = shipped.slice(shipped.indexOf("registry.json") - 200, shipped.indexOf("registry.json") + 100);
+  assert.doesNotMatch(agents, /Planned/);
+});
+
+test("quick start and the extra resources are absent without site facts", () => {
+  const html = home();
+  assert.doesNotMatch(html, /npm install/);
+  assert.doesNotMatch(html, /Figma libraries/);
+});
+
+// --- the sample (SPEC 0011 §5) -----------------------------------------------
+
+const showcase = {
+  css: ".stylos-badge { color: var(--stylos-color-text-base); }",
+  built: 1,
+  groups: [
+    {
+      id: "Badge",
+      name: "Badge",
+      note: "a note",
+      samples: [{ html: '<span class="stylos-badge" data-tone="base" data-size="medium">3</span>', label: "base" }],
+    },
+  ],
+};
+
+test("the sample renders the shipped markup and inlines the shipped CSS", () => {
+  const html = home({ showcase });
+  assert.match(html, /<span class="stylos-badge" data-tone="base" data-size="medium">3<\/span>/);
+  assert.ok(html.includes(showcase.css));
+  assert.match(html, /Nothing on this page is a mockup/);
+  assert.match(html, /<span class="n">1<\/span><span class="k">in code<\/span>/);
+});
+
+test("no sample, no section — absent rather than empty", () => {
+  const html = home();
+  assert.doesNotMatch(html, /class="showcase"/);
+  assert.doesNotMatch(html, /in code/);
 });
 
 // --- the wave chart ----------------------------------------------------------

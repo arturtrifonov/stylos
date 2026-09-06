@@ -188,7 +188,7 @@ The bundle is a build output; putting it into a Claude Design project is an agen
 - **Code Connect.** It needs a paid Figma plan, and it serves the Figma-to-code path rather than this gate. Its files are generated from `api` and `figma.node_id` when it arrives; alpha ([`PLAN.md`](../../PLAN.md) §2).
 - **The distribution channel and the licence.** The package stays `private` and is consumed as a git dependency. Nothing in this spec changes when the channel does — which is the reason to specify the artifacts now and the channel later.
 - **Framework adapters.** The layering allows one; nothing asks for one.
-- **A published documentation site.** The generated pages and the workshop stay local.
+- ~~**A published documentation site.** The generated pages and the workshop stay local.~~ *Amended 2026-09-06: superseded by [SPEC 0011](0011-project-website.md) — the generated pages are the site, and the built workshop is published inside its tree.*
 
 ---
 
