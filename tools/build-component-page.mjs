@@ -175,12 +175,25 @@ h2 { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: 
 .property > .label .desc { font-size: var(--text-meta); line-height: 1.55; color: var(--fg-quiet); margin-top: .7rem; }
 .property > .label .finding { margin-top: .9rem; font-size: var(--text-meta); }
 
-.value {
+/* One panel per property, every value on it. The panel is one grid and each
+   row spans it on subgrid, so the samples share a column and the assignments
+   line up down the page — the reading the owner asked for: components on one
+   field, parameters on one vertical. */
+.values {
   display: grid;
-  grid-template-columns: auto minmax(0, 20ch) minmax(0, 1fr);
-  column-gap: 1.5rem;
+  grid-template-columns: max-content minmax(0, 20ch) minmax(0, 1fr);
+  column-gap: 1.8rem;
+  padding: .35rem 1.3rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+.value {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
   align-items: center;
-  padding: .42rem 0;
+  padding: .6rem 0;
   border-bottom: 1px solid var(--rule);
 }
 .value:last-of-type { border-bottom: 0; }
@@ -210,17 +223,19 @@ h2 { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: 
   flex: none;
 }
 .slot span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-/* The live slot holds the component itself, which brings its own type and
-   colour — the slot only gives it ground to stand on and stops constraining
-   the size, because the render is the truth about the size. */
+/* The live slot is the component itself, bare — no box of its own, because a
+   border around a Label reads as part of the Label. The ground it stands on
+   is the panel (.values, .canvas), which is the page's own surface: the
+   render is the truth about the size and the colour, and nothing may frame
+   it into looking like something else. */
 .slot.live {
   width: auto;
   height: auto;
   min-height: 26px;
-  padding: 8px 12px;
-  border: 1px solid var(--rule);
-  border-style: solid;
-  background: var(--bg-sunken);
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
   color: var(--fg);
   font: 400 var(--text-body)/1.4 var(--font-sans);
 }
@@ -230,10 +245,20 @@ h2 { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: 
   padding: 1.8rem 1.6rem;
   border: 1px solid var(--rule);
   border-radius: var(--radius-sm);
-  background: var(--bg-sunken);
+  background: var(--bg);
 }
 
 .examples { margin-top: 1.2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1.2rem; }
+/* The example's field: the same white ground the value panel gives, so the
+   component stands on the page rather than in a box of unclear ownership. */
+.example .canvas {
+  display: flex;
+  align-items: center;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
 .example .verdict { font-weight: 600; font-size: var(--text-meta); margin-bottom: .45rem; }
 .example.do .verdict { color: var(--do); }
 .example.dont .verdict { color: var(--dont); }
@@ -566,7 +591,7 @@ function renderExamples(entry, property, resolveToken, live = false) {
     const dont = example.verdict === "dont";
     return `<div class="example ${dont ? "dont" : "do"}">
 <p class="verdict">${dont ? "✕ Do not" : "✓ Do"}</p>
-${previewSlot(entry, assignment, resolveToken, live)}
+<div class="canvas">${previewSlot(entry, assignment, resolveToken, live)}</div>
 ${example.caption ? paragraph(example.caption, "caption") : ""}
 </div>`;
   });
@@ -604,7 +629,7 @@ function renderProperty(entry, property, resolveToken, first = false, live = fal
 
   return `<div class="band property${first ? " first" : ""}">
 <div class="label">${label.join("")}</div>
-<div class="body">${body}${renderExamples(entry, property, resolveToken, live)}</div>
+<div class="body">${body ? `<div class="values">${body}</div>` : ""}${renderExamples(entry, property, resolveToken, live)}</div>
 </div>`;
 }
 

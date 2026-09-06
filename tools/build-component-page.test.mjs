@@ -699,5 +699,5 @@ test("an assignment the contract refuses falls back to the placeholder", () => {
     ...api.slice(1),
   ]);
   const html = renderComponentPage(entry, pageContext([entry], { resolveToken, preview: PREVIEW }));
-  assert.match(html, /class="example dont">\s*<p class="verdict">✕ Do not<\/p>\s*<div class="slot" style="width:/);
+  assert.match(html, /class="example dont">\s*<p class="verdict">✕ Do not<\/p>\s*<div class="canvas"><div class="slot" style="width:/);
 });
