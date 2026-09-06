@@ -16,7 +16,7 @@ import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { loadRegistry } from "./lib/registry.mjs";
+import { loadRegistry, slugPath } from "./lib/registry.mjs";
 import { builtComponents, camelName, pascalName } from "./build-ui-types.mjs";
 
 export const STORIES_DIR = "apps/workshop/stories/generated";
@@ -41,6 +41,61 @@ function literal(args) {
   return `{{ ${fields.join(", ")} }}`;
 }
 
+/**
+ * The component's docs-page description, as markdown assembled from the
+ * entry's prose — the contract is the documentation, so the page restates
+ * nothing: summary, purpose, when to use and not to, limitations, and where
+ * the contract lives. Rendered on the autodocs page Storybook generates.
+ */
+export function componentDescription(entry) {
+  const useWhen = entry.useWhen ?? [];
+  const doNotUseWhen = entry.doNotUseWhen ?? [];
+  const limitations = entry.limitations ?? [];
+
+  const parts = [];
+  if (entry.summary) parts.push(`**${entry.summary}**`);
+  if (entry.purpose) parts.push(entry.purpose);
+  if (useWhen.length > 0) {
+    parts.push(["**Use when:**", ...useWhen.map((line) => `- ${line}`)].join("\n"));
+  }
+  if (doNotUseWhen.length > 0) {
+    const lines = doNotUseWhen.map((item) => {
+      const instead = [item.instead ?? []].flat().filter(Boolean);
+      return `- ${item.text}${instead.length ? ` *Instead: ${instead.join(", ")}.*` : ""}`;
+    });
+    parts.push(["**Do not use when:**", ...lines].join("\n"));
+  }
+  if (limitations.length > 0) {
+    parts.push(["**Limitations:**", ...limitations.map((line) => `- ${line}`)].join("\n"));
+  }
+  parts.push(`Contract: \`docs/components/registry/${slugPath(entry.id)}.yaml\``);
+  return parts.join("\n\n");
+}
+
+/**
+ * A variant-value story's description: whatever the contract says about that
+ * value — its note, its rationale, and an a11y finding where one is recorded
+ * on the value itself. Empty for a value the contract lists without comment.
+ */
+export function storyDescription(value) {
+  const parts = [];
+  if (value.note) parts.push(value.note);
+  if (value.rationale) parts.push(value.rationale);
+  if (value.a11y?.note) {
+    const criterion = value.a11y.criterion ? ` (${value.a11y.criterion})` : "";
+    parts.push(`**A11y ${value.a11y.status ?? "note"}${criterion}:** ${value.a11y.note}`);
+  }
+  return parts.join("\n\n");
+}
+
+function storyTag(property, value, args) {
+  const description = storyDescription(value);
+  const parameters = description
+    ? ` parameters={{ docs: { description: { story: ${JSON.stringify(description)} } } }}`
+    : "";
+  return `<Story name="${property.name}: ${value.value}" args=${literal(args)}${parameters} />`;
+}
+
 /** The whole .stories.svelte for one entry. */
 export function renderStories(entry) {
   const component = pascalName(entry.id);
@@ -51,7 +106,7 @@ export function renderStories(entry) {
     if (property.kind !== "variant") continue;
     for (const value of property.values ?? []) {
       const args = { ...defaults, [camelName(property.name)]: value.value };
-      stories.push(`<Story name="${property.name}: ${value.value}" args=${literal(args)} />`);
+      stories.push(storyTag(property, value, args));
     }
   }
 
@@ -65,6 +120,10 @@ export function renderStories(entry) {
   const { Story } = defineMeta({
     title: "Components/${entry.name}",
     component: ${component},
+    tags: ["autodocs"],
+    parameters: {
+      docs: { description: { component: ${JSON.stringify(componentDescription(entry))} } },
+    },
   });
 </script>
 

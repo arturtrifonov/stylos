@@ -4,6 +4,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-06 (the workshop documents from the registry)
+
+- **Autodocs, fed by the contract** — the story generator now writes each component's docs page from its registry entry: summary, purpose, use-when and do-not-use-when (with *Instead*), limitations and the contract's path, plus a per-story description wherever a variant value carries a note, a rationale or an a11y finding. Nothing is authored in the workshop and nothing is restated — the entry is the documentation. `@storybook/addon-docs` joins the workshop to render the pages.
+
 ### Added — 2026-09-06 (Loader — the first animated component)
 
 - **`Loader`** — the fourth component of `@stylos/ui`, and the first whose animation is the component. The contract turned out to have imported a drawn state as API: `angle` exists in Figma so the prototype can step the rotation, and no consumer sets an angle on a thing that must never stand still — it is now a `figma_notes` entry under the registry's drawn-state exception, and the contract has **no properties**. The generators learned the case (`LoaderProps = Record<string, never>`, one story). The DOM stays one empty span: the arc is the Figma mark's geometry as an SVG mask in the CSS (ring of thickness 2 in a 20-box, 270°, round caps), painted `text/primary` — the one colour the contract fixes — at 5/6 of the element *by percentage*, so `width`/`height` in consumer CSS is the whole sizing story: the token is the default, nothing is mandatory, and the mark follows any resize. The open timing question is decided in the implementation: one turn per second, linear, because easing on a loop reads as a stutter. Under `prefers-reduced-motion` the rotation is replaced — not stopped — by a slow opacity pulse, the entry's "stop or be replaced" obligation; announcing the wait stays the consumer's.
