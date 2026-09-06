@@ -202,13 +202,14 @@ h2 { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: 
 .value:last-of-type { border-bottom: 0; }
 .value .assign { font-family: var(--font-mono); font-size: var(--text-small); color: var(--fg-faint); }
 .value .assign .val { font-weight: 500; color: var(--fg-quiet); }
-.value .aside { font-size: var(--text-meta); line-height: 1.45; color: var(--fg-quiet); padding: .15rem 0; }
+.value .aside { font-size: var(--text-meta); line-height: 1.5; color: var(--fg-quiet); padding: .15rem 0; min-width: 0; }
 .value .aside .status { color: var(--tone, var(--fg-quiet)); margin-right: .4rem; }
 .value .aside .criterion { color: var(--fg-faint); }
-.value .aside dl { margin: .2em 0 0; }
-.value .aside dt { display: none; }
-.value .aside dd { margin: .25em 0 0; }
-.value .aside dd[data-label]::before { content: attr(data-label); color: var(--fg-faint); margin-right: .35em; }
+/* One line, the rest in the tooltip — a paragraph in the aside makes the row
+   about the paragraph instead of the component. */
+.value .aside .clip { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: default; }
+.value .aside .clip + .clip { margin-top: .2em; }
+.value .aside .clip-label { color: var(--fg-faint); }
 
 /* The placeholder a rendered sample will replace. Dimensions come from the
    contract's own tokens, so nothing about the layout moves when it does. */
@@ -251,22 +252,23 @@ h2 { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: 
   background: var(--bg);
 }
 
-.examples { margin-top: 1.2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1.6rem; }
-.example-col { display: flex; flex-direction: column; gap: 1.2rem; min-width: 0; }
-/* The example's field: the same white ground the value panel gives, so the
-   component stands on the page rather than in a box of unclear ownership. */
-.example .canvas {
-  display: flex;
-  align-items: center;
-  padding: 1.1rem 1.2rem;
+.examples { margin-top: 1.2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1.6rem; align-items: start; }
+.example-col { min-width: 0; }
+.example-col .verdict { font-weight: 600; font-size: var(--text-meta); margin-bottom: .45rem; }
+.example-col.do .verdict { color: var(--do); }
+.example-col.dont .verdict { color: var(--dont); }
+/* One field per verdict, the examples on it separated the way the value rows
+   are — the same white ground, so the component stands on the page rather
+   than in a box of unclear ownership. */
+.example-col .canvas {
+  padding: .2rem 1.2rem;
   border: 1px solid var(--rule);
   border-radius: var(--radius-sm);
   background: var(--bg);
 }
-.example .verdict { font-weight: 600; font-size: var(--text-meta); margin-bottom: .45rem; }
-.example.do .verdict { color: var(--do); }
-.example.dont .verdict { color: var(--dont); }
-.example .caption { font-size: var(--text-meta); line-height: 1.5; color: var(--fg-quiet); margin-top: .45rem; }
+.example-col .ex { padding: .9rem 0; border-bottom: 1px solid var(--rule); }
+.example-col .ex:last-child { border-bottom: 0; }
+.example-col .caption { font-size: var(--text-meta); line-height: 1.5; color: var(--fg-quiet); margin-top: .55rem; }
 
 /* The sizing run. The resolved value leads and the token name sits under it:
    the numbers make the run legible as a run, the names say where they came
@@ -598,61 +600,67 @@ function renderValueRow(entry, property, value, resolveToken, live = false) {
     `<span class="assign"><span class="faint">${esc(property.name)}:</span> ` +
     `<span class="val">${esc(value.value)}</span></span>`;
 
-  // Set in the outer column: a reader scanning the value list sees at a glance
-  // which values carry a finding, and a reader going down the list never has to
-  // read through one.
+  // Set in the outer column, one line each: the row stays the height of the
+  // component, and the full text rides in the native tooltip. An a11y finding
+  // already has a title of its own — the status and the criterion — so that
+  // line is what shows and its note is what hovers.
+  const clip = (text, label_ = "") =>
+    `<span class="clip" title="${esc(text)}">${
+      label_ ? `<span class="clip-label">${esc(label_)} — </span>` : ""
+    }${prose(text)}</span>`;
+
   const aside = [];
   if (value.a11y) {
-    aside.push(`<span class="status caps">a11y ${esc(value.a11y.status)}</span>`);
-    if (value.a11y.criterion) aside.push(`<span class="criterion mono">${esc(value.a11y.criterion)}</span>`);
-  }
-  const detail = [];
-  if (value.note) detail.push(["", value.note]);
-  if (value.a11y?.note) detail.push(["", value.a11y.note]);
-  if (value.rationale) detail.push(["Why it ships", value.rationale]);
-  if (detail.length > 0) {
     aside.push(
-      `<dl>${detail
-        .map(
-          ([label_, text]) =>
-            `<dt>${esc(label_ || "Note")}</dt><dd${
-              label_ ? ` data-label="${esc(label_)} —"` : ""
-            }>${prose(text)}</dd>`
-        )
-        .join("")}</dl>`
+      `<span class="clip"${value.a11y.note ? ` title="${esc(value.a11y.note)}"` : ""}>` +
+        `<span class="status caps">a11y ${esc(value.a11y.status)}</span>` +
+        (value.a11y.criterion ? ` <span class="criterion mono">${esc(value.a11y.criterion)}</span>` : "") +
+        `</span>`
     );
   }
+  if (value.note) aside.push(clip(value.note));
+  if (value.rationale) aside.push(clip(value.rationale, "Why it ships"));
 
   const tone = value.a11y ? ` t-${esc(value.a11y.status)}` : "";
-  return `<div class="value${tone}">${slot}${label}<div class="aside">${aside.join(" ")}</div></div>`;
+  return `<div class="value${tone}">${slot}${label}<div class="aside">${aside.join("")}</div></div>`;
 }
 
 function renderExamples(entry, property, resolveToken, live = false) {
   const examples = Array.isArray(property.examples) ? property.examples : [];
   if (examples.length === 0) return "";
 
-  const block = (example) => {
+  const item = (example) => {
     const props = example.props ?? {};
     // What the example sets comes first: it is the point of the example, and
     // the slot is narrow enough that what comes last is what gets cut.
     const assignment = { ...props, ...assignmentFor(entry, property, property.default ?? "") };
     for (const name of Object.keys(props)) assignment[name] = props[name];
 
-    const dont = example.verdict === "dont";
-    return `<div class="example ${dont ? "dont" : "do"}">
-<p class="verdict">${dont ? "✕ Do not" : "✓ Do"}</p>
-<div class="canvas">${previewSlot(entry, assignment, resolveToken, live)}</div>
-${example.caption ? paragraph(example.caption, "caption") : ""}
-</div>`;
+    return `<div class="ex">${previewSlot(entry, assignment, resolveToken, live)}${
+      example.caption ? paragraph(example.caption, "caption") : ""
+    }</div>`;
   };
 
-  // Two columns, two verdicts: everything to do on the left, everything not
-  // to on the right, rather than the two interleaved in authored order.
-  const dos = examples.filter((example) => example.verdict !== "dont").map(block);
-  const donts = examples.filter((example) => example.verdict === "dont").map(block);
-  const column = (blocks) => (blocks.length > 0 ? `<div class="example-col">${blocks.join("")}</div>` : "");
+  // Two columns, two verdicts, one heading each: everything to do on the
+  // left, everything not to on the right, the examples inside separated by
+  // the same hairline the value rows use.
+  const column = (list, cls, title) =>
+    list.length > 0
+      ? `<div class="example-col ${cls}">
+<p class="verdict">${title}</p>
+<div class="canvas">${list.map(item).join("")}</div>
+</div>`
+      : "";
 
-  return `<div class="examples">${column(dos)}${column(donts)}</div>`;
+  return `<div class="examples">${column(
+    examples.filter((example) => example.verdict !== "dont"),
+    "do",
+    "✓ Do"
+  )}${column(
+    examples.filter((example) => example.verdict === "dont"),
+    "dont",
+    "✕ Do not"
+  )}</div>`;
 }
 
 function renderProperty(entry, property, resolveToken, first = false, live = false) {

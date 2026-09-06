@@ -699,7 +699,7 @@ test("an assignment the contract refuses falls back to the placeholder", () => {
     ...api.slice(1),
   ]);
   const html = renderComponentPage(entry, pageContext([entry], { resolveToken, preview: PREVIEW }));
-  assert.match(html, /class="example dont">\s*<p class="verdict">✕ Do not<\/p>\s*<div class="canvas"><div class="slot" style="width:/);
+  assert.match(html, /class="example-col dont">\s*<p class="verdict">✕ Do not<\/p>\s*<div class="canvas"><div class="ex"><div class="slot" style="width:/);
 });
 
 test("a live value row rides on the contract's defaults", () => {
@@ -736,9 +736,12 @@ test("do and do-not examples sit in their own columns", () => {
     ...api.slice(1),
   ]);
   const html = renderComponentPage(entry, pageContext([entry], { resolveToken }));
-  const cols = [...html.matchAll(/class="example-col"/g)];
-  assert.equal(cols.length, 2);
-  const firstCol = html.slice(html.indexOf('class="example-col"'), html.indexOf('class="example-col"', html.indexOf('class="example-col"') + 1));
-  assert.doesNotMatch(firstCol, /example dont/);
-  assert.equal([...firstCol.matchAll(/example do"/g)].length, 2);
+  assert.deepEqual(
+    [...html.matchAll(/class="example-col (do|dont)"/g)].map((m) => m[1]),
+    ["do", "dont"],
+    "one column per verdict, do first"
+  );
+  const doCol = html.slice(html.indexOf('class="example-col do"'), html.indexOf('class="example-col dont"'));
+  assert.equal([...doCol.matchAll(/class="ex"/g)].length, 2, "both do-examples share the one field");
+  assert.doesNotMatch(doCol, /Do not/);
 });
