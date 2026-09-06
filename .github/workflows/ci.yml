@@ -20,5 +20,7 @@ jobs:
       - run: npm run validate:registry
       - run: npm run validate:skills
       - run: npm run tokens:check
-      - run: npm run tokens:css
+      # --if-present until SPEC 0007's tools/build-css.mjs reaches master with the
+      # add-tokens PR; drop the flag in the first PR after it lands.
+      - run: npm run --if-present tokens:css
       - run: npm run build
