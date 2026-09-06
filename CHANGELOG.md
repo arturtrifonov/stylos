@@ -4,6 +4,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-06 (the Indicator family — two components, as the registry split them)
+
+- **`IndicatorStatus` and `IndicatorSpecial`** — the second and third components of `@stylos/ui`, built to their registry entries on the pattern Badge proved: authored CSS keyed on data attributes, a thin Svelte wrapper, generated `props.ts` and stories. Two components, not one: the registry split the old Indicator deliberately — semantic colour that judges (`text/*`) against categorical colour that identifies (`text/special/*`) — and one code component would re-merge the vocabularies into a 30-value tone prop where a category compiles in a status seat. The element is the footprint and the dot is a `::before` that keeps its own dimension when a layout resizes the footprint — the entry's sizing model, decoupled runs and all. Static primitives on slice 1's proven chain; slice 2 (Checkbox Input, first interactive) is still next.
+
 ### Added — 2026-09-06 (the package supplies its fonts)
 
 - **The font export** — `@stylos/ui/fonts.css` plus the woff2 subsets under `dist/assets/fonts/`, written by `tools/build-ui-fonts.mjs` in `ui:generate`. `tokens.css` names Georama and JetBrains Mono; until now nothing in the package supplied them, and every consumer — the workshop first — silently fell back to the system stack. The faces are rendered by the same `fontFacesCss` (`tools/lib/theme.mjs`) the registry-viewer pages use, from the same committed files under `assets/fonts/` — copied at build, never fetched, so a font update is a deliberate commit with a diff. SPEC 0010 §2.1 is amended in place; the workshop now imports the export it tests.

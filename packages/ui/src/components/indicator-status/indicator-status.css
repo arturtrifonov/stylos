@@ -1,0 +1,96 @@
+/* Indicator Status — docs/components/registry/indicator-status.yaml.
+ *
+ * Selectors are keyed on the data attributes that carry the contract's values
+ * (ADR 0002). The element is the footprint and the dot is a ::before that
+ * does not follow it: the footprint is a starting value a layout may resize,
+ * and the dot keeps its own fixed dimension, centred, when it does — the
+ * decoupling the entry's sizing model exists for. The dot advances only
+ * every other size, so adjacent sizes can reserve different space and paint
+ * the same mark.
+ *
+ * Tone paints the dot with the text colour role of the same name. The 1px
+ * ring is decorative: it separates the dot from a busy background optically
+ * and carries no contrast.
+ */
+
+.stylos-indicator-status {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--_stylos-indicator-status-footprint);
+  height: var(--_stylos-indicator-status-footprint);
+}
+
+.stylos-indicator-status::before {
+  content: "";
+  box-sizing: border-box;
+  width: var(--_stylos-indicator-status-dot);
+  height: var(--_stylos-indicator-status-dot);
+  border-width: var(--stylos-border-width-normal);
+  border-style: solid;
+  border-color: var(--stylos-color-border-secondary);
+  border-radius: var(--stylos-radius-round);
+  background-color: var(--_stylos-indicator-status-fill);
+}
+
+/* sizes — the footprint and the mark move on their own runs */
+
+.stylos-indicator-status[data-size="extra small"] {
+  --_stylos-indicator-status-footprint: var(--stylos-dimension-size-s-1_000);
+  --_stylos-indicator-status-dot: var(--stylos-dimension-size-s-1_000);
+}
+
+.stylos-indicator-status[data-size="small"] {
+  --_stylos-indicator-status-footprint: var(--stylos-dimension-size-s-1_250);
+  --_stylos-indicator-status-dot: var(--stylos-dimension-size-s-1_000);
+}
+
+.stylos-indicator-status[data-size="medium"] {
+  --_stylos-indicator-status-footprint: var(--stylos-dimension-size-s-1_500);
+  --_stylos-indicator-status-dot: var(--stylos-dimension-size-s-1_250);
+}
+
+.stylos-indicator-status[data-size="large"] {
+  --_stylos-indicator-status-footprint: var(--stylos-dimension-size-s-1_750);
+  --_stylos-indicator-status-dot: var(--stylos-dimension-size-s-1_250);
+}
+
+.stylos-indicator-status[data-size="extra large"] {
+  --_stylos-indicator-status-footprint: var(--stylos-dimension-size-s-2_000);
+  --_stylos-indicator-status-dot: var(--stylos-dimension-size-s-1_500);
+}
+
+/* tones — one per semantic or neutral text colour role, mapping exact */
+
+.stylos-indicator-status[data-tone="base"] {
+  --_stylos-indicator-status-fill: var(--stylos-color-text-base);
+}
+
+.stylos-indicator-status[data-tone="danger"] {
+  --_stylos-indicator-status-fill: var(--stylos-color-text-danger);
+}
+
+.stylos-indicator-status[data-tone="primary"] {
+  --_stylos-indicator-status-fill: var(--stylos-color-text-primary);
+}
+
+.stylos-indicator-status[data-tone="secondary"] {
+  --_stylos-indicator-status-fill: var(--stylos-color-text-secondary);
+}
+
+.stylos-indicator-status[data-tone="success"] {
+  --_stylos-indicator-status-fill: var(--stylos-color-text-success);
+}
+
+.stylos-indicator-status[data-tone="tertiary"] {
+  --_stylos-indicator-status-fill: var(--stylos-color-text-tertiary);
+}
+
+.stylos-indicator-status[data-tone="warning"] {
+  --_stylos-indicator-status-fill: var(--stylos-color-text-warning);
+}
+
+.stylos-indicator-status[data-tone="disabled"] {
+  --_stylos-indicator-status-fill: var(--stylos-color-text-disabled);
+}
