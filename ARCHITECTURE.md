@@ -41,14 +41,14 @@ The relationship stays **one-directional**: the repository never writes to Figma
 ### 2.1 Tokens
 
 ```
-Figma Variables ──manual export──▶ tokens/*.yaml ──tokens:css──▶ packages/ui/dist/ ──✗──▶ @stylos/ui
+Figma Variables ──manual export──▶ tokens/*.yaml ──tokens:css──▶ packages/ui/dist/ ──▶ @stylos/ui
                                         ▲       │
                   tokens/_naming.yaml ──┘       └──▶ npm run tokens:report
 ```
 
 Variables are authored in Figma. An export is made by hand and handed to `npm run tokens:import`, which folds Figma's nine collections into eight canonical ones and writes `tokens/*.yaml` — the record everything else reads. **The exported files are not committed**: read once, then discarded. `npm run tokens:check` verifies the record against itself, since `ref` and `values` are deliberately redundant.
 
-`npm run tokens:css` projects the record onto CSS custom properties — `tools/build-css.mjs`, writing `packages/ui/dist/tokens.css` and a `tokens.json` manifest beside it ([SPEC 0007](docs/specs/0007-tokens-to-css.md)). It is a projection, not a second record: it reads `tokens/*.yaml` and nothing else, improves no value on the way through, refuses to run on a set that fails `tokens:check`, and its output is not committed. The command is `tokens:css`; there is no `tokens:build`. **The package is still unbuilt** — see [`PLAN.md`](PLAN.md) Stage 5, which is where the CSS build's output finally gets a reader.
+`npm run tokens:css` projects the record onto CSS custom properties — `tools/build-css.mjs`, writing `packages/ui/dist/tokens.css` and a `tokens.json` manifest beside it ([SPEC 0007](docs/specs/0007-tokens-to-css.md)). It is a projection, not a second record: it reads `tokens/*.yaml` and nothing else, improves no value on the way through, refuses to run on a set that fails `tokens:check`, and its output is not committed. The command is `tokens:css`; there is no `tokens:build`. Its reader is `@stylos/ui` in `packages/ui` ([SPEC 0009](docs/specs/0009-stylos-ui-package.md)): every component's CSS is `var(--stylos-…)` references and nothing else, and `tokens:css` runs as the package's `prebuild` (via `npm run ui:generate`, which also generates the props types and the Storybook stories from the registry).
 
 **Break:** the export is still manual and has no cadence. Nothing detects that Figma has moved on, so `tokens/` is only as current as the last person to import. What `npm run tokens:check` does catch is drift *within* the record — an alias that no longer agrees with the value beside it, or a mode dependence that is not declared.
 
@@ -99,6 +99,9 @@ This is the only closed loop in the system, and the only automated step anywhere
 | `tokens/_history.yaml` | each import run | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
 | `figma/library.yaml` | a Figma export of the `meta` collection | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
 | `packages/ui/dist/tokens.css`, `tokens.json` | `tokens/*.yaml` | `tools/build-css.mjs` | no — derived, rebuilt on demand |
+| `packages/ui/src/components/*/props.ts` | `docs/components/registry/*.yaml` | `tools/build-ui-types.mjs` | no — derived, rebuilt on demand |
+| `apps/workshop/stories/generated/` | `docs/components/registry/*.yaml` | `tools/build-ui-stories.mjs` | no — derived, rebuilt on demand |
+| `packages/ui/dist/package/` | `packages/ui/src/` | `svelte-package` | no — derived, rebuilt on demand |
 
 The registry importer ran once, on 2026-08-20. It deletes and rewrites every file rather than merging, so it is kept as the record of how the registry came to exist and refuses to run without `--overwrite-hand-edits`.
 
@@ -108,8 +111,7 @@ The registry importer ran once, on 2026-08-20. It deletes and rewrites every fil
 
 Stated explicitly so it is never assumed.
 
-- **A front-end library.** No package, no dependencies, no component code. The intended structure is sketched in [`PLAN.md`](PLAN.md) Stage 5; building it before the Figma contracts stabilise would create maintenance without delivering anything.
-- **Any published documentation surface.** No site, no Storybook, no designer-facing portal. Documentation is Markdown in git, read in an editor.
+- **Any published documentation surface.** No site, no designer-facing portal. The Storybook workshop (`apps/workshop`) is a local development surface, run from a checkout and never deployed. Documentation is Markdown in git, read in an editor.
 - **Per-component contracts.** The standard, the schema, the validator and the page generator exist; most entries still carry the inventory record only. How many is derived — `documented` in the registry view — rather than restated here.
 
 ---

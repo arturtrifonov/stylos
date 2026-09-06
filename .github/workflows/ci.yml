@@ -1,6 +1,6 @@
-# The four checks plus the two generators, on every pull request and on master.
-# No `npm ci` until packages/ui brings a lockfile — the repository has no dependencies today
-# (docs/specs/0008-development-and-release-flow.md §4).
+# The four checks plus the generators, then the package: lint, svelte-check,
+# build and the Storybook workshop (docs/specs/0008-development-and-release-flow.md §4,
+# docs/specs/0009-stylos-ui-package.md §6).
 name: CI
 
 on:
@@ -16,9 +16,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+      - run: npm ci
       - run: npm test
       - run: npm run validate:registry
       - run: npm run validate:skills
       - run: npm run tokens:check
       - run: npm run tokens:css
       - run: npm run build
+      - run: npm run lint:css
+      - run: npm run ui:check
+      - run: npm run ui:build
+      - run: npm run workshop:build

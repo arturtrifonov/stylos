@@ -29,6 +29,8 @@ A design system for dense, desktop-oriented web product interfaces. Its visual l
 ```text
 docs/          charter, foundations, component standard and registry, specs
 tokens/        the canonical token set, imported from Figma
+packages/ui/   @stylos/ui — the Svelte 5 component package, built from the registry's contracts
+apps/workshop/ the Storybook workshop for @stylos/ui; stories are generated, run locally
 skills/        Figma Agent skills — modular source, compiled to one importable document
 tools/         small dependency-free scripts that build and check the above
 assets/        the wordmark and the two self-hosted families, for the generated site

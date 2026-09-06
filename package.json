@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "description": "Stylos Design System \u2014 documentation, canonical design tokens, and Figma Agent skill sources.",
+  "workspaces": [
+    "packages/ui",
+    "apps/workshop"
+  ],
   "scripts": {
     "build": "node tools/build-site.mjs",
     "build:skills": "node tools/build-skills.mjs",
@@ -15,7 +19,19 @@
     "tokens:check": "node tools/check-tokens.mjs",
     "tokens:css": "node tools/build-css.mjs",
     "tokens:report": "node tools/tokens-report.mjs",
+    "ui:generate": "node tools/build-css.mjs && node tools/build-ui-types.mjs && node tools/build-ui-stories.mjs",
+    "ui:build": "npm run build -w @stylos/ui",
+    "ui:check": "npm run ui:generate && npm run check -w @stylos/ui",
+    "lint:css": "stylelint \"packages/ui/src/**/*.{css,svelte}\"",
+    "workshop": "npm run ui:generate && npm run dev -w stylos-workshop",
+    "workshop:build": "npm run ui:generate && npm run build -w stylos-workshop",
     "test": "node --test \"tools/**/*.test.mjs\""
+  },
+  "devDependencies": {
+    "postcss-html": "^2.0.0",
+    "stylelint": "^17.15.0",
+    "stylelint-config-html": "^2.0.0",
+    "stylelint-declaration-strict-value": "^1.10.0"
   },
   "license": "UNLICENSED"
 }

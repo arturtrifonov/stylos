@@ -1,0 +1,129 @@
+/* Badge — docs/components/registry/badge.yaml.
+ *
+ * Selectors are keyed on the data attributes that carry the contract's values
+ * (ADR 0002). Every value is a token custom property; the sizing rows are the
+ * entry's sizing_model verbatim, and the pill rule is the sizing model:
+ * min-width equals height at every size, so one digit is a circle and more
+ * digits stretch it into a pill. The radius is `round` at every size — that is
+ * what keeps the ends semicircular rather than merely very rounded.
+ *
+ * Tone paints the surface with the text colour role of the same name; the
+ * label takes the opposing role — `text/inverted` against every dark surface,
+ * `text/base` against inverted, and each static role against the other.
+ */
+
+.stylos-badge {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--stylos-radius-round);
+  font-family: var(--stylos-font-family-normal);
+  font-weight: var(--stylos-font-weight-semibold);
+  background-color: var(--_stylos-badge-surface);
+  color: var(--_stylos-badge-label);
+}
+
+/* sizes — height, min-width, padding and the type measure move together */
+
+.stylos-badge[data-size="extra small"] {
+  height: var(--stylos-dimension-size-s-1_500);
+  min-width: var(--stylos-dimension-size-s-1_500);
+  padding-block: var(--stylos-dimension-gap-g-0_000);
+  padding-inline: var(--stylos-dimension-gap-g-0_250);
+  font-size: var(--stylos-font-size-0_625);
+  line-height: var(--stylos-font-line-height-string-0_625);
+}
+
+.stylos-badge[data-size="small"] {
+  height: var(--stylos-dimension-size-s-1_750);
+  min-width: var(--stylos-dimension-size-s-1_750);
+  padding-block: var(--stylos-dimension-gap-g-0_125);
+  padding-inline: var(--stylos-dimension-gap-g-0_500);
+  font-size: var(--stylos-font-size-0_750);
+  line-height: var(--stylos-font-line-height-string-0_750);
+}
+
+.stylos-badge[data-size="medium"] {
+  height: var(--stylos-dimension-size-s-2_000);
+  min-width: var(--stylos-dimension-size-s-2_000);
+  padding-block: var(--stylos-dimension-gap-g-0_125);
+  padding-inline: var(--stylos-dimension-gap-g-0_625);
+  font-size: var(--stylos-font-size-0_875);
+  line-height: var(--stylos-font-line-height-string-0_875);
+}
+
+.stylos-badge[data-size="large"] {
+  height: var(--stylos-dimension-size-s-2_250);
+  min-width: var(--stylos-dimension-size-s-2_250);
+  padding-block: var(--stylos-dimension-gap-g-0_250);
+  padding-inline: var(--stylos-dimension-gap-g-0_750);
+  font-size: var(--stylos-font-size-0_875);
+  line-height: var(--stylos-font-line-height-string-0_875);
+}
+
+.stylos-badge[data-size="extra large"] {
+  height: var(--stylos-dimension-size-s-2_500);
+  min-width: var(--stylos-dimension-size-s-2_500);
+  padding-block: var(--stylos-dimension-gap-g-0_250);
+  padding-inline: var(--stylos-dimension-gap-g-0_750);
+  font-size: var(--stylos-font-size-1_000);
+  line-height: var(--stylos-font-line-height-string-1_000);
+}
+
+/* tones — one per text colour role, mapping exact */
+
+.stylos-badge[data-tone="base"] {
+  --_stylos-badge-surface: var(--stylos-color-text-base);
+  --_stylos-badge-label: var(--stylos-color-text-inverted);
+}
+
+.stylos-badge[data-tone="secondary"] {
+  --_stylos-badge-surface: var(--stylos-color-text-secondary);
+  --_stylos-badge-label: var(--stylos-color-text-inverted);
+}
+
+.stylos-badge[data-tone="tertiary"] {
+  --_stylos-badge-surface: var(--stylos-color-text-tertiary);
+  --_stylos-badge-label: var(--stylos-color-text-inverted);
+}
+
+.stylos-badge[data-tone="primary"] {
+  --_stylos-badge-surface: var(--stylos-color-text-primary);
+  --_stylos-badge-label: var(--stylos-color-text-inverted);
+}
+
+.stylos-badge[data-tone="warning"] {
+  --_stylos-badge-surface: var(--stylos-color-text-warning);
+  --_stylos-badge-label: var(--stylos-color-text-inverted);
+}
+
+.stylos-badge[data-tone="danger"] {
+  --_stylos-badge-surface: var(--stylos-color-text-danger);
+  --_stylos-badge-label: var(--stylos-color-text-inverted);
+}
+
+.stylos-badge[data-tone="success"] {
+  --_stylos-badge-surface: var(--stylos-color-text-success);
+  --_stylos-badge-label: var(--stylos-color-text-inverted);
+}
+
+.stylos-badge[data-tone="inverted"] {
+  --_stylos-badge-surface: var(--stylos-color-text-inverted);
+  --_stylos-badge-label: var(--stylos-color-text-base);
+}
+
+.stylos-badge[data-tone="static light"] {
+  --_stylos-badge-surface: var(--stylos-color-text-static-light);
+  --_stylos-badge-label: var(--stylos-color-text-static-dark);
+}
+
+.stylos-badge[data-tone="static dark"] {
+  --_stylos-badge-surface: var(--stylos-color-text-static-dark);
+  --_stylos-badge-label: var(--stylos-color-text-static-light);
+}
+
+.stylos-badge[data-tone="disabled"] {
+  --_stylos-badge-surface: var(--stylos-color-text-disabled);
+  --_stylos-badge-label: var(--stylos-color-text-inverted);
+}

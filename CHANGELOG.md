@@ -4,6 +4,16 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-06 (`@stylos/ui` exists — the first vertical slice)
+
+Built to [SPEC 0009](docs/specs/0009-stylos-ui-package.md). The repository is now an npm workspace: `packages/ui` is the Svelte 5 component package, `apps/workshop` is its Storybook.
+
+- **Badge is the first built component** — authored `badge.css` (every value a `var(--stylos-…)`) and `Badge.svelte`; every documented variant renders in the workshop from `tokens.css` alone.
+- **Props types and stories are generated from the registry, never authored** — `tools/build-ui-types.mjs` writes `props.ts` per component from its entry's `api` (variant values as a string union, so props ↔ `api` is checked by the compiler); `tools/build-ui-stories.mjs` writes one story per component with a case per documented variant value.
+- **Stylelint holds the token boundary** — `color-no-hex`, `unit-disallowed-list: px` and declaration-strict-value on colour, spacing and size, over `packages/ui/src/**` including `.svelte`.
+- **`npm run validate:registry` reports drawing-only state in `api`** — `state` carrying `hover`/`active`/`focus`, or an `is focused` property, belongs in `figma_notes`; `read only` joins `state` in [`naming.md`](docs/foundations/naming.md) §4. Per SPEC 0009 §5 the entries are corrected per component, as each contract is opened for implementation.
+- **CI runs the package** — lint, `svelte-check`, the package build and the workshop build, after the four checks.
+
 ### Added — 2026-09-06 (the development and release flow exists)
 
 Built to [SPEC 0008](docs/specs/0008-development-and-release-flow.md). On 2026-09-05 an agent's command fast-forward-merged a branch into `master` because there was nothing to refuse it; this is the flow that refuses it. **No component, token or contract value changed.**

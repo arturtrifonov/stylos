@@ -190,3 +190,70 @@ test("says nothing about the plan when there is no plan to check against", () =>
   const { reports } = checkRegistry([entry("Badge")]);
   assert.deepEqual(reports.filter((report) => /named by neither table/.test(report)), []);
 });
+
+// SPEC 0009 §5: `api` describes the web component. A property that only draws
+// a state the real component decides for itself is drawing-only and belongs in
+// `figma_notes` — a report, because moving it is a per-component judgement.
+test("reports state carrying hover/active/focus inside api", () => {
+  const { ok, reports } = checkRegistry([
+    entry("Popover", {
+      parents: ["Modal"],
+      api: [
+        {
+          name: "state",
+          kind: "variant",
+          default: "default",
+          description: "Interaction state.",
+          values: [
+            { value: "default" },
+            { value: "hover" },
+            { value: "active" },
+            { value: "focus" },
+            { value: "disabled" },
+          ],
+        },
+      ],
+    }),
+    entry("Modal", { children: ["Popover"] }),
+  ]);
+  assert.equal(ok, true, "drawing-only values in api are a judgement, not a failure");
+  assert.equal(
+    reports.filter((report) => /drawing-only/.test(report)).join("\n"),
+    '"Popover" api carries state = hover/active/focus — drawing-only values; record them in figma_notes'
+  );
+});
+
+test("reports an is focused property inside api", () => {
+  const { reports } = checkRegistry([
+    entry("Popover", {
+      parents: ["Modal"],
+      api: [
+        { name: "is focused", kind: "boolean", default: false, description: "Draws focus." },
+      ],
+    }),
+    entry("Modal", { children: ["Popover"] }),
+  ]);
+  assert.equal(
+    reports.filter((report) => /drawing-only/.test(report)).join("\n"),
+    '"Popover" api carries "is focused" — a drawing-only property; record it in figma_notes'
+  );
+});
+
+test("says nothing about state carrying only real states", () => {
+  const { reports } = checkRegistry([
+    entry("Popover", {
+      parents: ["Modal"],
+      api: [
+        {
+          name: "state",
+          kind: "variant",
+          default: "default",
+          description: "Interaction state.",
+          values: [{ value: "default" }, { value: "disabled" }, { value: "read only" }],
+        },
+      ],
+    }),
+    entry("Modal", { children: ["Popover"] }),
+  ]);
+  assert.deepEqual(reports.filter((report) => /drawing-only/.test(report)), []);
+});

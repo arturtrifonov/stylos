@@ -3,3 +3,6 @@ build/
 packages/*/dist/
 .DS_Store
 *.log
+packages/ui/src/components/*/props.ts
+apps/workshop/stories/generated/
+apps/workshop/storybook-static/

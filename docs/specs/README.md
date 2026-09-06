@@ -23,4 +23,5 @@ If a spec finds itself arguing for an approach rather than describing one, that 
 | [0005](0005-queue-in-the-views.md) | The queue in the views | `ARCHITECTURE.md` §8 | Built |
 | [0006](0006-versioning-and-release-0-1-0.md) | Versioning, and the 0.1.0 release | `ARCHITECTURE.md` §9 | Built |
 | [0007](0007-tokens-to-css.md) | Tokens to CSS | `PLAN.md` §Stage 5, `docs/foundations/color.md`, `effects.md` | Built |
-| [0008](0008-development-and-release-flow.md) | Development and release flow | `ARCHITECTURE.md` §7 | Open |
+| [0008](0008-development-and-release-flow.md) | Development and release flow | `ARCHITECTURE.md` §7 | Built |
+| [0009](0009-stylos-ui-package.md) | `@stylos/ui` | `PLAN.md` §Stage 5, [ADR 0002](../decisions/0002-frontend-stack.md) | Open |

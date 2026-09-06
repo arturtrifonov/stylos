@@ -538,6 +538,30 @@ function reportContract(entry, entries, reports, today) {
     }
   }
 
+  // `api` describes the web component, not the Figma file (SPEC 0009 §5).
+  // A property that only draws a state the real component decides for itself
+  // belongs in `figma_notes` as drawing-only — the exception registry/README.md
+  // defines for `has scrollbar`. `disabled` and `read only` stay: real states.
+  const DRAWING_ONLY_STATES = new Set(["hover", "active", "focus"]);
+  for (const property of api) {
+    if (property?.name === "is focused") {
+      reports.push(
+        `"${entry.id}" api carries "is focused" — a drawing-only property; record it in figma_notes`
+      );
+    }
+    if (property?.name === "state") {
+      const drawn = valuesOf(property)
+        .map((value) => value?.value)
+        .filter((value) => DRAWING_ONLY_STATES.has(value));
+      if (drawn.length > 0) {
+        reports.push(
+          `"${entry.id}" api carries state = ${drawn.join("/")} — drawing-only values; ` +
+            `record them in figma_notes`
+        );
+      }
+    }
+  }
+
   const findings = [
     ...entry.a11y.map((finding) => [finding, "the component"]),
     ...api.flatMap((property) => [
