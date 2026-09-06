@@ -205,11 +205,44 @@ h2 { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: 
 .value .aside { font-size: var(--text-meta); line-height: 1.5; color: var(--fg-quiet); padding: .15rem 0; min-width: 0; }
 .value .aside .status { color: var(--tone, var(--fg-quiet)); margin-right: .4rem; }
 .value .aside .criterion { color: var(--fg-faint); }
-/* One line, the rest in the tooltip — a paragraph in the aside makes the row
-   about the paragraph instead of the component. */
-.value .aside .clip { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: default; }
-.value .aside .clip + .clip { margin-top: .2em; }
+/* One line per remark, the rest a click away — a paragraph in the aside makes
+   the row about the paragraph instead of the component. The line is a
+   <details> summary washed with the sunken background so it reads as
+   clickable; the full text opens as a small popover under it. No script:
+   the disclosure is the browser's own. */
+.value .aside .clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .value .aside .clip-label { color: var(--fg-faint); }
+.value .aside .note { position: relative; }
+.value .aside .note + .note, .value .aside .note + .flat, .value .aside .flat + .note { margin-top: .25em; }
+.value .aside .note summary {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+  list-style: none;
+  cursor: pointer;
+  background: var(--bg-sunken);
+  border-radius: var(--radius-xs);
+  padding: .12em .55em;
+}
+.value .aside .note summary::-webkit-details-marker { display: none; }
+.value .aside .note summary:hover { background: var(--bg-raised); }
+.value .aside .note[open] summary { background: var(--bg-raised); }
+.value .aside .note .pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 30;
+  width: min(46ch, 70vw);
+  background: var(--bg);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-md);
+  padding: .8rem 1rem;
+  box-shadow: 0 10px 28px rgb(0 0 0 / .16);
+  color: var(--fg);
+  white-space: normal;
+  line-height: 1.55;
+}
+.value .aside .flat { display: block; padding: .12em 0; }
 
 /* The placeholder a rendered sample will replace. Dimensions come from the
    contract's own tokens, so nothing about the layout moves when it does. */
@@ -600,26 +633,32 @@ function renderValueRow(entry, property, value, resolveToken, live = false) {
     `<span class="assign"><span class="faint">${esc(property.name)}:</span> ` +
     `<span class="val">${esc(value.value)}</span></span>`;
 
-  // Set in the outer column, one line each: the row stays the height of the
-  // component, and the full text rides in the native tooltip. An a11y finding
-  // already has a title of its own — the status and the criterion — so that
-  // line is what shows and its note is what hovers.
-  const clip = (text, label_ = "") =>
-    `<span class="clip" title="${esc(text)}">${
-      label_ ? `<span class="clip-label">${esc(label_)} — </span>` : ""
-    }${prose(text)}</span>`;
+  // Set in the outer column, one line each, so the row stays the height of
+  // the component. The line is the trigger and the full text is a popover a
+  // click away — <details>, so the page keeps its no-script rule. An a11y
+  // finding already has a title of its own — the status and the criterion —
+  // so that alone is its line, and the note lives in the popover.
+  const pop = (summary, body) =>
+    body
+      ? `<details class="note"><summary>${summary}</summary><div class="pop">${prose(body)}</div></details>`
+      : `<span class="flat">${summary}</span>`;
 
   const aside = [];
   if (value.a11y) {
     aside.push(
-      `<span class="clip"${value.a11y.note ? ` title="${esc(value.a11y.note)}"` : ""}>` +
+      pop(
         `<span class="status caps">a11y ${esc(value.a11y.status)}</span>` +
-        (value.a11y.criterion ? ` <span class="criterion mono">${esc(value.a11y.criterion)}</span>` : "") +
-        `</span>`
+          (value.a11y.criterion ? ` <span class="criterion mono">${esc(value.a11y.criterion)}</span>` : ""),
+        value.a11y.note
+      )
     );
   }
-  if (value.note) aside.push(clip(value.note));
-  if (value.rationale) aside.push(clip(value.rationale, "Why it ships"));
+  if (value.note) aside.push(pop(`<span class="clip">${prose(value.note)}</span>`, value.note));
+  if (value.rationale) {
+    aside.push(
+      pop(`<span class="clip"><span class="clip-label">Why it ships — </span>${prose(value.rationale)}</span>`, value.rationale)
+    );
+  }
 
   const tone = value.a11y ? ` t-${esc(value.a11y.status)}` : "";
   return `<div class="value${tone}">${slot}${label}<div class="aside">${aside.join("")}</div></div>`;
