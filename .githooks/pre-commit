@@ -1,0 +1,8 @@
+#!/bin/sh
+# master is the release line, reached only by pull request (ARCHITECTURE.md §7).
+branch=$(git symbolic-ref --quiet --short HEAD)
+if [ "$branch" = "master" ]; then
+	echo "pre-commit: refusing to commit on master." >&2
+	echo "pre-commit: branch first — git switch -c <branch> — and open a pull request." >&2
+	exit 1
+fi

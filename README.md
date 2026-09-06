@@ -55,6 +55,14 @@ The exported files are not kept — `tokens/*.yaml` is the record, and its histo
 
 ## Working on it
 
+Once per clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+A hooks path is not configured by cloning, and the hooks are the guard that binds a hand as well as an agent: no commit on `master`, no push to it outside the release ritual ([`ARCHITECTURE.md`](ARCHITECTURE.md) §7). Work branches from `master` and arrives by pull request.
+
 ```bash
 npm install
 npm test                  # tool tests
