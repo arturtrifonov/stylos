@@ -1,0 +1,24 @@
+# The four checks plus the two generators, on every pull request and on master.
+# No `npm ci` until packages/ui brings a lockfile — the repository has no dependencies today
+# (docs/specs/0008-development-and-release-flow.md §4).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+      - run: npm run validate:registry
+      - run: npm run validate:skills
+      - run: npm run tokens:check
+      - run: npm run tokens:css
+      - run: npm run build
