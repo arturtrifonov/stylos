@@ -1,0 +1,130 @@
+/* Label — docs/components/registry/label.yaml.
+ *
+ * Selectors are keyed on the data attributes that carry the contract's values
+ * (ADR 0002). The element is the semantic <label>; the name is its bare text,
+ * the required marker is a span[aria-hidden] beside it — presentational, the
+ * requiredness itself lives on the control — and the supporting line is the
+ * span without it. Height is the sum of what is switched on: the supporting
+ * line is a block with the size's gap above it, and nothing here reserves
+ * space around the label.
+ *
+ * Who decides what: whether the marker and the line exist in the DOM is the
+ * consumer's (the wrapper renders the line when validation is not off or
+ * `has additional text` asks for it); how they draw is this file's. Under
+ * state=disabled the marker is hidden and every run takes the disabled text
+ * role — those rules come last, because disabled beats validation at equal
+ * specificity, which is the contract's "the two do not combine".
+ *
+ * The name and the supporting line are separate type runs stepping at
+ * different rates — the sizing rows are the entry's table verbatim, and the
+ * repeats (supporting measure across xs/s and again across m/l) are the
+ * decision, not a gap.
+ */
+
+.stylos-label {
+  box-sizing: border-box;
+  display: block;
+  font-family: var(--stylos-font-family-normal);
+  font-weight: var(--stylos-font-weight-emphasis);
+  letter-spacing: var(--stylos-font-letter-spacing-style-normal);
+  color: var(--stylos-color-text-base);
+}
+
+/* the required marker — the name's run, in the primary text role */
+
+.stylos-label > span[aria-hidden] {
+  color: var(--stylos-color-text-primary);
+}
+
+/* the supporting line — a quieter block under the name */
+
+.stylos-label > span:not([aria-hidden]) {
+  display: block;
+  font-weight: var(--stylos-font-weight-base);
+  color: var(--stylos-color-text-secondary);
+}
+
+/* sizes — the two runs and the gap step together, at different rates */
+
+.stylos-label[data-size="extra small"] {
+  font-size: var(--stylos-font-size-0_750);
+  line-height: var(--stylos-font-line-height-string-0_750);
+}
+
+.stylos-label[data-size="extra small"] > span:not([aria-hidden]) {
+  font-size: var(--stylos-font-size-0_625);
+  line-height: var(--stylos-font-line-height-string-0_625);
+  margin-block-start: var(--stylos-dimension-gap-g-0_125);
+}
+
+.stylos-label[data-size="small"] {
+  font-size: var(--stylos-font-size-0_875);
+  line-height: var(--stylos-font-line-height-string-0_875);
+}
+
+.stylos-label[data-size="small"] > span:not([aria-hidden]) {
+  font-size: var(--stylos-font-size-0_625);
+  line-height: var(--stylos-font-line-height-string-0_625);
+  margin-block-start: var(--stylos-dimension-gap-g-0_250);
+}
+
+.stylos-label[data-size="medium"] {
+  font-size: var(--stylos-font-size-1_000);
+  line-height: var(--stylos-font-line-height-string-1_000);
+}
+
+.stylos-label[data-size="medium"] > span:not([aria-hidden]) {
+  font-size: var(--stylos-font-size-0_750);
+  line-height: var(--stylos-font-line-height-string-0_750);
+  margin-block-start: var(--stylos-dimension-gap-g-0_375);
+}
+
+.stylos-label[data-size="large"] {
+  font-size: var(--stylos-font-size-1_125);
+  line-height: var(--stylos-font-line-height-string-1_125);
+}
+
+.stylos-label[data-size="large"] > span:not([aria-hidden]) {
+  font-size: var(--stylos-font-size-0_750);
+  line-height: var(--stylos-font-line-height-string-0_750);
+  margin-block-start: var(--stylos-dimension-gap-g-0_500);
+}
+
+.stylos-label[data-size="extra large"] {
+  font-size: var(--stylos-font-size-1_250);
+  line-height: var(--stylos-font-line-height-string-1_250);
+}
+
+.stylos-label[data-size="extra large"] > span:not([aria-hidden]) {
+  font-size: var(--stylos-font-size-0_875);
+  line-height: var(--stylos-font-line-height-string-0_875);
+  margin-block-start: var(--stylos-dimension-gap-g-0_500);
+}
+
+/* validation — recolours the supporting line and nothing else */
+
+.stylos-label[data-validation="error"] > span:not([aria-hidden]) {
+  color: var(--stylos-color-text-danger);
+}
+
+.stylos-label[data-validation="warning"] > span:not([aria-hidden]) {
+  color: var(--stylos-color-text-warning);
+}
+
+.stylos-label[data-validation="success"] > span:not([aria-hidden]) {
+  color: var(--stylos-color-text-success);
+}
+
+/* disabled — last, so it beats validation: the two do not combine */
+
+.stylos-label[data-state="disabled"] {
+  color: var(--stylos-color-text-disabled);
+}
+
+.stylos-label[data-state="disabled"] > span:not([aria-hidden]) {
+  color: var(--stylos-color-text-disabled);
+}
+
+.stylos-label[data-state="disabled"] > span[aria-hidden] {
+  display: none;
+}

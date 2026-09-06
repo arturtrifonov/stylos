@@ -7,5 +7,7 @@ export { default as IndicatorSpecial } from "./components/indicator-special/Indi
 export type { IndicatorSpecialProps } from "./components/indicator-special/props.ts";
 export { default as IndicatorStatus } from "./components/indicator-status/IndicatorStatus.svelte";
 export type { IndicatorStatusProps } from "./components/indicator-status/props.ts";
+export { default as Label } from "./components/label/Label.svelte";
+export type { LabelProps } from "./components/label/props.ts";
 export { default as Loader } from "./components/loader/Loader.svelte";
 export type { LoaderProps } from "./components/loader/props.ts";

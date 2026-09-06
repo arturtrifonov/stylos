@@ -4,6 +4,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-06 (Label — the first component with rules between its properties)
+
+- **`Label`** — a semantic `<label>`: the name as its bare text, the required marker as a `span[aria-hidden]` beside it (presentational — the requiredness lives on the control), the supporting line as the span without it; the entry's `html` now records that shape. The rules split by who decides: the wrapper renders the line when `validation` is not `off` — a label with validation is a label with a message, so the boolean has nothing left to decide there — while the CSS owns how things draw, so `state=disabled` hides the marker and takes every run to the disabled role *for hand-written HTML too*, with disabled beating validation by rule order, which is the contract's "the two do not combine". Two type runs stepping at different rates, gaps and measures from the entry's table verbatim.
+
 ### Added — 2026-09-06 (the workshop documents from the registry)
 
 - **Autodocs, fed by the contract** — the story generator now writes each component's docs page from its registry entry: summary, purpose, use-when and do-not-use-when (with *Instead*), limitations and the contract's path, plus a per-story description wherever a variant value carries a note, a rationale or an a11y finding. Nothing is authored in the workshop and nothing is restated — the entry is the documentation. `@storybook/addon-docs` joins the workshop to render the pages.
