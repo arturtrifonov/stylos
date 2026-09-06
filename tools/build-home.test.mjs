@@ -53,6 +53,7 @@ const site = {
   storybook: true,
   version: "0.1.0",
   distribution: "planned",
+  inCode: 5,
 };
 
 const ALLOWED_REMOTE = (url) =>
@@ -120,33 +121,22 @@ test("quick start and the extra resources are absent without site facts", () => 
   assert.doesNotMatch(html, /Figma libraries/);
 });
 
-// --- the sample (SPEC 0011 §5) -----------------------------------------------
+// --- the cover ---------------------------------------------------------------
 
-const showcase = {
-  css: ".stylos-badge { color: var(--stylos-color-text-base); }",
-  built: 1,
-  groups: [
-    {
-      id: "Badge",
-      name: "Badge",
-      note: "a note",
-      samples: [{ html: '<span class="stylos-badge" data-tone="base" data-size="medium">3</span>', label: "base" }],
-    },
-  ],
-};
-
-test("the sample renders the shipped markup and inlines the shipped CSS", () => {
-  const html = home({ showcase });
-  assert.match(html, /<span class="stylos-badge" data-tone="base" data-size="medium">3<\/span>/);
-  assert.ok(html.includes(showcase.css));
-  assert.match(html, /Nothing on this page is a mockup/);
-  assert.match(html, /<span class="n">1<\/span><span class="k">in code<\/span>/);
+// The front page opens on a cover the way the Figma files do, and it is the
+// one place the wordmark appears — the header's brand slot is off (amended
+// 2026-09-06: two logos on one page was one too many).
+test("the cover carries the only wordmark on the page", () => {
+  const logo = '<svg class="logo" role="img" aria-label="Stylos"></svg>';
+  const html = home({ site, logo });
+  assert.equal([...html.matchAll(/class="logo"/g)].length, 1);
+  assert.ok(html.indexOf('class="logo"') > html.indexOf('class="cover"'), "the wordmark is the cover's");
+  assert.doesNotMatch(html, /class="brand"/);
 });
 
-test("no sample, no section — absent rather than empty", () => {
-  const html = home();
-  assert.doesNotMatch(html, /class="showcase"/);
-  assert.doesNotMatch(html, /in code/);
+test("the in-code count is derived and absent without it", () => {
+  assert.match(home({ site }), /<span class="n">5<\/span><span class="k">in code<\/span>/);
+  assert.doesNotMatch(home(), /in code/);
 });
 
 // --- the wave chart ----------------------------------------------------------

@@ -36,7 +36,11 @@ The site presents the complete system — the system as designed, not as far as 
 
 ## 3. The pages
 
-- **`index.html`** — the front page, rewritten in `tools/build-home.mjs`. Top to bottom: the shared header; a hero (wordmark, the README lede as the headline, the charter's character line, the version pill, the capital, two doors — components and Storybook); a live sample of the implemented components (§5); the character cards, authored from [`docs/charter.md`](../charter.md); a quick start (the CSS path as it works today, the npm path marked Planned); the state of the system — the tally, the *working towards* sentence, the wave and milestone charts, unchanged in substance from the placeholder; the resources — GitHub, the four Stylos Figma libraries, the workshop, the package; the shared footer.
+- **`index.html`** — the front page, rewritten in `tools/build-home.mjs`.
+
+  > **Amended 2026-09-06, owner's review:** the page opens on a **cover**, the way the Figma files do — the brand surface, the wordmark at full size, the capital standing on the panel's bottom edge — and the cover is the only place the wordmark appears: the header's brand slot is off on this page, because two logos on one page was one too many. The live sample of implemented components is withdrawn from the front page (it read as clutter where the pitch belongs); the workshop is the living surface for components, and §5's honesty rule survives as the standing constraint on any future sample anywhere on the site.
+
+  Top to bottom: the shared header (nav only); the cover (wordmark, the README lede as the headline, the charter's character line, the version pill, the capital, two doors — components and Storybook); the character cards, authored from [`docs/charter.md`](../charter.md); a quick start (the CSS path as it works today, the npm path marked Planned); the state of the system — the tally (including the derived in-code count), the *working towards* sentence, the wave and milestone charts, unchanged in substance from the placeholder; the resources — GitHub, the four Stylos Figma libraries, the workshop, the package; the shared footer.
 - **`registry.html`** and **`components/`** — unchanged in behaviour, redressed: the shared header above each page's own masthead, the shared footer, and the skin aligned with the front page. Every filter, facet, sort, link, and the component pages' print styles survive as they are.
 - **`storybook/`** — the built workshop, copied in whole (§6).
 
@@ -52,7 +56,9 @@ Everything [SPEC 0002](0002-registry-viewer.md) §4.1 fixed still holds: each pa
 
 ## 5. The sample is real or it is absent
 
-The front page renders the implemented components — nothing else. The markup is written to the DOM contract of [SPEC 0010](0010-distribution-surface.md) §2.3 (`stylos-<slug>`, `data-<kebab>` verbatim, text as content), generated from each entry's `api` rather than typed; the CSS is the authored per-component CSS from `packages/ui/src/` plus the token sheet, inlined. A test walks every `data-*` attribute in the sample against the entry's contract, so the sample cannot claim a property or value the contract does not carry. A component that is not built does not appear as a picture, a sketch, or a promise — the counts and the charts say what is coming; the sample only ever shows what ships. **Nothing on this site is a mockup.**
+> **Amended 2026-09-06, owner's review: the front page carries no sample.** The section below described one and it was built, then withdrawn the same day — components on the pitch page read as clutter, and the workshop is the living surface for them. What survives is the rule, standing, for any sample any page of this site ever carries.
+
+A page of this site renders the implemented components — nothing else. The markup is written to the DOM contract of [SPEC 0010](0010-distribution-surface.md) §2.3 (`stylos-<slug>`, `data-<kebab>` verbatim, text as content), generated from each entry's `api` rather than typed; the CSS is the authored per-component CSS from `packages/ui/src/` plus the token sheet, inlined. A component that is not built does not appear as a picture, a sketch, or a promise — the counts and the charts say what is coming; a sample only ever shows what ships. **Nothing on this site is a mockup.**
 
 ## 6. Build integration
 
@@ -65,7 +71,7 @@ The front page renders the implemented components — nothing else. The markup i
 1. `npm run build:publish` produces `build/` with the four surfaces; `npm run build` produces the same tree minus `storybook/`, with no Storybook links.
 2. Every §2 derivation is unit-tested, including the absent case.
 3. The home allowlist test passes; the registry and component page tests pass unchanged in what they assert about behaviour.
-4. The sample honesty test (§5) passes.
+4. ~~The sample honesty test (§5) passes.~~ *Amended 2026-09-06: no page carries a sample; the criterion returns with the first one that does.*
 5. The tree opens over `file://` (workshop excepted) and over a static server; both colour schemes render; the component pages still print.
 
 ## 8. Out of scope

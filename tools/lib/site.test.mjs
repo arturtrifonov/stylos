@@ -93,6 +93,7 @@ test("the header's Figma link is the components library, not the first row", () 
   const facts = siteFacts(fixture({ "figma/README.md": FIGMA_README }));
   assert.equal(facts.figmaMain, "https://www.figma.com/design/bbb/Stylos--Components");
   assert.equal(siteFacts(fixture()).figmaMain, null);
+  assert.equal(siteFacts(fixture()).inCode, null, "no registry handed in, no count claimed");
 });
 
 test("the storybook check is the built workshop's index and nothing subtler", () => {

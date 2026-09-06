@@ -24,7 +24,6 @@ import { createTokenResolver } from "./lib/sizing.mjs";
 import { loadTheme, themeCss } from "./lib/theme.mjs";
 import { renderSiteFooter, renderSiteHeader } from "./lib/chrome.mjs";
 import { siteFacts } from "./lib/site.mjs";
-import { buildShowcase } from "./lib/showcase.mjs";
 import { buildViewData, renderView } from "./build-registry-view.mjs";
 import { buildPages, readLogo } from "./build-component-page.mjs";
 import { renderHome, hasColumn } from "./build-home.mjs";
@@ -43,8 +42,7 @@ const entries = loadRegistry(root);
 const theme = loadTheme(root);
 const logo = readLogo(root);
 const generated = new Date().toISOString().slice(0, 10);
-const site = siteFacts(root);
-const showcase = buildShowcase(root, entries);
+const site = siteFacts(root, entries);
 
 if (theme.missing.length > 0) {
   console.warn(`theme: ${theme.missing.length} token(s) did not resolve: ${theme.missing.join(", ")}`);
@@ -76,7 +74,7 @@ if (site.storybook) {
 
 write(
   "index.html",
-  renderHome({ entries, theme, logo, generated, column: hasColumn(root), plan: readPlan(root), site, showcase })
+  renderHome({ entries, theme, logo, generated, column: hasColumn(root), plan: readPlan(root), site })
 );
 // registry.html sits at the root of build/, so its font URLs need no prefix.
 write(

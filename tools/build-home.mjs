@@ -5,7 +5,7 @@
 // site. It presents the system as designed and derives every mark of what
 // exists — the version pill, the Planned badges, the counts, the charts, the
 // sample, the Storybook link — from the repository at build time
-// (tools/lib/site.mjs, tools/lib/showcase.mjs), so a project step flips a
+// (tools/lib/site.mjs), so a project step flips a
 // badge at the next `npm run build` and the page is never edited to match
 // reality.
 //
@@ -22,7 +22,6 @@ import { milestoneProgress, readPlan, waveProgress, whereWeAre } from "./lib/pla
 import { loadTheme, themeCss } from "./lib/theme.mjs";
 import { CHROME_CSS, renderSiteHeader, renderSiteFooter } from "./lib/chrome.mjs";
 import { siteFacts } from "./lib/site.mjs";
-import { buildShowcase } from "./lib/showcase.mjs";
 import { readLogo } from "./build-component-page.mjs";
 
 const CSS = `
@@ -60,13 +59,29 @@ section { margin: 4.5rem 0 0; }
   border-top: 1px solid var(--rule-strong);
 }
 
-/* --- Hero ----------------------------------------------------------------- */
+/* --- The cover ------------------------------------------------------------ */
 
-.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 20rem); gap: 3rem; align-items: center; margin-top: 3.5rem; }
-.logo { display: block; width: 208px; height: auto; color: var(--brand); }
-.column-figure { margin: 0; justify-self: end; }
-.column-figure img { display: block; width: 100%; height: auto; }
-/* Pale marble on black already reads; inverting it would sink it into the page. */
+/* The front page opens the way the Figma files do — on a cover: the brand
+   surface edge to edge of the measure, the wordmark at full size, the capital
+   standing on the panel's bottom edge and cropped by it, the way a column is
+   cropped by a pediment. One logo per page: the header's brand slot is off
+   here because the cover is the brand. */
+.cover {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 21rem);
+  gap: 2rem 3.5rem;
+  align-items: end;
+  margin-top: 2rem;
+  padding: 3.4rem 3.4rem 0;
+  background: var(--brand);
+  color: var(--fg-on-brand);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.cover-copy { padding-bottom: 3.4rem; }
+.cover .logo { display: block; width: 300px; max-width: 100%; height: auto; color: currentColor; }
+.column-figure { margin: 0; justify-self: end; align-self: end; }
+.column-figure img { display: block; width: 100%; height: auto; margin-bottom: -12%; }
 
 .lede {
   font-size: var(--text-display);
@@ -74,17 +89,16 @@ section { margin: 4.5rem 0 0; }
   line-height: 1.16;
   letter-spacing: -.022em;
   max-width: 22ch;
-  margin: 2.2rem 0 1.4rem;
+  margin: 2.4rem 0 1.4rem;
   font-weight: 560;
 }
-.state { color: var(--fg-quiet); max-width: 52ch; margin: 0; }
+.state { max-width: 52ch; margin: 0; opacity: .88; }
 .state .flag {
   display: inline-block;
   font-size: var(--text-micro);
   font-weight: 700;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: var(--brand);
   border: 1px solid currentColor;
   border-radius: var(--radius-round);
   padding: 3px 9px;
@@ -92,21 +106,21 @@ section { margin: 4.5rem 0 0; }
   vertical-align: 2px;
   font-variant-numeric: tabular-nums;
 }
-.cta { display: flex; gap: .8rem; flex-wrap: wrap; margin: 2rem 0 0; }
+.cta { display: flex; gap: .8rem; flex-wrap: wrap; margin: 2.2rem 0 0; }
 .cta a {
   display: inline-block;
   padding: .62rem 1.25rem;
-  border: 1px solid var(--rule-strong);
+  border: 1px solid currentColor;
   border-radius: var(--radius-sm);
   text-decoration: none;
-  color: var(--fg);
+  color: inherit;
   font-weight: 550;
   font-size: var(--text-meta);
   letter-spacing: .01em;
 }
-.cta a:hover { border-color: var(--accent); color: var(--accent); }
-.cta a.primary { background: var(--brand); border-color: var(--brand); color: var(--fg-on-brand); }
-.cta a.primary:hover { filter: brightness(1.08); color: var(--fg-on-brand); }
+.cta a:hover { opacity: .85; }
+.cta a.primary { background: var(--fg-on-brand); border-color: var(--fg-on-brand); color: var(--brand); }
+.cover .planned { color: inherit; border-color: currentColor; }
 
 /* The Planned mark. One shape for every fact that is designed but not built —
    derived, never authored per badge (SPEC 0011 §2). */
@@ -122,25 +136,6 @@ section { margin: 4.5rem 0 0; }
   padding: 2px 9px;
   vertical-align: 2px;
 }
-
-/* --- The sample ----------------------------------------------------------- */
-
-.showcase .stage {
-  border: 1px solid var(--rule);
-  background: var(--bg-sunken);
-  border-radius: var(--radius-md);
-  padding: 2rem 2.2rem .8rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
-  gap: 1.6rem 3rem;
-}
-.showcase .group { margin-bottom: 1.4rem; }
-.showcase .group h3 { margin: 0 0 .2rem; font-size: var(--text-body); font-weight: 600; letter-spacing: -.01em; }
-.showcase .group .note { margin: 0 0 .9rem; font-size: var(--text-small); color: var(--fg-quiet); max-width: 44ch; }
-.showcase .row { display: flex; flex-wrap: wrap; gap: .9rem 1.1rem; align-items: flex-end; }
-.showcase .sample { display: inline-flex; flex-direction: column; align-items: center; gap: .45rem; }
-.showcase .sample-label { font-size: var(--text-micro); color: var(--fg-faint); font-family: var(--font-mono); }
-.showcase .caveat { margin: 1rem 0 0; font-size: var(--text-meta); color: var(--fg-quiet); max-width: 66ch; }
 
 /* --- Character ------------------------------------------------------------ */
 
@@ -267,9 +262,10 @@ a.door:hover { background: var(--bg-sunken); }
 
 @media (max-width: 56rem) {
   .page { padding: 0 1.5rem; }
-  .hero { grid-template-columns: minmax(0, 1fr); margin-top: 2.5rem; }
+  .cover { grid-template-columns: minmax(0, 1fr); margin-top: 1.5rem; padding: 2.2rem 1.8rem 0; }
+  .cover-copy { padding-bottom: 2.2rem; }
+  .cover .logo { width: 200px; }
   .column-figure { display: none; }
-  .logo { width: 160px; }
   .lede { font-size: var(--text-title); }
 }
 `;
@@ -314,15 +310,15 @@ const CHARACTER = [
   ],
 ];
 
-function heroSection({ logo, column, site }) {
+function coverSection({ logo, column, site }) {
   const figure = column
-    ? `<figure class="column-figure"><img src="assets/column.png" alt="" width="510" height="510" loading="lazy"></figure>`
+    ? `<figure class="column-figure"><img src="assets/column.png" alt="" width="510" height="510"></figure>`
     : "";
   const flag = site?.version ? `v${esc(site.version)}` : "Pre-alpha";
   const workshopDoor = site?.storybook ? `<a href="storybook/">Open the workshop</a>` : "";
 
-  return `<section class="hero">
-    <div>
+  return `<section class="cover">
+    <div class="cover-copy">
       ${logo}
       <h1 class="lede">A design system for dense, desktop&#8209;oriented web product interfaces.</h1>
       <p class="state">
@@ -338,34 +334,6 @@ function heroSection({ logo, column, site }) {
       </div>
     </div>
     ${figure}
-  </section>`;
-}
-
-function showcaseSection(showcase, total) {
-  if (!showcase) return "";
-  const groups = showcase.groups
-    .map(
-      (group) => `<div class="group">
-<h3>${esc(group.name)}</h3>
-<p class="note">${esc(group.note)}</p>
-<div class="row">${group.samples
-        .map(
-          (sample) =>
-            `<span class="sample">${sample.html}${sample.label ? `<span class="sample-label">${esc(sample.label)}</span>` : ""}</span>`
-        )
-        .join("")}</div>
-</div>`
-    )
-    .join("\n");
-
-  return `<section class="showcase">
-    <h2 class="section-label">Built and shipping</h2>
-    <div class="stage">${groups}</div>
-    <p class="caveat">
-      Rendered from the shipped CSS — the same files <span class="mono">@stylos/ui/css</span> exports,
-      painted by the generated token sheet, on the public DOM contract. Nothing on this page is a mockup:
-      ${showcase.built} of ${total} components are implemented in code so far, and the charts below carry the rest.
-    </p>
   </section>`;
 }
 
@@ -476,7 +444,6 @@ function resourcesSection({ site, total, documented }) {
  * @param {boolean} options.column       whether assets/column.png was found
  * @param {string|null} options.plan     PLAN.md, for the wave table; omitted in a fixture
  * @param {object|null} options.site     the derived facts (lib/site.mjs); omitted in a fixture
- * @param {object|null} options.showcase the sample payload (lib/showcase.mjs); omitted in a fixture
  */
 export function renderHome({
   entries,
@@ -486,7 +453,6 @@ export function renderHome({
   column = false,
   plan = null,
   site = null,
-  showcase = null,
 }) {
   const total = entries.length;
   const ready = entries.filter((entry) => readiness(entry) === "complete").length;
@@ -565,12 +531,14 @@ export function renderHome({
           : "no wave open, "
       }${here.milestone.done} of ${here.milestone.total} components ready.</span></p>`;
 
-  const inCode = showcase ? `<div><span class="n">${showcase.built}</span><span class="k">in code</span></div>` : "";
+  const inCode =
+    site?.inCode == null ? "" : `<div><span class="n">${site.inCode}</span><span class="k">in code</span></div>`;
 
+  // The cover carries the wordmark, so the header does not — one logo per page.
   const header = renderSiteHeader({
     prefix: "",
     active: "home",
-    logo,
+    brand: false,
     storybook: site?.storybook ?? false,
     figmaUrl: site?.figmaMain ?? site?.figma?.[0]?.url ?? null,
     repoUrl: site?.repo ?? null,
@@ -584,17 +552,13 @@ export function renderHome({
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Stylos</title>
 <meta name="description" content="A design system for dense, desktop-oriented web product interfaces.">
-<style>${theme ? themeCss(theme, { prefix: "" }) : ""}${CHROME_CSS}${CSS}</style>${
-    showcase ? `\n<style>${showcase.css}</style>` : ""
-  }
+<style>${theme ? themeCss(theme, { prefix: "" }) : ""}${CHROME_CSS}${CSS}</style>
 </head>
 <body>
 <div class="page">
   ${header}
 
-  ${heroSection({ logo, column, site })}
-
-  ${showcaseSection(showcase, total)}
+  ${coverSection({ logo, column, site })}
 
   ${characterSection()}
 
@@ -643,8 +607,7 @@ if (isMain) {
     generated: new Date().toISOString().slice(0, 10),
     column: hasColumn(root),
     plan: readPlan(root),
-    site: siteFacts(root),
-    showcase: buildShowcase(root, entries),
+    site: siteFacts(root, entries),
   });
 
   const out = path.join(root, "build/index.html");

@@ -16,6 +16,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { rowsUnder } from "./plan.mjs";
+import { builtComponents } from "../build-ui-types.mjs";
 
 function readJson(file) {
   try {
@@ -93,10 +94,16 @@ export function systemVersion(root) {
   return typeof version === "string" ? version : null;
 }
 
-/** Everything the front page derives, in one read. */
-export function siteFacts(root) {
+/**
+ * Everything the front page derives, in one read. `entries` (the loaded
+ * registry) is optional: with it, `inCode` counts the components implemented
+ * in `packages/ui/src/`; without it — a fixture, a partial checkout — the
+ * count is null and the tally omits it.
+ */
+export function siteFacts(root, entries = null) {
   const figma = figmaLibraries(root);
   return {
+    inCode: entries ? builtComponents(root, entries).length : null,
     figma,
     // The header's one Figma link is the designer's entry point — the
     // components library when the table names one, the first row otherwise.

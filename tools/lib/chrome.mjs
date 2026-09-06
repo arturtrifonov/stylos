@@ -34,7 +34,7 @@ export const CHROME_CSS = `
 .site-header .brand { display: flex; align-items: center; }
 .site-header .brand .logo { display: block; width: 96px; height: auto; color: var(--brand); }
 .site-header .brand .brand-name { font-weight: 650; letter-spacing: .02em; color: var(--fg); }
-.site-header nav { display: flex; align-items: baseline; gap: .35rem 1.4rem; flex-wrap: wrap; }
+.site-header nav { display: flex; align-items: baseline; gap: .35rem 1.4rem; flex-wrap: wrap; margin-left: auto; }
 .site-header nav a {
   font-size: var(--text-meta);
   color: var(--fg-quiet);
@@ -89,6 +89,9 @@ export function renderSiteHeader({
   figmaUrl = null,
   repoUrl = null,
   bleed = false,
+  // The front page carries the wordmark in its cover and turns this off —
+  // one logo per page, and the cover's is the bigger claim.
+  brand = true,
 } = {}) {
   const links = NAV.map(
     ([page, label, href]) =>
@@ -98,9 +101,11 @@ export function renderSiteHeader({
   if (figmaUrl) links.push(`<a class="ext" href="${esc(figmaUrl)}">Figma</a>`);
   if (repoUrl) links.push(`<a class="ext" href="${esc(repoUrl)}">GitHub</a>`);
 
-  const brand = logo || `<span class="brand-name">Stylos</span>`;
+  const brandLink = brand
+    ? `<a class="brand" href="${esc(`${prefix}index.html`)}" aria-label="Stylos — home">${logo || `<span class="brand-name">Stylos</span>`}</a>`
+    : "";
   return `<header class="site-header${bleed ? " bleed" : ""}">
-<a class="brand" href="${esc(`${prefix}index.html`)}" aria-label="Stylos — home">${brand}</a>
+${brandLink}
 <nav aria-label="Site">${links.join("\n")}</nav>
 </header>`;
 }
