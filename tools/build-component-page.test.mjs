@@ -701,3 +701,44 @@ test("an assignment the contract refuses falls back to the placeholder", () => {
   const html = renderComponentPage(entry, pageContext([entry], { resolveToken, preview: PREVIEW }));
   assert.match(html, /class="example dont">\s*<p class="verdict">✕ Do not<\/p>\s*<div class="canvas"><div class="slot" style="width:/);
 });
+
+test("a live value row rides on the contract's defaults", () => {
+  const entry = contract();
+  const html = renderComponentPage(entry, pageContext([entry], { resolveToken, preview: PREVIEW }));
+  // the `size: medium` row still carries the default `is checked`
+  assert.match(html, /<span class="stylos-checkbox-input" data-size="medium" data-is-checked="false"><\/span>/);
+});
+
+test("a boolean shows both states, and switches on the property it controls", () => {
+  const entry = withApi((api) => [
+    api[0],
+    { name: "has note", kind: "boolean", default: false, controls: ["note"], description: "The gate." },
+    { name: "note", kind: "text", default: "A hint", description: "The line." },
+  ]);
+  const html = renderComponentPage(entry, pageContext([entry], { resolveToken, preview: PREVIEW }));
+  assert.match(html, /class="val">false</);
+  assert.match(html, /class="val">true</);
+  assert.match(html, /data-has-note="true"/);
+  // the `note` row renders with its gate on, so the line is actually visible
+  assert.match(html, /data-has-note="true"[^>]*>A hint<\/span>/);
+});
+
+test("do and do-not examples sit in their own columns", () => {
+  const entry = withApi((api) => [
+    {
+      ...api[0],
+      examples: [
+        { verdict: "do", props: { size: "medium" } },
+        { verdict: "dont", caption: "…", props: { size: "extra small" } },
+        { verdict: "do", props: { size: "extra small" } },
+      ],
+    },
+    ...api.slice(1),
+  ]);
+  const html = renderComponentPage(entry, pageContext([entry], { resolveToken }));
+  const cols = [...html.matchAll(/class="example-col"/g)];
+  assert.equal(cols.length, 2);
+  const firstCol = html.slice(html.indexOf('class="example-col"'), html.indexOf('class="example-col"', html.indexOf('class="example-col"') + 1));
+  assert.doesNotMatch(firstCol, /example dont/);
+  assert.equal([...firstCol.matchAll(/example do"/g)].length, 2);
+});

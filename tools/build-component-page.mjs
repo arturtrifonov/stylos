@@ -181,9 +181,12 @@ h2 { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: 
    field, parameters on one vertical. */
 .values {
   display: grid;
-  grid-template-columns: max-content minmax(0, 20ch) minmax(0, 1fr);
-  column-gap: 1.8rem;
-  padding: .35rem 1.3rem;
+  /* The component's field first and widest — the render is the subject and
+     it gets the air; the assignment is set small and quiet a track away, so
+     a two-dot indicator is not crowded by its own caption. */
+  grid-template-columns: minmax(15rem, 22rem) minmax(0, 20ch) minmax(0, 1fr);
+  column-gap: 2.5rem;
+  padding: .35rem 1.5rem;
   border: 1px solid var(--rule);
   border-radius: var(--radius-sm);
   background: var(--bg);
@@ -193,19 +196,19 @@ h2 { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: 
   display: grid;
   grid-template-columns: subgrid;
   align-items: center;
-  padding: .6rem 0;
+  padding: .7rem 0;
   border-bottom: 1px solid var(--rule);
 }
 .value:last-of-type { border-bottom: 0; }
-.value .assign { font-family: var(--font-mono); font-size: var(--text-meta); }
-.value .assign .val { font-weight: 600; }
+.value .assign { font-family: var(--font-mono); font-size: var(--text-small); color: var(--fg-faint); }
+.value .assign .val { font-weight: 500; color: var(--fg-quiet); }
 .value .aside { font-size: var(--text-meta); line-height: 1.45; color: var(--fg-quiet); padding: .15rem 0; }
 .value .aside .status { color: var(--tone, var(--fg-quiet)); margin-right: .4rem; }
 .value .aside .criterion { color: var(--fg-faint); }
 .value .aside dl { margin: .2em 0 0; }
 .value .aside dt { display: none; }
 .value .aside dd { margin: .25em 0 0; }
-.value .aside dd::before { content: attr(data-label); color: var(--fg-faint); margin-right: .35em; }
+.value .aside dd[data-label]::before { content: attr(data-label); color: var(--fg-faint); margin-right: .35em; }
 
 /* The placeholder a rendered sample will replace. Dimensions come from the
    contract's own tokens, so nothing about the layout moves when it does. */
@@ -248,7 +251,8 @@ h2 { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: 
   background: var(--bg);
 }
 
-.examples { margin-top: 1.2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1.2rem; }
+.examples { margin-top: 1.2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1.6rem; }
+.example-col { display: flex; flex-direction: column; gap: 1.2rem; min-width: 0; }
 /* The example's field: the same white ground the value panel gives, so the
    component stands on the page rather than in a box of unclear ownership. */
 .example .canvas {
@@ -369,9 +373,19 @@ export function esc(value) {
   return String(value ?? "").replace(/[&<>"']/g, (c) => ESCAPES[c]);
 }
 
+/**
+ * Prose out of the YAML, escaped, with the one bit of markup the entries
+ * actually use: backticks around a token, a property or a value. Rendered as
+ * the mono span rather than printed — a literal backtick on the page is the
+ * file format showing through.
+ */
+function prose(text) {
+  return esc(text).replace(/`([^`]+)`/g, '<span class="mono">$1</span>');
+}
+
 /** A prose field is one line in the file by necessity; it is a paragraph here. */
 function paragraph(text, className) {
-  return `<p${className ? ` class="${className}"` : ""}>${esc(text)}</p>`;
+  return `<p${className ? ` class="${className}"` : ""}>${prose(text)}</p>`;
 }
 
 /**
@@ -389,7 +403,10 @@ export function previewSlot(entry, assignment, resolveToken, live = false) {
   // to state, not this function's to correct — falls back to the placeholder.
   if (live) {
     try {
-      return `<div class="slot live">${sampleHtml(entry, assignment)}</div>`;
+      // The row's assignment rides on top of the contract's defaults: a tone
+      // row still needs the default count to have anything to paint, and a
+      // boolean row needs the rest of the component around it.
+      return `<div class="slot live">${sampleHtml(entry, { ...defaultAssignment(entry), ...assignment })}</div>`;
     } catch {
       // fall through to the placeholder
     }
@@ -440,11 +457,44 @@ function number(value) {
  */
 function assignmentFor(entry, property, value) {
   const assignment = { [property.name]: value };
+  // A boolean that `controls` this property gates whether it draws at all —
+  // a row about `additional text` with the line switched off shows nothing.
+  // The row is about the property, so its gate is on.
+  for (const other of entry.api) {
+    if (other?.kind !== "boolean" || other.name === property.name) continue;
+    if (Array.isArray(other.controls) && other.controls.includes(property.name)) {
+      assignment[other.name] = true;
+    }
+  }
   for (const other of entry.api) {
     if (other?.kind !== "variant" || other.name === property.name) continue;
     if (other.default !== undefined) assignment[other.name] = other.default;
   }
   return assignment;
+}
+
+/**
+ * The rows a property without a variant list shows. A boolean has exactly two
+ * states and shows both; a text property shows its default and up to two more
+ * values borrowed from its own do-examples — free text has no value list to
+ * mirror, and the examples are the values the contract already vouches for.
+ */
+function valueRowsFor(property) {
+  if (property.kind === "boolean") return [{ value: false }, { value: true }];
+
+  const seen = new Set();
+  const rows = [];
+  const add = (value) => {
+    if (value === undefined || seen.has(value)) return;
+    seen.add(value);
+    rows.push({ value });
+  };
+  add(property.default);
+  for (const example of Array.isArray(property.examples) ? property.examples : []) {
+    if (example.verdict === "dont") continue;
+    add(example.props?.[property.name]);
+  }
+  return rows.slice(0, 3);
 }
 
 function findingBlock(finding, className = "finding") {
@@ -567,7 +617,7 @@ function renderValueRow(entry, property, value, resolveToken, live = false) {
           ([label_, text]) =>
             `<dt>${esc(label_ || "Note")}</dt><dd${
               label_ ? ` data-label="${esc(label_)} —"` : ""
-            }>${esc(text)}</dd>`
+            }>${prose(text)}</dd>`
         )
         .join("")}</dl>`
     );
@@ -581,7 +631,7 @@ function renderExamples(entry, property, resolveToken, live = false) {
   const examples = Array.isArray(property.examples) ? property.examples : [];
   if (examples.length === 0) return "";
 
-  const blocks = examples.map((example) => {
+  const block = (example) => {
     const props = example.props ?? {};
     // What the example sets comes first: it is the point of the example, and
     // the slot is narrow enough that what comes last is what gets cut.
@@ -594,9 +644,15 @@ function renderExamples(entry, property, resolveToken, live = false) {
 <div class="canvas">${previewSlot(entry, assignment, resolveToken, live)}</div>
 ${example.caption ? paragraph(example.caption, "caption") : ""}
 </div>`;
-  });
+  };
 
-  return `<div class="examples">${blocks.join("")}</div>`;
+  // Two columns, two verdicts: everything to do on the left, everything not
+  // to on the right, rather than the two interleaved in authored order.
+  const dos = examples.filter((example) => example.verdict !== "dont").map(block);
+  const donts = examples.filter((example) => example.verdict === "dont").map(block);
+  const column = (blocks) => (blocks.length > 0 ? `<div class="example-col">${blocks.join("")}</div>` : "");
+
+  return `<div class="examples">${column(dos)}${column(donts)}</div>`;
 }
 
 function renderProperty(entry, property, resolveToken, first = false, live = false) {
@@ -614,18 +670,13 @@ function renderProperty(entry, property, resolveToken, first = false, live = fal
         .join(", ")}</div>`
     );
   }
-  if (property.description) label.push(`<div class="desc">${esc(property.description)}</div>`);
+  if (property.description) label.push(`<div class="desc">${prose(property.description)}</div>`);
   if (property.a11y) label.push(findingBlock(property.a11y));
 
-  const values = Array.isArray(property.values) ? property.values : [];
-  const body =
-    values.length > 0
-      ? values.map((value) => renderValueRow(entry, property, value, resolveToken, live)).join("")
-      : // text and instance properties have no values: what there is to show is
-        // the default, and then whatever examples were chosen.
-        (property.default !== undefined
-          ? renderValueRow(entry, property, { value: property.default }, resolveToken, live)
-          : "");
+  // A variant shows its list; a boolean shows both states; text shows the
+  // default and what its own do-examples vouch for (valueRowsFor).
+  const values = Array.isArray(property.values) && property.values.length > 0 ? property.values : valueRowsFor(property);
+  const body = values.map((value) => renderValueRow(entry, property, value, resolveToken, live)).join("");
 
   return `<div class="band property${first ? " first" : ""}">
 <div class="label">${label.join("")}</div>
