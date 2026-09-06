@@ -1,0 +1,150 @@
+/* Indicator Special — docs/components/registry/indicator-special.yaml.
+ *
+ * Selectors are keyed on the data attributes that carry the contract's values
+ * (ADR 0002). The element is the footprint and the dot is a ::before that
+ * does not follow it — the same sizing model as Indicator Status, restated
+ * here because each component authors its own CSS and the two are allowed
+ * to diverge.
+ *
+ * Tone paints the dot with the `text/special/*` hue of the same name: the
+ * full categorical palette, colour that identifies rather than judges. The
+ * 1px ring is decorative and carries no contrast.
+ */
+
+.stylos-indicator-special {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--_stylos-indicator-special-footprint);
+  height: var(--_stylos-indicator-special-footprint);
+}
+
+.stylos-indicator-special::before {
+  content: "";
+  box-sizing: border-box;
+  width: var(--_stylos-indicator-special-dot);
+  height: var(--_stylos-indicator-special-dot);
+  border-width: var(--stylos-border-width-normal);
+  border-style: solid;
+  border-color: var(--stylos-color-border-secondary);
+  border-radius: var(--stylos-radius-round);
+  background-color: var(--_stylos-indicator-special-fill);
+}
+
+/* sizes — the footprint and the mark move on their own runs */
+
+.stylos-indicator-special[data-size="extra small"] {
+  --_stylos-indicator-special-footprint: var(--stylos-dimension-size-s-1_000);
+  --_stylos-indicator-special-dot: var(--stylos-dimension-size-s-1_000);
+}
+
+.stylos-indicator-special[data-size="small"] {
+  --_stylos-indicator-special-footprint: var(--stylos-dimension-size-s-1_250);
+  --_stylos-indicator-special-dot: var(--stylos-dimension-size-s-1_000);
+}
+
+.stylos-indicator-special[data-size="medium"] {
+  --_stylos-indicator-special-footprint: var(--stylos-dimension-size-s-1_500);
+  --_stylos-indicator-special-dot: var(--stylos-dimension-size-s-1_250);
+}
+
+.stylos-indicator-special[data-size="large"] {
+  --_stylos-indicator-special-footprint: var(--stylos-dimension-size-s-1_750);
+  --_stylos-indicator-special-dot: var(--stylos-dimension-size-s-1_250);
+}
+
+.stylos-indicator-special[data-size="extra large"] {
+  --_stylos-indicator-special-footprint: var(--stylos-dimension-size-s-2_000);
+  --_stylos-indicator-special-dot: var(--stylos-dimension-size-s-1_500);
+}
+
+/* tones — one per palette hue, mapping exact */
+
+.stylos-indicator-special[data-tone="amber"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-amber);
+}
+
+.stylos-indicator-special[data-tone="blue"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-blue);
+}
+
+.stylos-indicator-special[data-tone="cyan"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-cyan);
+}
+
+.stylos-indicator-special[data-tone="emerald"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-emerald);
+}
+
+.stylos-indicator-special[data-tone="fuchsia"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-fuchsia);
+}
+
+.stylos-indicator-special[data-tone="gray"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-gray);
+}
+
+.stylos-indicator-special[data-tone="green"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-green);
+}
+
+.stylos-indicator-special[data-tone="indigo"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-indigo);
+}
+
+.stylos-indicator-special[data-tone="lime"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-lime);
+}
+
+.stylos-indicator-special[data-tone="neutral"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-neutral);
+}
+
+.stylos-indicator-special[data-tone="orange"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-orange);
+}
+
+.stylos-indicator-special[data-tone="pink"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-pink);
+}
+
+.stylos-indicator-special[data-tone="purple"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-purple);
+}
+
+.stylos-indicator-special[data-tone="red"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-red);
+}
+
+.stylos-indicator-special[data-tone="rose"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-rose);
+}
+
+.stylos-indicator-special[data-tone="sky"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-sky);
+}
+
+.stylos-indicator-special[data-tone="slate"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-slate);
+}
+
+.stylos-indicator-special[data-tone="stone"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-stone);
+}
+
+.stylos-indicator-special[data-tone="teal"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-teal);
+}
+
+.stylos-indicator-special[data-tone="violet"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-violet);
+}
+
+.stylos-indicator-special[data-tone="yellow"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-yellow);
+}
+
+.stylos-indicator-special[data-tone="zinc"] {
+  --_stylos-indicator-special-fill: var(--stylos-color-text-special-zinc);
+}

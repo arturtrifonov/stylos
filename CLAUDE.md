@@ -4,7 +4,9 @@ Working rules for agent sessions in this repository. The flow they implement is 
 
 ## Division of labour
 
-**Decisions, specs, architecture and review happen in the decisions session. Implementation happens here, in Claude Code, in a branch.** If a task turns out to need a decision — a new rule, a changed boundary, a versioned contract — it goes back to a spec, it is not improvised mid-implementation.
+**Decisions, specs, architecture and review happen in the decisions session. Implementation happens here, in Claude Code, in a branch.** If a task turns out to need a decision — a new rule, a changed boundary, a versioned contract — the default is that it goes back to a spec, it is not improvised mid-implementation.
+
+**Amended 2026-09-06: a decision may be made in an implementation session when the human makes it there, explicitly.** Early development surfaces contract gaps mid-build constantly, and routing every one through the decisions session is slower than the failure it prevents. The line that may not be crossed is awareness: the agent states the decision being taken, in as many words, before building on it — a decision that passes in the background, implied by a diff, is the thing this rule forbids. The affected spec is amended in the same PR (a dated amendment note, in place), so the paper record never denies the code.
 
 ## Git
 

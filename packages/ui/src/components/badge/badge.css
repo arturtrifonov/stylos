@@ -19,7 +19,7 @@
   justify-content: center;
   border-radius: var(--stylos-radius-round);
   font-family: var(--stylos-font-family-normal);
-  font-weight: var(--stylos-font-weight-semibold);
+  font-weight: var(--stylos-font-weight-emphasis);
   background-color: var(--_stylos-badge-surface);
   color: var(--_stylos-badge-label);
 }

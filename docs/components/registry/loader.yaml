@@ -101,9 +101,8 @@ a11y:
     criterion: "WCAG 2.2 SC 2.2.2"
     note: "Moving content that starts automatically and runs past five seconds must be pausable unless the movement is essential to the activity. A loader reporting a real wait is essential and exempt. Left spinning over a view that has finished or stalled it is no longer reporting anything, the exemption falls away, and it is moving decoration that cannot be stopped."
 motion:
-  drives: "angle"
   loop: true
-  intent: "The animation is the component. The four variants form a cycle rather than a scale, and `angle` exists only so something has values to step between — a loader placed at a fixed angle is a stopped loader, which is the one thing this component must never be. How fast it turns and on what curve are not settled here: Figma carries one timing as a prototype, and that is an implementation of the idea rather than a decision the system has made."
+  intent: "The animation is the component: the mark turns continuously, and a loader at rest is a stopped loader, which is the one thing this component must never be. How fast it turns and on what curve are not settled here: Figma carries one timing as a prototype, and that is an implementation of the idea rather than a decision the system has made."
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
@@ -111,23 +110,10 @@ sizing_model:
   intent: "One footprint, bound to a token, with proportions locked. The mark inside is not separately sized: it is inset by a sixth on every side and its constraints are set to scale, so it follows the footprint whenever the footprint is set to something else. That is the opposite of Indicator, where the mark deliberately does not follow — here there is one dimension and the mark is a fixed fraction of it."
   footprint: "size/s-3_000"
   mark_ratio: "5/6 of the footprint, by constraint rather than by a recorded value"
-api:
-  -
-    name: "angle"
-    kind: "variant"
-    default: "0"
-    description: "The rotation of the mark, in degrees clockwise. This is not a setting. The four values exist so the prototype has something to step between, and choosing one by hand places a stopped loader — which is the one thing this component must never be. A consumer picks the component, not the angle."
-    values:
-      -
-        value: "0"
-      -
-        value: "90"
-      -
-        value: "180"
-      -
-        value: "270"
+figma_notes:
+  - "The Figma component carries an `angle` variant property (0/90/180/270). It exists so the prototype can step the rotation and draws nothing a consumer decides: the real component rotates continuously on its own, and no one sets an angle on it. Removed from `api` on 2026-09-06 under the drawn-state exception — it was imported as a variant like any other, and a consumer reading it as a setting would place a stopped loader, the one thing this component must never be."
 limitations:
-  - "One property, and it is the animation's. There is no size and no tone."
+  - "No properties. There is no size and no tone, and the animation is not a setting."
   - "The colour is fixed to `text/primary`. A loader cannot sit on a filled primary surface — inside a primary button the mark would be indigo on indigo — and there is no tone value to move it."
   - "The mark's own dimension is a raw 20 with no token binding. It holds its proportion by a scale constraint, not by a value the system can change."
   - "Rotation speed and easing are unspecified. The contract says the mark turns continuously and loops; how quickly is an open question, and an implementation is not bound by whatever Figma happens to be running."

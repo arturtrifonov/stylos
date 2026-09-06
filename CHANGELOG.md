@@ -4,6 +4,40 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-06 (Label — the first component with rules between its properties)
+
+- **`Label`** — a semantic `<label>`: the name as its bare text, the required marker as a `span[aria-hidden]` beside it (presentational — the requiredness lives on the control), the supporting line as the span without it; the entry's `html` now records that shape. The rules split by who decides: the wrapper renders the line when `validation` is not `off` — a label with validation is a label with a message, so the boolean has nothing left to decide there — while the CSS owns how things draw, so `state=disabled` hides the marker and takes every run to the disabled role *for hand-written HTML too*, with disabled beating validation by rule order, which is the contract's "the two do not combine". Two type runs stepping at different rates, gaps and measures from the entry's table verbatim.
+
+### Added — 2026-09-06 (the workshop documents from the registry)
+
+- **Autodocs, fed by the contract** — the story generator now writes each component's docs page from its registry entry: summary, purpose, use-when and do-not-use-when (with *Instead*), limitations and the contract's path, plus a per-story description wherever a variant value carries a note, a rationale or an a11y finding. Nothing is authored in the workshop and nothing is restated — the entry is the documentation. `@storybook/addon-docs` joins the workshop to render the pages.
+
+### Added — 2026-09-06 (Loader — the first animated component)
+
+- **`Loader`** — the fourth component of `@stylos/ui`, and the first whose animation is the component. The contract turned out to have imported a drawn state as API: `angle` exists in Figma so the prototype can step the rotation, and no consumer sets an angle on a thing that must never stand still — it is now a `figma_notes` entry under the registry's drawn-state exception, and the contract has **no properties**. The generators learned the case (`LoaderProps = Record<string, never>`, one story). The DOM stays one empty span: the arc is the Figma mark's geometry as an SVG mask in the CSS (ring of thickness 2 in a 20-box, 270°, round caps), painted `text/primary` — the one colour the contract fixes — at 5/6 of the element *by percentage*, so `width`/`height` in consumer CSS is the whole sizing story: the token is the default, nothing is mandatory, and the mark follows any resize. The open timing question is decided in the implementation: one turn per second, linear, because easing on a loop reads as a stutter. Under `prefers-reduced-motion` the rotation is replaced — not stopped — by a slow opacity pulse, the entry's "stop or be replaced" obligation; announcing the wait stays the consumer's.
+
+### Changed — 2026-09-06 (weight roles say what they mean: base / emphasis / strong)
+
+- **`weight/normal`/`semibold`/`bold` → `weight/base`/`emphasis`/`strong`** (400/450/600) — the old words were typeface-weight vocabulary and two of them lied in it: CSS `bold` means 700 (ours is 600), the industry's `semibold` means 600 (ours is 450). The role is a level of accent; `emphasis`/`strong` carry the ordering HTML authors know from `em`/`strong`. Renamed in Figma, withdrawn and re-imported through the ritual, cascaded through `badge.css`, the Badge contract and `typography.md` — which also stops claiming bold is 700; 600 is the decision. The text styles were regrouped in Figma to match (`text/base|emphasis/*`, `label/base|emphasis/*` — labels' pair is case, not weight) and the record and `text.css` follow. All 32 styles now resolve: the `family/string`/Manrope binding and the drifted paragraph spacing are fixed at the source, so `text.css` no longer skips anything.
+
+### Added — 2026-09-06 (the text styles are recorded, and shipped as CSS)
+
+- **`figma/text-styles.yaml`** — the record of the 32 Figma text styles, which Variables exports cannot carry: `tools/import-styles.mjs` takes a Plugin API read of the Styles file and writes aliases into `tokens/`, never raw values; each alias is cross-checked against the value the style actually renders, and a binding that does not resolve is recorded under `unresolved` rather than dropped or invented. Elevation needed no record of its own — the live effect styles were verified layer-by-layer against `foundations/effects.md`'s composition rule, and the rule is the record; `focus/*` is out of scope by decision.
+- **`@stylos/ui/text.css`** — one class per recorded style (`.stylos-heading-h2`, `.stylos-text-normal-medium`, …), every declaration a `var()` into `tokens.css`, written by `tools/build-text-css.mjs` in `ui:generate`. Uppercase labels become `text-transform`; the headings' 110 width axis becomes `font-stretch: 110%`; paragraph spacing, which has no non-opinionated CSS analog, rides along as `--stylos-paragraph-spacing` for the consumer to apply. A style with an unresolved binding is skipped loudly in the file header, not projected with a dangling `var()`.
+- **`assets/avatars/`** — the 25 avatar paint styles are image fills, not values; exported once at 256×256 JPEG (~1.5 MB total, from ~50 MB of originals). They enter the package when the Avatar component slice needs them.
+
+### Added — 2026-09-06 (the Indicator family — two components, as the registry split them)
+
+- **`IndicatorStatus` and `IndicatorSpecial`** — the second and third components of `@stylos/ui`, built to their registry entries on the pattern Badge proved: authored CSS keyed on data attributes, a thin Svelte wrapper, generated `props.ts` and stories. Two components, not one: the registry split the old Indicator deliberately — semantic colour that judges (`text/*`) against categorical colour that identifies (`text/special/*`) — and one code component would re-merge the vocabularies into a 30-value tone prop where a category compiles in a status seat. The element is the footprint and the dot is a `::before` that keeps its own dimension when a layout resizes the footprint — the entry's sizing model, decoupled runs and all. Static primitives on slice 1's proven chain; slice 2 (Checkbox Input, first interactive) is still next.
+
+### Added — 2026-09-06 (the package supplies its fonts)
+
+- **The font export** — `@stylos/ui/fonts.css` plus the woff2 subsets under `dist/assets/fonts/`, written by `tools/build-ui-fonts.mjs` in `ui:generate`. `tokens.css` names Georama and JetBrains Mono; until now nothing in the package supplied them, and every consumer — the workshop first — silently fell back to the system stack. The faces are rendered by the same `fontFacesCss` (`tools/lib/theme.mjs`) the registry-viewer pages use, from the same committed files under `assets/fonts/` — copied at build, never fetched, so a font update is a deliberate commit with a diff. SPEC 0010 §2.1 is amended in place; the workshop now imports the export it tests.
+
+### Changed — 2026-09-06 (Badge's default size is medium)
+
+- **`size` defaults to `medium`, not `extra large`** — in the registry entry, the wrapper and everything generated from them. `extra large` was the import's accident, not a decision; `medium` is the middle of the ramp and the size a badge dropped into running text should take.
+
 ### Added — 2026-09-06 (the code surface of the distribution — SPEC 0010 Part A)
 
 [SPEC 0010](docs/specs/0010-distribution-surface.md) specifies everything `@stylos/ui` hands to a consumer, split in two: Part A, the code surface, lands now; Part B — `registry.json`, the consumer skill, the design-system bundle, the exported lint config — is Stage 6 work toward `0.3.0`. `PLAN.md` is rewritten around the sharpened `0.3.0` gate: the code half of the proof screen is built **by an agent from the published artifacts alone**, without access to this repository.
