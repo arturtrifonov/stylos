@@ -4,6 +4,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-09-06 (ARCHITECTURE.md stops denying the package)
+
+- `ARCHITECTURE.md` §1 still carried `Code library — does not exist` while five components of `@stylos/ui` sat in `packages/ui/src/`. The row now names the package as the second implementation of the contracts, authored per SPEC 0009 and validated by `npm run ui:check`; §5's "nothing is validated by a real build" is narrowed, dated, to the coverage that actually remains — the tokens and the implemented contracts are exercised, the other 109 entries are not.
+
 ### Added — 2026-09-06 (the website — SPEC 0011)
 
 - **The site is publishable** ([SPEC 0011](docs/specs/0011-project-website.md)). The placeholder front page is replaced by a real one that opens the way the Figma files do — on a **cover**: the brand surface, the wordmark at full size (the only logo on the page — the header's brand slot is off there), the capital standing on the panel's bottom edge, the derived version pill. Below it: the charter's character in four cards, a quick start, the state-of-the-system charts with a derived in-code count, and the resources — GitHub, the Stylos Figma libraries read from `figma/README.md`, the workshop, the package. Everything the page claims about what exists is **derived at build time** (`tools/lib/site.mjs`): `npm install` is *Planned* exactly while `packages/ui/package.json` is `private`, the agent artifacts are *Planned* while SPEC 0010's row is Open, the Storybook link appears exactly when the workshop is in the tree. Components themselves stay off the front page — their home is each component's own page: where a component is implemented, its page opens on a live render at the contract's defaults and every value row and example renders real DOM-contract markup from the shipped CSS ([SPEC 0003](docs/specs/0003-component-page.md)'s placeholder slots, filled at last); everything unimplemented keeps its placeholders, under SPEC 0011 §5's rule that a sample is real or it is absent.

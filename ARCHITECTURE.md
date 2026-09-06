@@ -17,6 +17,7 @@ Every domain has exactly one authoritative source. When two places disagree, the
 | Variables, styles — the *values* | Figma | Figma cloud | by hand in the file |
 | Components — the *contract* | YAML registry | `docs/components/registry/` | by hand, validated by `npm run validate:registry`, read with `npm run registry:view` |
 | Components in Figma — one *implementation* of that contract | Figma | Figma cloud | by hand, or via skills through Figma Agent |
+| Components in code — the other *implementation* (`@stylos/ui`) | Svelte and CSS sources | `packages/ui/src/` | by hand per [SPEC 0009](docs/specs/0009-stylos-ui-package.md), slice by slice; validated by `npm run ui:check` and `npm run lint:css` |
 | Foundation rules | Markdown | `docs/foundations/` | by hand |
 | Architectural decisions | Markdown | `docs/decisions/` | by hand, one record per material change |
 | Skill behaviour | Markdown sources | `skills/src/` | by hand, compiled to `skills/dist/` |
@@ -25,7 +26,6 @@ Every domain has exactly one authoritative source. When two places disagree, the
 | Canonical tokens | *derived* | `tokens/` | `tools/import-tokens.mjs`, from a Figma export plus `tokens/_naming.yaml` |
 | Figma-to-Stylos naming, slots, mode rules | YAML | `tokens/_naming.yaml` | by hand, validated by `npm run tokens:check` |
 | Compiled skill document | *derived* | `skills/dist/` | `tools/build-skills.mjs` |
-| Code library | **does not exist** | — | — |
 | Published documentation | *derived* | `build/` | `tools/build-site.mjs`; uploaded by hand — see §4 |
 
 **Values are authored where they are judged by eye; contracts are authored where they can bind more than one implementation.** Colours and dimensions are decided in Figma, so Figma holds them and `tokens/` imports them. A component's contract cannot be held by Figma, because Figma is one of the two things that must satisfy it — the Svelte package is the other, and neither can be authoritative over the other. A limitation of one tool would otherwise become a rule of the system. See [`docs/components/README.md`](docs/components/README.md).
@@ -125,7 +125,7 @@ Stated explicitly so it is never assumed.
 Ordered by cost of leaving them.
 
 1. **The token record is stale by default.** The import mechanism exists; the habit does not. Neither a script nor a person can rely on `tokens/` reflecting the live Figma file.
-2. **Nothing is validated by a real build.** Tokens, sizes, and component contracts have never been exercised by code.
+2. **Most contracts are still not exercised by a real build.** *Narrowed 2026-09-06 — the line used to read "nothing is validated by a real build", and that stopped being true when `@stylos/ui` landed:* `npm run ui:check` now generates the token CSS, the props types and the stories from the record and type-checks the built components against them, so the tokens and the implemented contracts are exercised on every run. What remains of the break is coverage — five entries of 114 are implemented, and every contract outside them is still words no build has ever read.
 
 **Three breaks closed, 2026-09-04.** *Registry and Figma are unlinked* — a contract carries `figma.node_id` and `last_verified`, so divergence is checkable by hand for every entry that has one; the entries that do not are the ones with no contract, which §4 already states rather than counting twice. *Documentation is split across two homes without a rule* — there is one source, the registry entry, and both the generated page and the Figma description are composed from it (§2.2). *Skill installation is unversioned* — `tools/build-skills.mjs` has appended each source's `metadata.version` to its description since 2026-08-24, and the loaded build names itself.
 
