@@ -116,17 +116,25 @@ section { margin: 4.5rem 0 0; }
   vertical-align: 2px;
   font-variant-numeric: tabular-nums;
 }
+/* The CTAs follow the Button contracts by eye: a band of fixed height around
+   an uppercased label (the transform, never typed capitals — the contract's
+   own rule), the radius the same at every size, the filled one knocking its
+   label out, the second one an outline. They are links dressed as the
+   system's buttons, not the components — no stylos-* class is claimed. */
 .cta { display: flex; gap: .8rem; flex-wrap: wrap; margin: 2.2rem 0 0; }
 .cta a {
-  display: inline-block;
-  padding: .62rem 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  padding: .72rem 1.4rem;
   border: 1px solid currentColor;
   border-radius: var(--radius-sm);
   text-decoration: none;
   color: inherit;
-  font-weight: 550;
+  font-weight: 650;
   font-size: var(--text-meta);
-  letter-spacing: .01em;
+  line-height: 1;
+  letter-spacing: .07em;
+  text-transform: uppercase;
 }
 .cta a:hover { opacity: .85; }
 .cta a.primary { background: var(--fg-on-brand); border-color: var(--fg-on-brand); color: var(--brand); }
