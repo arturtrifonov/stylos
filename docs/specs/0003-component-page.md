@@ -24,6 +24,8 @@ Spec [0002](0002-registry-viewer.md) built the index over the whole set. This bu
 ### Out of scope
 
 - **Component previews.** Every place a rendered sample belongs gets a placeholder slot of the right size and position. Rendering them means exporting from Figma, and that is a separate spec. Build the slot so that filling it later changes nothing structural.
+
+  > **Amended 2026-09-06:** the previews landed, from the other implementation. Where a component is built in `@stylos/ui`, the page inlines the token sheet and the component's authored CSS, opens on the thing itself at every property's default, and every value row and example renders the DOM-contract markup live (`tools/lib/preview.mjs`, under [SPEC 0011](0011-project-website.md) §5's rule); everything unimplemented keeps the placeholder. The swap was the promised one-function change — `previewSlot` grew a `live` branch. No Figma export was needed after all.
 - Any network access. Read YAML from disk and nothing else.
 - Any write path to Figma. In particular, do not compose or push the derived Figma description here — that is its own step.
 - Editing a contract through the page. It renders; YAML is edited in an editor.

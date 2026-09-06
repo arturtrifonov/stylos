@@ -665,3 +665,39 @@ test("carries no token value onto the page", () => {
   const body = html.replace(/<style>[\s\S]*?<\/style>/, "");
   assert.doesNotMatch(body, /--stylos|tokens\//);
 });
+
+// --- real previews (SPEC 0011 §5: a sample is real or it is absent) ----------
+
+const PREVIEW = {
+  tokensCss: ":root { --stylos-color-text-base: #1a2a3a; }",
+  byId: new Map([["Checkbox Input", ".stylos-checkbox-input { color: var(--stylos-color-text-base); }"]]),
+};
+
+test("an implemented component opens on a live preview and ships its CSS", () => {
+  const entry = contract();
+  const html = renderComponentPage(entry, pageContext([entry], { resolveToken, preview: PREVIEW }));
+  assert.match(html, /class="preview-hero"><span class="stylos-checkbox-input" data-size="extra small" data-is-checked="false">/);
+  assert.match(html, /class="slot live"/);
+  assert.doesNotMatch(html, /class="slot" style="width:/);
+  assert.ok(html.includes(PREVIEW.tokensCss), "the token sheet is inlined");
+  assert.ok(html.includes(PREVIEW.byId.get("Checkbox Input")), "the component's own CSS is inlined");
+});
+
+test("a component that is not implemented keeps its placeholders", () => {
+  const entry = contract();
+  const html = renderComponentPage(entry, pageContext([entry], { resolveToken }));
+  assert.doesNotMatch(html, /class="slot live"|class="preview-hero"/);
+  assert.match(html, /class="slot" style="width:/);
+});
+
+test("an assignment the contract refuses falls back to the placeholder", () => {
+  const entry = withApi((api) => [
+    {
+      ...api[0],
+      examples: [{ verdict: "dont", caption: "…", props: { "no such prop": "x" } }],
+    },
+    ...api.slice(1),
+  ]);
+  const html = renderComponentPage(entry, pageContext([entry], { resolveToken, preview: PREVIEW }));
+  assert.match(html, /class="example dont">\s*<p class="verdict">✕ Do not<\/p>\s*<div class="slot" style="width:/);
+});

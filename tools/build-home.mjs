@@ -62,26 +62,36 @@ section { margin: 4.5rem 0 0; }
 /* --- The cover ------------------------------------------------------------ */
 
 /* The front page opens the way the Figma files do — on a cover: the brand
-   surface edge to edge of the measure, the wordmark at full size, the capital
-   standing on the panel's bottom edge and cropped by it, the way a column is
-   cropped by a pediment. One logo per page: the header's brand slot is off
-   here because the cover is the brand. */
+   surface, the site's menu on it, the wordmark at full size, the capital
+   standing whole on the panel's bottom edge. One logo per page: the header's
+   brand slot is off here because the cover is the brand.
+
+   The panel hangs out of the measure by exactly its own padding, so the
+   cover's text sits on the same vertical line as every section below it —
+   the background is indented, the text is not. */
 .cover {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 21rem);
-  gap: 2rem 3.5rem;
-  align-items: end;
-  margin-top: 2rem;
-  padding: 3.4rem 3.4rem 0;
+  margin: 1.2rem -3rem 0;
+  padding: 0 3rem;
   background: var(--brand);
   color: var(--fg-on-brand);
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
-.cover-copy { padding-bottom: 3.4rem; }
+.cover .site-header { border-bottom: 0; }
+.cover .site-header nav a { color: inherit; opacity: .78; }
+.cover .site-header nav a:hover { color: inherit; opacity: 1; }
+.cover .site-header nav a[aria-current="page"] { color: inherit; opacity: 1; }
+.cover .site-header nav a.ext::after { color: inherit; opacity: .6; }
+.cover-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 21rem);
+  gap: 2rem 3.5rem;
+  align-items: end;
+}
+.cover-copy { padding: 2.2rem 0 3.4rem; }
 .cover .logo { display: block; width: 300px; max-width: 100%; height: auto; color: currentColor; }
 .column-figure { margin: 0; justify-self: end; align-self: end; }
-.column-figure img { display: block; width: 100%; height: auto; margin-bottom: -12%; }
+.column-figure img { display: block; width: 100%; height: auto; }
 
 .lede {
   font-size: var(--text-display);
@@ -262,8 +272,9 @@ a.door:hover { background: var(--bg-sunken); }
 
 @media (max-width: 56rem) {
   .page { padding: 0 1.5rem; }
-  .cover { grid-template-columns: minmax(0, 1fr); margin-top: 1.5rem; padding: 2.2rem 1.8rem 0; }
-  .cover-copy { padding-bottom: 2.2rem; }
+  .cover { margin: .8rem -1.5rem 0; padding: 0 1.5rem; }
+  .cover-grid { grid-template-columns: minmax(0, 1fr); }
+  .cover-copy { padding: 1.4rem 0 2.2rem; }
   .cover .logo { width: 200px; }
   .column-figure { display: none; }
   .lede { font-size: var(--text-title); }
@@ -310,7 +321,7 @@ const CHARACTER = [
   ],
 ];
 
-function coverSection({ logo, column, site }) {
+function coverSection({ logo, column, site, header }) {
   const figure = column
     ? `<figure class="column-figure"><img src="assets/column.png" alt="" width="510" height="510"></figure>`
     : "";
@@ -318,6 +329,8 @@ function coverSection({ logo, column, site }) {
   const workshopDoor = site?.storybook ? `<a href="storybook/">Open the workshop</a>` : "";
 
   return `<section class="cover">
+    ${header}
+    <div class="cover-grid">
     <div class="cover-copy">
       ${logo}
       <h1 class="lede">A design system for dense, desktop&#8209;oriented web product interfaces.</h1>
@@ -334,6 +347,7 @@ function coverSection({ logo, column, site }) {
       </div>
     </div>
     ${figure}
+    </div>
   </section>`;
 }
 
@@ -556,9 +570,7 @@ export function renderHome({
 </head>
 <body>
 <div class="page">
-  ${header}
-
-  ${coverSection({ logo, column, site })}
+  ${coverSection({ logo, column, site, header })}
 
   ${characterSection()}
 

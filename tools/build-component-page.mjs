@@ -44,6 +44,7 @@ import {
 } from "./lib/registry.mjs";
 import { SIZING_TOKEN_FIELDS, createTokenResolver } from "./lib/sizing.mjs";
 import { CHROME_CSS, renderSiteHeader, renderSiteFooter } from "./lib/chrome.mjs";
+import { sampleHtml, defaultAssignment, buildPreviewAssets } from "./lib/preview.mjs";
 import { loadTheme, themeCss } from "./lib/theme.mjs";
 
 // The page is opened by one person, from disk, on a wide screen, to read one
@@ -209,6 +210,28 @@ h2 { margin: 0; font-size: var(--text-small); font-weight: 700; letter-spacing: 
   flex: none;
 }
 .slot span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* The live slot holds the component itself, which brings its own type and
+   colour — the slot only gives it ground to stand on and stops constraining
+   the size, because the render is the truth about the size. */
+.slot.live {
+  width: auto;
+  height: auto;
+  min-height: 26px;
+  padding: 8px 12px;
+  border: 1px solid var(--rule);
+  border-style: solid;
+  background: var(--bg-sunken);
+  color: var(--fg);
+  font: 400 var(--text-body)/1.4 var(--font-sans);
+}
+.preview .preview-hero {
+  display: flex;
+  align-items: center;
+  padding: 1.8rem 1.6rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--bg-sunken);
+}
 
 .examples { margin-top: 1.2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1.2rem; }
 .example .verdict { font-weight: 600; font-size: var(--text-meta); margin-bottom: .45rem; }
@@ -334,7 +357,19 @@ function paragraph(text, className) {
  * structural. This is the only unfinished thing on the page and the only
  * function that has to change when it is finished.
  */
-export function previewSlot(entry, assignment, resolveToken) {
+export function previewSlot(entry, assignment, resolveToken, live = false) {
+  // The real render, where the component is implemented (SPEC 0011 §5): the
+  // shipped CSS is on the page, so the DOM-contract markup is the preview.
+  // An assignment the contract refuses — a registry example is the contract's
+  // to state, not this function's to correct — falls back to the placeholder.
+  if (live) {
+    try {
+      return `<div class="slot live">${sampleHtml(entry, assignment)}</div>`;
+    } catch {
+      // fall through to the placeholder
+    }
+  }
+
   const { width, height } = slotSize(entry, assignment.size, resolveToken);
   const text = Object.entries(assignment)
     .map(([name, value]) => `${name}=${value}`)
@@ -482,8 +517,8 @@ function renderRequirements(entry) {
   return band("Requirements", entry.a11y.map((finding) => findingBlock(finding)).join(""));
 }
 
-function renderValueRow(entry, property, value, resolveToken) {
-  const slot = previewSlot(entry, assignmentFor(entry, property, value.value), resolveToken);
+function renderValueRow(entry, property, value, resolveToken, live = false) {
+  const slot = previewSlot(entry, assignmentFor(entry, property, value.value), resolveToken, live);
   const label =
     `<span class="assign"><span class="faint">${esc(property.name)}:</span> ` +
     `<span class="val">${esc(value.value)}</span></span>`;
@@ -517,7 +552,7 @@ function renderValueRow(entry, property, value, resolveToken) {
   return `<div class="value${tone}">${slot}${label}<div class="aside">${aside.join(" ")}</div></div>`;
 }
 
-function renderExamples(entry, property, resolveToken) {
+function renderExamples(entry, property, resolveToken, live = false) {
   const examples = Array.isArray(property.examples) ? property.examples : [];
   if (examples.length === 0) return "";
 
@@ -531,7 +566,7 @@ function renderExamples(entry, property, resolveToken) {
     const dont = example.verdict === "dont";
     return `<div class="example ${dont ? "dont" : "do"}">
 <p class="verdict">${dont ? "✕ Do not" : "✓ Do"}</p>
-${previewSlot(entry, assignment, resolveToken)}
+${previewSlot(entry, assignment, resolveToken, live)}
 ${example.caption ? paragraph(example.caption, "caption") : ""}
 </div>`;
   });
@@ -539,7 +574,7 @@ ${example.caption ? paragraph(example.caption, "caption") : ""}
   return `<div class="examples">${blocks.join("")}</div>`;
 }
 
-function renderProperty(entry, property, resolveToken, first = false) {
+function renderProperty(entry, property, resolveToken, first = false, live = false) {
   const label = [
     `<span class="name mono">${esc(property.name)}</span>`,
     `<div class="kind caps">${esc(KIND_GLYPHS[property.kind] ?? "·")} ${esc(property.kind ?? "")}</div>`,
@@ -560,20 +595,20 @@ function renderProperty(entry, property, resolveToken, first = false) {
   const values = Array.isArray(property.values) ? property.values : [];
   const body =
     values.length > 0
-      ? values.map((value) => renderValueRow(entry, property, value, resolveToken)).join("")
+      ? values.map((value) => renderValueRow(entry, property, value, resolveToken, live)).join("")
       : // text and instance properties have no values: what there is to show is
         // the default, and then whatever examples were chosen.
         (property.default !== undefined
-          ? renderValueRow(entry, property, { value: property.default }, resolveToken)
+          ? renderValueRow(entry, property, { value: property.default }, resolveToken, live)
           : "");
 
   return `<div class="band property${first ? " first" : ""}">
 <div class="label">${label.join("")}</div>
-<div class="body">${body}${renderExamples(entry, property, resolveToken)}</div>
+<div class="body">${body}${renderExamples(entry, property, resolveToken, live)}</div>
 </div>`;
 }
 
-function renderApi(entry, resolveToken) {
+function renderApi(entry, resolveToken, live = false) {
   if (entry.api.length === 0) return "";
 
   const count =
@@ -588,7 +623,7 @@ function renderApi(entry, resolveToken) {
   return (
     band("Public API", count) +
     entry.api
-      .map((property, index) => renderProperty(entry, property, resolveToken, index === 0))
+      .map((property, index) => renderProperty(entry, property, resolveToken, index === 0, live))
       .join("")
   );
 }
@@ -829,26 +864,50 @@ function siteChrome(context, up) {
   };
 }
 
+/**
+ * The page's opening render, where the component is implemented: the thing
+ * itself at every property's default, from the shipped CSS. Absent for
+ * everything else — the placeholder slots below say what would render.
+ */
+function renderPreviewBand(entry, live) {
+  if (!live) return "";
+  let html;
+  try {
+    html = sampleHtml(entry, defaultAssignment(entry));
+  } catch {
+    return "";
+  }
+  return band(
+    "Preview",
+    `<div class="preview-hero">${html}</div>
+<p class="quiet">Rendered from the shipped CSS at every property's default — the same file <span class="mono">@stylos/ui/css</span> exports, on the public DOM contract. Every value row and example below renders the same way.</p>`,
+    "preview"
+  );
+}
+
 export function renderComponentPage(entry, context) {
   const up = "../".repeat(slugPath(entry.id).split("/").length - 1);
   const site = siteChrome(context, up);
+  const live = context.preview?.byId.has(entry.id) ?? false;
+  const previewCss = live ? `\n<style>${context.preview.tokensCss}${context.preview.byId.get(entry.id)}</style>` : "";
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(entry.name)} — Stylos component</title>
-<style>${chromeFor(context, up)}${CSS}</style>
+<style>${chromeFor(context, up)}${CSS}</style>${previewCss}
 </head>
 <body>
 ${site.header}
 <a class="back" href="${esc(`${up}index.html`)}">${site.header ? "" : context.logo}<span>← All components</span></a>
 ${renderHeader(entry, context)}
+${renderPreviewBand(entry, live)}
 ${renderUnwritten(entry)}
 ${renderPurpose(entry)}
 ${renderUseWhen(entry, context)}
 ${renderRequirements(entry)}
-${renderApi(entry, context.resolveToken)}
+${renderApi(entry, context.resolveToken, live)}
 ${renderSizing(entry, context.resolveToken)}
 ${renderMotion(entry)}
 ${renderLimitations(entry)}
@@ -924,6 +983,7 @@ export function pageContext(
     theme = null,
     logo = "",
     site = null,
+    preview = null,
   } = {}
 ) {
   const family = new Map();
@@ -940,6 +1000,7 @@ export function pageContext(
     theme,
     logo,
     site,
+    preview,
     importDate: "2026-08-20",
   };
 }
@@ -980,6 +1041,7 @@ if (isMain) {
     resolveToken: createTokenResolver(root),
     theme,
     logo: readLogo(root),
+    preview: buildPreviewAssets(root, entries),
   });
 
   const out = path.join(root, "build/components");

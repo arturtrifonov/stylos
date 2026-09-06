@@ -24,6 +24,7 @@ import { createTokenResolver } from "./lib/sizing.mjs";
 import { loadTheme, themeCss } from "./lib/theme.mjs";
 import { renderSiteFooter, renderSiteHeader } from "./lib/chrome.mjs";
 import { siteFacts } from "./lib/site.mjs";
+import { buildPreviewAssets } from "./lib/preview.mjs";
 import { buildViewData, renderView } from "./build-registry-view.mjs";
 import { buildPages, readLogo } from "./build-component-page.mjs";
 import { renderHome, hasColumn } from "./build-home.mjs";
@@ -101,6 +102,7 @@ const pages = buildPages(entries, {
   theme,
   logo,
   site,
+  preview: buildPreviewAssets(root, entries),
 });
 for (const [relative, html] of pages) write(path.join("components", relative), html);
 
