@@ -196,8 +196,7 @@ At 5–10 h/week:
 **Scope levers, in the order to pull them:**
 
 1. Ship wave 5 as `Button Base` alone, leaving Outline and Ghost undocumented, and drop Tooltip from wave 6. Saves ~2 weeks across S4 and S5. Drawer, Modal and the table are named by the gate and are not available to cut.
-2. Ship the documentation surface as rendered Markdown instead of Storybook. Saves ~2 weeks in S6.
-3. Defer component-token depth by adopting "no component-specific tokens" as the provisional answer. Saves ~1 week.
+2. Defer component-token depth by adopting "no component-specific tokens" as the provisional answer. Saves ~1 week.
 
 Do **not** pull: the integrity check before documenting, the documentation-boundary decision before writing documents, or the proof screen.
 

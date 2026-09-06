@@ -5,46 +5,65 @@
 
 ## Problem
 
-The second half of [`PLAN.md`](../../PLAN.md) Stage 5 is opening: the CSS build landed, and `@stylos/ui` is next. The package's stack has to be fixed before the first component is written, because every component is written against it — the way behaviour is expressed decides how each contract's `api` and `a11y` blocks turn into code, and reversing the choice later rewrites the package rather than adjusting it.
+Stage 5 opens the code package, `@stylos/ui`. `PLAN.md` carried a planned approach — Svelte, Melt UI, plain CSS — and it was re-opened twice: on 2026-09-04 (Svelte committed, library left open) and on 2026-09-05, when the question underneath surfaced in plain words: *is a behaviour library needed at all?* If not, writing components by hand in Svelte is the pleasant path. If it is, React has the larger ecosystem to find one in. The two branches lead to different frameworks, so the framework cannot be fixed before the behaviour question is.
 
-Until now the stack lived in `PLAN.md` Stage 5 as a planned approach: Svelte committed on 2026-09-04, Melt UI named as the leading candidate for behaviour, the rest marked "revisit when the work actually starts". The work is starting; this is the revisit. It becomes a record — the first since the purge of 2026-08-23 — because it now meets the bar [`README.md`](README.md) sets: expensive to reverse, and exactly the kind of choice that gets re-opened every few weeks unless it is argued once and written down.
+Answered on the wrong population once already: judged against the 39 core components, a library looks unnecessary, because the core set was chosen as the simplest components a first screen needs. The answer has to hold for the registry as a whole — 114 entries, 75 of them queued ([`PLAN.md`](../../PLAN.md) §9), and that is where the date picker, the combobox, the tree, the toast and the slider live.
 
 ## Constraints already set
 
-- **Svelte is committed** (2026-09-04, `PLAN.md` Stage 5). This record does not reopen the framework question; it fixes the version model — Svelte 5, runes — because a package started in 2026 on the previous component model would be born legacy.
-- **Plain CSS + custom properties** for component internals, no build-time styling dependency (`PLAN.md` Stage 5). Nothing chosen here may bring a styling system with it.
-- **Anatomy, layer names and DOM structure are authored by Stylos** ([`naming.md`](../foundations/naming.md)). A behaviour supplier that ships its own markup is disqualified before evaluation, not weighed.
-- **Props map 1:1 onto Figma variant properties**; divergence is a defect in one side, not a translation detail ([`naming.md`](../foundations/naming.md)).
-- **Solo maintainer.** Hand-writing all interaction accessibility is too much surface to get right alone — already settled in `PLAN.md` Stage 5, restated here because it is the reason a behaviour library exists in this stack at all.
+- The contract is authored in the registry and implemented twice; anatomy, layer names and property names are Stylos's ([`docs/components/README.md`](../components/README.md), [`naming.md`](../foundations/naming.md)). A library that renders its own DOM works against that.
+- Component internals are plain CSS on custom properties, the same properties a consumer themes with ([`PLAN.md`](../../PLAN.md) Stage 5). No build-time styling dependency.
+- The consumer on the `0.2.0`–`0.3.0` horizon is the owner and the coding agents he runs. The owner reads HTML, CSS and Svelte templates and verifies them; React hooks he does not. Verifiability by the person who signs off is a criterion, not a taste.
+- Solo, 5–10 h/week. Accessibility surface written by hand does not get re-tested by anyone else.
+- Props map 1:1 onto the contract's `api` ([`PLAN.md`](../../PLAN.md) §1, `0.2.0` gate). Whatever supplies behaviour sits under that surface, never on it.
+
+## What the registry needs
+
+Every entry classified by where its behaviour comes from (2026-09-06):
+
+| Class | Count | Examples |
+| --- | ---: | --- |
+| static — no behaviour | 37 | Badge, Label, Loader, Indicator, Icon, Card, Header, Table Cell Tags |
+| native — the element supplies it | 31 | Button ×6, Link, Checkbox Input, Radio Input, `Input *`, Text Area, Table Row |
+| pattern — a WAI-ARIA APG model beyond the element | 46 | Dropdown and its items, Select, Multiselect, Date Picker, Tooltip, Modal, Drawer, Tabs, Accordion, Tree, Toast, Slider, Chips, Uploader, Carousel, Steps, Switcher, Table Cell Actions |
+
+Forty-six pattern components are some fifteen keyboard models — menu, listbox, combobox, dialog, tooltip, tabs, disclosure, tree, slider, toast, toolbar, toggle group, date grid, tags input, file upload. Written once each by hand, tested by one person: that is the accessibility surface `PLAN.md` Stage 5 refused from the start, and the count confirms the refusal. **A behaviour library is needed.**
 
 ## Options considered
 
-1. **Melt UI** — the candidate `PLAN.md` carried. It satisfies the hard constraint: builders only, no markup shipped. Rejected on two grounds that only became decisive when the choice stopped being provisional. Its behaviour is written inside Svelte's reactive model, so the logic is inseparable from the one framework consuming it — testable only by rendering, portable to nothing else. And at the moment of choosing, its Svelte 5 story was a rewrite in progress: starting a package on either the pre-runes original or the mid-flight successor means betting the interaction layer on a transition that is not ours.
-2. **Component libraries that ship structure** (Bits UI and its class). Rejected on the standing constraint alone: a library with its own anatomy means working around its structure instead of authoring ours, which conflicts with the naming rules already in force.
-3. **Hand-written behaviour.** Rejected in `PLAN.md` before this record and not reopened: a solo maintainer hand-rolling focus management, typeahead, dismissal layers and ARIA wiring for a dropdown, a modal and a tooltip is the accessibility surface this stack exists to not carry alone.
-4. **Zag.js** (adopted) — behaviour as framework-agnostic finite state machines, consumed through a Svelte adapter. Each machine supplies state, transitions and ARIA wiring as collections of props that are spread onto elements Stylos authors; it renders nothing and names nothing in the DOM.
+Coverage measured against the 46 pattern entries, from each library's own component index, read 2026-09-06.
+
+1. **Svelte 5, behaviour by hand.** Rejected: fifteen APG models, one author, no second tester. Would have been right for the core set alone; the core set is not the system.
+2. **React 19 + React Aria hooks.** Behaviour only, the owner writes every element — the same model as option 4. Covers 36/46; the only things it alone covers are Breadcrumbs and the table's sort and selection state, which are attributes rather than patterns. The strongest published accessibility methodology of any candidate. Rejected because the framework fails the verifiability constraint — the person who signs off cannot read what the hooks do — and the coverage advantage that was supposed to justify React does not exist in the numbers.
+3. **Svelte 5 + Bits UI.** Covers 26/46 and misses Toast, Tree, Chips, Uploader, Drawer, Steps. Renders its own elements by default; the `child` snippet hands the element back, but the default is the wrong way round for a system that authors its anatomy. Rejected.
+4. **Svelte 5 + Zag.js** (adopted). State machines plus prop getters, no DOM of its own — the anatomy stays authored here and the machine's props are spread onto it. Covers 36/46, the same as React Aria; alone covers Carousel, Editable, Cascade Select, Steps. Adapters for Svelte, React, Vue and Solid, so the behaviour layer is not what ties the system to Svelte — a later framework change would rewrite the wrappers and keep the machines.
+5. **Web components (Lit, or Svelte compiled to custom elements).** Rejected: shadow DOM encapsulates styles against a system whose whole styling model is global custom properties, breaks `aria-labelledby` and `for` across the boundary, and has no behaviour library of its own to lean on. Svelte's `customElement` output stays available as a door if a framework-neutral distribution is ever wanted; it is not a plan.
+
+Melt UI, the candidate `PLAN.md` named: its Svelte 5 line (`melt`) has not released since 2026-01-04, covers fewer patterns than Zag, and ships a test package in its runtime dependencies. Superseded by option 4.
+
+None of the three covers Charts, Code Editor, Queryfield or Pull to Refresh. Charts and the editor are external libraries by nature; Queryfield is domain code; Pull to Refresh is parked with mobile.
 
 ## Decision
 
-**Svelte 5** with runes, **TypeScript** throughout, **Zag.js** for behaviour.
+- **Svelte 5** is the framework of `@stylos/ui`.
+- **TypeScript**, on one condition: prop types are generated from each entry's `api` and never written by hand. Type files exist for the agent and the compiler; the owner reads templates and CSS. `svelte-package` emits `.d.ts` for consumers either way.
+- **Zag.js 1.x** supplies interaction behaviour for pattern components, pinned to the 1.x line until the `2.0` release stabilises. A machine is used where the contract's `requires` findings exceed what the element does natively; a native element or platform feature — `<button>`, `<input>`, `<dialog>`, the Popover API — is used where it satisfies them in every baseline browser ([`accessibility.md`](../foundations/accessibility.md)). Which applies is decided per component when its contract is opened for implementation, and stated in that component's contract.
+- **Plain CSS on the generated custom properties** for every visual value; no styling dependency; values outside `tokens.css` are a lint failure.
+- **Two surfaces, two audiences.** Storybook is the frontend developer's workshop and the test runner — one story per component, axe on every story. The generated site ([`STANDARD.md`](../components/STANDARD.md)) is the designer's: what a component is for and how it is used. Neither replaces the other.
+- **Layered so that the framework is the thinnest layer:** `tokens.css` → per-component CSS keyed on data attributes carrying the contract's values → behaviour (Zag machines, platform) → `.svelte` wrappers exposing the contract's props. Portability lives in the first three layers, not in the choice of the fourth.
 
-Why Zag over the candidate it replaces, given that both leave anatomy to us:
-
-- **The behaviour is a machine, not a reactive graph.** A state machine is inspectable and testable without rendering a component, and its transitions can be read against a contract's states the way the integrity check reads a Figma variant set. Behaviour written inside a framework's reactivity can only be observed through that framework.
-- **The engine is framework-agnostic; only the adapter is Svelte.** This repository already holds one contract binding more than one implementation — Figma and this package ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §1). A behaviour layer with the same shape costs nothing extra now and means a future non-Svelte consumer reuses the machines rather than the rewrite.
-- **The maintenance base is wider than one framework's community.** Zag underpins an ecosystem serving several frameworks at once; its coverage of the widgets the core set needs — dialog, tooltip, menu, select, the input family's controls — exists today rather than being promised.
-
-TypeScript is in the decision, not an implementation detail: the 1:1 prop ↔ variant property mapping is a claim that should fail at compile time, not only in a review table. A registry entry's `api` block becomes a typed prop surface, and a prop that drifts from it breaks the build rather than the reader.
+Concretely, this changes `PLAN.md` Stage 5 — Melt UI becomes Zag.js, TypeScript is stated, Storybook returns as the documentation surface for developers and scope lever 2 ("rendered Markdown instead of Storybook") is deleted — and the work order is [SPEC 0009](../specs/0009-stylos-ui-package.md).
 
 ## Consequences
 
-- Every interactive component in `@stylos/ui` is a Zag machine plus Stylos-authored markup plus the generated custom properties. Non-interactive primitives take no behaviour dependency at all.
-- **Where a machine's ARIA decisions and a contract's `a11y` block disagree, the contract wins** — same rule as for Figma: an implementation that genuinely cannot comply declares the divergence in the contract with a reason, and an undeclared divergence is a defect.
-- Zag's idiom is prop-spreading, not Svelte actions. The package's internals will read as Zag-flavoured Svelte rather than idiomatic-first Svelte; accepted as the price of the machine model.
-- The dependency surface is many small `@zag-js/*` packages that version together. They are pinned and moved deliberately, per machine, not floated.
-- Melt UI stops being named anywhere as a candidate. `PLAN.md` Stage 5 and [`naming.md`](../foundations/naming.md) now point at this record instead of carrying the reasoning.
+- The repository stops being dependency-free. Dependencies are confined to `packages/ui`; `tools/` stays as it is.
+- Zag brings Floating UI for positioning. Accepted; a component may move to CSS anchor positioning on its own when the baseline allows, machine by machine.
+- Zag publishes no screen-reader testing methodology; React Aria does. The gap is covered in the package rather than trusted: axe on every story in CI, keyboard behaviour under Playwright, and a contract finding where automation cannot judge.
+- Zag's `2.0` will be a migration. It is a known cost, dated, and confined to the behaviour layer.
+- The agent that writes Svelte 5 gets the official tooling: the `sveltejs/ai-tools` plugin for Claude Code, with its autofixer. Recorded in `CLAUDE.md` ([SPEC 0008](../specs/0008-development-and-release-flow.md)).
 
-## Follow-up
+## Revisit when
 
-- Scaffold `@stylos/ui` per `PLAN.md` Stage 5; the scaffold gets its own work order in [`docs/specs/`](../specs/README.md) when it is built, as anything built does.
-- The first wave of components (primitives, per the registry's `children` order) needs no machine; the first machine lands with the first interactive element, and that is where this decision meets reality. If it forces a fight with a contract there, amend this record's banner rather than its body.
+- The intended consumer becomes "agents in any tool" rather than this owner and his agents — the framework-neutral question returns, and the layering above is what makes it answerable cheaply.
+- A pattern component cannot be built on its Zag machine within two sessions — the machine is the wrong shape for the contract, and that component gets its behaviour by hand or from another source, recorded in its contract.
+- Zag `2.0` ships and the 1.x line stops receiving fixes.

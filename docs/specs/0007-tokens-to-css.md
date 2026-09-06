@@ -254,6 +254,6 @@ One more, which is not a naming defect and needs an answer rather than a verdict
 
 ## 9. Open
 
-- **Component tokens.** Nothing here emits a per-component layer, and `PLAN.md` lever 3 keeps "no component-specific tokens" as the provisional answer. The package will show whether that holds; if it does not, the layer sits between §4.3 and the component styles and this spec is extended rather than replaced.
+- **Component tokens.** Nothing here emits a per-component layer, and `PLAN.md` scope lever 2 keeps "no component-specific tokens" as the provisional answer. The package will show whether that holds; if it does not, the layer sits between §4.3 and the component styles and this spec is extended rather than replaced.
 - **Typography as composed properties.** `font/size/1_000` and `font/line height/text/1_000` are emitted separately, and [`typography.md`](../foundations/typography.md) requires them to be used as a pair. Nothing in CSS enforces the pairing. A composed `font` shorthand per measure would, at the cost of a fourth layer and of the size→measure profiles becoming generated output rather than an authored rule. Deferred until a component gets it wrong.
 - **Distribution.** Whether `tokens.css` ships as a file a consumer imports, as part of the package's single stylesheet, or both. A packaging question, answered in the second half of Stage 5.
