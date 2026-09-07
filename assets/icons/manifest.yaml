@@ -1,0 +1,53 @@
+# Authored file — edit this, then run `npm run icons:import`.
+# The set of icons the system carries, and the single instance they are drawn
+# at. Names are Material Symbols ligature names, which are also the filenames
+# upstream uses and the values `<Icon name>` takes; a name that does not
+# resolve to exactly one glyph fails the import rather than shipping a blank.
+#
+# An icon enters this list when something in the system needs it — never in
+# anticipation. Adding one is a line and a re-run; a set stocked ahead of
+# demand is inventory nobody checked against a real use.
+#
+# These twenty-nine are the marks the Figma library already carries as system
+# components (node 2839:2469), read 2026-09-07 and matched against the
+# drawings rather than against the names — see SPEC 0012 §2.
+source:
+  family: "Material Symbols Rounded"
+  package: "material-symbols"
+  file: "material-symbols-rounded.woff2"
+  licence: "Apache-2.0"
+instance:
+  wght: 500
+  FILL: 1
+  GRAD: 0
+  opsz: 20
+icons:
+  - "add"
+  - "arrow_back"
+  - "arrow_downward"
+  - "arrow_drop_down"
+  - "arrow_drop_up"
+  - "arrow_forward"
+  - "arrow_left"
+  - "arrow_right"
+  - "arrow_upward"
+  - "attach_file"
+  - "calendar_month"
+  - "check"
+  - "check_circle"
+  - "chevron_left"
+  - "chevron_right"
+  - "close"
+  - "content_copy"
+  - "edit"
+  - "error"
+  - "filter_list"
+  - "home"
+  - "keyboard_arrow_down"
+  - "keyboard_arrow_up"
+  - "more_horiz"
+  - "person"
+  - "remove"
+  - "schedule"
+  - "search"
+  - "warning"

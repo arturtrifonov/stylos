@@ -1,0 +1,31 @@
+/* Icon — docs/components/registry/icon.yaml.
+ *
+ * The element is the <svg> itself, which is what the contract's `html` says,
+ * so there is no wrapper to size separately: the footprint is the element.
+ *
+ * One square footprint, adjustable by whatever holds the icon — a parent that
+ * has a size run of its own (Button Icon, the inputs, the table cells) sets
+ * --stylos-icon-footprint and the icon follows, rather than resizing the
+ * drawing. That is the decoupling the entry's sizing model asks for, and the
+ * reason the set is authored at one size rather than in a run.
+ *
+ * The token is the var()'s fallback rather than a declaration on this rule,
+ * and the difference is the whole adjustability: a value declared here would
+ * be the element's own and would beat the one it inherits, so a parent could
+ * set the property and nothing would move.
+ *
+ * Colour is inherited rather than declared. The contract binds the mark to a
+ * text colour role, and in composition the role it should take is whichever
+ * one the text beside it already carries — a mark in a danger button is
+ * danger because the button is, not because the icon was told twice. `fill:
+ * currentColor` is that rule; it also makes forced-colors mode correct with
+ * no special case.
+ */
+
+.stylos-icon {
+  display: inline-block;
+  flex: none;
+  width: var(--stylos-icon-footprint, var(--stylos-dimension-size-s-3_000));
+  height: var(--stylos-icon-footprint, var(--stylos-dimension-size-s-3_000));
+  fill: currentColor;
+}

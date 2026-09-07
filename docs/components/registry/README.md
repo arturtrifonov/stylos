@@ -152,7 +152,7 @@ api:
     a11y:                     # optional, property-level finding
       status: "open"
       note: "…"
-    values:                   # variant properties; omitted for text and instance
+    values:                   # a variant's vocabulary; on a text property, examples
       -
         value: "extra small"
         note: "…"             # optional — what this value means
@@ -268,6 +268,8 @@ Keep it to what a reader would otherwise misread. Layer names, auto-layout setti
 
 - **`file_key` belongs to the entry, not to the repository.** Components live in two files ([`figma/README.md`](../../../figma/README.md)); a key belonging to any other file is a failure.
 - **`node_id` is stored exactly as the URL gives it** — the dash form, `4479-13507`. Both parts are then a straight copy out of the address bar and the link is a concatenation. The URL itself is never stored: it is derivable, and a stored URL rots in a way the parts do not.
+- **Contract prose is rendered as Markdown.** `summary`, `purpose`, `use_when`, `do_not_use_when` and `limitations` reach Storybook's docs page through `build-ui-stories.mjs`, which assembles them into one Markdown block. An identifier written bare in that prose is read as markup — `chevron_right, check_circle` loses both underscores to emphasis and italicises everything after it, which is how Icon's own property names were displayed wrong. Write such a name inside backticks, or keep it out of the prose; a text property's `values` are the place for examples and are not rendered as Markdown.
+- **`values` mean different things on a variant and on a text property.** On a variant they are the vocabulary: exhaustive, checked, and projected into a TypeScript union. On a text property they are **examples** — the value space is open (Icon's `name` is any Material Symbols name), and they exist so the generated story and the component page render a real sample instead of an empty box. A text property with no `default` starts its sample from the first of them; that is the sample's fallback and never the component's.
 - **There is no `type` field.** Nothing reads a node's kind, and Figma reports it itself when anything asks.
 - **`last_verified` is the date a person compared this entry to the live component**, in `YYYY-MM-DD`. Not the date the entry was edited, not the date the component changed in Figma, and nothing derives it — a field that moved on every touch of the file would stop answering its one question, which is *how old is the last time anyone actually looked*. Only a person sets it, and only after looking.
 
