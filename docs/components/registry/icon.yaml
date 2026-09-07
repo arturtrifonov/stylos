@@ -10,16 +10,16 @@ role: "content"
 html: "<svg>"
 status: "ready"
 version: "0.1.0"
-summary: "A single mark from the system set, chosen by what it means rather than by how it is drawn."
-purpose: "Interfaces need a small vocabulary of marks that a person recognises faster than they read: close, search, expand, the direction a thing will move. Icon is that vocabulary. It is deliberately small and deliberately curated — every entry exists because a component needed it — so that choosing one is choosing a meaning the system already has, not shopping in an icon library. The drawing is an implementation of the meaning and can be replaced without any consumer changing."
+summary: "A single mark from the system set."
+purpose: "Interfaces need a small vocabulary of marks a person recognises faster than they read: close, search, expand, the direction a thing will move. Icon renders one of them. The set is deliberately small and grown only when something needs a mark, and every mark in it is drawn from Material Symbols at one fixed instance (docs/foundations/icons.md) — so a component reaching for a mark gets one that matches every other mark in the system, which is what makes the set a set rather than a folder."
 use_when:
-  - "A component needs a mark that stands for a meaning the set already carries, and it reaches for that meaning through one of the exposed icon slots."
+  - "A component needs a mark the set carries, in an icon, leading icon or trailing icon slot."
 do_not_use_when:
   -
     text: "The picture is content rather than vocabulary — a photograph, a logo, an illustration a product owns. Those carry their own meaning, do not take the system's colour, and are not chosen from a set."
     instead: "Image"
   -
-    text: "The meaning is not in the set. Adding one is a decision about the vocabulary, not a local substitution, and tracing or importing a shape to fill the gap is how a set stops being a set."
+    text: "The mark is not in the set. Adding one is a line in assets/icons/manifest.yaml and a re-run of npm run icons:import; tracing or importing a shape locally to fill the gap is how a set stops being a set."
     instead: null
 parents:
   - "Dropdown Item Parent"
@@ -105,76 +105,22 @@ sizing_model:
 api:
   -
     name: "name"
-    kind: "variant"
-    default: "Icon"
-    description: "Which mark. The value names a meaning the set carries, not a particular drawing — a consumer asking for Search is asking for whatever the system currently uses to mean search, and is not entitled to the shape behind it."
+    kind: "text"
+    description: "Which mark, named as Material Symbols names it. Amended 2026-09-07: this was a variant over twenty-nine Stylos names until the code set was drawn from Material Symbols directly (SPEC 0012), and one door over the whole library beat a vocabulary covering twenty-nine of 3,905. There is no default and no placeholder value: a name the build does not carry renders nothing, because an icon nobody chose is one nobody wrote. Figma expresses the same property as thirty separate components — see the Figma notes below. The values are examples rather than a vocabulary: any name the set carries is valid, and these are what the generated story and the component page render. Written without example names on purpose — this text is rendered as Markdown in Storybook, where an underscored name loses its underscores to emphasis; the values below carry the examples and render intact."
     values:
       -
-        value: "Icon"
-        note: "The base component, and the default in every icon slot in the system. It carries no meaning of its own: an instance still showing it has not been chosen. Named Placeholder until 2026-09-05."
+        value: "search"
       -
-        value: "Add"
+        value: "check_circle"
       -
-        value: "Arrow Down"
+        value: "chevron_right"
       -
-        value: "Arrow Left"
-      -
-        value: "Arrow Right"
-      -
-        value: "Arrow Up"
-      -
-        value: "Calendar"
-      -
-        value: "Check"
-      -
-        value: "Chevron Left"
-      -
-        value: "Chevron Right"
-      -
-        value: "Close"
-      -
-        value: "Copy"
-      -
-        value: "Dash"
-      -
-        value: "Drop Down"
-      -
-        value: "Drop Left"
-      -
-        value: "Drop Right"
-      -
-        value: "Drop Up"
-      -
-        value: "Edit"
-      -
-        value: "Error"
-      -
-        value: "Expand Less"
-      -
-        value: "Expand More"
-      -
-        value: "File"
-      -
-        value: "Filter"
-      -
-        value: "Home"
-      -
-        value: "More"
-      -
-        value: "Person"
-      -
-        value: "Search"
-      -
-        value: "Success"
-      -
-        value: "Time"
-      -
-        value: "Warning"
+        value: "more_horiz"
 limitations:
   - "No size and no tone property. The footprint takes one token and a consumer sets another number if it needs one; the colour is bound to a text role, so an instance can be repainted to any role in that family and to nothing outside it."
   - "Error, Success and Warning name marks in the same words the validation vocabulary uses for outcomes. Nothing states whether picture names and property values share a namespace."
 figma_notes:
-  - "The set is thirty separate components rather than one component set with a property, because swapping an instance is how a designer picks a mark in Figma. They are not thirty components in any other sense: the contract is identical for all of them and only the drawing differs."
+  - "The set is thirty separate components rather than one component set with a property, because swapping an instance is how a designer picks a mark in Figma. They are not thirty components in any other sense: the contract is identical for all of them and only the drawing differs. Code has no equivalent and needs none — one component, and the name of the mark is written rather than picked, so the indirection these thirty provide is Figma-only (SPEC 0012 §1). The twenty-nine marks they hold are the twenty-nine assets/icons/manifest.yaml draws; the thirtieth, the placeholder, marks an instance nobody has chosen yet, which is a state a design file has and a program does not."
   - "figma.node_id points at the base component, Icon — the default in every icon slot and the one member that carries no meaning of its own. It is a real address rather than a representative one, which it was not while that component was named Placeholder."
   - "The twenty-nine marks carry one description between them, because they differ in nothing but the drawing and a per-mark description would have to invent a difference. Its job is not findability — the names already do that at this size of set — but preventing the one misuse there is: A mark from the Stylos icon set. Swap it into an icon, leading icon or trailing icon slot — it is not placed on its own. What the set is and how a mark is chosen: Icon. Typed once and pasted; it is not worth a rule in stylos-description-sync for one family."
 figma:

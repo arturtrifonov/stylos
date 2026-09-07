@@ -15,6 +15,9 @@
 // preview's only to draw.
 
 import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+import { readIcons } from "../build-ui-icons.mjs";
 import path from "node:path";
 
 import { loadCanonical } from "./tokens.mjs";
@@ -35,6 +38,21 @@ const kebab = (name) => name.trim().replace(/\s+/g, "-");
  * with the value verbatim, text as content. Throws on any prop or value the
  * contract does not carry.
  */
+/**
+ * The committed icon set, read once. The repository root is derived from this
+ * file's own location rather than passed in: sampleHtml is called from deep
+ * inside the page renderer and threading a root through every caller would
+ * buy nothing here, where the only reader is this repository's own tooling.
+ */
+let iconCache = null;
+function iconDrawings() {
+  if (iconCache === null) {
+    const root = fileURLToPath(new URL("../..", import.meta.url));
+    iconCache = new Map(readIcons(root));
+  }
+  return iconCache;
+}
+
 export function sampleHtml(entry, props = {}) {
   const api = new Map((entry.api ?? []).map((property) => [property.name, property]));
   const attrs = [];
@@ -70,6 +88,22 @@ export function sampleHtml(entry, props = {}) {
   // Label is the one structural case: the required marker and the supporting
   // line are child spans, per the entry's `html` field. The marker span is
   // aria-hidden because the requiredness lives on the control it names.
+  // Icon is the second structural case: the mark is a <path>, not content, so
+  // the generic branch below (which renders a text property as text) would
+  // put the name inside the <svg> and draw nothing. The drawing comes from
+  // the committed set, the same files the component renders.
+  if (entry.id === "Icon") {
+    const drawing = props.name ? iconDrawings().get(props.name) : undefined;
+    if (!drawing) return `<svg class="${cls}"${attr} aria-hidden="true" focusable="false"></svg>`;
+    const paths = drawing.paths
+      .map((one) => `<path d="${esc(one.d)}"${one.fillRule ? ` fill-rule="${esc(one.fillRule)}"` : ""}/>`)
+      .join("");
+    return (
+      `<svg class="${cls}" viewBox="${esc(drawing.viewBox)}" aria-hidden="true" focusable="false" ` +
+      `data-name="${esc(String(props.name))}" xmlns="http://www.w3.org/2000/svg">${paths}</svg>`
+    );
+  }
+
   if (entry.id === "Label") {
     const marker = props["is required"] ? '<span aria-hidden="true"> *</span>' : "";
     const showsAdditional = (props.validation && props.validation !== "off") || props["has additional text"];
@@ -88,8 +122,14 @@ export function sampleHtml(entry, props = {}) {
 export function defaultAssignment(entry) {
   const assignment = {};
   for (const property of entry.api ?? []) {
-    if (property?.default === undefined) continue;
-    assignment[property.name] = property.default;
+    // A property with no default but with documented values starts from the
+    // first of them. A sample has to show something, and a contract that
+    // declines to name a default (Icon: a forgotten name must draw nothing)
+    // still documents what a value looks like. This is the sample's fallback,
+    // never the component's — nothing here reaches the built component.
+    const value = property?.default ?? (property?.values ?? [])[0]?.value;
+    if (value === undefined) continue;
+    assignment[property.name] = value;
   }
   return assignment;
 }

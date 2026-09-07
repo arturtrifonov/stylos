@@ -30,8 +30,11 @@ export function defaultArgs(entry) {
   const args = {};
   for (const property of entry.api) {
     if (property.kind === "instance" || property.kind === "slot") continue;
-    if (property.default === undefined || property.default === null) continue;
-    args[camelName(property.name)] = property.default;
+    // No default but documented values: start from the first of them, so a
+    // contract that declines to name a default still has a story that renders.
+    const value = property.default ?? (property.values ?? [])[0]?.value;
+    if (value === undefined || value === null) continue;
+    args[camelName(property.name)] = value;
   }
   return args;
 }
@@ -103,7 +106,10 @@ export function renderStories(entry) {
 
   const stories = [`<Story name="default" args=${literal(defaults)} />`];
   for (const property of entry.api) {
-    if (property.kind !== "variant") continue;
+    // A variant's values are its vocabulary; a text property's are examples
+    // (docs/components/registry/README.md). Both are worth a story — one
+    // covers the surface, the other shows what a value looks like.
+    if (property.kind !== "variant" && property.kind !== "text") continue;
     for (const value of property.values ?? []) {
       const args = { ...defaults, [camelName(property.name)]: value.value };
       stories.push(storyTag(property, value, args));

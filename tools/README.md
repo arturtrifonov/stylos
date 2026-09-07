@@ -116,6 +116,32 @@ The `@stylos/ui` generators ([SPEC 0009](../docs/specs/0009-stylos-ui-package.md
 
 Both outputs are gitignored and rebuilt, like every generated thing.
 
+## `build-icons.mjs` — the icon set
+
+```bash
+npm run icons:import      # assets/icons/manifest.yaml → assets/icons/svg/*.svg
+```
+
+Draws each icon named in the manifest out of the Material Symbols variable font at the one instance [`icons.md`](../docs/foundations/icons.md) fixes — Rounded, `wght 500`, `FILL 1`, `GRAD 0`, `opsz 20` — and writes it as an SVG carrying geometry only: the upstream `0 -960 960 960` box, `currentColor`, no size, no ARIA.
+
+Run by hand, never from a build. The SVGs are committed, so a change to the set or to the instance arrives as a readable diff — the same rule `assets/fonts/` follows — and nothing downstream needs the font. `npm test` fails if `svg/` and `manifest.yaml` disagree, which is what makes editing the manifest without re-running this a caught mistake rather than a silent one.
+
+A name that does not shape into exactly one glyph stops the import. A blank icon that ships is worse than a build that stops.
+
+**This is the exception to the dependency-free norm at the top of this file**, and the only one: `fontkit`, `wawoff2` and `material-symbols`, all devDependencies, none of them on any build path. Instancing a variable font and reading a glyph outline is genuinely not something plain Node can do, and the alternative — the stock `@material-symbols/svg-NNN` packages — cannot supply `opsz 20`, because those are drawn at `opsz 48` and optical size is a redrawing rather than a scale. `wawoff2` is there for a narrower reason: fontkit's `getVariation` cannot read a WOFF2, so the packaged face is decompressed to TrueType in memory first.
+
+## `build-ui-icons.mjs`
+
+```bash
+npm run ui:generate       # assets/icons/svg/*.svg → packages/ui/src/components/icon/icons.ts
+```
+
+A projection, in the same sense `tokens:css` is one: the committed SVGs are the source and this restates them as data the Icon component renders, so nothing parses markup at runtime and nothing anywhere needs `{@html}` — no injection shape, no sanitiser to keep. The emitted shape is [SPEC 0012](../docs/specs/0012-icon-system.md) §4, which is also the shape a client's replacement set has to satisfy, so the default set and a replacement are one type.
+
+A file it cannot read whole stops the build. These SVGs are generated, so an unreadable one means `build-icons.mjs` changed underneath — a half-read drawing reaching the component would be a mark that is wrong rather than absent.
+
+Not to be confused with `build-icons.mjs` above: that one draws the set out of the variable font and is run by hand; this one runs on every `ui:generate` and never touches a font.
+
 ## `build-ui-css.mjs`
 
 The independent CSS export ([SPEC 0010](../docs/specs/0010-distribution-surface.md) §2.2), run by `npm run ui:generate` after the two generators above. It copies each built component's authored `src/components/<name>/<name>.css` to `packages/ui/dist/css/<name>.css` unchanged, and concatenates all of them, in registry order, into `dist/css/stylos.css` with a generated header naming the version and the components inside. No transform, no minification, no autoprefixing — a build that improved a value on the way through would be a second source of it. Neither output contains `tokens.css`: a consumer links tokens separately, because that is the file a client theme overrides. A component directory without its authored CSS fails the build.
