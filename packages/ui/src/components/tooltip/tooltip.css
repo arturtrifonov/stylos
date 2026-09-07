@@ -1,0 +1,133 @@
+/* Tooltip — docs/components/registry/tooltip.yaml.
+ *
+ * Selectors are keyed on the data attributes that carry the contract's values
+ * (ADR 0002). The entry's `html` is "no semantic html": this is a slab of
+ * text, and it takes no role of its own, because the association with the
+ * control it describes is made by whoever places it.
+ *
+ * Nothing here is interactive and nothing dismisses it — the contract's own
+ * limitation. Appearing on hover and on focus, staying while the reader moves
+ * onto it, and being tied to its control are the three `requires` findings,
+ * and all three belong to the consumer. A tooltip that needs state, a close
+ * control or pinning is a Popover.
+ *
+ * `type` changes three things at once because they are one decision. string
+ * hugs its width, takes the single-line measure and centres; text takes its
+ * width from wherever it is used, wraps inside it, takes the looser wrapping
+ * measure and aligns left — centred prose is read a line at a time rather
+ * than read. No width is set for either: the component names none, and the
+ * wrapping form's width belongs to the place it is used. No max-width
+ * either: the contract names no default, no minimum and no maximum, so a
+ * consumer that supplies nothing gets whatever their layout gives it.
+ *
+ * The border is drawn in both tones and only its colour changes, so the two
+ * tones are the same size on screen. The radius does not move with size.
+ */
+
+.stylos-tooltip {
+  box-sizing: border-box;
+  display: inline-block;
+  font-family: var(--stylos-font-family-normal);
+  font-weight: var(--stylos-font-weight-base);
+  letter-spacing: var(--stylos-font-letter-spacing-style-normal);
+  font-size: var(--_stylos-tooltip-font-size);
+  line-height: var(--_stylos-tooltip-line-height);
+  padding-block: var(--_stylos-tooltip-padding-block);
+  padding-inline: var(--_stylos-tooltip-padding-inline);
+  border-width: var(--stylos-border-width-normal);
+  border-style: solid;
+  border-color: var(--_stylos-tooltip-border);
+  border-radius: var(--stylos-radius-small);
+  background-color: var(--_stylos-tooltip-surface);
+  color: var(--_stylos-tooltip-text);
+  box-shadow: var(--stylos-shadow-elevation-2);
+}
+
+/* types — the single-line form hugs and centres, the wrapping form does not */
+
+.stylos-tooltip[data-type="string"] {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.stylos-tooltip[data-type="text"] {
+  white-space: normal;
+  text-align: start;
+}
+
+/* sizes — the padding run is authored so the single-line heights land on the
+   Element run at every step, which is what makes a tooltip sit level with the
+   control it belongs to rather than near it. */
+
+.stylos-tooltip[data-size="extra small"] {
+  --_stylos-tooltip-padding-block: var(--stylos-dimension-gap-g-0_375);
+  --_stylos-tooltip-padding-inline: var(--stylos-dimension-gap-g-0_875);
+  --_stylos-tooltip-font-size: var(--stylos-font-size-0_625);
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-string-0_625);
+}
+
+.stylos-tooltip[data-size="small"] {
+  --_stylos-tooltip-padding-block: var(--stylos-dimension-gap-g-0_500);
+  --_stylos-tooltip-padding-inline: var(--stylos-dimension-gap-g-1_000);
+  --_stylos-tooltip-font-size: var(--stylos-font-size-0_750);
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-string-0_750);
+}
+
+.stylos-tooltip[data-size="medium"] {
+  --_stylos-tooltip-padding-block: var(--stylos-dimension-gap-g-0_625);
+  --_stylos-tooltip-padding-inline: var(--stylos-dimension-gap-g-1_250);
+  --_stylos-tooltip-font-size: var(--stylos-font-size-0_875);
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-string-0_875);
+}
+
+.stylos-tooltip[data-size="large"] {
+  --_stylos-tooltip-padding-block: var(--stylos-dimension-gap-g-0_750);
+  --_stylos-tooltip-padding-inline: var(--stylos-dimension-gap-g-1_500);
+  --_stylos-tooltip-font-size: var(--stylos-font-size-1_000);
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-string-1_000);
+}
+
+.stylos-tooltip[data-size="extra large"] {
+  --_stylos-tooltip-padding-block: var(--stylos-dimension-gap-g-0_875);
+  --_stylos-tooltip-padding-inline: var(--stylos-dimension-gap-g-1_750);
+  --_stylos-tooltip-font-size: var(--stylos-font-size-1_125);
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-string-1_125);
+}
+
+/* the wrapping form takes the same measure in the line-height family for
+   wrapping content — looser, because a paragraph needs leading a label does not */
+
+.stylos-tooltip[data-type="text"][data-size="extra small"] {
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-text-0_625);
+}
+
+.stylos-tooltip[data-type="text"][data-size="small"] {
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-text-0_750);
+}
+
+.stylos-tooltip[data-type="text"][data-size="medium"] {
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-text-0_875);
+}
+
+.stylos-tooltip[data-type="text"][data-size="large"] {
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-text-1_000);
+}
+
+.stylos-tooltip[data-type="text"][data-size="extra large"] {
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-text-1_125);
+}
+
+/* tones — both neutral by construction. A tooltip that needs a colour is
+   carrying a message, and a message is a different component. */
+
+.stylos-tooltip[data-tone="base"] {
+  --_stylos-tooltip-surface: var(--stylos-color-background-base);
+  --_stylos-tooltip-border: var(--stylos-color-border-secondary);
+  --_stylos-tooltip-text: var(--stylos-color-text-base);
+}
+
+.stylos-tooltip[data-tone="inverted"] {
+  --_stylos-tooltip-surface: var(--stylos-color-surface-bold-base-default);
+  --_stylos-tooltip-border: transparent;
+  --_stylos-tooltip-text: var(--stylos-color-text-inverted);
+}

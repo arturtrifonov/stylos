@@ -13,3 +13,5 @@ export { default as Label } from "./components/label/Label.svelte";
 export type { LabelProps } from "./components/label/props.ts";
 export { default as Loader } from "./components/loader/Loader.svelte";
 export type { LoaderProps } from "./components/loader/props.ts";
+export { default as Tooltip } from "./components/tooltip/Tooltip.svelte";
+export type { TooltipProps } from "./components/tooltip/props.ts";
