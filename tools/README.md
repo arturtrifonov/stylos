@@ -26,7 +26,7 @@ npm run validate:registry   # check the registry and every contract in it agains
 
 ## `validate-rules.mjs`
 
-Validates the guideline documents — `docs/RULES.md`, the four guideline directories, `docs/components/STANDARD.md` and `docs/charter.md` §Principles — against the grammar in [`docs/RULES.md`](../docs/RULES.md).
+Validates the guideline documents — `docs/RULES.md`, `docs/principles.md`, the four guideline directories and `docs/components/STANDARD.md` — against the grammar in [`docs/RULES.md`](../docs/RULES.md).
 
 ```bash
 npm run validate:rules   # also runs inside npm test
@@ -34,7 +34,7 @@ npm run validate:rules   # also runs inside npm test
 
 **Fails** on: an ID that does not match the grammar or does not follow the file it is in; one ID on two rules; a rule block whose statement opens with no level, or that carries no `Why:`; an ID cited in `docs/`, `skills/src/`, `packages/ui/src/` or `tools/` that no rule carries; a guideline file with no header or a status outside *Yet to fill · Partial · Confirmed*; a directory `README.md` whose table disagrees with a file or omits one.
 
-**Reports** — exit 0, because they are judgements: the file and rule counts per directory, a *Confirmed* file carrying no rule block (today, the eight foundations still to be migrated — that report is the migration queue), and a rule naming no `Checked by:`, which review satisfies.
+**Reports** — exit 0, because they are judgements: the file and rule counts per directory, a *Confirmed* file carrying no rule block, and how many of a document's rules name no `Checked by:` — counted per file rather than listed per rule, since review is a legitimate check and the count is the only part worth seeing on every run.
 
 A citation is an ID written as bare text. One inside a fenced block or a code span is a specimen — that is what lets `RULES.md` print an example rule block — and fixtures are skipped entirely: those in `tests/rules/` and those written inline in a `*.test.mjs`, since a fixture citing nothing is the fixture working. Built by [SPEC 0013](../docs/specs/0013-guideline-structure.md) §5.
 

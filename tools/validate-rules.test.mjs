@@ -143,11 +143,11 @@ test("reads the header only above the first section — a later Status: line is 
 
 test("does not require the header on a document that is not a guideline file", () => {
   const document = {
-    file: "docs/charter.md",
-    area: "PRN",
+    file: "docs/components/STANDARD.md",
+    area: "STD",
     topic: null,
     header: false,
-    text: "# Charter\n\n## Principles\n\n### PRN-01 — Components are public APIs\n\n**MUST.** A component's properties are its contract.\n\nWhy: renaming one is a breaking change.\n",
+    text: "# Standard\n\n## What a contract carries\n\n### STD-01 — Every property carries a description\n\n**MUST.** A property with no description is not documented.\n\nWhy: the page renders the description, and an empty cell reads as a component nobody wrote up.\n",
   };
   assert.deepEqual(check([document]).errors, []);
 });
@@ -222,8 +222,7 @@ test("reports a Confirmed file carrying no rule, and a rule naming no check", ()
   ];
   const reports = check(documents).reports.join("\n");
   assert.match(reports, /docs\/foundations\/color\.md is Confirmed and carries no rule block/);
-  assert.match(reports, /"BEH-FOCUS-03" names no check/);
-  assert.doesNotMatch(reports, /"BEH-FOCUS-01" names no check/);
+  assert.match(reports, /docs\/behavior\/focus\.md: 1 of 2 rules name no check/);
 });
 
 test("the topic is the file's stem, hyphens kept", () => {

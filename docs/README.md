@@ -5,6 +5,7 @@ Authored design-system knowledge. Written and maintained by hand — none of it 
 | | |
 | --- | --- |
 | [`charter.md`](charter.md) | what the system is for, its character, its scope and boundaries |
+| [`principles.md`](principles.md) | the design principles — what the system values when two options both look defensible |
 | [`RULES.md`](RULES.md) | the rules of rules — how one is written, identified, cited, narrowed and retired |
 | [`foundations/`](foundations/README.md) | the visual language — colour, typography, spacing, sizing, naming, icons, effects, and the rest of what a surface is made of |
 | [`behavior/`](behavior/README.md) | the laws components inherit — states, focus, keyboard, loading, validation, and what a surface does with no data |
@@ -19,9 +20,11 @@ The four guideline directories are mostly empty and say so per file: [SPEC 0013]
 
 ## Editorial rules
 
-These are the rules for documents in general. The rules for **rules** — the ID, the block, the levels, precedence, lifecycle — are [`RULES.md`](RULES.md).
+They are rules, so they live where rules live — [`RULES.md`](RULES.md), with IDs, checked by `npm run validate:rules`:
 
-- **A rule lives in one place**, with its reasoning in a sentence beside it. If a rule needs restating somewhere else, link instead.
-- **Values are not transcribed.** Token values live in [`tokens/`](../tokens/README.md) and are rendered by `npm run tokens:report`. A number copied into prose is wrong at the next change in Figma, and a wrong number in a foundation document gets built against.
-- **Where a skill defines a rule for its own operation, the skill is the source.** Link to it rather than restating it.
-- **Do not invent a value to fill a gap.** If something is not settled, say so and point at the stage in [`PLAN.md`](../PLAN.md) that settles it.
+| | |
+| --- | --- |
+| RUL-11 | a rule lives in one file and is cited by ID everywhere else |
+| RUL-09 | a rule names a token, never the value it holds |
+| RUL-17 | where a skill defines a rule for its own operation, the skill is the source |
+| RUL-18 | a gap is stated, never filled with a plausible answer |

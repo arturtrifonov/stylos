@@ -3,25 +3,45 @@
 Status: Confirmed
 Scope: Type sizes, measures, line heights, weight and the typeface; what the words say is [content/](../content/README.md).
 
-## Confirmed
+Canonical component size values are full words — that rule is [naming.md](naming.md) FND-NAMING-17, and it is not restated here.
 
-- Canonical component size values are full words: `extra small`, `small`, `medium`, `large`, `extra large`. `XS`/`S`/`M`/`L`/`XL` are shorthand in conversation only, never canonical Figma variant values ([naming.md](naming.md) §4; `stylos-naming-cleanup` flags the abbreviations as violations).
-- Font size and line height must always use the **same measure**. A size bound to one measure with a line height from another is a defect.
-- Line height comes from the family matching the content: **string** for single-line content (labels, buttons, tabs, menu items, badges, compact values), **text** for wrapping content (body copy, descriptions, messages).
-- Default size→measure profiles exist for two architectural levels — **Element** and **Object**. A documented component-specific mapping overrides its level's default profile.
-- Component-wide text sizing targets exactly one **primary text role**, identified via the public text property, semantic layer name, and cross-variant consistency — not every text layer on the component.
-- **Element and Object are the only levels that will ever have a shared size/text profile.** Permanent design boundary, not an unfinished feature — see [sizing.md](sizing.md). Widget- and Layout-level components vary too much in size to encode a shared rule; their typography is documented per-component in `docs/components/`. Primitive-level components have preferred sizes but no skill-enforced grid.
-- Measure names follow the same ratio-to-base convention as spacing — `1_000` is the base — consistent with [spacing.md](spacing.md).
+## Size and measure
+
+### FND-TYPOGRAPHY-01 — Font size and line height come from one measure
+
+**MUST.** A size bound to one measure carries the line height of that same measure.
+
+Why: a size from one measure with a line height from another is a defect — the pair was authored together, and mixing two of them produces leading that belongs to neither.
+
+### FND-TYPOGRAPHY-02 — The line-height family follows the content
+
+**MUST.** Line height comes from the family matching what the text is: **string** for single-line content (labels, buttons, tabs, menu items, badges, compact values), **text** for wrapping content (body copy, descriptions, messages).
+
+Why: the same size needs different leading depending on whether the text wraps — a single line with paragraph leading sits wrong in a control, and a paragraph with string leading is hard to read.
+
+### FND-TYPOGRAPHY-03 — Measure names are ratios to the base
+
+**MUST.** A measure is named as a ratio to the base — `1_000` is the base — the same convention spacing uses.
+
+Why: one convention across the two scales means a name can be read without knowing which collection it came from (FND-SPACING-01).
+
+Serves: PRN-02.
+
+### FND-TYPOGRAPHY-04 — Component-wide text sizing targets one primary text role
+
+**MUST.** A component's size property drives exactly one **primary text role**, identified via the public text property, the semantic layer name and cross-variant consistency — not every text layer on the component.
+
+Why: a component's text layers are not one thing. Resizing all of them together destroys the internal hierarchy the component was drawn with, and the layer that carries the component's meaning is the only one the size property is about.
 
 ## Structure
 
 One `font` collection, single-mode, with six groups: `family`, `size`, `line height`, `weight`, `letter spacing`, `paragraph spacing`.
 
-### `family` and `line height` divide differently, on purpose
+### FND-TYPOGRAPHY-05 — `family` distinguishes only what actually differs
 
-`line height` has four families — `text`, `string`, `heading`, `code`. `family` has three — and neither `text` nor `string` is among them.
+**MUST.** `family` carries the three entries that differ — normal, display, code — and `text` and `string` are not added to it.
 
-That asymmetry is deliberate, not an oversight. **Line height cares whether content is a string or wrapping text**, because those need different leading at the same size. **Font family does not** — string and text always resolve to the same typeface, so a separate entry for each would only be two names for one value. Family therefore distinguishes only what actually differs: display and code.
+Why: `line height` has four families because leading cares whether content is a string or wrapping text. Font family does not: string and text always resolve to the same typeface, so an entry for each would be two names for one value.
 
 | line-height family | resolves to |
 | --- | --- |
@@ -30,33 +50,37 @@ That asymmetry is deliberate, not an oversight. **Line height cares whether cont
 | `heading` | `family/display` |
 | `code` | `family/code` |
 
-Do not "fix" this by adding `text` and `string` to `family`.
+The asymmetry is deliberate, not an oversight. Do not "fix" it.
 
 ## Values
 
-**Not transcribed here.** Run `npm run tokens:report`. See [effects.md](effects.md) for why documentation does not carry copied token values.
+**Not transcribed here.** Run `npm run tokens:report`. See [effects.md](effects.md) for why documentation does not carry copied token values, and RUL-09 for the rule.
 
 ## Weight
 
-Three named roles: `weight/base` 400, `weight/emphasis` 450, `weight/strong` 600. The name carries the role, the value carries the number — there is no third layer, and none is wanted.
+### FND-TYPOGRAPHY-06 — Three weight roles, named for the accent they carry
 
-The roles were renamed from `normal`/`semibold`/`bold` on 2026-09-06, because those words are typeface-weight vocabulary and two of the three lied in it: CSS `bold` means 700 (ours is 600) and the industry's `semibold` means 600 (ours is 450). The role is a level of accent, not a weight name — `base` for running text, `emphasis` for what stands out in it, `strong` for what leads it — and `emphasis`/`strong` carry the ordering every HTML author already knows from `em`/`strong`. This section previously said bold was 700; the record and Figma say 600, and 600 is the decision.
+**MUST.** Weight is taken from `weight/base` 400, `weight/emphasis` 450 or `weight/strong` 600 — the name carries the role, the value carries the number, and there is no third layer.
 
-**The typeface is variable, and off-scale weights are allowed.** 450 exists only because the weight axis is continuous; so does 437 if a design genuinely calls for it. This is a deliberate exception to the usual rule that a value off the scale is not a value — the variable axis is the point of choosing a variable font, and refusing to use it would be ceremony.
+Why: the roles were renamed from `normal`/`semibold`/`bold` on 2026-09-06, because those words are typeface-weight vocabulary and two of the three lied in it: CSS `bold` means 700 (ours is 600) and the industry's `semibold` means 600 (ours is 450). The role is a level of accent, not a weight name — `base` for running text, `emphasis` for what stands out in it, `strong` for what leads it — and `emphasis`/`strong` carry the ordering every HTML author already knows from `em`/`strong`. This section previously said bold was 700; the record and Figma say 600, and 600 is the decision.
 
-The exception is specific to weight. It does not extend to size, line height or spacing.
+Exception: **off-scale weights are allowed**, because the typeface is variable. 450 exists only because the weight axis is continuous; so does 437 if a design genuinely calls for it. This is a deliberate departure from the usual rule that a value off the scale is not a value — the variable axis is the point of choosing a variable font, and refusing to use it would be ceremony. The exception is specific to weight and does not extend to size, line height or spacing.
 
 If the family is ever swapped for static instances, this breaks quietly: 450 resolves to whatever is nearest and the distinction between `base` and `emphasis` disappears without an error. Check the weights when changing the family, not after.
 
 ## Typeface
 
-Georama for `family/normal` and `family/display`, JetBrains Mono for `family/code`. Both under the SIL Open Font License, which permits embedding and redistribution including in a commercial product.
+### FND-TYPOGRAPHY-07 — Georama for text and display, JetBrains Mono for code
+
+**MUST.** `family/normal` and `family/display` are Georama; `family/code` is JetBrains Mono.
+
+Why: both are under the SIL Open Font License, which permits embedding and redistribution including in a commercial product — the charter's distribution intent rules out a face that does not.
 
 Georama covers the Google Fonts Latin Plus glyph set: Latin, Western European and Vietnamese. That is the supported range.
 
 ## Text styles
 
-The Figma text styles — the 32 named compositions over this collection (`text/*`, `label/*`, `heading/*`, `code/*`) — are recorded in [`figma/text-styles.yaml`](../../figma/text-styles.yaml), written by `tools/import-styles.mjs` from a Plugin API read, since Styles have no Variables export. The record stores aliases into `tokens/`, never values, per the rule in [effects.md](effects.md). `@stylos/ui/text.css` projects each onto a class (`.stylos-heading-h2`, `.stylos-text-normal-medium`, …), rebuilt by `npm run ui:generate`.
+The Figma text styles — the 32 named compositions over this collection (`text/*`, `label/*`, `heading/*`, `code/*`) — are recorded in [`figma/text-styles.yaml`](../../figma/text-styles.yaml), written by `tools/import-styles.mjs` from a Plugin API read, since Styles have no Variables export. The record stores aliases into `tokens/`, never values (RUL-09). `@stylos/ui/text.css` projects each onto a class (`.stylos-heading-h2`, `.stylos-text-normal-medium`, …), rebuilt by `npm run ui:generate`.
 
 ## Stale variable names elsewhere
 
@@ -66,9 +90,13 @@ Figma holds the variable names, and they are currently `font/size/[measure]` and
 
 ## Default size→measure profiles
 
-A component-specific mapping, where one is documented, always overrides its level's default.
+### FND-TYPOGRAPHY-08 — Element and Object have default profiles, and a contract may override
 
-### Element
+**MUST.** A component takes the default size→measure profile of its architectural level, unless its own contract documents a mapping — which then always wins.
+
+Why: without a default, every component decides its own type scale and the library stops having one; without the override, the components whose text genuinely sits differently would have to bend the default for everyone.
+
+#### Element
 
 | Size | Measure |
 | --- | --- |
@@ -78,7 +106,7 @@ A component-specific mapping, where one is documented, always overrides its leve
 | `large` | `1_250` |
 | `extra large` | `1_500` |
 
-### Object
+#### Object
 
 | Size | Measure |
 | --- | --- |
@@ -89,6 +117,12 @@ A component-specific mapping, where one is documented, always overrides its leve
 | `extra large` | `1_875` |
 
 These are authored rules, not exported values, which is why they are written here rather than left to `npm run tokens:report`. This is now the only copy — `stylos-text-sizing` restated them and has been removed.
+
+### FND-TYPOGRAPHY-09 — Only Element and Object will ever share a profile
+
+**MUST.** No architectural level other than Element and Object gains a shared size/text profile.
+
+Why: a permanent design boundary, not an unfinished feature — see [sizing.md](sizing.md). Widget- and Layout-level components vary too much in size to encode a shared rule; their typography is documented per component in `docs/components/`. Primitive-level components have preferred sizes but no skill-enforced grid.
 
 ## Open
 

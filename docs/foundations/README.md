@@ -30,7 +30,7 @@ This table is an index over the files, not a second opinion: where the two disag
 
 **Yet to fill means the file is a scope line and nothing else.** It is a place, so that the rule which belongs there is not written in a contract's `notes` or in a spec instead ([SPEC 0013](../specs/0013-guideline-structure.md)). What each of them will say is not decided here.
 
-The eight *Confirmed* files predate the rule grammar and are being rewritten to it one at a time ([SPEC 0013](../specs/0013-guideline-structure.md) §7). Until a file's turn comes, `npm run validate:rules` reports it as confirmed-with-no-rules — that report is the migration queue.
+The eight *Confirmed* files are written in the rule grammar: every normative statement in them is a rule block with an `FND-` ID, a level and a `Why:` ([`docs/RULES.md`](../RULES.md)). Cite one by ID — `FND-COLOR-02`, `FND-NAMING-17` — and `npm run validate:rules` will fail the citation if the rule is ever deleted.
 
 ## What belongs here
 
