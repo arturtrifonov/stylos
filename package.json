@@ -17,6 +17,7 @@
     "build:skills": "node tools/build-skills.mjs",
     "validate:skills": "node tools/build-skills.mjs --check",
     "validate:registry": "node tools/lint-registry.mjs",
+    "validate:rules": "node tools/validate-rules.mjs",
     "build:home": "node tools/build-home.mjs",
     "registry:view": "node tools/build-registry-view.mjs",
     "components:view": "node tools/build-component-page.mjs",
@@ -31,7 +32,7 @@
     "lint:css": "stylelint \"packages/ui/src/**/*.{css,svelte}\"",
     "workshop": "npm run ui:generate && npm run dev -w stylos-workshop",
     "workshop:build": "npm run ui:generate && npm run build -w stylos-workshop",
-    "test": "node --test \"tools/**/*.test.mjs\""
+    "test": "node --test \"tools/**/*.test.mjs\" && npm run validate:rules"
   },
   "devDependencies": {
     "fontkit": "^2.0.4",

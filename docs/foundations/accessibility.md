@@ -1,6 +1,7 @@
 # Accessibility target and browser baseline
 
-Status: **Confirmed.**
+Status: Confirmed
+Scope: The conformance target and the browser floor everything else is judged against; per-topic accessibility rules live with their topic.
 
 Two bars in one document, because they answer the same question — *may this ship?* — and a judgement split across two files is how the two halves drift apart. The accessibility target is what a contract's findings are judged against; the browser baseline is the floor a CSS or platform feature must clear before `@stylos/ui` may rely on it.
 

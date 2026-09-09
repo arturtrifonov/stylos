@@ -1,6 +1,7 @@
 # Sizing
 
-Status: **Confirmed.**
+Status: Confirmed
+Scope: How a component's dimensions are arrived at on each axis and what the size levels mean; the space between components is [spacing.md](spacing.md).
 
 ## What an axis can do
 

@@ -1,6 +1,9 @@
 # Icons
 
-Status: **Usage rules confirmed; the source and the delivery form are decided (2026-09-07). What gets built from that is [SPEC 0012](../specs/0012-icon-system.md). The Figma library still points at the old set.**
+Status: Confirmed
+Scope: Where the icon set comes from, how it is delivered, and how an icon is used and named.
+
+What is built from the source and delivery decisions below is [SPEC 0012](../specs/0012-icon-system.md).
 
 ## Confirmed usage rules
 

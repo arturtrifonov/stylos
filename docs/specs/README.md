@@ -28,3 +28,4 @@ If a spec finds itself arguing for an approach rather than describing one, that 
 | [0010](0010-distribution-surface.md) | The distribution surface | `PLAN.md` §2, §4.3 — the `0.3.0` gate | Open |
 | [0011](0011-project-website.md) | The project website | `docs/charter.md` §Planned, `ARCHITECTURE.md` §4 | Built |
 | [0012](0012-icon-system.md) | The icon system | [`docs/foundations/icons.md`](../foundations/icons.md), `PLAN.md` §1 — the `0.3.0` gate | Open |
+| [0013](0013-guideline-structure.md) | Guidelines: the file structure and the rules of rules | `docs/RULES.md`, `ARCHITECTURE.md` §6 | Open |

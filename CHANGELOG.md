@@ -4,6 +4,18 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-09 (the guideline structure)
+
+- **[`docs/RULES.md`](docs/RULES.md) fixes how a rule of this system is written** — sixteen rules covering the ID, the rule block, the three levels, precedence, lifecycle and the file header. A rule is now a level-3 heading beginning with an `AREA-TOPIC-NN` ID, a statement opening with **MUST**, **SHOULD** or **MAY**, and a `Why:`. The point is the handle: a contract, a skill or a test can cite `FND-COLOR-01` and the citation survives the sentence being rewritten, which a quotation does not.
+- **Three new guideline directories, created complete and empty**: [`docs/behavior/`](docs/behavior/README.md) (18 files — the laws components inherit), [`docs/patterns/`](docs/patterns/README.md) (15 — one decided answer per recurring task) and [`docs/content/`](docs/content/README.md) (8 — the words), plus nine more foundations: tokens, layout, adaptivity, density, elevation, motion, theming, localization, charts. Every one carries a scope line and the status *Yet to fill*, and nothing else. A rule with no file to live in gets written in whichever document its author had open, and restated by the next person who does not find it; an empty file with a scope line is a place, and *Yet to fill* is a true statement about the system where silence is not.
+- **`npm run validate:rules`** ([`tools/validate-rules.mjs`](tools/validate-rules.mjs)), inside `npm test`. Fails on an ID that does not follow its file, one ID on two rules, a block with no level or no reasoning, a cited ID no rule carries, a missing or out-of-vocabulary file header, and a directory index disagreeing with its files. Reports — not fails — the per-directory counts, a *Confirmed* file carrying no rule, and a rule naming no check. Fixtures for the four failure modes are in [`tools/tests/rules/`](tools/tests/rules/README.md).
+- Work order: [SPEC 0013](docs/specs/0013-guideline-structure.md), migration step 1 of three.
+
+### Changed — 2026-09-09 (the guideline structure)
+
+- **The eight written foundations now open with `Status:` and `Scope:`**, the header every guideline file carries. Their bodies are unchanged: rewriting each one into rule blocks is its own pull request, smallest file first ([SPEC 0013](docs/specs/0013-guideline-structure.md) §7). Until a file's turn comes, `validate:rules` reports it as confirmed-with-no-rules, and that report is the migration queue.
+- **`ARCHITECTURE.md` §1, §6 and §7, `CLAUDE.md`, `docs/README.md` and `PLAN.md` §6** name the four directories and the new check. The definition of done gains `npm run validate:rules`.
+
 ### Added — 2026-09-07 (the icon set)
 
 - **Icons are a generated artifact in this repository** ([`assets/icons/`](assets/icons/README.md)). Taken from Material Symbols Rounded (Apache-2.0) at one fixed instance — `wght 500`, `FILL 1`, `GRAD 0`, `opsz 20` — written as SVG by `npm run icons:import` from an authored `manifest.yaml`, and committed. `tools/build-icons.mjs` instances the packaged variable font and reads each glyph outline; the stock `@material-symbols/svg-NNN` packages could not be used because they are drawn at `opsz 48` only, and optical size is a redrawing rather than a scale. The generated files carry geometry alone — the upstream `0 -960 960 960` box, `currentColor`, no size and no ARIA — because size is a token and the accessible name belongs on the control, never on the icon. `npm test` fails if the set and the manifest disagree.

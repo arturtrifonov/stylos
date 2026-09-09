@@ -18,7 +18,8 @@ Every domain has exactly one authoritative source. When two places disagree, the
 | Components — the *contract* | YAML registry | `docs/components/registry/` | by hand, validated by `npm run validate:registry`, read with `npm run registry:view` |
 | Components in Figma — one *implementation* of that contract | Figma | Figma cloud | by hand, or via skills through Figma Agent |
 | Components in code — the other *implementation* (`@stylos/ui`) | Svelte and CSS sources | `packages/ui/src/` | by hand per [SPEC 0009](docs/specs/0009-stylos-ui-package.md), slice by slice; validated by `npm run ui:check` and `npm run lint:css` |
-| Foundation rules | Markdown | `docs/foundations/` | by hand |
+| Rules — the visual language, behaviour, patterns, content | Markdown | `docs/foundations/`, `docs/behavior/`, `docs/patterns/`, `docs/content/` | by hand, validated by `npm run validate:rules` |
+| How a rule is written, identified and cited | Markdown | `docs/RULES.md` | by hand |
 | Architectural decisions | Markdown | `docs/decisions/` | by hand, one record per material change |
 | Skill behaviour | Markdown sources | `skills/src/` | by hand, compiled to `skills/dist/` |
 | System structure | this document | `ARCHITECTURE.md` | by hand |
@@ -133,31 +134,37 @@ Ordered by cost of leaving them.
 
 ## 6. Document hierarchy
 
-**Normative — four places, nothing else:**
+**Normative — these places, nothing else:**
 
 | | |
 | --- | --- |
 | `ARCHITECTURE.md` | how the system is put together |
-| `docs/foundations/` | rules of the design language |
+| `docs/RULES.md` | how a rule is written, identified, cited and retired |
+| `docs/foundations/` | the visual language — what a surface is made of |
+| `docs/behavior/` | the laws components inherit — how anything responds to a person |
+| `docs/patterns/` | one decided answer per recurring task |
+| `docs/content/` | the words |
 | `docs/decisions/` | the few boundaries expensive enough to reverse that they earn a record |
 | `docs/components/registry/` | the component inventory |
 
 **Derived:** `skills/dist/`, `tokens/*.yaml`, `CHANGELOG.md`.
 
-An open question is anything not settled by a rule in `docs/foundations/` or by this document. It is not tracked as a separate list, because a separate list drifts from reality; open questions are attached to the stage that answers them in [`PLAN.md`](PLAN.md).
+**A rule is a block with an ID**, in the grammar [`docs/RULES.md`](docs/RULES.md) fixes, so that a contract, a skill or a test can cite one and `npm run validate:rules` can fail a citation that points at nothing. Most of that set is empty and says so: a file marked *Yet to fill* is a place for a rule, not a claim that one exists ([SPEC 0013](docs/specs/0013-guideline-structure.md)).
+
+An open question is anything not settled by a rule in one of those four directories or by this document. It is not tracked as a separate list, because a separate list drifts from reality; open questions are attached to the stage that answers them in [`PLAN.md`](PLAN.md), or listed under `## Open` in the file that would settle them.
 
 ---
 
 ## 7. Conventions
 
 - **Language:** English, throughout the repository, including commit messages.
-- **Rules go in `docs/foundations/`**, each with its reasoning in a sentence. A decision record is reserved for a boundary that is expensive to reverse and keeps being re-opened — see [`docs/decisions/README.md`](docs/decisions/README.md). Everything else is a rule, a work order in `docs/specs/`, or a `CHANGELOG.md` line.
+- **Rules go in the four guideline directories** — `docs/foundations/`, `docs/behavior/`, `docs/patterns/`, `docs/content/` — one file per topic, each rule with an ID and its reasoning beside it, in the form [`docs/RULES.md`](docs/RULES.md) fixes. A decision record is reserved for a boundary that is expensive to reverse and keeps being re-opened — see [`docs/decisions/README.md`](docs/decisions/README.md). Everything else is a rule, a work order in `docs/specs/`, or a `CHANGELOG.md` line.
 - **Generated output is never edited by hand.** Change the source and rebuild.
 - **Figma exports are not kept.** `npm run tokens:import` reads one and writes `tokens/`; the export itself is discarded. History lives in git.
 - **Figma is never written to from this repository.** Explicit non-goal until a reliable round trip exists.
 - **`master` is the release line, reached only by pull request.** Nothing is committed to it directly and nothing is merged into it locally: work branches from `master`, goes up with `gh pr create`, passes CI, and lands by squash-merge on GitHub. The git hooks in `.githooks/` and the shared `.claude/settings.json` enforce this locally; branch protection enforces it on the server. Built by [SPEC 0008](docs/specs/0008-development-and-release-flow.md).
 - **A pull request is not a release.** A release is a decision, taken when a stage gate in [`PLAN.md`](PLAN.md) §1 is met, or when one of the three versioned things — a registry contract's `api`, the `tokens/` set, the published Figma library (§9) — changed in a way that has to be named and handed to a consumer. Everything else accumulates under `## [Unreleased]` in `CHANGELOG.md` until a release carries it out, and bumps no version.
-- **Definition of done for a pull request:** `npm test`, `npm run validate:registry`, `npm run validate:skills` and `npm run tokens:check` all pass; every document describing a capability the PR changes is corrected in the same PR; a `## [Unreleased]` line is added when the change is worth a release note; generated output changes only by rebuilding its source.
+- **Definition of done for a pull request:** `npm test`, `npm run validate:registry`, `npm run validate:rules`, `npm run validate:skills` and `npm run tokens:check` all pass; every document describing a capability the PR changes is corrected in the same PR; a `## [Unreleased]` line is added when the change is worth a release note; generated output changes only by rebuilding its source.
 
 ---
 

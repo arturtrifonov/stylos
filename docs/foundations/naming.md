@@ -1,8 +1,9 @@
 # Naming and public API rules
 
-**Normative.** The naming contract for components, layers, properties, and variants.
+Status: Confirmed
+Scope: The naming contract for components, layers, properties and variants; what a contract must contain is [components/STANDARD.md](../components/STANDARD.md).
 
-`stylos-naming-cleanup` v0.9 ([`skills/src/naming-cleanup/SKILL.md`](../../skills/src/naming-cleanup/SKILL.md)) enforces these rules in Figma. It is derived from this document and never the reverse: where the two disagree, the skill is what has to change ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §6). This document states the rules; it does not restate the skill's procedure.
+**Normative.** `stylos-naming-cleanup` v0.9 ([`skills/src/naming-cleanup/SKILL.md`](../../skills/src/naming-cleanup/SKILL.md)) enforces these rules in Figma. It is derived from this document and never the reverse: where the two disagree, the skill is what has to change ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §6). This document states the rules; it does not restate the skill's procedure.
 
 Components are public APIs — see [charter](../charter.md). A name is part of that API: renaming one is a breaking change, not a tidy-up.
 

@@ -16,7 +16,8 @@ Working rules for agent sessions in this repository. The flow they implement is 
 
 ## Definition of done for a pull request
 
-- `npm test`, `npm run validate:registry`, `npm run validate:skills` and `npm run tokens:check` all pass — run all four before opening the PR.
+- `npm test`, `npm run validate:registry`, `npm run validate:rules`, `npm run validate:skills` and `npm run tokens:check` all pass — run all five before opening the PR. (`npm test` runs `validate:rules` too; run it on its own when the change touches a guideline.)
+- **A rule of the design language is written as a rule block** — an ID, a level, a statement, a `Why:` — in the file of its topic under `docs/foundations/`, `docs/behavior/`, `docs/patterns/` or `docs/content/`. The grammar is [`docs/RULES.md`](docs/RULES.md); it is not a house style but the thing that makes a rule citable and a citation checkable. Cite a rule by ID; never restate one.
 - **Every document describing a capability the PR changes is corrected in the same PR.** A change to how the system is built touches `ARCHITECTURE.md`; a change to sequence touches `PLAN.md`; a finished spec's row moves to *Built* in `docs/specs/README.md`. A built feature sitting against documents that deny it is the failure this line exists to prevent.
 - A `## [Unreleased]` line in `CHANGELOG.md` when the change is worth a release note.
 - **Generated output is never edited by hand.** `build/`, `packages/*/dist/`, `tokens/*.yaml` (written by `npm run tokens:import`) and `skills/dist/` change only by rebuilding their source.

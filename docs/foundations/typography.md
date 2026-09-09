@@ -1,6 +1,7 @@
 # Typography
 
-Status: **Confirmed.**
+Status: Confirmed
+Scope: Type sizes, measures, line heights, weight and the typeface; what the words say is [content/](../content/README.md).
 
 ## Confirmed
 
