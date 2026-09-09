@@ -195,8 +195,9 @@ export function parseIndex(text) {
 export function checkRules({ documents, indexes = [], sources = [] }) {
   const errors = [];
   const reports = [];
-  // Held back and appended last: one line per rule would otherwise bury the
-  // per-directory summary, which is the report anyone actually reads.
+  // Counted per document, not listed per rule. One line per rule buried the
+  // per-directory summary once the rulebook passed a hundred rules, and which
+  // rules they are is a question for the file rather than for a run.
   const unchecked = [];
   const byId = new Map();
 
@@ -267,9 +268,7 @@ export function checkRules({ documents, indexes = [], sources = [] }) {
       if (!rule.why) {
         errors.push(`${where}: "${rule.id}" has no "Why:" paragraph (RUL-03)`);
       }
-      if (!rule.checkedBy) {
-        unchecked.push(`"${rule.id}" names no check — review is one, and absence is not a fault`);
-      }
+      if (!rule.checkedBy) doc.unchecked = (doc.unchecked ?? 0) + 1;
     }
   }
 
@@ -328,6 +327,13 @@ export function checkRules({ documents, indexes = [], sources = [] }) {
     }
   }
 
+  for (const doc of documents) {
+    if (!doc.unchecked) continue;
+    unchecked.push(
+      `${doc.file}: ${doc.unchecked} of ${doc.parsed.rules.length} rules name no check — ` +
+        `review is one, and absence is not a fault`
+    );
+  }
   reports.push(...unchecked);
 
   return { ok: errors.length === 0, errors, reports };

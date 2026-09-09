@@ -138,6 +138,18 @@ An absent `Checked by:` means review. That is a legitimate check and not a gap �
 
 Why: a number copied into prose is wrong at the next change in Figma, and a wrong number in a guideline is built against before anyone re-reads the sentence around it.
 
+### RUL-17 — Where a skill defines a rule for its own operation, the skill is the source
+
+**MUST.** A rule about how a skill operates is stated in that skill and cited from a guideline, never restated in one.
+
+Why: the skill is executed and the guideline is read, so a divergence is invisible from here and authoritative there. This is the narrow case of a skill's own procedure — a design rule the skill *enforces* runs the other way, and [`foundations/naming.md`](foundations/naming.md) says so explicitly for `stylos-naming-cleanup`.
+
+### RUL-18 — A gap is stated, never filled with a plausible answer
+
+**MUST.** Where something is not settled, the file says so under `## Open` and points at what will settle it; it does not supply an answer to be going on with.
+
+Why: an invented answer is indistinguishable from a decided one a week later, and it gets built against — which is worse than the gap, because the gap at least stops someone. RUL-10 keeps a question from taking an ID; this keeps it from being answered by whoever happened to need it.
+
 ### RUL-10 — An unsettled question is not a rule
 
 **MUST.** A question the system has not answered is a bullet under `## Open` in the file that would answer it, and takes no ID.

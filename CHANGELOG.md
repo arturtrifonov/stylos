@@ -4,6 +4,16 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-09-10 (every rule is a rule block)
+
+- **The eight foundations, `docs/components/STANDARD.md` and the editorial rules are written in the rule grammar.** 124 rules now carry an ID, a level and a `Why:`: `FND-COLOR-*`, `FND-NAMING-*`, `FND-SIZING-*`, `FND-TYPOGRAPHY-*`, `FND-ICONS-*`, `FND-EFFECTS-*`, `FND-ACCESSIBILITY-*`, `FND-SPACING-*`, `STD-*`, `RUL-*`, `PRN-*`. They had been carried over from the pre-grammar documents unadapted — normative prose with nothing to cite and nothing to check. **No rule changed meaning**; what changed is that each one can now be pointed at, and a citation that stops resolving fails `npm run validate:rules`.
+- **Reasoning is now attached per rule.** Most bullets carried none — the `Why:` on each was written from the reasoning the document already gave, or from the decision the rule plainly rests on. Where a document argued a case at length (the dark palette, the icon instance, the SVG-over-font decision, the eleven naming bands), the argument stayed put as the rule's body.
+- **`naming.md` keeps its eleven numbered sections**, because contracts, skills and `lint-registry.mjs` cite it as `naming.md §N`. Rules sit inside those sections, so both the old section citations and the new IDs resolve.
+- **Restatements became citations** (RUL-11): `typography.md` cited `naming.md` for the full-word size values instead of repeating the rule, `sizing.md` and `typography.md` cross-cite on the Element/Object boundary, and `effects.md`, `color.md` and `typography.md` cite RUL-09 rather than each restating that values are not transcribed.
+- **The last two editorial rules moved out of `docs/README.md`** into `RULES.md` as `RUL-17` (a skill is the source for its own operation) and `RUL-18` (a gap is stated, never filled); the section is now a four-row pointer, since two of the four were already RUL-09 and RUL-11.
+- **`Serves:` lines appear for the first time**, now that `docs/principles.md` exists — 24 rules name the principle they follow from, which is what makes the principles readable as something other than a preamble.
+- **`validate:rules` counts review-only rules per file** instead of listing one report line per rule. At 124 rules the per-rule lines buried the per-directory summary; which rules they are is a question for the file.
+
 ### Added — 2026-09-10 (the design principles)
 
 - **[`docs/principles.md`](docs/principles.md) holds seven principles**, `PRN-01` to `PRN-07`: the strict module and its optical corrections, decisions made in relations rather than measurements, density as the designed-for case, meaning binding rather than appearance, judgement where a formula would lie, the character not being configurable, and the accessibility target as a floor rather than a trade. A principle decides the call the rules do not reach, and a rule that follows from one names it in `Serves:`.
@@ -29,7 +39,7 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Changed — 2026-09-09 (the guideline structure)
 
-- **The eight written foundations now open with `Status:` and `Scope:`**, the header every guideline file carries. Their bodies are unchanged: rewriting each one into rule blocks is its own pull request, smallest file first ([SPEC 0013](docs/specs/0013-guideline-structure.md) §7). Until a file's turn comes, `validate:rules` reports it as confirmed-with-no-rules, and that report is the migration queue.
+- **The eight written foundations now open with `Status:` and `Scope:`**, the header every guideline file carries. Their bodies were rewritten into rule blocks in the same release — see below.
 - **`ARCHITECTURE.md` §1, §6 and §7, `CLAUDE.md`, `docs/README.md` and `PLAN.md` §6** name the four directories and the new check. The definition of done gains `npm run validate:rules`.
 
 ### Added — 2026-09-07 (the icon set)

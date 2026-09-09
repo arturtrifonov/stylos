@@ -3,12 +3,35 @@
 Status: Confirmed
 Scope: Borders, radii, gradients, opacity and shadows; the layer order a shadow expresses is [elevation.md](elevation.md).
 
-## Confirmed
+## Binding
 
-- Use system variables and styles for borders, radii, gradients, opacity, and shadows.
-- Do not copy radius, border, gradient, opacity, or shadow values from a reference.
-- Do not override a component's internal effects to increase visual similarity to a mockup.
-- New foundation tokens are created only through an explicit system decision, never as a local exception.
+### FND-EFFECTS-01 — Borders, radii and effects resolve to system variables and styles
+
+**MUST.** A border, radius, gradient, opacity or shadow is bound to the system variable or style for it.
+
+Why: these are the properties a mockup is matched by eye against, and each one bound locally is a value that no longer follows a token change — invisibly, because the screen still looks right the day it is written.
+
+### FND-EFFECTS-02 — No effect value is copied from a reference
+
+**MUST.** A radius, border, gradient, opacity or shadow value is never taken from a reference.
+
+Why: a copied value is a second system's decision imported without its reasoning, and it survives every later correction of the first system's.
+
+### FND-EFFECTS-03 — A component's internal effects are not overridden
+
+**MUST.** The effects inside a component are not overridden to increase visual similarity to a mockup.
+
+Why: it is the customization boundary at its thinnest point — an override here is invisible in the component's API and defeats the next change to the component itself.
+
+Serves: PRN-06.
+
+### FND-EFFECTS-04 — A new foundation token is a system decision
+
+**MUST.** A new border, radius or effect token is created through an explicit system decision, never as a local exception.
+
+Why: a token created to solve one screen is a scale nobody agreed to, and it is indistinguishable from the ratified ones afterwards.
+
+Serves: PRN-01.
 
 ## Structure
 
@@ -28,9 +51,7 @@ Radius step names are already the full-word canonical size values required by [n
 
 ## The shadow scale
 
-Six levels, `Elevation 1`…`Elevation 6`. A level is **not one shadow** — it is a stack, and each level contains every level below it.
-
-One layer at step *k* is always:
+Six levels, `Elevation 1`…`Elevation 6`. One layer at step *k* is always:
 
 ```
 0  elevation(k)  elevation(k)  spread(k)  <colour>
@@ -43,18 +64,19 @@ X is always zero, and **blur equals the Y offset** — which is why there is no 
 | elevation (= Y and blur) | 2 | 4 | 8 | 12 | 16 | 24 |
 | spread | −1 | −2 | −3 | −4 | −8 | −12 |
 
-**`Elevation N` = layers 1…N in `shadow/color/base`, then layer N repeated in `shadow/color/primary`.** N + 1 layers in total; the primary repeat is the brand tint that sits on top.
+### FND-EFFECTS-05 — An elevation level is a cumulative stack
 
-That is the whole rule, and it reproduces all six styles exactly. Nothing about a shadow needs to be exported from Figma: the effect styles are derivable from the two scales above plus this composition, and the CSS build generates them rather than reading them.
+**MUST.** `Elevation N` is layers 1…N in `shadow/color/base` followed by layer N repeated in `shadow/color/primary` — N + 1 layers, each level containing every level below it.
 
-Two consequences worth stating, because both are easy to get wrong:
+Why: a level is not one shadow, and a generator that emits one `box-shadow` layer per level produces the wrong thing at every level above 1 — `Elevation 6` is seven layers. The composition plus the two number scales above reproduce all six styles exactly, which is why nothing about a shadow is exported from Figma and the CSS build generates them rather than reading them.
 
-- **The stack is cumulative.** A generator that emits one `box-shadow` layer per level produces the wrong thing at every level above 1. `Elevation 6` is seven layers.
-- **Every level carries a brand tint.** `shadow/color/primary` appears in all six, so shadows are not neutral — and since it is stored as a literal rather than a reference ([color.md](color.md)), rebinding the `primary` slot leaves all six shadows on the old brand colour. That is the one real defect here.
+**Every level carries a brand tint.** `shadow/color/primary` appears in all six, so shadows are not neutral — and since it is stored as a literal rather than a reference ([color.md](color.md)), rebinding the `primary` slot leaves all six shadows on the old brand colour. That is the one real defect here.
+
+Checked by: `npm run tokens:css` composes the six stacks from the two scales ([SPEC 0007](../specs/0007-tokens-to-css.md) §4.5).
 
 ## Values
 
-**Not transcribed here** — except the radius and border steps above, which are recorded because ratifying them is the point. Run `npm run tokens:report` for everything else; the values live in `tokens/`. Documentation that carries copied token values goes stale the first time a variable is tweaked in Figma, and a stale value in a foundation document is worse than no value — it gets built against.
+**Not transcribed here** — except the radius and border steps above, which are recorded because ratifying them is the point, and the two shadow number scales, which the build composes from rather than reads. Run `npm run tokens:report` for everything else; the values live in `tokens/`. Documentation that carries copied token values goes stale the first time a variable is tweaked in Figma, and a stale value in a foundation document is worse than no value — it gets built against.
 
 ## Open
 

@@ -222,8 +222,7 @@ test("reports a Confirmed file carrying no rule, and a rule naming no check", ()
   ];
   const reports = check(documents).reports.join("\n");
   assert.match(reports, /docs\/foundations\/color\.md is Confirmed and carries no rule block/);
-  assert.match(reports, /"BEH-FOCUS-03" names no check/);
-  assert.doesNotMatch(reports, /"BEH-FOCUS-01" names no check/);
+  assert.match(reports, /docs\/behavior\/focus\.md: 1 of 2 rules name no check/);
 });
 
 test("the topic is the file's stem, hyphens kept", () => {
