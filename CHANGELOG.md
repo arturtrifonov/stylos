@@ -11,6 +11,12 @@ All notable changes to the Stylos Design System project (foundations, components
 - **`npm run validate:rules`** ([`tools/validate-rules.mjs`](tools/validate-rules.mjs)), inside `npm test`. Fails on an ID that does not follow its file, one ID on two rules, a block with no level or no reasoning, a cited ID no rule carries, a missing or out-of-vocabulary file header, and a directory index disagreeing with its files. Reports — not fails — the per-directory counts, a *Confirmed* file carrying no rule, and a rule naming no check. Fixtures for the four failure modes are in [`tools/tests/rules/`](tools/tests/rules/README.md).
 - Work order: [SPEC 0013](docs/specs/0013-guideline-structure.md), migration step 1 of three.
 
+### Changed — 2026-09-09 (the charter's character)
+
+- **§Character is rewritten and moved above §Purpose** in [`docs/charter.md`](docs/charter.md). The list of intended qualities — classical, strict, structural, measured — gives way to what the character is *for*: Stylos stands on a strict module the way ancient architecture does, and makes corrections as small as the ones that kept a column looking straight. Data-heavy interfaces are the reason it matters, and those corrections are what let a dense screen read as a light one. **Stylos reduces friction through visual harmony.**
+- **§"Two audiences, and they are not the same size" is removed.** [SPEC 0010](docs/specs/0010-distribution-surface.md) §9 still owes a paragraph naming a coding agent reading `registry.json` as a third audience; the amendment there records that the section it was to be added to is gone, and leaves where it goes to the pull request that lands Part B.
+- The charter's opening now points at all four guideline directories and at [`docs/RULES.md`](docs/RULES.md).
+
 ### Changed — 2026-09-09 (the guideline structure)
 
 - **The eight written foundations now open with `Status:` and `Scope:`**, the header every guideline file carries. Their bodies are unchanged: rewriting each one into rule blocks is its own pull request, smallest file first ([SPEC 0013](docs/specs/0013-guideline-structure.md) §7). Until a file's turn comes, `validate:rules` reports it as confirmed-with-no-rules, and that report is the migration queue.

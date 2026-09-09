@@ -2,9 +2,19 @@
 
 What the system is for, what it is like, and where its boundaries are.
 
-Rules of the design language live in [`docs/foundations/`](foundations/README.md); how the system is put together is in [`ARCHITECTURE.md`](../ARCHITECTURE.md). This document is the level above both: it says what those rules are in service of.
+Rules of the design language live in [`foundations/`](foundations/README.md), [`behavior/`](behavior/README.md), [`patterns/`](patterns/README.md) and [`content/`](content/README.md), each written in the form [`RULES.md`](RULES.md) fixes; how the system is put together is in [`ARCHITECTURE.md`](../ARCHITECTURE.md). This document is the level above both: it says what those rules are in service of.
 
 ---
+
+## Character
+
+Stylos is inspired by the principles ancient architecture rests on: modularity, precision, coherence, and attention to detail.
+
+The Parthenon stands on a strict module; so do the components of Stylos. And as the Greek architects adjusted the thickness of their columns so that they would look straight to a person standing before them, we make corrections just as small, to bring the same harmony into an interface.
+
+Why this approach? Stylos was made to carry data-heavy interfaces, and it is those small corrections that let a dense screen read as a light one.
+
+Stylos reduces friction through visual harmony.
 
 ## Purpose
 
@@ -22,27 +32,6 @@ The system is intended to:
 - form the design source for a later Svelte implementation and its documentation surface;
 - remain maintainable by a single owner at this stage;
 - become packageable and explainable enough for future commercial distribution.
-
-## Character
-
-The name and character of Stylos are associated with the column, antiquity, architecture, and constructed proportion. The intended qualities:
-
-- **classical** rather than fashionable
-- **strict** rather than casual
-- **structural** rather than decorative
-- **measured** rather than arbitrary
-- **distinctive** without preventing product customization
-- suitable for **complex, tool-like products**
-
-These govern composition, rhythm, density, and the relationships between elements. They are the system's character, not the arithmetic of its scales — those are settled in [`foundations/`](foundations/README.md) on their own terms.
-
-## Two audiences, and they are not the same size
-
-**The library will have users. The infrastructure has one.**
-
-`docs/`, `tools/`, `tokens/` and `skills/` exist to keep the system honest for the person maintaining it — today that is one person, and a warning aimed at nobody is clutter. Figma component names, their descriptions, and the component documents are the other side: they are read by whoever designs with Stylos, and that set is meant to grow.
-
-The distinction decides whether a signal earns its place. A note in the repository warning against a mistake only the owner could make is worth deleting; the same note on a component's Figma description is worth keeping, because the person it warns has not arrived yet.
 
 ## The customization boundary
 
