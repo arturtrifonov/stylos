@@ -190,6 +190,8 @@ Do **not** pull: the consumer skill or `registry.json` — requirement 2 of the 
 | Component-specific token depth | provisional "none" ([SPEC 0007](docs/specs/0007-tokens-to-css.md) §9) until a component needs one |
 | Licence, and the distribution channel that depends on it | alpha |
 
+**The guideline set is a list of open questions with a file each.** [SPEC 0013](docs/specs/0013-guideline-structure.md) created `docs/behavior/`, `docs/patterns/` and `docs/content/` complete and empty, plus nine more foundations; every file marked *Yet to fill* is something the system has not decided. They are not listed one by one here — the directory indexes are the list, and `npm run validate:rules` counts them. Filling one is per-topic work, scheduled when a component or a screen needs the answer, and the migration of the eight written foundations to the rule grammar is sequenced in that spec's §7.
+
 **Deliberately unanswered before `0.3.0`:** the project's public contact details, responsive breakpoints (desktop-only scope makes them premature), automated skill installation, and React or any other framework adapter — the layering allows one and nothing asks for it.
 
 **A Stylos Figma plugin is intended**, and the reason is ergonomic rather than technical: it removes the manual export and the JSON handling from the loop entirely, and opens the direction of authoring the palette outside Figma. Its scope and timing are open, not its existence. It is not on the critical path — the current pipeline works — so it is scheduled when the manual step becomes the thing slowing the week down.

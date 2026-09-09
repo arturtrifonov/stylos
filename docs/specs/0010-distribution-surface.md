@@ -197,7 +197,7 @@ The bundle is a build output; putting it into a Claude Design project is an agen
 Per the definition of done ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §7), in the same pull request as the change that earns each:
 
 - **`ARCHITECTURE.md` §3** gains a row per artifact as it is built, and the matching row leaves [`PLAN.md`](../../PLAN.md) §2. §2.2's component diagram gains the two new outputs; §4's *published documentation does not exist* stays true and is not touched by any of this.
-- **`docs/charter.md` §"Two audiences"** names the repository's audience as the owner and Figma's as whoever designs with Stylos. A coding agent reading `registry.json` is a third, and it is the one this spec is built for. One paragraph, in the pull request that lands Part B.
+- **The third audience.** `docs/charter.md` §"Two audiences" named the repository's audience as the owner and Figma's as whoever designs with Stylos. A coding agent reading `registry.json` is a third, and it is the one this spec is built for. One paragraph, in the pull request that lands Part B. *Amended 2026-09-09: that charter section was removed when the charter was cut back to purpose, character and boundaries. The paragraph is still owed; where it is written is settled with Part B, since the charter no longer has the section it was to be added to.*
 - **[SPEC 0009](0009-stylos-ui-package.md) §2** takes the §5.3 amendment.
 - **`docs/specs/README.md`** — this row, and 0009's when it closes.
 - **`CHANGELOG.md`** — an `## [Unreleased]` entry per part.

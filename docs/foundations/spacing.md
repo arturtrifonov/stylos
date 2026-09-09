@@ -1,6 +1,7 @@
 # Spacing
 
-Status: **Confirmed.**
+Status: Confirmed
+Scope: The spacing scale and the distance between things; a control's own dimensions are [sizing.md](sizing.md).
 
 ## Confirmed
 

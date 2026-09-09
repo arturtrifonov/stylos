@@ -1,6 +1,7 @@
 # Borders, radii, and effects
 
-Status: **Confirmed.**
+Status: Confirmed
+Scope: Borders, radii, gradients, opacity and shadows; the layer order a shadow expresses is [elevation.md](elevation.md).
 
 ## Confirmed
 

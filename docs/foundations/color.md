@@ -1,6 +1,7 @@
 # Color
 
-Status: **Confirmed.**
+Status: Confirmed
+Scope: The palette, the semantic roles and the mode mechanism — how a colour is chosen; how a whole theme is applied is [theming.md](theming.md).
 
 ## Confirmed
 
