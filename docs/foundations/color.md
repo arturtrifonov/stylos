@@ -81,7 +81,7 @@ The contract above is what the CSS build generates from — `npm run tokens:css`
 
 - **The palette is not mode-scoped.** Both palettes are emitted flat and unconditionally as two independent sets. No selector switches them.
 - **The semantic layer is emitted twice** — once in the light scope, once in the dark — with *every* role declared in both, including the ones whose value does not change. If the dark scope only redeclared the roles that differ, a client override in the light scope would inherit into dark.
-- **One global mode switch.** A theme applies to the document, not to an arbitrary subtree; a dark region inside a light page is not a supported case, and supporting it later would mean re-emitting the whole layer per theme-bearing node.
+- **One global mode switch.** A mode applies to the document, not to an arbitrary subtree; a dark region inside a light page is not a supported case, and supporting it later would mean re-emitting the whole layer per mode-bearing node.
 
 ## Values
 
