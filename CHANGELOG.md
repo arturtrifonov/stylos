@@ -4,6 +4,16 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-09-10 (the design principles)
+
+- **[`docs/principles.md`](docs/principles.md) holds seven principles**, `PRN-01` to `PRN-07`: the strict module and its optical corrections, decisions made in relations rather than measurements, density as the designed-for case, meaning binding rather than appearance, judgement where a formula would lie, the character not being configurable, and the accessibility target as a floor rather than a trade. A principle decides the call the rules do not reach, and a rule that follows from one names it in `Serves:`.
+- Two are marked open in the file: whether `PRN-07` is a principle at all or a precedence rule belonging beside the target it protects in `foundations/accessibility.md`, and whether the set needs one about where attention is spent on a screen where everything competes for it.
+
+### Changed — 2026-09-10 (principles leave the charter)
+
+- **`docs/charter.md` no longer has a §Principles section.** The four entries it used to carry were rules of working, not principles of design, and had already moved — two into [`docs/RULES.md`](docs/RULES.md) as `RUL-07` and `RUL-11`, one into `foundations/naming.md`. The charter is prose about what the system is for; a rule written inside it could be neither cited nor checked as one, which is the whole reason the rule grammar exists. Its opening now points at `principles.md` beside the four guideline directories.
+- **`PRN` addresses `docs/principles.md`**, not `charter.md` §Principles — `RULES.md` RUL-02, `tools/validate-rules.mjs`, `ARCHITECTURE.md` §1 and §6, `docs/README.md` and `tools/README.md` all say so. `principles.md` is a guideline file and carries the header every one of them carries; the charter is out of the validator's document set entirely, so the PRN rules have exactly one possible home.
+
 ### Added — 2026-09-09 (the guideline structure)
 
 - **[`docs/RULES.md`](docs/RULES.md) fixes how a rule of this system is written** — sixteen rules covering the ID, the rule block, the three levels, precedence, lifecycle and the file header. A rule is now a level-3 heading beginning with an `AREA-TOPIC-NN` ID, a statement opening with **MUST**, **SHOULD** or **MAY**, and a `Why:`. The point is the handle: a contract, a skill or a test can cite `FND-COLOR-01` and the citation survives the sentence being rewritten, which a quotation does not.

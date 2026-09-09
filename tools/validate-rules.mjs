@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Validates the guideline documents — docs/RULES.md, the four guideline
-// directories, docs/components/STANDARD.md and docs/charter.md §Principles.
+// directories, docs/principles.md and docs/components/STANDARD.md.
 //
 //   npm run validate:rules
 //
@@ -48,14 +48,17 @@ export const AREAS = [
   ["docs/content", "CNT"],
 ];
 
-// Rule-carrying files that are not in a guideline directory. RULES.md is a
-// guideline file with no directory to be indexed by; the other two carry rules
-// without being guidelines — a charter and a documentation standard have their
-// own shape, and neither has a per-file status to state.
+// Rule-carrying files that are not in a guideline directory. RULES.md and
+// principles.md are guideline files with no directory to be indexed by;
+// STANDARD.md carries rules without being one — a documentation standard has
+// its own shape and no per-file status to state.
+//
+// docs/charter.md is deliberately absent. It is prose, it carries no rule, and
+// giving it an area would give the PRN rules two possible homes.
 export const SINGLETONS = [
   ["docs/RULES.md", "RUL", { header: true }],
+  ["docs/principles.md", "PRN", { header: true }],
   ["docs/components/STANDARD.md", "STD", { header: false }],
-  ["docs/charter.md", "PRN", { header: false }],
 ];
 
 // Where a citation is looked for. Fixtures are excepted — those under

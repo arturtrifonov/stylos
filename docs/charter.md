@@ -2,7 +2,7 @@
 
 What the system is for, what it is like, and where its boundaries are.
 
-Rules of the design language live in [`foundations/`](foundations/README.md), [`behavior/`](behavior/README.md), [`patterns/`](patterns/README.md) and [`content/`](content/README.md), each written in the form [`RULES.md`](RULES.md) fixes; how the system is put together is in [`ARCHITECTURE.md`](../ARCHITECTURE.md). This document is the level above both: it says what those rules are in service of.
+Rules of the design language live in [`foundations/`](foundations/README.md), [`behavior/`](behavior/README.md), [`patterns/`](patterns/README.md) and [`content/`](content/README.md), each written in the form [`RULES.md`](RULES.md) fixes; the principles they follow from are [`principles.md`](principles.md); how the system is put together is in [`ARCHITECTURE.md`](../ARCHITECTURE.md). This document is the level above all of it: it says what they are in service of.
 
 ---
 
@@ -35,8 +35,3 @@ Stylos supports themes and product-specific content while keeping its own **comp
 
 Customization happens through documented semantic variables and supported component properties — not by overriding component internals. This is the line that makes the system a system: everything above it is a product's business, everything below it is Stylos's.
 
----
-
-## Principles
-
-Yet to fill

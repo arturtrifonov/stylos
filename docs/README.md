@@ -5,6 +5,7 @@ Authored design-system knowledge. Written and maintained by hand — none of it 
 | | |
 | --- | --- |
 | [`charter.md`](charter.md) | what the system is for, its character, its scope and boundaries |
+| [`principles.md`](principles.md) | the design principles — what the system values when two options both look defensible |
 | [`RULES.md`](RULES.md) | the rules of rules — how one is written, identified, cited, narrowed and retired |
 | [`foundations/`](foundations/README.md) | the visual language — colour, typography, spacing, sizing, naming, icons, effects, and the rest of what a surface is made of |
 | [`behavior/`](behavior/README.md) | the laws components inherit — states, focus, keyboard, loading, validation, and what a surface does with no data |

@@ -7,9 +7,11 @@ Scope: How a rule of this system is written, identified, cited, narrowed and ret
 
 A guideline carries more reasoning than a contract does, so guidelines stay Markdown rather than moving into fields. The cost of prose is that nothing can point at it: a sentence quoted somewhere else drifts the moment it is edited, and nothing notices. The grammar below buys back what the fields would have given — an ID that can be cited, a citation that can be checked, and a build that fails when one points at nothing.
 
-**A guideline file** is a file in one of the four guideline directories — [`foundations/`](foundations/README.md), [`behavior/`](behavior/README.md), [`patterns/`](patterns/README.md), [`content/`](content/README.md) — or this one. Each carries the header of RUL-15 and is indexed by its directory.
+**A guideline file** is a file in one of the four guideline directories — [`foundations/`](foundations/README.md), [`behavior/`](behavior/README.md), [`patterns/`](patterns/README.md), [`content/`](content/README.md) — or [`principles.md`](principles.md), or this one. Each carries the header of RUL-15 and is indexed by its directory.
 
-Two more documents carry rules without being guideline files: [`charter.md`](charter.md) §Principles and [`components/STANDARD.md`](components/STANDARD.md). Both have their own shape and neither has a per-file status to state, so the header is not asked of them; everything else here applies to their rules exactly as written.
+One more document carries rules without being a guideline file: [`components/STANDARD.md`](components/STANDARD.md). It has its own shape and no per-file status to state, so the header is not asked of it; everything else here applies to its rules exactly as written.
+
+[`charter.md`](charter.md) carries none. It is prose about what the system is for, and a rule written inside it could be neither cited nor checked as one — which is why the principles are their own file.
 
 `npm run validate:rules` checks all of it.
 
@@ -39,7 +41,7 @@ Checked by: `npm run validate:rules`.
 
 | Area | Is |
 | --- | --- |
-| `PRN` | [`charter.md`](charter.md) §Principles — no topic segment: `PRN-01` |
+| `PRN` | [`principles.md`](principles.md) — no topic segment: `PRN-01` |
 | `FND` | [`foundations/`](foundations/README.md) — the visual language |
 | `BEH` | [`behavior/`](behavior/README.md) — the laws components inherit |
 | `PAT` | [`patterns/`](patterns/README.md) — one decided answer per recurring task |

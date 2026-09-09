@@ -20,6 +20,7 @@ Every domain has exactly one authoritative source. When two places disagree, the
 | Components in code — the other *implementation* (`@stylos/ui`) | Svelte and CSS sources | `packages/ui/src/` | by hand per [SPEC 0009](docs/specs/0009-stylos-ui-package.md), slice by slice; validated by `npm run ui:check` and `npm run lint:css` |
 | Rules — the visual language, behaviour, patterns, content | Markdown | `docs/foundations/`, `docs/behavior/`, `docs/patterns/`, `docs/content/` | by hand, validated by `npm run validate:rules` |
 | How a rule is written, identified and cited | Markdown | `docs/RULES.md` | by hand |
+| Design principles — what a rule has to be consistent with | Markdown | `docs/principles.md` | by hand, validated by `npm run validate:rules` |
 | Architectural decisions | Markdown | `docs/decisions/` | by hand, one record per material change |
 | Skill behaviour | Markdown sources | `skills/src/` | by hand, compiled to `skills/dist/` |
 | System structure | this document | `ARCHITECTURE.md` | by hand |
@@ -140,6 +141,7 @@ Ordered by cost of leaving them.
 | --- | --- |
 | `ARCHITECTURE.md` | how the system is put together |
 | `docs/RULES.md` | how a rule is written, identified, cited and retired |
+| `docs/principles.md` | what the system values when two options both look defensible |
 | `docs/foundations/` | the visual language — what a surface is made of |
 | `docs/behavior/` | the laws components inherit — how anything responds to a person |
 | `docs/patterns/` | one decided answer per recurring task |

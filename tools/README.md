@@ -26,7 +26,7 @@ npm run validate:registry   # check the registry and every contract in it agains
 
 ## `validate-rules.mjs`
 
-Validates the guideline documents — `docs/RULES.md`, the four guideline directories, `docs/components/STANDARD.md` and `docs/charter.md` §Principles — against the grammar in [`docs/RULES.md`](../docs/RULES.md).
+Validates the guideline documents — `docs/RULES.md`, `docs/principles.md`, the four guideline directories and `docs/components/STANDARD.md` — against the grammar in [`docs/RULES.md`](../docs/RULES.md).
 
 ```bash
 npm run validate:rules   # also runs inside npm test
