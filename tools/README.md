@@ -72,6 +72,24 @@ There is deliberately no `wave:` field on the registry entry. It would put the p
 
 `assets/column.png` is optional. When it is absent the page is built without it and the build says so once.
 
+## `build-guidelines-view.mjs`
+
+```bash
+npm run guidelines:view            # → build/guidelines.html and build/guidelines/
+```
+
+The other half of what the site publishes. The registry view renders the inventory — 114 component contracts — and this renders the language those are instances of: one index over the whole guideline set, and a page per document.
+
+**Every file is rendered, `Yet to fill` included.** Fifty of the sixty-one are a scope line and nothing else, and that is the honest picture of the system before alpha: a file with a scope and no rules says a decision belongs there and has not been made. A page showing only the eleven written files would answer "what is decided" and lose "what is left", which is most of what the set currently is. The index leads with the tally — rules, rules with a check, files written, files yet to fill — because readiness is what the page is read for.
+
+**Every rule gets a URL, and every citation becomes a link.** The grammar of `docs/RULES.md` exists so a contract, a skill or a test can cite `FND-COLOR-08` and have `validate:rules` fail the citation if it stops resolving. Until this existed the citation resolved only for a reader with the repository open. Each rule is an anchor on its document's page, and an ID written as bare text anywhere in the set is rewritten into a link to it — never one inside a code span, which is a specimen rather than a citation, and never one inside a tag.
+
+It reads the set through `lib/guidelines.mjs`, which reads through `validate-rules.mjs` rather than beside it: that module already knows which files are guideline files and how a rule block comes apart, and a second reader of the same grammar is a second answer waiting to disagree with the first.
+
+Links are rewritten on the way out. A guideline is written to be read in a repository, so it links to `theming.md` and to `tokens/_naming.yaml`; the first becomes the other document's page, the second becomes the file on GitHub when `package.json` records a repository, and is left alone when it does not. A link that resolves to nothing is worse than no link, and stripping them would quietly delete half the reasoning.
+
+`lib/markdown.mjs` renders the subset the documents use — paragraphs, tables, lists, fences, headings, and four inline forms. It is not a Markdown implementation: the input is written to one grammar, so the subset is closed, and a parser dependency is the kind that arrives with a hundred files to render eleven. The pages carry no script.
+
 ## `build-registry-view.mjs` and `build-component-page.mjs`
 
 The two readable views over the same data, both generated from `docs/components/registry/` and neither committed.

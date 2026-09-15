@@ -2,7 +2,7 @@
   "name": "stylos-design-system",
   "version": "0.1.0",
   "private": true,
-  "description": "Stylos Design System — documentation, canonical design tokens, and Figma Agent skill sources.",
+  "description": "Stylos Design System \u2014 documentation, canonical design tokens, and Figma Agent skill sources.",
   "repository": {
     "type": "git",
     "url": "https://github.com/arturtrifonov/stylos"
@@ -21,6 +21,7 @@
     "build:home": "node tools/build-home.mjs",
     "registry:view": "node tools/build-registry-view.mjs",
     "components:view": "node tools/build-component-page.mjs",
+    "guidelines:view": "node tools/build-guidelines-view.mjs",
     "tokens:import": "node tools/import-tokens.mjs",
     "tokens:check": "node tools/check-tokens.mjs",
     "tokens:css": "node tools/build-css.mjs",

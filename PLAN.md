@@ -216,6 +216,8 @@ A native Stylos icon set (Material Icons stays interim — Google's older set, n
 
 *Amended 2026-09-06:* a public documentation site was on this list and is no longer — the owner decided, explicitly, to publish the generated tree with the workshop inside it. SPEC 0011 is the work order; the deploy itself stays a manual act outside the plan.
 
+*Amended 2026-09-15:* the tree now also renders the guideline set — every file, `Yet to fill` included, because before alpha the site is mostly how readiness is read. It is not a stage and gates nothing; it is a view of `docs/`, rebuilt with the rest (`ARCHITECTURE.md` §3).
+
 ---
 
 ## 9. After the core set — the milestones

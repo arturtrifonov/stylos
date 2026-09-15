@@ -27,6 +27,12 @@ import { siteFacts } from "./lib/site.mjs";
 import { buildPreviewAssets } from "./lib/preview.mjs";
 import { buildViewData, renderView } from "./build-registry-view.mjs";
 import { buildPages, readLogo } from "./build-component-page.mjs";
+import {
+  buildGuidelinePages,
+  buildGuidelinesData,
+  prefixFor,
+  renderIndex,
+} from "./build-guidelines-view.mjs";
 import { renderHome, hasColumn } from "./build-home.mjs";
 import { readPlan } from "./lib/plan.mjs";
 
@@ -73,9 +79,38 @@ if (site.storybook) {
   );
 }
 
+// The guideline set — every file, `Yet to fill` included, because the site is
+// how readiness is read before alpha.
+const guidelines = buildGuidelinesData(root, { generated, repoUrl: site.repo });
+const guidelineChrome = (prefix) => ({
+  themeCss: themeCss(theme, { prefix }),
+  logo,
+  siteHeader: renderSiteHeader({
+    prefix,
+    active: "guidelines",
+    logo,
+    storybook: site.storybook,
+    figmaUrl: site.figmaMain,
+    repoUrl: site.repo,
+  }),
+  siteFooter: renderSiteFooter({ generated, version: site.version, repoUrl: site.repo }),
+});
+write("guidelines.html", renderIndex(guidelines, guidelineChrome("")));
+const guidelinePages = buildGuidelinePages(guidelines, (file) => guidelineChrome(prefixFor(file.slug)));
+for (const [relative, html] of guidelinePages) write(path.join("guidelines", relative), html);
+
 write(
   "index.html",
-  renderHome({ entries, theme, logo, generated, column: hasColumn(root), plan: readPlan(root), site })
+  renderHome({
+    entries,
+    theme,
+    logo,
+    generated,
+    column: hasColumn(root),
+    plan: readPlan(root),
+    site,
+    guidelines: guidelines.totals,
+  })
 );
 // registry.html sits at the root of build/, so its font URLs need no prefix.
 write(
@@ -107,7 +142,8 @@ const pages = buildPages(entries, {
 for (const [relative, html] of pages) write(path.join("components", relative), html);
 
 console.log(
-  `build/ — index.html, registry.html, ${pages.size - 1} component pages, assets/` +
+  `build/ — index.html, guidelines.html, registry.html, ${guidelinePages.size} guideline pages, ` +
+    `${pages.size - 1} component pages, assets/` +
     (site.storybook ? ", storybook/" : "") +
     (hasColumn(root) ? "" : "\nassets/column.png is absent; the home page is built without the capital")
 );
