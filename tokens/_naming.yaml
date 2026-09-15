@@ -101,8 +101,10 @@ collections:
 # without being listed here fails the build; so does a role listed here that
 # references the same token in every mode.
 #
-# Shadow colours are not here: Figma cannot bind a variable and change its
-# opacity, so they arrive as literals and are stored exactly as given.
+# "A different token" means a different target name. A role whose *alpha*
+# differs per mode is not covered and is not listed: `color/shadow/base` names
+# `base/black` in both modes at two very different opacities, and the check
+# does not look at that — see the open question in docs/foundations/color.md.
 mode_dependent:
   # Anchored to the ends of the ramp, so each mode takes the opposite end.
   - "color/text/static-light"
@@ -119,3 +121,8 @@ mode_dependent:
   - "color/surface/bold/success/disabled"
   - "color/surface/bold/warning/disabled"
   - "color/surface/bold/danger/disabled"
+  # Declared 2026-09-15, when Figma learned to bind a variable and reduce its
+  # opacity in one value and the shadow colours stopped being literals. The
+  # brand shadow takes the dark end of indigo in light and the light end in
+  # dark, so it reads as a tint of the brand against either background.
+  - "color/shadow/primary"

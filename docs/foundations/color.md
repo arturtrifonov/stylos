@@ -24,14 +24,6 @@ Why: the role is what survives a mode change and a rebrand; a primitive binding 
 
 Serves: PRN-04.
 
-### FND-COLOR-03 — The dark palette is authored, not derived
-
-**MUST.** The dark ramp is authored by hand; no formula generates it from the light one.
-
-Why: its ramp broadly inverts the light one — the light end of dark is the dark end of light — but the deep steps are lifted and desaturated by hand, because a literal inversion gives near-black saturated surfaces that are unusable. There is no formula behind it and none is wanted: the same transform applied to different hues does not produce equivalent results, so a rule stated in numbers would be false the first time it met a new hue group.
-
-Serves: PRN-05.
-
 ## What is never done to a colour
 
 ### FND-COLOR-04 — No colour is sampled from a reference
@@ -78,21 +70,17 @@ A `ref` such as `palette/indigo/700` therefore names a step, **not a collection*
 
 Why: undeclared divergence is indistinguishable from an import error, and the declaration is what makes the list checkable in both directions — a declared role that turns out not to diverge fails too, so the list cannot go stale.
 
-Eight are declared, for two different reasons. Three are anchored to the ends of the ramp and take the opposite end per mode: `text/static-light`, `text/static-dark`, `background/base`. Five are the bold disabled surfaces — `surface/bold/{base,primary,success,warning,danger}/disabled` — which take `slate/100` in light and `slate/200` in dark, because the step that reads as a filled-but-inert surface is not the same distance from the background in both modes. `surface/subtle/*/disabled` is `slate/25` in both and is deliberately not among them: a subtle surface sits on the background rather than over it.
+The declarations live in [`tokens/_naming.yaml`](../../tokens/_naming.yaml), each with the reason it diverges, and they are not copied here: a list restated in prose is a second copy of the contract, and this one had already gone stale — it said eight, and the ninth arrived with the shadow colours.
+
+"A different token" means a different target. A role whose *alpha* differs per mode is not covered by this rule.
 
 Checked by: `npm run tokens:check`.
 
-### FND-COLOR-10 — Shadow colours are stored as literals
-
-**MUST.** `shadow/base` and `shadow/primary` are stored exactly as given, as values rather than references.
-
-Why: Figma cannot bind a variable and change its opacity, so the colour arrives as a literal with alpha and storing it any other way would be storing something the file does not contain. They are not mode-dependent roles; they are not references at all. `effect/shadow/color/*` aliases them, so the colour is defined here once and the effect collection points at it.
-
-That literalness has a cost: `shadow/primary` currently holds indigo/700's value without referencing it, so **it will not follow a slot rebinding**. The check in [SPEC 0001](../specs/0001-token-pipeline.md) §5.6 rule 7 cannot catch this — it walks references, and there is none.
-
 ## Slots — the five colours the system has
 
-### FND-COLOR-11 — Every slot-bound role resolves into one of five slots
+A **slot** is a name a role reaches the palette *through*: five of them stand between the 110 roles and the hue groups, and rebinding one is how a product recolours Stylos. The slots are not a collection of their own — they are the indirection the role names imply, made explicit by the CSS build as `--stylos-slot-<name>-<step>` and bound in [`tools/build-css.mjs`](../../tools/build-css.mjs).
+
+### FND-COLOR-18 — Every role that takes a slot resolves into one of five hue groups
 
 **MUST.** Every semantic role except `*/special/*` resolves into one of five hue groups, and no other.
 
@@ -104,9 +92,11 @@ That literalness has a cost: `shadow/primary` currently holds indigo/700's value
 | `warning` | amber | caution |
 | `danger` | red | destructive action and error states |
 
-Why: **the slot is the unit of customization**, and it is the reason the indirection exists. Rebinding one slot moves every role that draws on it, in both modes, at once. The 64 referencing roles outside `*/special/*` draw on exactly these five groups.
+Why: **the slot is the unit of customization**, and it is the reason the indirection exists. Rebinding one slot moves every role that draws on it, in both modes, at once. All 66 roles outside `*/special/*` are references, and they draw on exactly these five groups and the two exceptions below.
 
 Exception: disabled states resolve into `base` rather than into a pale version of their own slot — `surface/bold/danger/disabled` is neutral. A disabled control is structurally inert regardless of what it would have meant enabled.
+Exception: `background/base` and `shadow/base` are anchored on the ends and name the palette group `base` — white and black — directly, taking no slot. The ground a page is painted on is white or black whatever the brand is, and so is the neutral shadow cast on it.
+Checked by: `npm run tokens:css` — a role whose binding contradicts its slot fails the build, naming the role, the slot and the group it landed in.
 
 ### FND-COLOR-12 — A hue-bound role does not follow a rebrand
 
@@ -120,6 +110,20 @@ Why: those roles carry **categorical** colour — tags, labels, statuses a produ
 | hue-bound | 44 | `surface/special/violet` | no — the hue is the meaning |
 
 They exist as 44 authored variables because Figma offers no way to generate them. If that changes they become generated; the contract does not change with it.
+
+## A translucent colour
+
+### FND-COLOR-19 — An opacity is stored on the binding, never baked into a value
+
+**MUST.** A role that takes a palette step at reduced opacity keeps the reference and stores the opacity beside it, rather than storing the colour that results.
+
+Why: the resulting colour is a copy of a palette value with the link cut — it stays behind at every rebrand and every palette change, and nothing reports it, because a check that walks references cannot see a role that has none. The two shadow colours are the worked example. They were literals for as long as Figma could not bind a variable and reduce its opacity in one value; the guideline recorded that workaround as a rule of the design language, and the rule then outlived the limitation. Figma gained the capability in September 2026, `shadow/primary` is `indigo/700` at 4% in light and `indigo/50` at 24% in dark, and rebinding the `primary` slot now moves every shadow with it.
+
+The opacity stored is the one applied at that binding, not the composed result: a step that is itself translucent contributes its own alpha where it is resolved, and storing the product would count it twice. `effect/shadow/color/*` aliases these roles, so the colour is defined here once and the effect collection points at it.
+
+No check can find a violation — a colour flattened by hand in Figma is indistinguishable from one that was always a value — so this is enforced by review. What `npm run tokens:import` does guarantee is that an opacity Figma reports on a binding is carried through as an alpha on the reference rather than dropped.
+
+Serves: PRN-04.
 
 ## The customization boundary
 
@@ -139,7 +143,7 @@ Serves: PRN-06.
 
 ## What this settles for the CSS build
 
-The contract above is what the CSS build generates from — `npm run tokens:css`, [SPEC 0007](../specs/0007-tokens-to-css.md), the first half of [Stage 5](../../PLAN.md) — and it fixes three things that are otherwise a guess.
+The contract above is what the CSS build generates from — `npm run tokens:css`, [`tools/build-css.mjs`](../../tools/build-css.mjs), the first half of [Stage 5](../../PLAN.md) — and it fixes three things that are otherwise a guess.
 
 ### FND-COLOR-14 — The palette is emitted flat, not mode-scoped
 
@@ -172,5 +176,5 @@ Why: it is an input someone used once, and it will drift. A value copied into a 
 ## Open
 
 - **`info`.** A well-known sixth status colour, used nowhere in Stylos and absent from the tokens. Adding it means adding a sixth slot, not a one-off role.
-- **Two different `base`.** The slot `base` binds to slate; the palette group `base` holds white and black. Same word, unrelated meanings, and only `background/base` currently touches the latter.
-- **Shadows and a rebrand.** `shadow/primary` is a literal, so rebinding the `primary` slot leaves the shadow behind. Either the shadow follows the slot somehow, or the system states that shadows do not participate in a rebrand.
+- **Two different `base`.** The slot `base` binds to slate; the palette group `base` holds white and black. Same word, unrelated meanings, and two roles reach the latter — `background/base` and `shadow/base`, the two exceptions on FND-COLOR-18.
+- **A mode-dependent alpha is not declared.** FND-COLOR-09 covers a role that references a different *token* per mode, and `shadow/base` references `base/black` in both while taking it at 3% in light and 83% in dark. That divergence is as invisible as the one the rule exists to catch, and nothing checks it. Either the rule widens to cover an alpha, or the system states why an opacity is different.

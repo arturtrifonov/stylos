@@ -134,7 +134,28 @@ test("a slot-bound role reaches its slot, and a special role reaches the palette
   assert.equal(d.get("--stylos-color-surface-bold-danger-disabled"), "var(--stylos-slot-base-100)");
   assert.equal(d.get("--stylos-color-surface-special-violet"), "var(--stylos-palette-light-violet-700)");
   assert.equal(d.get("--stylos-color-background-base"), "var(--stylos-palette-light-base-white)");
-  assert.equal(d.get("--stylos-color-shadow-base"), "rgb(0 0 0 / 0.03)");
+  assert.equal(
+    d.get("--stylos-color-shadow-base"),
+    "color-mix(in srgb, var(--stylos-palette-light-base-black) 3%, transparent)"
+  );
+});
+
+// A translucent role keeps its binding: the opacity is applied over the slot
+// variable, so rebinding `primary` moves every shadow with it. Before Figma
+// could carry an opacity on a binding these two were literals, and they did
+// not move.
+test("an opacity on a binding is applied over the slot, not over a copied colour", () => {
+  const light = declarations(scope(built.css, ":root {\n  color-scheme: light;"));
+  const dark = declarations(scope(built.css, `:root:not([data-theme="light"]) {`));
+
+  assert.equal(
+    light.get("--stylos-color-shadow-primary"),
+    "color-mix(in srgb, var(--stylos-slot-primary-700) 4%, transparent)"
+  );
+  assert.equal(
+    dark.get("--stylos-color-shadow-primary"),
+    "color-mix(in srgb, var(--stylos-slot-primary-50) 24%, transparent)"
+  );
 });
 
 // §8.4 — a role whose alias contradicts its slot fails, naming all three.
@@ -319,9 +340,9 @@ test("refuses to run when the canonical set does not check out, and writes nothi
   assert.equal(existsSync(path.join(empty, "dist")), false);
 });
 
-// The four rules, counted against the real set. 63 roles take a slot, 44 keep
-// their hue, `background/base` reaches the palette group of the same name and
-// two are literals — 110 in all.
+// The four rules, counted against the real set. 64 roles take a slot, 44 keep
+// their hue, and two — `background/base` and `shadow/base` — reach the palette
+// group of the same name: 110 in all, and none of them a literal.
 test("every role is accounted for by one of the four rules", () => {
   const color = collections.find((c) => c.name === "color");
   const counted = {};
@@ -329,5 +350,5 @@ test("every role is accounted for by one of the four rules", () => {
     const { why } = slotOf(p, { hasRef: Boolean(token.ref) });
     counted[why] = (counted[why] ?? 0) + 1;
   }
-  assert.deepEqual(counted, { named: 43, disabled: 11, neutral: 9, special: 44, "palette-base": 1, literal: 2 });
+  assert.deepEqual(counted, { named: 44, disabled: 11, neutral: 9, special: 44, "palette-base": 2 });
 });

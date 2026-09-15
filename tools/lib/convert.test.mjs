@@ -8,6 +8,7 @@ import {
   checkRawValues,
   checkModeParity,
   buildCollectionDocument,
+  bindingOf,
 } from "./convert.mjs";
 
 const color = (r, g, b, alpha = 1) => ({ colorSpace: "srgb", components: [r, g, b], alpha });
@@ -222,4 +223,115 @@ test("flattenDocument keeps Figma's own binding", () => {
     collection: "palette.light",
     name: "indigo/700",
   });
+});
+
+// --- composed colours: a binding that carries its own opacity --------------
+
+const composed = (name, collection, opacity) => ({
+  "com.figma.composedColor": {
+    colorArg: {
+      type: "alias",
+      alias: { targetVariableName: name, targetVariableSetName: collection },
+    },
+    opacityArg: { type: "number", value: opacity },
+  },
+});
+
+test("a composed colour is read as a binding, not as a value", () => {
+  const binding = bindingOf(composed("indigo/700", "palette.light", 4));
+
+  assert.deepEqual(binding.alias, { collection: "palette.light", name: "indigo/700" });
+  assert.deepEqual(binding.opacity, { type: "number", value: 4 });
+});
+
+test("a plain binding wins over a composed one and carries no opacity", () => {
+  const binding = bindingOf({
+    "com.figma.aliasData": {
+      targetVariableName: "slate/100",
+      targetVariableSetName: "palette.light",
+    },
+    ...composed("indigo/700", "palette.light", 4),
+  });
+
+  assert.equal(binding.alias.name, "slate/100");
+  assert.equal(binding.opacity, null);
+});
+
+test("a composed colour over a literal is a literal", () => {
+  const binding = bindingOf({
+    "com.figma.composedColor": {
+      colorArg: { type: "color", value: { hex: "#000000" } },
+      opacityArg: { type: "number", value: 3 },
+    },
+  });
+
+  assert.equal(binding.alias, null);
+  assert.equal(binding.opacity, null);
+});
+
+test("a composed colour stores the reference and the opacity of its own hop", () => {
+  const document = buildCollectionDocument({
+    name: "color",
+    layer: "semantic",
+    byMode: new Map([
+      [
+        "light",
+        new Map([
+          ["shadow/primary", rec(color(0.34, 0.32, 0.95, 0.04), { opacity: { type: "number", value: 4 } })],
+        ]),
+      ],
+      [
+        "dark",
+        new Map([
+          ["shadow/primary", rec(color(0.2, 0.21, 0.33, 0.24), { opacity: { type: "number", value: 24 } })],
+        ]),
+      ],
+    ]),
+    refs: new Map([
+      ["shadow/primary", new Map([["light", "palette/indigo/700"], ["dark", "palette/indigo/50"]])],
+    ]),
+  });
+
+  const token = document.get("tokens").get("shadow/primary");
+  // The reference is what survives a rebrand; the alpha is what makes it a
+  // shadow. The composed colour itself is derived and is not stored.
+  assert.ok(!token.has("values"));
+  assert.deepEqual([...token.get("ref")], [
+    ["light", "palette/indigo/700"],
+    ["dark", "palette/indigo/50"],
+  ]);
+  assert.deepEqual([...token.get("alpha")], [["light", 0.04], ["dark", 0.24]]);
+});
+
+test("an opacity of 100 on a binding stores no alpha", () => {
+  const document = buildCollectionDocument({
+    name: "color",
+    layer: "semantic",
+    byMode: new Map([
+      ["light", new Map([["surface/base", rec(color(0.2, 0.2, 0.9), { opacity: { type: "number", value: 100 } })]])],
+    ]),
+    refs: new Map([["surface/base", new Map([["light", "palette/indigo/700"]])]]),
+  });
+
+  assert.ok(!document.get("tokens").get("surface/base").has("alpha"));
+});
+
+test("an opacity bound to a variable fails rather than being flattened", () => {
+  const problems = empty();
+  checkRawValues(
+    "color",
+    "light",
+    new Map([
+      [
+        "shadow/primary",
+        rec(color(0.34, 0.32, 0.95, 0.04), {
+          opacity: { type: "alias", alias: { targetVariableName: "opacity/soft" } },
+        }),
+      ],
+    ]),
+    problems
+  );
+
+  assert.equal(problems.errors.length, 1);
+  assert.match(problems.errors[0], /opacity on this binding is not a number — Figma states it as "alias"/);
 });

@@ -2,6 +2,13 @@
 # When each collection was last imported, and what it did. The values are in git.
 imports:
   -
+    at: "2026-09-15 19:02Z"
+    collections:
+      -
+        collection: "color"
+        tokens: 110
+        status: "changed"
+  -
     at: "2026-09-06 15:40Z"
     collections:
       -

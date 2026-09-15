@@ -90,6 +90,20 @@ export function cssColor(hex, alpha = 1) {
   return `rgb(${r} ${g} ${b} / ${alpha})`;
 }
 
+/**
+ * An alpha applied to a reference rather than to a value.
+ *
+ * `rgb(… / a)` needs the channels, and a reference does not have them here —
+ * the whole point of `var(--stylos-slot-primary-700)` is that the channels
+ * are decided elsewhere, and by the client after a rebrand. `color-mix`
+ * against `transparent` is how an opacity composes over something unknown,
+ * so the translucent shadow colours keep their link to the slot.
+ */
+export function cssTranslucent(reference, alpha) {
+  const percent = Number((alpha * 100).toFixed(3));
+  return `color-mix(in srgb, ${reference} ${percent}%, transparent)`;
+}
+
 export function cssNumber(value, tokenPath) {
   return UNITLESS(tokenPath) ? String(value) : `${value}px`;
 }
@@ -97,14 +111,25 @@ export function cssNumber(value, tokenPath) {
 // --- Slots (SPEC 0007 §4.2) ------------------------------------------------
 
 /**
+ * The roles anchored on the ends rather than on a slot.
+ *
+ * Both name the palette group `base` — white and black — directly, and
+ * neither is a candidate for a rebrand: the page's ground is white or black
+ * whatever the brand is, and so is the neutral shadow cast on it. The slot
+ * called `base` is bound to slate and is a different thing with the same
+ * name, which is the open question in docs/foundations/color.md.
+ */
+const ANCHORED_ON_BASE = new Set(["background/base", "shadow/base"]);
+
+/**
  * Which slot a role takes, decided from its name and never from its value.
  *
  * The order matters: a literal is not a reference at all, a `special` role keeps
- * its hue by design, `background/base` reaches the palette group `base`
- * rather than the slot of the same name, and `disabled` overrides whatever
- * the rest of the path says because a disabled control is structurally inert.
- * What is left takes the slot its name states, or `base` when it states none —
- * every such role is neutral structure.
+ * its hue by design, a role in ANCHORED_ON_BASE reaches the palette group
+ * `base` rather than the slot of the same name, and `disabled` overrides
+ * whatever the rest of the path says because a disabled control is
+ * structurally inert. What is left takes the slot its name states, or `base`
+ * when it states none — every such role is neutral structure.
  *
  * @returns {{slot: string|null, why: string}}
  */
@@ -112,7 +137,7 @@ export function slotOf(tokenPath, { hasRef }) {
   const segments = tokenPath.split("/");
   if (!hasRef) return { slot: null, why: "literal" };
   if (segments.includes("special")) return { slot: null, why: "special" };
-  if (tokenPath === "background/base") return { slot: null, why: "palette-base" };
+  if (ANCHORED_ON_BASE.has(tokenPath)) return { slot: null, why: "palette-base" };
   if (segments.at(-1) === "disabled") return { slot: "base", why: "disabled" };
   for (const name of SLOT_BINDING.keys()) {
     if (segments.includes(name)) return { slot: name, why: "named" };
@@ -323,10 +348,9 @@ export function buildCss({ collections, naming }) {
 
       let value;
       if (!target) {
-        // Figma cannot bind a variable and change its opacity, so the shadow
-        // colours arrive as values. They differ per mode, so they are emitted
-        // per mode. The cost is stated in color.md: rebinding the `primary`
-        // slot leaves `shadow/primary` on the old brand colour.
+        // No role is a literal today — the shadow colours were the last two,
+        // and they became references when Figma learned to carry an opacity on
+        // a binding. Kept because a literal is still a legal token.
         value = cssColor(token.values.get(mode), token.alpha.get(mode) ?? 1);
       } else {
         if (!target.startsWith(`${paletteName}/`)) {
@@ -349,9 +373,15 @@ export function buildCss({ collections, naming }) {
           );
           continue;
         }
-        value = decision.slot
+        const reference = decision.slot
           ? `var(${property("slot", `${decision.slot}/${step}`)})`
           : `var(${property(paletteName, mode, `${group}/${step}`)})`;
+        // An alpha on the binding travels with it: the shadow colours are a
+        // palette step at 3% and 4% in light, and the opacity is applied over
+        // the slot variable rather than over a copy of the colour, so a
+        // rebrand moves the shadow with everything else.
+        const alpha = token.alpha.get(mode);
+        value = alpha === undefined ? reference : cssTranslucent(reference, alpha);
       }
 
       names.push(name);

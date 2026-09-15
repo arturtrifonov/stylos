@@ -45,7 +45,7 @@ Three separate Figma collections, each single-mode:
 
 Radius step names are already the full-word canonical size values required by [naming.md](naming.md) §4 — nothing to normalise there.
 
-`shadow/color/*` aliases `color/shadow/*`, where the colour is actually defined — as a literal with alpha, because Figma cannot bind a variable and change its opacity. The colour lives in one place; this collection points at it. See [color.md](color.md), including what that literalness costs a rebrand.
+`shadow/color/*` aliases `color/shadow/*`, where the colour is actually defined — as a palette reference carrying its own opacity (FND-COLOR-19). The colour lives in one place; this collection points at it.
 
 **Radius and border are ratified.** Seven radius steps — `zero` 0, `extra small` 2, `small` 4, `medium` 6, `large` 8, `extra large` 10, `round` 1000 — and two border widths, `width/normal` 1 and `width/thick` 2. Both are deliberate as they stand; there is nothing here to decide.
 
@@ -70,9 +70,9 @@ X is always zero, and **blur equals the Y offset** — which is why there is no 
 
 Why: a level is not one shadow, and a generator that emits one `box-shadow` layer per level produces the wrong thing at every level above 1 — `Elevation 6` is seven layers. The composition plus the two number scales above reproduce all six styles exactly, which is why nothing about a shadow is exported from Figma and the CSS build generates them rather than reading them.
 
-**Every level carries a brand tint.** `shadow/color/primary` appears in all six, so shadows are not neutral — and since it is stored as a literal rather than a reference ([color.md](color.md)), rebinding the `primary` slot leaves all six shadows on the old brand colour. That is the one real defect here.
+**Every level carries a brand tint.** `shadow/color/primary` appears in all six, so shadows are not neutral — and since it resolves through the `primary` slot with its opacity on the binding (FND-COLOR-18, FND-COLOR-19), rebinding that slot moves all six shadows with it. It did not until 2026-09-15, while the colour was stored as a literal.
 
-Checked by: `npm run tokens:css` composes the six stacks from the two scales ([SPEC 0007](../specs/0007-tokens-to-css.md) §4.5).
+Checked by: `npm run tokens:css` composes the six stacks from the two scales (SPEC 0007 §4.5).
 
 ## Values
 
@@ -81,7 +81,6 @@ Checked by: `npm run tokens:css` composes the six stacks from the two scales ([S
 ## Open
 
 - **When to use which level.** The scale is defined; what an elevation *means* — which surface sits at which level — is not, and belongs with the components that use them.
-- **Shadows and a rebrand.** `shadow/color/primary` is a literal, so a slot rebinding leaves every shadow behind. Either shadows follow the slot, or the system states that they do not participate in a rebrand ([color.md](color.md)).
-- **Two names for one thing.** The variables say `level-1`…`level-6`; the styles say `Elevation 1`…`Elevation 6`. The Title Case on the variables was fixed on 2026-09-05; the two vocabularies remain, and the styles are the half still to settle. The CSS build reads neither — it composes the six stacks from the two number scales ([SPEC 0007](../specs/0007-tokens-to-css.md) §4.5) — so this costs nothing downstream and everything in a Figma panel.
+- **Two names for one thing.** The variables say `level-1`…`level-6`; the styles say `Elevation 1`…`Elevation 6`. The Title Case on the variables was fixed on 2026-09-05; the two vocabularies remain, and the styles are the half still to settle. The CSS build reads neither — it composes the six stacks from the two number scales (SPEC 0007 §4.5) — so this costs nothing downstream and everything in a Figma panel.
 
 Border *colour* roles live in the semantic `color` collection, not here — see [color.md](color.md).

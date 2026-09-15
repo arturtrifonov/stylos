@@ -39,7 +39,9 @@ Every reference in `tokens/*.yaml` is read from `com.figma.aliasData` in the exp
 
 A token that Figma binds to another stores **only the reference**; the value is obtained by following it. Storing the resolved value beside it would be a cache of a derived fact, and a cache is a thing that goes stale.
 
-A colour Figma could not bind — it cannot bind a variable and change its opacity at once, which is how translucent shadow colours end up stored — is a literal, and is taken exactly as exported.
+A binding that carries its own opacity — Figma's composed colour, which the shadow colours use — is stored as the reference **and** an `alpha`, never as the colour that results. The alpha recorded is the opacity applied at that binding, not the composed value: `resolve()` multiplies an alpha in on every hop it passes, so a step that is itself translucent contributes its own where it is resolved. An opacity that is itself bound to a variable fails the import rather than being flattened.
+
+A colour Figma did not bind at all is a literal, and is taken exactly as exported. No colour role is one today.
 
 ## Commands
 
