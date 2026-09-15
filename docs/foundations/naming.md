@@ -399,4 +399,4 @@ Why: alphabetical order groups nothing and is a way of not deciding — it puts 
 
 Why: that is a defect, not a translation. Two names for one property mean every consumer, every document and every skill has to know which side it is on ([`PLAN.md`](../../PLAN.md) Stage 5).
 
-Behaviour comes from Zag.js ([decision 0002](../decisions/0002-frontend-stack.md)); anatomy and naming stay authored by Stylos.
+Behaviour comes from Zag.js (decision 0002); anatomy and naming stay authored by Stylos.

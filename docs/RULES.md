@@ -3,7 +3,7 @@
 Status: Confirmed
 Scope: How a rule of this system is written, identified, cited, narrowed and retired; not what any rule says.
 
-**This document is normative**, in the position [`components/STANDARD.md`](components/STANDARD.md) holds for component contracts. Built by [SPEC 0013](specs/0013-guideline-structure.md).
+**This document is normative**, in the position [`components/STANDARD.md`](components/STANDARD.md) holds for component contracts. Built by SPEC 0013.
 
 A guideline carries more reasoning than a contract does, so guidelines stay Markdown rather than moving into fields. The cost of prose is that nothing can point at it: a sentence quoted somewhere else drifts the moment it is edited, and nothing notices. The grammar below buys back what the fields would have given — an ID that can be cited, a citation that can be checked, and a build that fails when one points at nothing.
 

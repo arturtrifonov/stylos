@@ -3,7 +3,7 @@
 Status: Confirmed
 Scope: Where the icon set comes from, how it is delivered, and how an icon is used and named.
 
-What is built from the source and delivery decisions below is [SPEC 0012](../specs/0012-icon-system.md).
+What is built from the source and delivery decisions below is SPEC 0012.
 
 ## Using an icon
 

@@ -24,4 +24,4 @@ Written to the grammar in [`docs/RULES.md`](../RULES.md); rules here carry `PAT-
 | [shortcuts.md](shortcuts.md) | Yet to fill |
 | [error-pages.md](error-pages.md) | Yet to fill |
 
-**Every file is a scope line and nothing else**, and says so in its status. The set was created complete and empty by [SPEC 0013](../specs/0013-guideline-structure.md); what each pattern decides is settled per topic, not here.
+**Every file is a scope line and nothing else**, and says so in its status. The set was created complete and empty by SPEC 0013; what each pattern decides is settled per topic, not here.

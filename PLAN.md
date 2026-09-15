@@ -4,7 +4,7 @@ How the project gets from `0.1.0` to a version an agent can build a real product
 
 **This plan carries sequence, gates and estimates — not status.** What is done is answered by the repository and by git, never by a checkbox here. A plan that also tracks state has to be edited every time work lands, and then it rots between edits like any document that copies facts living elsewhere. This one changes when the *order* or the *destination* changes, which is rare and worth noticing.
 
-Not normative. Rules live in [`ARCHITECTURE.md`](ARCHITECTURE.md) and [`docs/foundations/`](docs/foundations/README.md); they win on any conflict. Things to be built get a work order in [`docs/specs/`](docs/specs/README.md).
+Not normative. Rules live in [`ARCHITECTURE.md`](ARCHITECTURE.md) and [`docs/foundations/`](docs/foundations/README.md); they win on any conflict. Things to be built are sequenced here, in §4 and §9; the `docs/specs/` work orders were retired on 2026-09-10 and nothing replaces them (`ARCHITECTURE.md` §5).
 
 **Baseline:** pre-alpha · solo owner · 5–10 h/week · `0.1.0` cut 2026-09-05
 
@@ -19,7 +19,7 @@ Two tags remain, each a decision about distribution rather than a percentage of 
 | `0.2.0` | the system renders — `@stylos/ui` builds the core set from the generated tokens | end of S5 |
 | `0.3.0` | the system is proved — a dense screen is built from Stylos by an agent, not by its author | end of S6 |
 
-`0.1.0` made the first of these decisions — the contracts for the core set are fixed and the Figma library implements them — and was cut on 2026-09-05. Its gate is [SPEC 0006](docs/specs/0006-versioning-and-release-0-1-0.md) and its notes are in `CHANGELOG.md`; neither is restated here.
+`0.1.0` made the first of these decisions — the contracts for the core set are fixed and the Figma library implements them — and was cut on 2026-09-05. Its gate is SPEC 0006 and its notes are in `CHANGELOG.md`; neither is restated here.
 
 All three fall inside the `0.1` milestone, whose checklist is §4.1. The versioning rules are [`ARCHITECTURE.md`](ARCHITECTURE.md) §9.
 
@@ -28,7 +28,7 @@ All three fall inside the `0.1` milestone, whose checklist is §4.1. The version
 | # | Requirement | Verified by |
 | --- | --- | --- |
 | 1 | `@stylos/ui` builds and renders every documented variant of the core set | the workshop build |
-| 2 | Every component's props are exactly its entry's `api` under [SPEC 0009](docs/specs/0009-stylos-ui-package.md) §3 | the compiler, against generated `props.ts` |
+| 2 | Every component's props are exactly its entry's `api` under SPEC 0009 §3 | the compiler, against generated `props.ts` |
 | 3 | No value outside `tokens.css` — no hex, no raw `px` | Stylelint |
 | 4 | The component CSS is consumable without Svelte | the export resolves and renders in a plain HTML page |
 
@@ -42,7 +42,7 @@ All three fall inside the `0.1` milestone, whose checklist is §4.1. The version
 
 **Requirement 2 is the gate this plan is now written around.** It is the only test that exercises the whole chain at once — tokens consumable, contracts complete enough to configure a component from, the artifacts self-sufficient — and it is the only way to find out whether the missing knowledge is in the artifacts or in the author's head. Built by hand, the screen always looks fine.
 
-It replaces the earlier phrasing, which assumed a person doing the building. The bar did not move; who holds the tools did, because the stated consumer on this horizon is the owner and the coding agents he runs ([ADR 0002](docs/decisions/0002-frontend-stack.md), *Constraints already set*).
+It replaces the earlier phrasing, which assumed a person doing the building. The bar did not move; who holds the tools did, because the stated consumer on this horizon is the owner and the coding agents he runs (ADR 0002, *Constraints already set*).
 
 **Not required for either:** a native icon set, mobile support, client-brand themes beyond the contract, a public documentation site, a licence, a distribution channel, or coverage of all 114 registry entries.
 
@@ -76,7 +76,7 @@ Everything below is generated from `tokens/` and the registry, or authored once.
 
 ## 3. Operating principles
 
-1. **Contract before its component.** A component's `api` is corrected to describe the web component in the same session its `.svelte` is written — per component, never as a sweep ([ADR 0002](docs/decisions/0002-frontend-stack.md), [SPEC 0009](docs/specs/0009-stylos-ui-package.md) §5).
+1. **Contract before its component.** A component's `api` is corrected to describe the web component in the same session its `.svelte` is written — per component, never as a sweep (ADR 0002, SPEC 0009 §5).
 2. **Every open question is time-boxed to one session.** Solo projects stall on decisions, not on work. If a question cannot be reasoned to a conclusion in one sitting, the conclusion is "adopt what the system already does, write it down as provisional, move on."
 3. **A stage is not finished until its gate passes.** Gates are mechanical where possible — a command exits 0 — rather than a judgement call.
 4. **Scope is cut from breadth, never from the gate.** If time runs short, fewer components — not a partially built one.
@@ -103,7 +103,7 @@ The same six waves order the package's work in §4.2 — a component is implemen
 
 ### 4.2 Stage 5 — `@stylos/ui`
 
-The work order is [SPEC 0009](docs/specs/0009-stylos-ui-package.md); the stack and the layering are [ADR 0002](docs/decisions/0002-frontend-stack.md). What assembles into what:
+The work order is SPEC 0009; the stack and the layering are ADR 0002. What assembles into what:
 
 ```
 tokens/*.yaml ─────────────tokens:css───────▶ packages/ui/dist/tokens.css
@@ -123,10 +123,10 @@ authored ─────────── packages/ui/src/components/<name>/<na
 
 Work:
 
-- Implement in the slice order of [SPEC 0009](docs/specs/0009-stylos-ui-package.md) §7 — Badge, Checkbox Input, Tooltip, Modal/Drawer, Dropdown, Select, the table, Button ×6. The first two are the pace test: after them the estimate below meets a real line of the package for the first time.
+- Implement in the slice order of SPEC 0009 §7 — Badge, Checkbox Input, Tooltip, Modal/Drawer, Dropdown, Select, the table, Button ×6. The first two are the pace test: after them the estimate below meets a real line of the package for the first time.
 - Correct each component's `api` as its contract is opened, per §3.1.
 - Add the independent CSS export to `packages/ui/package.json` — per component plus an aggregate, so a preview links one file and an application pulls only what it uses.
-- Stylelint, Vitest browser mode, Playwright for keyboard behaviour, axe on every story, all into the CI of [SPEC 0008](docs/specs/0008-development-and-release-flow.md).
+- Stylelint, Vitest browser mode, Playwright for keyboard behaviour, axe on every story, all into the CI of SPEC 0008.
 
 **Gate:** the `0.2.0` table in §1.
 **Estimate:** 10–12 weeks.
@@ -187,10 +187,10 @@ Do **not** pull: the consumer skill or `registry.json` — requirement 2 of the 
 | Dropdown's ARIA model — menu or listbox | component backlog, at its slice |
 | `disabled` contrast against 3:1, system-wide | a colour decision, before the components that carry it |
 | Which AAA criteria the system knowingly will not meet | listed once S5's axe runs measure them |
-| Component-specific token depth | provisional "none" ([SPEC 0007](docs/specs/0007-tokens-to-css.md) §9) until a component needs one |
+| Component-specific token depth | provisional "none" (SPEC 0007 §9) until a component needs one |
 | Licence, and the distribution channel that depends on it | alpha |
 
-**The guideline set is a list of open questions with a file each.** [SPEC 0013](docs/specs/0013-guideline-structure.md) created `docs/behavior/`, `docs/patterns/` and `docs/content/` complete and empty, plus nine more foundations; every file marked *Yet to fill* is something the system has not decided. They are not listed one by one here — the directory indexes are the list, and `npm run validate:rules` counts them. Filling one is per-topic work, scheduled when a component or a screen needs the answer, and the migration of the eight written foundations to the rule grammar is sequenced in that spec's §7.
+**The guideline set is a list of open questions with a file each.** SPEC 0013 created `docs/behavior/`, `docs/patterns/` and `docs/content/` complete and empty, plus nine more foundations; every file marked *Yet to fill* is something the system has not decided. They are not listed one by one here — the directory indexes are the list, and `npm run validate:rules` counts them. Filling one is per-topic work, scheduled when a component or a screen needs the answer, and the migration of the eight written foundations to the rule grammar is sequenced in that spec's §7.
 
 **Deliberately unanswered before `0.3.0`:** the project's public contact details, responsive breakpoints (desktop-only scope makes them premature), automated skill installation, and React or any other framework adapter — the layering allows one and nothing asks for it.
 
@@ -203,7 +203,7 @@ Do **not** pull: the consumer skill or `registry.json` — requirement 2 of the 
 | Risk | Signal | Countermeasure |
 | --- | --- | --- |
 | The S5 estimate is untested against real pace | slices 1–2 take materially longer than a week each | re-price after them rather than at the end |
-| A Zag machine is the wrong shape for a contract | two sessions on one pattern component | [ADR 0002](docs/decisions/0002-frontend-stack.md)'s revisit clause: behaviour by hand for that component, recorded in its contract |
+| A Zag machine is the wrong shape for a contract | two sessions on one pattern component | ADR 0002's revisit clause: behaviour by hand for that component, recorded in its contract |
 | The consumer artifacts are written by hand and drift | a preview or a `registry.json` edited rather than regenerated | they are generators or they are not built |
 | The proof screen gets skipped as "obvious" | `0.3.0` tagged without S6 | it is the gate |
 | The agent-built half quietly becomes author-assisted | hints supplied mid-run and not logged | every question the agent could not answer from the artifacts is written down; that log is the deliverable |
@@ -214,7 +214,7 @@ Do **not** pull: the consumer skill or `registry.json` — requirement 2 of the 
 
 A native Stylos icon set (Material Icons stays interim — Google's older set, not Symbols; [`icons.md`](docs/foundations/icons.md)), mobile support, writing to Figma from the repository, framework adapters beyond Svelte, and any licensing or commercial work.
 
-*Amended 2026-09-06:* a public documentation site was on this list and is no longer — the owner decided, explicitly, to publish the generated tree with the workshop inside it. [SPEC 0011](docs/specs/0011-project-website.md) is the work order; the deploy itself stays a manual act outside the plan.
+*Amended 2026-09-06:* a public documentation site was on this list and is no longer — the owner decided, explicitly, to publish the generated tree with the workshop inside it. SPEC 0011 is the work order; the deploy itself stays a manual act outside the plan.
 
 ---
 
