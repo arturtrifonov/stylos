@@ -96,33 +96,3 @@ collections:
       default:
         from: "border"
         mode: "border"
-
-# Roles allowed to reference a different token per mode. A role that does so
-# without being listed here fails the build; so does a role listed here that
-# references the same token in every mode.
-#
-# "A different token" means a different target name. A role whose *alpha*
-# differs per mode is not covered and is not listed: `color/shadow/base` names
-# `base/black` in both modes at two very different opacities, and the check
-# does not look at that — see the open question in docs/foundations/color.md.
-mode_dependent:
-  # Anchored to the ends of the ramp, so each mode takes the opposite end.
-  - "color/text/static-light"
-  - "color/text/static-dark"
-  - "color/background/base"
-  # Perceptual equivalence, not inversion: a bold disabled surface has to read
-  # as a filled surface, and slate/100 is two steps off white in light but only
-  # two steps off near-black in dark, where it would sink into the background.
-  # Declared 2026-09-05. `surface/subtle/*/disabled` is slate/25 in both modes
-  # and is deliberately not here — a subtle surface sits on the background, so
-  # the same step works in either.
-  - "color/surface/bold/base/disabled"
-  - "color/surface/bold/primary/disabled"
-  - "color/surface/bold/success/disabled"
-  - "color/surface/bold/warning/disabled"
-  - "color/surface/bold/danger/disabled"
-  # Declared 2026-09-15, when Figma learned to bind a variable and reduce its
-  # opacity in one value and the shadow colours stopped being literals. The
-  # brand shadow takes the dark end of indigo in light and the light end in
-  # dark, so it reads as a tint of the brand against either background.
-  - "color/shadow/primary"

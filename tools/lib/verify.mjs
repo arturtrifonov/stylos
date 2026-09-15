@@ -43,12 +43,14 @@ function refByMode(ref, modes, key, problems) {
 }
 
 /**
- * Every reference resolves, none loop, and mode dependence is declared in
- * both directions.
+ * Every reference resolves, and none loop.
+ *
+ * A role taking a different step per mode needs no declaration: choosing one
+ * is the point of the two-layer model (FND-COLOR-05) and the export states it
+ * plainly. The allowlist that used to sit here asked for the same fact a
+ * second time, in YAML, and failed the build when it was not repeated.
  */
-export function verifyCanonical({ collections, modeDependent }, problems) {
-  const declaredModeDependent = new Set(modeDependent);
-  const matched = new Set();
+export function verifyCanonical({ collections }, problems) {
   // Every reference is resolved in each theme the system has, not in the
   // collection's own modes: a collection without theme modes can still
   // reference one that has them, and the mode is carried by the question.
@@ -62,17 +64,10 @@ export function verifyCanonical({ collections, modeDependent }, problems) {
         if (token.values.size === 0) {
           problems.errors.push(`${key}: neither a value nor a reference.`);
         }
-        if (declaredModeDependent.has(key)) {
-          matched.add(key);
-          problems.errors.push(
-            `tokens/_naming.yaml: mode_dependent lists "${key}", which holds a literal value ` +
-              `rather than a reference. Remove it.`
-          );
-        }
         continue;
       }
 
-      const targets = refByMode(token.ref, collection.modes, key, problems);
+      refByMode(token.ref, collection.modes, key, problems);
 
       for (const theme of themes) {
         try {
@@ -81,35 +76,6 @@ export function verifyCanonical({ collections, modeDependent }, problems) {
           problems.errors.push(`${key} (${theme}): ${error.message}`);
         }
       }
-
-      const distinct = new Set(targets.values());
-      const isModeDependent = distinct.size > 1;
-      const isDeclared = declaredModeDependent.has(key);
-      if (isDeclared) matched.add(key);
-
-      if (isModeDependent && !isDeclared) {
-        problems.errors.push(
-          `tokens/_naming.yaml: "${key}" references a different token per mode ` +
-            `(${[...targets].map(([m, t]) => `${m}: ${t}`).join(", ")}) but is not listed under ` +
-            `mode_dependent. Add it there, or correct the binding in Figma.`
-        );
-      }
-      if (!isModeDependent && isDeclared) {
-        problems.errors.push(
-          `tokens/_naming.yaml: "${key}" is listed under mode_dependent but references ` +
-            `"${[...distinct][0]}" in every mode. Remove it — a stale entry silently weakens ` +
-            `the check for every other role.`
-        );
-      }
-    }
-  }
-
-  for (const key of declaredModeDependent) {
-    if (!matched.has(key)) {
-      problems.errors.push(
-        `tokens/_naming.yaml: mode_dependent lists "${key}", which is not a token in any ` +
-          `collection. Remove it, or fix the name.`
-      );
     }
   }
 }

@@ -22,13 +22,13 @@ const token = (extra = {}) => ({
  */
 function fixture(overrides = {}) {
   const palette = {
-    "base/white": token({ values: { light: "#ffffff", dark: "#ffffff" } }),
-    "base/black": token({ values: { light: "#000000", dark: "#000000" } }),
+    "mono/white": token({ values: { light: "#ffffff", dark: "#ffffff" } }),
+    "mono/black": token({ values: { light: "#000000", dark: "#000000" } }),
     "indigo/700": token({ values: { light: "#3333e6", dark: "#b3b3fa" } }),
   };
   const color = {
     "background/base": token({
-      ref: new Map([["light", "palette/base/white"], ["dark", "palette/base/black"]]),
+      ref: new Map([["light", "palette/mono/white"], ["dark", "palette/mono/black"]]),
     }),
     "surface/base": token({ ref: new Map([["default", "palette/indigo/700"]]) }),
     // Figma cannot bind a variable and change its opacity, so a translucent
@@ -52,10 +52,7 @@ function fixture(overrides = {}) {
   ];
 }
 
-const opts = (collections, modeDependent = ["color/background/base"]) => ({
-  collections,
-  modeDependent,
-});
+const opts = (collections) => ({ collections });
 
 test("a consistent set verifies, with no Figma export present", () => {
   const problems = empty();
@@ -131,7 +128,7 @@ test("a token with neither a value nor a reference fails", () => {
 
 test("a per-mode reference missing a mode fails", () => {
   const collections = fixture();
-  collections[1].tokens.get("background/base").ref = new Map([["light", "palette/base/white"]]);
+  collections[1].tokens.get("background/base").ref = new Map([["light", "palette/mono/white"]]);
 
   const problems = empty();
   verifyCanonical(opts(collections), problems);
@@ -139,44 +136,22 @@ test("a per-mode reference missing a mode fails", () => {
   assert.ok(problems.errors.some((e) => /no reference for mode "dark"/.test(e)));
 });
 
-test("a mode-dependent role missing from the list fails", () => {
-  const problems = empty();
-  verifyCanonical(opts(fixture(), []), problems);
-
-  assert.ok(
-    problems.errors.some((e) => /"color\/background\/base" references a different token per mode/.test(e))
-  );
-});
-
-test("a mode-independent role listed as mode-dependent fails", () => {
-  const problems = empty();
-  verifyCanonical(
-    opts(fixture(), ["color/background/base", "color/surface/base"]),
-    problems
-  );
-
-  assert.ok(problems.errors.some((e) => /"color\/surface\/base" is listed under mode_dependent/.test(e)));
-});
-
-test("mode_dependent naming a literal, or nothing at all, fails", () => {
-  const literal = empty();
-  verifyCanonical(opts(fixture(), ["color/background/base", "palette/base/white"]), literal);
-  assert.ok(literal.errors.some((e) => /holds a literal value rather than a reference/.test(e)));
-
-  const missing = empty();
-  verifyCanonical(opts(fixture(), ["color/background/base", "color/gone"]), missing);
-  assert.ok(missing.errors.some((e) => /mode_dependent lists "color\/gone"/.test(e)));
-});
-
 test("mixing default and per-mode references in one ref fails", () => {
   const collections = fixture();
   collections[1].tokens.get("surface/base").ref = new Map([
     ["default", "palette/indigo/700"],
-    ["dark", "palette/base/black"],
+    ["dark", "palette/mono/black"],
   ]);
 
   const problems = empty();
   verifyCanonical(opts(collections), problems);
 
   assert.ok(problems.errors.some((e) => /declares both "default" and per-mode references/.test(e)));
+});
+
+test("a role taking a different step per mode is not a problem", () => {
+  // It is what the two layers are for. Nothing declares it and nothing has to.
+  const problems = empty();
+  verifyCanonical(opts(fixture()), problems);
+  assert.deepEqual(problems.errors, []);
 });

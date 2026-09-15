@@ -29,31 +29,6 @@ export const PREFIX = "--stylos-";
 /** Where the build writes, unless told otherwise. Not committed. */
 export const OUT_DIR = "packages/ui/dist";
 
-/**
- * The five slots, and the hue group each is bound to today.
- *
- * Authored here rather than derived, and that is the point: derived from the
- * data it would agree with the data by construction and check nothing. Stated,
- * it makes docs/foundations/color.md's central claim — every role outside
- * every role outside `special` draws on exactly these five groups — a build failure when it
- * stops being true. A slot rebound in Figma to a hue outside its slot is
- * exactly what this catches.
- */
-export const SLOT_BINDING = new Map([
-  ["base", "slate"],
-  ["primary", "indigo"],
-  ["success", "green"],
-  ["warning", "amber"],
-  ["danger", "red"],
-]);
-
-/**
- * Fallback stacks. Figma has no field for one and typography.md names the
- * typefaces without them, so they are a decision, made here and listed in
- * SPEC 0007 §3. Only the fallbacks are authored — the typeface itself comes
- * from the token, so a change in Figma still lands. A family token with no
- * entry here fails the build rather than shipping with no stack.
- */
 export const FONT_FALLBACKS = new Map([
   ["family/normal", ["system-ui", "sans-serif"]],
   ["family/display", ["system-ui", "sans-serif"]],
@@ -108,49 +83,21 @@ export function cssNumber(value, tokenPath) {
   return UNITLESS(tokenPath) ? String(value) : `${value}px`;
 }
 
-// --- Slots (SPEC 0007 §4.2) ------------------------------------------------
+// --- What a role's name claims (FND-COLOR-06, FND-COLOR-08) ----------------
 
 /**
- * The roles anchored on the ends rather than on a slot.
+ * The hue group a role's name commits it to, or null where it commits to none.
  *
- * Both name the palette group `base` — white and black — directly, and
- * neither is a candidate for a rebrand: the page's ground is white or black
- * whatever the brand is, and so is the neutral shadow cast on it. The slot
- * called `base` is bound to slate and is a different thing with the same
- * name, which is the open question in docs/foundations/color.md.
+ * Only one family of names makes a claim about hue: a role with a `special`
+ * segment names the group it must land in, and that is the whole of
+ * FND-COLOR-08. Every other
+ * role is named for what it paints and may be bound to any step — moving one
+ * is a colour decision, not a contract change, so there is nothing here to
+ * check and nothing to authorise.
  */
-const ANCHORED_ON_BASE = new Set(["background/base", "shadow/base"]);
-
-/**
- * Which slot a role takes, decided from its name and never from its value.
- *
- * The order matters: a literal is not a reference at all, a `special` role keeps
- * its hue by design, a role in ANCHORED_ON_BASE reaches the palette group
- * `base` rather than the slot of the same name, and `disabled` overrides
- * whatever the rest of the path says because a disabled control is
- * structurally inert. What is left takes the slot its name states, or `base`
- * when it states none — every such role is neutral structure.
- *
- * @returns {{slot: string|null, why: string}}
- */
-export function slotOf(tokenPath, { hasRef }) {
+export function claimedGroup(tokenPath) {
   const segments = tokenPath.split("/");
-  if (!hasRef) return { slot: null, why: "literal" };
-  if (segments.includes("special")) return { slot: null, why: "special" };
-  if (ANCHORED_ON_BASE.has(tokenPath)) return { slot: null, why: "palette-base" };
-  if (segments.at(-1) === "disabled") return { slot: "base", why: "disabled" };
-  for (const name of SLOT_BINDING.keys()) {
-    if (segments.includes(name)) return { slot: name, why: "named" };
-  }
-  return { slot: "base", why: "neutral" };
-}
-
-/** The hue group a role's alias must land in, or null where nothing is implied. */
-function expectedGroup(tokenPath, { slot, why }) {
-  if (slot) return SLOT_BINDING.get(slot);
-  if (why === "special") return tokenPath.split("/").at(-1);
-  if (why === "palette-base") return "base";
-  return null;
+  return segments.includes("special") ? segments.at(-1) : null;
 }
 
 // --- The build -------------------------------------------------------------
@@ -317,34 +264,11 @@ export function buildCss({ collections, naming }) {
     const lines = [];
     const names = [];
 
-    lines.push(`  /* slots — the five colours the system has */`);
-    for (const [slot, group] of SLOT_BINDING) {
-      const groupSteps = steps(group);
-      if (groupSteps.length === 0) {
-        errors.push(
-          `slot "${slot}" is bound to the hue group "${group}", which is not in ` +
-            `${paletteName}. Correct SLOT_BINDING in tools/build-css.mjs, or the palette.`
-        );
-        continue;
-      }
-      // All 13 steps, used or not, so a client who rebinds a slot gets a
-      // complete ramp rather than the subset today's roles happen to touch.
-      for (const step of groupSteps) {
-        const name = property("slot", `${slot}/${step}`);
-        names.push(name);
-        if (record) {
-          declare(name, { synthesised: "slot", slot, step, scoped: true }, `slot/${slot}/${step}`);
-        }
-        lines.push(`  ${name}: var(${property(paletteName, mode, `${group}/${step}`)});`);
-      }
-    }
-
-    lines.push(``, `  /* semantic colour — every role, in every mode */`);
+    lines.push(`  /* semantic colour — every role, in every mode */`);
     for (const [tokenPath, token] of color.tokens) {
       const canonical = `color/${tokenPath}`;
       const name = property("color", tokenPath);
       const target = token.ref ? (token.ref.get(mode) ?? token.ref.get("default")) : null;
-      const decision = slotOf(tokenPath, { hasRef: Boolean(target) });
 
       let value;
       if (!target) {
@@ -361,25 +285,19 @@ export function buildCss({ collections, naming }) {
           continue;
         }
         const [group, step] = target.slice(paletteName.length + 1).split("/");
-        const wanted = expectedGroup(tokenPath, decision);
-        if (wanted !== null && wanted !== group) {
+        const claimed = claimedGroup(tokenPath);
+        if (claimed !== null && claimed !== group) {
           errors.push(
-            `${canonical} (${mode}) resolves into the hue group "${group}", but its name puts ` +
-              (decision.slot
-                ? `it in the "${decision.slot}" slot, which is bound to "${wanted}"`
-                : `it on "${wanted}"`) +
-              `. Either the binding in Figma is wrong, or the role has outgrown its slot — ` +
-              `see docs/foundations/color.md.`
+            `${canonical} (${mode}) resolves into the hue group "${group}", but its name says ` +
+              `"${claimed}" — a hue-named role is the hue it names (FND-COLOR-08). Either the ` +
+              `binding is wrong, or the role is misnamed.`
           );
           continue;
         }
-        const reference = decision.slot
-          ? `var(${property("slot", `${decision.slot}/${step}`)})`
-          : `var(${property(paletteName, mode, `${group}/${step}`)})`;
-        // An alpha on the binding travels with it: the shadow colours are a
-        // palette step at 3% and 4% in light, and the opacity is applied over
-        // the slot variable rather than over a copy of the colour, so a
-        // rebrand moves the shadow with everything else.
+        const reference = `var(${property(paletteName, mode, `${group}/${step}`)})`;
+        // An alpha on the binding travels with it (FND-COLOR-09): the opacity
+        // is applied over the palette reference rather than over a copy of the
+        // colour, so the step still moves the shadow.
         const alpha = token.alpha.get(mode);
         value = alpha === undefined ? reference : cssTranslucent(reference, alpha);
       }

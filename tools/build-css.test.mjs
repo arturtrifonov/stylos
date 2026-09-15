@@ -6,11 +6,11 @@ import { fileURLToPath } from "node:url";
 
 import { loadCanonical } from "./lib/tokens.mjs";
 import { readNaming } from "./check-tokens.mjs";
-import { buildCss, slug, property, cssColor, cssNumber, slotOf, SLOT_BINDING } from "./build-css.mjs";
+import { buildCss, slug, property, cssColor, cssNumber, claimedGroup } from "./build-css.mjs";
 
 // Every test here is one line of docs/specs/0007-tokens-to-css.md §8. The
 // build runs against the real token set, because the checks worth having —
-// a slug collision, a role bound outside its slot — are checks on what Figma
+// a slug collision, a hue-named role bound off its hue — are checks on what Figma
 // actually contains, and a fixture would only ever confirm the fixture.
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -89,7 +89,7 @@ test("every number is px except a font weight, and values pass through verbatim"
 test("a colour is hex, and rgb() only where alpha is under 1", () => {
   assert.equal(cssColor("#5752F1"), "#5752f1");
   assert.equal(cssColor("#000000", 0.03), "rgb(0 0 0 / 0.03)");
-  assert.equal(declarations(built.css).get("--stylos-palette-light-base-white"), "#ffffff");
+  assert.equal(declarations(built.css).get("--stylos-palette-light-mono-white"), "#ffffff");
 });
 
 test("a font family carries the authored fallback stack, and the typeface comes from the token", () => {
@@ -108,72 +108,47 @@ test("a string token with no authored stack fails rather than shipping without o
   assert.match(buildCss({ collections: extra, naming }).errors.join("\n"), /font\/family\/serif is a string/);
 });
 
-// --- §4.2, the slot layer --------------------------------------------------
+// --- §4.2, what a role's name claims ---------------------------------------
 
-test("a role takes the slot its name states, and disabled overrides that", () => {
-  assert.deepEqual(slotOf("surface/bold/danger/default", { hasRef: true }), { slot: "danger", why: "named" });
-  assert.deepEqual(slotOf("surface/bold/danger/disabled", { hasRef: true }), { slot: "base", why: "disabled" });
-  assert.deepEqual(slotOf("surface/special/violet", { hasRef: true }), { slot: null, why: "special" });
-  assert.deepEqual(slotOf("background/base", { hasRef: true }), { slot: null, why: "palette-base" });
-  assert.deepEqual(slotOf("shadow/primary", { hasRef: false }), { slot: null, why: "literal" });
-  // Neutral structure names no slot and belongs to base all the same.
-  assert.deepEqual(slotOf("text/secondary", { hasRef: true }), { slot: "base", why: "neutral" });
+test("only a hue-named role claims a hue; every other name claims none", () => {
+  assert.equal(claimedGroup("surface/special/violet"), "violet");
+  assert.equal(claimedGroup("text/special/amber"), "amber");
+  assert.equal(claimedGroup("surface/bold/danger/default"), null);
+  assert.equal(claimedGroup("surface/bold/danger/disabled"), null);
+  assert.equal(claimedGroup("background/base"), null);
+  assert.equal(claimedGroup("text/secondary"), null);
 });
 
-test("all thirteen steps of every slot are emitted, used or not", () => {
-  const light = scope(built.css, ":root {\n  color-scheme: light;");
-  for (const slot of SLOT_BINDING.keys()) {
-    const steps = [...light.matchAll(new RegExp(`--stylos-slot-${slot}-([0-9]+):`, "g"))];
-    assert.equal(steps.length, 13, `${slot} has ${steps.length} steps`);
-  }
-});
-
-test("a slot-bound role reaches its slot, and a special role reaches the palette", () => {
+test("every role reaches the palette step its binding names", () => {
   const d = declarations(scope(built.css, ":root {\n  color-scheme: light;"));
-  assert.equal(d.get("--stylos-color-surface-bold-primary-default"), "var(--stylos-slot-primary-700)");
-  assert.equal(d.get("--stylos-color-surface-bold-danger-disabled"), "var(--stylos-slot-base-100)");
+  assert.equal(d.get("--stylos-color-surface-bold-primary-default"), "var(--stylos-palette-light-indigo-700)");
+  assert.equal(d.get("--stylos-color-surface-bold-danger-disabled"), "var(--stylos-palette-light-slate-100)");
   assert.equal(d.get("--stylos-color-surface-special-violet"), "var(--stylos-palette-light-violet-700)");
-  assert.equal(d.get("--stylos-color-background-base"), "var(--stylos-palette-light-base-white)");
+  assert.equal(d.get("--stylos-color-background-base"), "var(--stylos-palette-light-mono-white)");
   assert.equal(
     d.get("--stylos-color-shadow-base"),
-    "color-mix(in srgb, var(--stylos-palette-light-base-black) 3%, transparent)"
+    "color-mix(in srgb, var(--stylos-palette-light-mono-black) 3%, transparent)"
   );
 });
 
-// A translucent role keeps its binding: the opacity is applied over the slot
-// variable, so rebinding `primary` moves every shadow with it. Before Figma
-// could carry an opacity on a binding these two were literals, and they did
-// not move.
-test("an opacity on a binding is applied over the slot, not over a copied colour", () => {
+// A translucent role keeps its binding (FND-COLOR-09): the opacity is applied
+// over the palette reference, not over a copy of the colour.
+test("an opacity on a binding is applied over the reference, not over a copied colour", () => {
   const light = declarations(scope(built.css, ":root {\n  color-scheme: light;"));
   const dark = declarations(scope(built.css, `:root:not([data-theme="light"]) {`));
 
   assert.equal(
     light.get("--stylos-color-shadow-primary"),
-    "color-mix(in srgb, var(--stylos-slot-primary-700) 4%, transparent)"
+    "color-mix(in srgb, var(--stylos-palette-light-indigo-700) 4%, transparent)"
   );
   assert.equal(
     dark.get("--stylos-color-shadow-primary"),
-    "color-mix(in srgb, var(--stylos-slot-primary-50) 24%, transparent)"
+    "color-mix(in srgb, var(--stylos-palette-dark-indigo-50) 24%, transparent)"
   );
 });
 
-// §8.4 — a role whose alias contradicts its slot fails, naming all three.
-test("a role rebound to a hue outside its slot fails, naming the role, the slot and the group", () => {
-  const rebound = collections.map((c) => {
-    if (c.name !== "color") return c;
-    const tokens = new Map(c.tokens);
-    const role = tokens.get("surface/bold/danger/default");
-    tokens.set("surface/bold/danger/default", { ...role, ref: new Map([["default", "palette/orange/700"]]) });
-    return { ...c, tokens };
-  });
-
-  const message = buildCss({ collections: rebound, naming }).errors.join("\n");
-  assert.match(message, /color\/surface\/bold\/danger\/default \(light\) resolves into the hue group "orange"/);
-  assert.match(message, /"danger" slot, which is bound to "red"/);
-});
-
-test("a special role rebound off its own hue fails too — the hue is the meaning", () => {
+// §8.4 — a hue-named role bound off its hue fails, naming both.
+test("a hue-named role rebound off its own hue fails — the hue is the meaning", () => {
   const rebound = collections.map((c) => {
     if (c.name !== "color") return c;
     const tokens = new Map(c.tokens);
@@ -183,40 +158,26 @@ test("a special role rebound off its own hue fails too — the hue is the meanin
   });
   assert.match(
     buildCss({ collections: rebound, naming }).errors.join("\n"),
-    /color\/surface\/special\/violet \(light\) resolves into the hue group "indigo".*on "violet"/s
+    /color\/surface\/special\/violet \(light\) resolves into the hue group "indigo".*says "violet"/s
   );
-});
-
-// §8.9 — a rebrand is the slot bindings and nothing else.
-test("rebinding a slot moves every slot-bound role and no special role", () => {
-  const light = declarations(scope(built.css, ":root {\n  color-scheme: light;"));
-  const throughPrimary = [...light].filter(([, v]) => v.includes("--stylos-slot-primary-"));
-  assert.ok(throughPrimary.length > 0);
-  // Nothing slot-bound names a palette step, so redeclaring the 13 slot
-  // properties is the whole of the change.
-  for (const [name, value] of light) {
-    if (!name.includes("-special-")) continue;
-    assert.match(value, /--stylos-palette-(light|dark)-/, `${name} should name its hue directly`);
-  }
 });
 
 // --- §4.3 and §4.4, the two scopes and the switch --------------------------
 
 // §8.6 — the light and dark scopes declare the same names.
-test("both scopes declare all 110 roles and all 65 slots, complete both times", () => {
+test("both scopes declare all 110 roles, complete both times", () => {
   const light = [...declarations(scope(built.css, ":root {\n  color-scheme: light;")).keys()];
   const dark = [...declarations(scope(built.css, ':root[data-theme="dark"] {')).keys()];
 
   assert.deepEqual(light, dark);
   assert.equal(light.filter((n) => n.startsWith("--stylos-color-")).length, 110);
-  assert.equal(light.filter((n) => n.startsWith("--stylos-slot-")).length, 65);
 });
 
 test("a role that does not vary is still declared in dark, so an override cannot inherit into it", () => {
   const dark = declarations(scope(built.css, ':root[data-theme="dark"] {'));
-  assert.equal(dark.get("--stylos-color-surface-bold-primary-default"), "var(--stylos-slot-primary-700)");
+  assert.equal(dark.get("--stylos-color-surface-bold-primary-default"), "var(--stylos-palette-dark-indigo-700)");
   // And one that does vary takes the other step.
-  assert.equal(dark.get("--stylos-color-surface-bold-primary-disabled"), "var(--stylos-slot-base-200)");
+  assert.equal(dark.get("--stylos-color-surface-bold-primary-disabled"), "var(--stylos-palette-dark-slate-200)");
 });
 
 // §8.8 — an explicit choice beats the system preference in both directions.
@@ -285,7 +246,6 @@ test("the manifest records where a name came from, because the name rule is not 
   const p = built.manifest.properties;
   assert.equal(p["--stylos-font-line-height-text-1_000"].token, "font/line height/text/1_000");
   assert.equal(p["--stylos-palette-dark-indigo-700"].mode, "dark");
-  assert.equal(p["--stylos-slot-primary-700"].synthesised, "slot");
   assert.equal(p["--stylos-shadow-elevation-3"].synthesised, "shadow");
 });
 
@@ -340,15 +300,11 @@ test("refuses to run when the canonical set does not check out, and writes nothi
   assert.equal(existsSync(path.join(empty, "dist")), false);
 });
 
-// The four rules, counted against the real set. 64 roles take a slot, 44 keep
-// their hue, and two — `background/base` and `shadow/base` — reach the palette
-// group of the same name: 110 in all, and none of them a literal.
-test("every role is accounted for by one of the four rules", () => {
+// Counted against the real set: 44 roles name a hue and must land on it, 66
+// name what they paint and may land anywhere — 110 in all.
+test("only the hue-named roles carry a claim about their hue", () => {
   const color = collections.find((c) => c.name === "color");
-  const counted = {};
-  for (const [p, token] of color.tokens) {
-    const { why } = slotOf(p, { hasRef: Boolean(token.ref) });
-    counted[why] = (counted[why] ?? 0) + 1;
-  }
-  assert.deepEqual(counted, { named: 44, disabled: 11, neutral: 9, special: 44, "palette-base": 2 });
+  const claimed = [...color.tokens.keys()].filter((p) => claimedGroup(p) !== null);
+  assert.equal(claimed.length, 44);
+  assert.equal(color.tokens.size, 110);
 });

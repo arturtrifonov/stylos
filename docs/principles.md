@@ -49,7 +49,7 @@ Not licence for an unexplained number: what was decided by eye says so, and says
 
 ### PRN-06 — The character is not configurable
 
-**MUST.** A product supplies its content, its colour through the slots, and the properties a component publishes; anatomy, scale, typography logic, interaction patterns and proportional character stay Stylos's.
+**MUST.** A product supplies its content, its colour through the semantic roles, and the properties a component publishes; anatomy, scale, typography logic, interaction patterns and proportional character stay Stylos's.
 
 Why: everything below the boundary can be changed for everyone at once, and nothing below it is anyone else's to have depended on. Where the line runs is [charter §The customization boundary](charter.md#the-customization-boundary).
 

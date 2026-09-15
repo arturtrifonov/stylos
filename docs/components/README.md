@@ -53,3 +53,7 @@ Related-but-separate components share a name prefix — `Button Base`, `Button O
 Figma stays the place for StateDiagrams, PropTables, anatomy diagrams and variant matrices — spatial documentation that text reproduces badly. That is a question of medium, not of authority: the contract those diagrams illustrate is still authored here. Don't duplicate a PropTable that already renders correctly in Figma — link to it.
 
 Which medium is authoritative for what is settled: the contract is the registry entry, Figma holds the values and the spatial documentation, and the generated page is a rendering of the first ([`STANDARD.md`](STANDARD.md)).
+
+## Open
+
+- **A rule about overriding a component's internals has no home.** It read, in `foundations/color.md` until 2026-09-15: *a component's inner layers are recoloured only through the properties the component publishes*, because an override inside an instance is invisible to every consumer of that component's API and is silently kept — or silently undone — the next time the component changes. It is not a rule about colour; it is a rule about using a component, and it generalises past colour to every property an instance can be overridden on. [`STANDARD.md`](STANDARD.md) is scoped to what a contract contains and when a component is ready, so it does not take it either. Either that scope widens to cover using a component, or the rule becomes the first entry of a guideline file that does not exist yet.

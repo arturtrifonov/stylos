@@ -238,3 +238,28 @@ test("the grammar takes the two ID shapes and nothing else", () => {
     assert.equal(ID.test(id), false, id);
   }
 });
+
+test("RETIRED is a level, so a withdrawn rule is still a rule block", () => {
+  const document = {
+    file: "docs/behavior/focus.md",
+    area: "BEH",
+    topic: "FOCUS",
+    header: true,
+    text: [
+      "# Focus",
+      "",
+      "Status: Confirmed",
+      "Scope: fixture",
+      "",
+      "### BEH-FOCUS-01 — Focus returns to the invoker",
+      "",
+      "**RETIRED** 2026-09-15. Focus used to return to the element that opened an overlay.",
+      "",
+      "Why: the pattern it protected is now decided per overlay.",
+      "",
+    ].join("\n"),
+  };
+  const result = check([document]);
+  assert.deepEqual(result.errors, []);
+  assert.equal(parseDocument(document.text).rules[0].level, "RETIRED");
+});

@@ -131,13 +131,13 @@ test("a reference differing per mode is kept per mode", () => {
       ["dark", new Map([["background/base", rec(color(0, 0, 0))]])],
     ]),
     refs: new Map([
-      ["background/base", new Map([["light", "palette/base/white"], ["dark", "palette/base/black"]])],
+      ["background/base", new Map([["light", "palette/mono/white"], ["dark", "palette/mono/black"]])],
     ]),
   });
 
   assert.deepEqual(
     [...document.get("tokens").get("background/base").get("ref")],
-    [["light", "palette/base/white"], ["dark", "palette/base/black"]]
+    [["light", "palette/mono/white"], ["dark", "palette/mono/black"]]
   );
 });
 
@@ -163,13 +163,13 @@ test("a literal keeps its values, and omits empty optional keys", () => {
     name: "palette",
     layer: "primitive",
     byMode: new Map([
-      ["light", new Map([["base/black", rec(color(0, 0, 0), { id: "VariableID:1", scopes: [] })]])],
-      ["dark", new Map([["base/black", rec(color(0, 0, 0), { id: "VariableID:2", scopes: [] })]])],
+      ["light", new Map([["mono/black", rec(color(0, 0, 0), { id: "VariableID:1", scopes: [] })]])],
+      ["dark", new Map([["mono/black", rec(color(0, 0, 0), { id: "VariableID:2", scopes: [] })]])],
     ]),
     refs: new Map(),
   });
 
-  const token = document.get("tokens").get("base/black");
+  const token = document.get("tokens").get("mono/black");
   assert.deepEqual([...token.get("values")], [["light", "#000000"], ["dark", "#000000"]]);
   assert.ok(!token.has("ref"));
   assert.ok(!token.has("scopes"));

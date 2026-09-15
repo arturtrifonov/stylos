@@ -132,7 +132,7 @@ export function themeModes(collections) {
  * stale. References chain, and the mode is carried by the *question*, not by
  * the token: `effect/shadow/color/base` does not vary by theme itself, but
  * what it points at does, so asking for it in dark mode resolves
- * `effect -> color/shadow/base -> dark -> palette/base/white`.
+ * `effect -> color/shadow/base -> dark -> palette/mono/black`.
  *
  * An `alpha` on any hop multiplies into the result, which is how a colour
  * reused at reduced opacity keeps its link to the palette.

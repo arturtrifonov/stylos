@@ -326,7 +326,7 @@ export function checkCollectionIdentity(staged, knownIds) {
  * **A reference must stay within its own mode**, where the target names one.
  * Figma allows a dark-mode variable to bind into `palette.light`, and the
  * 2026-08-22 export contains one such binding. It is harmless only because
- * `base/black` happens to be identical in both palettes — 4 of 288 steps are.
+ * `mono/black` happens to be identical in both palettes — 4 of 288 steps are.
  * On any other step it would pull a light-palette colour into the dark theme
  * in silence. So it fails: the binding is wrong in Figma.
  *
@@ -698,7 +698,7 @@ async function main(root, argv) {
   const written = loadCanonical(root);
 
   verifyCanonical(
-    { collections: written, modeDependent: naming.get("mode_dependent") ?? [] },
+    { collections: written },
     after
   );
   for (const error of after.errors) console.error(`FAIL  ${error}`);
