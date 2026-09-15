@@ -88,13 +88,14 @@ Checked by: `npm run validate:rules`.
 
 ### RUL-04 — The statement opens with its level
 
-**MUST.** The first word of the statement is **MUST**, **SHOULD** or **MAY**, in bold, in the RFC 2119 sense, and no other word carries a level.
+**MUST.** The first word of the statement is **MUST**, **SHOULD**, **MAY** or **RETIRED**, in bold, and the first three carry their RFC 2119 sense; no other word carries a level.
 
 | Level | Means |
 | --- | --- |
 | **MUST** | a violation is a defect; a build or a review that finds one does not pass |
 | **SHOULD** | the default; departing from it needs a stated reason at the point of departure |
 | **MAY** | permitted; stated because someone would otherwise assume it was not |
+| **RETIRED** | this was a rule and is not one now — the block stays so the ID still answers (RUL-14) |
 
 Why: "should probably", "avoid", "prefer" and "never" read as four strengths and are worth one, and which one is left to the reader — who is usually deciding whether their exception is allowed.
 
@@ -188,15 +189,29 @@ The fix for a real contradiction is one of two things, and never a third: amend 
 
 Why: a reused number makes an old citation resolve to a rule that is not the one it meant — which is worse than a citation that fails, because nothing anywhere reports it.
 
-Gaps in the sequence are normal and mean a rule was deleted.
+There are no gaps in the sequence: a retired rule keeps its number and its place, marked **RETIRED** (RUL-14).
+
+Exception: until the guideline set's first release the numbering of a file may be compacted, retirements and all, because nothing outside the repository has cited it yet. `foundations/color.md` was compacted on 2026-09-15.
 
 ### RUL-14 — A change of meaning is a new rule
 
-**MUST.** Rewording that keeps the meaning keeps the ID; a change of what the rule requires is a new rule with a new ID, and the old one is deleted.
+**MUST.** Rewording that keeps the meaning keeps the ID; a change of what the rule requires is a new rule with a new ID, and the old one is retired.
 
 Why: everything citing the old ID was checked against the old meaning. Editing meaning in place would leave every one of those citations pointing at something it was never reviewed against, and all of them would still resolve.
 
-A deleted rule leaves no trace and no tombstone — git history is the record, as it already is for an abandoned decision.
+**A retired rule stays in its file**, in place, with its number, its statement in the past tense, the date it was retired and the reason:
+
+```markdown
+### FND-COLOR-09 — A role that diverges per mode is declared
+
+**RETIRED** 2026-09-15. A role resolving to a different token per mode had to be declared in `tokens/_naming.yaml`.
+
+Why: it asked for a fact the export already stated, and failed the build when nobody repeated it.
+```
+
+Why it stays rather than vanishing: someone is reading the rule somewhere this repository cannot see — in a review comment, a commit message, a contract written last month — and the question they arrive with is whether it still holds. A file that has never heard of the ID answers that it was never a rule. A retired block answers what it was, that it is over, and when.
+
+Checked by: `npm run validate:rules` — **RETIRED** is a level like the other three, so a retired block is still a rule block and still needs its reasoning.
 
 ---
 

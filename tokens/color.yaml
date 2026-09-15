@@ -1,9 +1,9 @@
 # GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export.
-# Imported 2026-09-05 22:22Z from Stylos / Styles.
+# Imported 2026-09-15 20:34Z from Stylos / Styles.
 collection: "color"
 layer: "semantic"
 source:
-  imported: "2026-09-05 22:22Z"
+  imported: "2026-09-15 20:34Z"
   figma_file: "Stylos / Styles"
   figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
 modes:
@@ -784,8 +784,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      light: "palette/base/white"
-      dark: "palette/base/black"
+      light: "palette/mono/white"
+      dark: "palette/mono/black"
   "background/secondary":
     type: "color"
     id: "VariableID:1943:1278"
@@ -879,18 +879,17 @@ tokens:
   "shadow/base":
     type: "color"
     id: "VariableID:2233:3914"
-    values:
-      light: "#000000"
-      dark: "#ffffff"
+    ref:
+      default: "palette/mono/black"
     alpha:
       light: 0.03
-      dark: 0.03
+      dark: 0.83
   "shadow/primary":
     type: "color"
     id: "VariableID:2233:3913"
-    values:
-      light: "#5752f1"
-      dark: "#b2bff8"
+    ref:
+      light: "palette/indigo/700"
+      dark: "palette/indigo/50"
     alpha:
       light: 0.04
-      dark: 0.04
+      dark: 0.24

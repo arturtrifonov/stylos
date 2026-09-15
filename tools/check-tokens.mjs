@@ -126,7 +126,7 @@ export function runCheck({ root, strict = false }) {
   }
 
   verifyCanonical(
-    { collections, modeDependent: naming.get("mode_dependent") ?? [] },
+    { collections },
     problems
   );
 

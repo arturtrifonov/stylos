@@ -144,7 +144,7 @@ Why: that is the whole rule — the kinds below are where those roles come from,
 
 | Kind | Values | For |
 | --- | --- | --- |
-| semantic slots | `base`, `primary`, `success`, `warning`, `danger` | meaning — a primary action, a destructive one |
+| semantic tones | `base`, `primary`, `success`, `warning`, `danger` | meaning — a primary action, a destructive one |
 | neutral hierarchy | `secondary`, `tertiary`, `inverted` | rank within neutral structure |
 | palette hues by name | `slate`, `amber`, `violet`, … | categorical colour, per the hue-bound roles in [`color.md`](color.md) |
 | a mirrored role family | that family's role names, all of them | a component drawn as an extension of something that already has a colour, rather than as an object of its own |

@@ -1,9 +1,9 @@
 # GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export.
-# Imported 2026-09-05 22:22Z from Stylos / Styles.
+# Imported 2026-09-15 20:34Z from Stylos / Styles.
 collection: "palette"
 layer: "primitive"
 source:
-  imported: "2026-09-05 22:22Z"
+  imported: "2026-09-15 20:34Z"
   figma_file: "Stylos / Styles"
   figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
 modes:
@@ -2298,7 +2298,7 @@ tokens:
     values:
       light: "#410014"
       dark: "#fff1f2"
-  "base/white":
+  "mono/white":
     type: "color"
     id:
       light: "VariableID:2254:8108"
@@ -2306,7 +2306,7 @@ tokens:
     values:
       light: "#ffffff"
       dark: "#ffffff"
-  "base/black":
+  "mono/black":
     type: "color"
     id:
       light: "VariableID:2254:8109"

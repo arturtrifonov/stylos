@@ -3,10 +3,10 @@
 //
 // The raw export is never stored: it is read once, at import, and what
 // survives is tokens/*.yaml. Checks that need the raw floats — 8-bit
-// representability, colour space — therefore run here and nowhere else. The
-// alias contract is verified separately, against the canonical set, because
-// `ref` and `values` are deliberately redundant and can check each other
-// (ADR 0007 §5).
+// representability, colour space, an opacity that is not a number — therefore
+// run here and nowhere else. The alias contract is verified separately, by
+// lib/verify.mjs against the canonical set, because a reference stores no
+// value of its own and can only be checked by following it.
 
 const SUPPORTED_COLOR_SPACES = new Set(["srgb"]);
 
@@ -17,6 +17,54 @@ const ALPHA_TOLERANCE = 1 / 4; // in units of 1/1000
 
 export const isColor = (value) =>
   value !== null && typeof value === "object" && "components" in value;
+
+/**
+ * What a variable is bound to, and the opacity applied on top of it.
+ *
+ * Figma states a binding in one of two shapes. `com.figma.aliasData` is a
+ * plain one: this variable *is* that variable. `com.figma.composedColor` is a
+ * binding carrying its own opacity — a capability Figma gained in September
+ * 2026, and the reason the shadow colours stopped being literals. Both are
+ * references, and a composed colour is not a special kind of value: it is a
+ * reference plus one number.
+ *
+ * The opacity returned is **the factor applied at this hop**, not the
+ * composed result. `$value.alpha` is the result — the target's own alpha
+ * multiplied by this opacity — and storing that would double-count the day a
+ * role is bound to a palette step that is itself translucent, because
+ * `resolve()` already multiplies an alpha in on every hop it passes.
+ *
+ * @returns {{alias: {collection: string, name: string}|null, opacity: object|null}}
+ */
+export function bindingOf(extensions) {
+  const plain = extensions["com.figma.aliasData"];
+  if (plain) {
+    return {
+      alias: { collection: plain.targetVariableSetName, name: plain.targetVariableName },
+      opacity: null,
+    };
+  }
+
+  const composed = extensions["com.figma.composedColor"];
+  const arg = composed?.colorArg;
+  if (arg?.type === "alias") {
+    return {
+      alias: { collection: arg.alias.targetVariableSetName, name: arg.alias.targetVariableName },
+      // Taken raw. An opacity that is not a plain number cannot be stored as
+      // an alpha, and checkRawValues is where that is said.
+      opacity: composed.opacityArg ?? null,
+    };
+  }
+
+  // A composed colour whose colour is a literal is a literal with an alpha,
+  // and the literal path already handles it from $value.
+  return { alias: null, opacity: null };
+}
+
+/** The opacity of a composed binding as a percentage, or null if it has none. */
+export function opacityPercent(record) {
+  return record?.opacity?.type === "number" ? record.opacity.value : null;
+}
 
 /**
  * Walk a DTCG document into an ordered Map of token path -> record. A node is
@@ -34,7 +82,7 @@ export function flattenDocument(document) {
       const segments = [...prefix, key];
       if ("$type" in value && "$value" in value) {
         const extensions = value.$extensions ?? {};
-        const alias = extensions["com.figma.aliasData"];
+        const binding = bindingOf(extensions);
         tokens.set(segments.join("/"), {
           type: value.$type,
           value: value.$value,
@@ -42,9 +90,10 @@ export function flattenDocument(document) {
           scopes: extensions["com.figma.scopes"] ?? null,
           // Figma records what a variable is bound to. This is the alias
           // graph itself, straight from the file — not something to infer.
-          alias: alias
-            ? { collection: alias.targetVariableSetName, name: alias.targetVariableName }
-            : null,
+          alias: binding.alias,
+          // The opacity applied on top of that binding, where there is one,
+          // exactly as Figma states it — see bindingOf.
+          opacity: binding.opacity,
         });
       } else {
         walk(value, segments);
@@ -88,6 +137,19 @@ export function alphaOf(value) {
  */
 export function checkRawValues(collectionName, mode, tokens, problems) {
   for (const [tokenPath, record] of tokens) {
+    // An opacity bound to a number variable rather than typed in place has no
+    // canonical form here: `alpha` is a number, and a reference to a number
+    // variable is not one. It fails rather than being flattened, because
+    // flattening it would drop the binding in silence.
+    if (record.opacity && record.opacity.type !== "number") {
+      problems.errors.push(
+        `${collectionName}/${tokenPath} (${mode}): the opacity on this binding is not a ` +
+          `number — Figma states it as "${record.opacity.type}". A composed colour is stored ` +
+          `as a reference plus an alpha, and an alpha cannot itself be a reference: type the ` +
+          `opacity in place in Figma, or the canonical form needs extending first.`
+      );
+    }
+
     if (!isColor(record.value)) continue;
 
     const space = record.value.colorSpace ?? "(unstated)";
@@ -148,10 +210,10 @@ export function checkModeParity(collectionName, byMode, problems) {
 /**
  * Build one canonical collection document.
  *
- * A token that Figma binds to another variable stores its **reference and
- * nothing else**. The resolved value is not written beside it: it is a
- * derived fact, and a stored copy of a derived fact is a cache that goes
- * stale. Following the reference is how a value is obtained.
+ * A token that Figma binds to another variable stores its **reference**, and
+ * an `alpha` where the binding carries one. The resolved value is not written
+ * beside it: it is a derived fact, and a stored copy of a derived fact is a
+ * cache that goes stale. Following the reference is how a value is obtained.
  *
  * `id` is stored per mode where the modes hold different variables, which is
  * the case for palette: its two modes come from two Figma collections.
@@ -204,10 +266,22 @@ export function buildCollectionDocument({ name, layer, byMode, refs, imported, f
         "ref",
         distinct.size === 1 ? new Map([["default", [...distinct][0]]]) : perMode
       );
+
+      // A composed colour is a reference *and* an alpha, and both are stored:
+      // the reference is what survives a rebrand, the alpha is what makes the
+      // colour a shadow rather than a fill. `resolve()` multiplies an alpha in
+      // on every hop, so what belongs here is this hop's own opacity.
+      const opacities = new Map();
+      for (const mode of modes) {
+        const percent = opacityPercent(byMode.get(mode).get(tokenPath));
+        if (percent === null) continue;
+        const alpha = Math.round((percent / 100) * 1000) / 1000;
+        if (alpha !== 1) opacities.set(mode, alpha);
+      }
+      if (opacities.size) entry.set("alpha", opacities);
     } else {
-      // A literal: the value is the token. Figma cannot bind a variable and
-      // change its opacity, so a translucent colour arrives as a literal —
-      // it is taken as given, not second-guessed against the palette.
+      // A literal: the value is the token, taken as given and not
+      // second-guessed against the palette.
       const values = new Map();
       const alphas = new Map();
       for (const mode of modes) {

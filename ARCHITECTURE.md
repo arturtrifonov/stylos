@@ -25,7 +25,7 @@ Every domain has exactly one authoritative source. When two places disagree, the
 | System structure, and the architectural decisions behind it | this document | `ARCHITECTURE.md` | by hand |
 | The queue — what is worked when | Markdown | `PLAN.md` §4 and §9 | by hand, read by `tools/lib/plan.mjs`, never copied — see §8 |
 | Canonical tokens | *derived* | `tokens/` | `tools/import-tokens.mjs`, from a Figma export plus `tokens/_naming.yaml` |
-| Figma-to-Stylos naming, slots, mode rules | YAML | `tokens/_naming.yaml` | by hand, validated by `npm run tokens:check` |
+| Figma-to-Stylos collection and mode naming | YAML | `tokens/_naming.yaml` | by hand, validated by `npm run tokens:check` |
 | Compiled skill document | *derived* | `skills/dist/` | `tools/build-skills.mjs` |
 | Published documentation | *derived* | `build/` | `tools/build-site.mjs`; uploaded by hand — see §4 |
 

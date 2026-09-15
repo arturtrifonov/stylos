@@ -28,7 +28,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const STATUSES = ["Yet to fill", "Partial", "Confirmed"];
-export const LEVELS = ["MUST", "SHOULD", "MAY"];
+// RETIRED is a level like the other three: a rule that has been withdrawn keeps
+// its block, so the ID still answers when someone arrives with it (RUL-14).
+export const LEVELS = ["MUST", "SHOULD", "MAY", "RETIRED"];
 
 // docs/RULES.md RUL-02. Two shapes: the three single-file areas carry no topic
 // segment, because the file is the topic.
@@ -141,7 +143,7 @@ export function parseDocument(text) {
   for (const rule of rules) {
     const body = rule.body;
     const first = body.find((line) => line.trim() !== "") ?? "";
-    const level = /^\*\*(MUST|SHOULD|MAY)\.?\*\*/.exec(first.trim());
+    const level = /^\*\*(MUST|SHOULD|MAY|RETIRED)\.?\*\*/.exec(first.trim());
     rule.statement = first.trim();
     rule.level = level ? level[1] : null;
     rule.why = body.some((line) => line.startsWith("Why:"));
