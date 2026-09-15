@@ -68,6 +68,7 @@ export const CHROME_CSS = `
  */
 const NAV = [
   ["home", "Home", "index.html"],
+  ["guidelines", "Guidelines", "guidelines.html"],
   ["components", "Components", "components/index.html"],
   ["registry", "Registry", "registry.html"],
 ];

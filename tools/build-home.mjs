@@ -411,8 +411,17 @@ contracts, machine-readable, for an agent building on Stylos without this reposi
   </section>`;
 }
 
-function resourcesSection({ site, total, documented }) {
+function resourcesSection({ site, total, documented, guidelines }) {
   const doors = [
+    ...(guidelines
+      ? [
+          `<a class="door" href="guidelines.html">
+      <h2>Guidelines →</h2>
+      <p>The rules the components are instances of — the visual language, the laws they inherit, the patterns and the words. Every file in the set, including the ones nothing has been decided in yet.</p>
+      <span class="count">${guidelines.rules} rules, ${guidelines.written} of ${guidelines.files} files written</span>
+    </a>`,
+        ]
+      : []),
     `<a class="door" href="registry.html">
       <h2>Component registry →</h2>
       <p>Every entry, filterable by level, role, readiness, milestone and wave, with what each one is composed from and used inside.</p>
@@ -475,6 +484,9 @@ export function renderHome({
   column = false,
   plan = null,
   site = null,
+  // The guideline tally, absent-safe like everything else the page derives:
+  // a fixture without the set gets a page without the card.
+  guidelines = null,
 }) {
   const total = entries.length;
   const ready = entries.filter((entry) => readiness(entry) === "complete").length;
@@ -597,7 +609,7 @@ export function renderHome({
     ${milestoneSection}
   </section>
 
-  ${resourcesSection({ site, total, documented })}
+  ${resourcesSection({ site, total, documented, guidelines })}
 
   ${footer}
 </div>
