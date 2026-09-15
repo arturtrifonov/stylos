@@ -27,7 +27,7 @@ A design system for dense, desktop-oriented web product interfaces. Its visual l
 ## What is here
 
 ```text
-docs/          charter, foundations, component standard and registry, specs
+docs/          charter, principles, the rules of rules, foundations, component standard and registry
 tokens/        the canonical token set, imported from Figma
 packages/ui/   @stylos/ui — the Svelte 5 component package, built from the registry's contracts
 apps/workshop/ the Storybook workshop for @stylos/ui; stories are generated, run locally
@@ -43,7 +43,7 @@ Each directory has a `README.md` explaining what belongs in it.
 
 Figma holds the *values* — variables and styles — and `tokens/` imports them. It does **not** hold component contracts: those are authored here, and Figma is one implementation of them, checked against them ([`ARCHITECTURE.md`](ARCHITECTURE.md) §1).
 
-The repository **never writes to Figma** — an explicit non-goal until a reliable round trip exists ([decision 0001](docs/decisions/0001-figma-connection-model.md)).
+The repository **never writes to Figma** — an explicit non-goal until a reliable round trip exists ([`ARCHITECTURE.md`](ARCHITECTURE.md) §1).
 
 Variables move one way. An export is made by hand and read once:
 
@@ -79,7 +79,7 @@ npm run components:view   # → build/components/ alone, one page per component
 `npm run build` produces something uploadable: it writes the front page, the
 registry view and every component page, and copies `assets/` in beside them.
 `npm run build:publish` is the tree the site is published from — it builds the
-workshop first and copies it in ([SPEC 0011](docs/specs/0011-project-website.md));
+workshop first and copies it in (SPEC 0011);
 the deploy itself is a manual upload. The last two are the same renderers on
 their own, for the loop where a rebuild of 101 pages is not worth waiting
 for — they do not copy the fonts, so a page built that way falls back to the

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Working rules for agent sessions in this repository. The flow they implement is normative in [`ARCHITECTURE.md`](ARCHITECTURE.md) §7 and was built by [SPEC 0008](docs/specs/0008-development-and-release-flow.md); the git hooks in `.githooks/` and the shared `.claude/settings.json` are the controls — this file is the guidance.
+Working rules for agent sessions in this repository. The flow they implement is normative in [`ARCHITECTURE.md`](ARCHITECTURE.md) §7 and was built by SPEC 0008; the git hooks in `.githooks/` and the shared `.claude/settings.json` are the controls — this file is the guidance.
 
 ## Division of labour
 
@@ -24,4 +24,4 @@ Working rules for agent sessions in this repository. The flow they implement is 
 
 ## Implementation stack
 
-Component work in `packages/ui` is Svelte 5 with TypeScript ([decision 0002](docs/decisions/0002-frontend-stack.md)). Use the `sveltejs/ai-tools` plugin and its autofixer for Svelte work — tooling set up by [SPEC 0009](docs/specs/0009-stylos-ui-package.md).
+Component work in `packages/ui` is Svelte 5 with TypeScript ([`ARCHITECTURE.md`](ARCHITECTURE.md) §1, from decision 0002). Use the `sveltejs/ai-tools` plugin and its autofixer for Svelte work — tooling set up by SPEC 0009.

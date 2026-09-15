@@ -17,7 +17,7 @@ Fails loudly (not silently) if: the include order references a skill directory t
 
 `import-component-registry.mjs` converts an Airtable component-registry CSV export into one YAML file per component under `docs/components/registry/`. It's a one-time-per-refresh bootstrap tool, not a sync — see [docs/components/registry/README.md](../docs/components/registry/README.md) for why hand-editing YAML directly is the expected long-term workflow rather than re-running this against Airtable repeatedly.
 
-`lint-registry.mjs` validates the generated (or hand-edited) YAML on two levels. The registry as a whole: every `children`/`parents` reference resolves to a real component `id`, ids are unique, each file sits at the path its `id` implies, and every `level` is one of the five confirmed values. And each contract, for the fields it carries: statuses, property kinds, accessibility statuses, sizing axes and line-height families inside their vocabularies; a default among its property's values; a `do_not_use_when` alternative that exists; a variant count matching the product; a controlled group that is adjacent; a sizing run matching the size property value for value; every dimension and type measure in that run written as a token name rather than a number, and resolving against `tokens/`; a value with a finding and a reason for shipping it. **Absence is never a failure** — most entries carry no contract at all, and every contract check runs only where its field is present. See [SPEC 0003](../docs/specs/0003-component-page.md) §3.
+`lint-registry.mjs` validates the generated (or hand-edited) YAML on two levels. The registry as a whole: every `children`/`parents` reference resolves to a real component `id`, ids are unique, each file sits at the path its `id` implies, and every `level` is one of the five confirmed values. And each contract, for the fields it carries: statuses, property kinds, accessibility statuses, sizing axes and line-height families inside their vocabularies; a default among its property's values; a `do_not_use_when` alternative that exists; a variant count matching the product; a controlled group that is adjacent; a sizing run matching the size property value for value; every dimension and type measure in that run written as a token name rather than a number, and resolving against `tokens/`; a value with a finding and a reason for shipping it. **Absence is never a failure** — most entries carry no contract at all, and every contract check runs only where its field is present. See SPEC 0003 §3.
 
 ```bash
 npm run import:registry     # regenerate docs/components/registry/*.yaml from the stored CSV (overwrites hand edits)
@@ -36,7 +36,7 @@ npm run validate:rules   # also runs inside npm test
 
 **Reports** — exit 0, because they are judgements: the file and rule counts per directory, a *Confirmed* file carrying no rule block, and how many of a document's rules name no `Checked by:` — counted per file rather than listed per rule, since review is a legitimate check and the count is the only part worth seeing on every run.
 
-A citation is an ID written as bare text. One inside a fenced block or a code span is a specimen — that is what lets `RULES.md` print an example rule block — and fixtures are skipped entirely: those in `tests/rules/` and those written inline in a `*.test.mjs`, since a fixture citing nothing is the fixture working. Built by [SPEC 0013](../docs/specs/0013-guideline-structure.md) §5.
+A citation is an ID written as bare text. One inside a fenced block or a code span is a specimen — that is what lets `RULES.md` print an example rule block — and fixtures are skipped entirely: those in `tests/rules/` and those written inline in a `*.test.mjs`, since a fixture citing nothing is the fixture working. Built by SPEC 0013 §5.
 
 ## `build-site.mjs` — the publishable tree
 
@@ -54,7 +54,7 @@ The front door, and deliberately a placeholder: a wordmark, one sentence about w
 
 It also draws the core set wave by wave: one bar per wave of [`PLAN.md`](../PLAN.md) Stage 4, the track proportional to how many components are in that wave and the filled part to how many are ready. The count and the percent are written beside every bar, because the bar is the second cue and never the only one. Which components a wave is made of is not written here: the bar is the shape of the work, and the registry view is where you filter to a wave and read its members.
 
-It used to draw one bar per `import.batch`; that was Airtable's sequencing from the day of the import, which `PLAN.md` §4 states is history and not the queue — and a chart is the strongest way there is of saying something *is* the queue ([`0004`](../docs/specs/0004-registry-reconciliation.md) §3.4).
+It used to draw one bar per `import.batch`; that was Airtable's sequencing from the day of the import, which `PLAN.md` §4 states is history and not the queue — and a chart is the strongest way there is of saying something *is* the queue (SPEC 0004 §3.4).
 
 ### `lib/plan.mjs`
 
@@ -95,7 +95,7 @@ Both are deliberately dependency-free — the CSV parser and the YAML reader are
 
 ## The token pipeline
 
-Turns a Figma variable export into a canonical, self-verifying record. Built to [SPEC 0001](../docs/specs/0001-token-pipeline.md), which also carries the reasoning.
+Turns a Figma variable export into a canonical, self-verifying record. Built to SPEC 0001, which also carries the reasoning.
 
 ```bash
 npm run tokens:import -- --collection radius ~/Downloads/"Mode 1.tokens.json"
@@ -112,9 +112,9 @@ Figma names each file after its **mode**, not its collection, so a full refresh 
 
 `check-tokens.mjs` verifies the canonical set **against itself**, needing no Figma export: every reference resolves, none loop, and a role referencing a different token per mode is declared in `_naming.yaml`. A bound token stores no value, so there is no stored copy to disagree with anything.
 
-**A withdrawal is named, not noticed.** An import that removes a token from a collection already in `tokens/` refuses, lists what disappeared, and prints the `--withdraw <collection/token>` flags to re-run with — one per token, and a `--withdraw` for a token that is *not* disappearing fails too, because a stale acknowledgement would cover the next real one. Each withdrawal is recorded in `tokens/_history.yaml` beside the import that carried it. This lives here rather than in the CSS build because this is where a token actually disappears: `tokens/*.yaml` is committed and is the record, while the CSS is a build result with no baseline to compare a run against ([SPEC 0007](../docs/specs/0007-tokens-to-css.md) §6).
+**A withdrawal is named, not noticed.** An import that removes a token from a collection already in `tokens/` refuses, lists what disappeared, and prints the `--withdraw <collection/token>` flags to re-run with — one per token, and a `--withdraw` for a token that is *not* disappearing fails too, because a stale acknowledgement would cover the next real one. Each withdrawal is recorded in `tokens/_history.yaml` beside the import that carried it. This lives here rather than in the CSS build because this is where a token actually disappears: `tokens/*.yaml` is committed and is the record, while the CSS is a build result with no baseline to compare a run against (SPEC 0007 §6).
 
-`build-css.mjs` projects the canonical set onto CSS custom properties — 957 of them, into `packages/ui/dist/tokens.css`, with `tokens.json` recording which canonical token each name came from. Built to [SPEC 0007](../docs/specs/0007-tokens-to-css.md). Neither file is committed. It reads `tokens/*.yaml` and nothing else, and it refuses to run at all on a set that fails `tokens:check`.
+`build-css.mjs` projects the canonical set onto CSS custom properties — 957 of them, into `packages/ui/dist/tokens.css`, with `tokens.json` recording which canonical token each name came from. Built to SPEC 0007. Neither file is committed. It reads `tokens/*.yaml` and nothing else, and it refuses to run at all on a set that fails `tokens:check`.
 
 Three things in it are authored rather than read, because Figma has no field for them: the five slot bindings, the font fallback stacks, and the shadow composition. **The slot layer is the one that matters** — Figma binds `surface/bold/primary/default` straight to `indigo/700`, and the generator makes the indirection real, so rebinding a slot is thirteen redeclared properties per scope instead of 110 role overrides. The bindings being authored is what lets them be checked: every aliasing role, in both modes, must reach the hue group its name implies, and a role rebound in Figma to a hue outside its slot fails the build naming the role, the slot and the group it actually reached.
 
@@ -122,9 +122,9 @@ Three things in it are authored rather than read, because Figma has no field for
 
 ## `build-ui-types.mjs` and `build-ui-stories.mjs`
 
-The `@stylos/ui` generators ([SPEC 0009](../docs/specs/0009-stylos-ui-package.md) §4), run together with `tokens:css` by `npm run ui:generate`. Both read the registry through `lib/registry.mjs` and generate only for components that have a directory under `packages/ui/src/components/` — a directory appears when a component's `.svelte` is written, and a directory matching no registry entry fails the build.
+The `@stylos/ui` generators (SPEC 0009 §4), run together with `tokens:css` by `npm run ui:generate`. Both read the registry through `lib/registry.mjs` and generate only for components that have a directory under `packages/ui/src/components/` — a directory appears when a component's `.svelte` is written, and a directory matching no registry entry fails the build.
 
-`build-ui-types.mjs` writes `props.ts` per component from the entry's `api`, under the §3 mapping rule — variant values as a string union, verbatim — so a wrong prop value is a compile error and the 1:1 props ↔ `api` mapping is checked by the compiler rather than by eye. This is the condition under which TypeScript was accepted ([ADR 0002](../docs/decisions/0002-frontend-stack.md)): types are generated, never hand-written.
+`build-ui-types.mjs` writes `props.ts` per component from the entry's `api`, under the §3 mapping rule — variant values as a string union, verbatim — so a wrong prop value is a compile error and the 1:1 props ↔ `api` mapping is checked by the compiler rather than by eye. This is the condition under which TypeScript was accepted (ADR 0002): types are generated, never hand-written.
 
 `build-ui-stories.mjs` writes one Svelte CSF story file per component into `apps/workshop/stories/generated/`, with a `default` case and a case per documented variant value, every other prop at its contract default. The directory is regenerated wholesale, so a story survives exactly as long as its contract does.
 
@@ -150,7 +150,7 @@ A name that does not shape into exactly one glyph stops the import. A blank icon
 npm run ui:generate       # assets/icons/svg/*.svg → packages/ui/src/components/icon/icons.ts
 ```
 
-A projection, in the same sense `tokens:css` is one: the committed SVGs are the source and this restates them as data the Icon component renders, so nothing parses markup at runtime and nothing anywhere needs `{@html}` — no injection shape, no sanitiser to keep. The emitted shape is [SPEC 0012](../docs/specs/0012-icon-system.md) §4, which is also the shape a client's replacement set has to satisfy, so the default set and a replacement are one type.
+A projection, in the same sense `tokens:css` is one: the committed SVGs are the source and this restates them as data the Icon component renders, so nothing parses markup at runtime and nothing anywhere needs `{@html}` — no injection shape, no sanitiser to keep. The emitted shape is SPEC 0012 §4, which is also the shape a client's replacement set has to satisfy, so the default set and a replacement are one type.
 
 A file it cannot read whole stops the build. These SVGs are generated, so an unreadable one means `build-icons.mjs` changed underneath — a half-read drawing reaching the component would be a mark that is wrong rather than absent.
 
@@ -158,7 +158,7 @@ Not to be confused with `build-icons.mjs` above: that one draws the set out of t
 
 ## `build-ui-css.mjs`
 
-The independent CSS export ([SPEC 0010](../docs/specs/0010-distribution-surface.md) §2.2), run by `npm run ui:generate` after the two generators above. It copies each built component's authored `src/components/<name>/<name>.css` to `packages/ui/dist/css/<name>.css` unchanged, and concatenates all of them, in registry order, into `dist/css/stylos.css` with a generated header naming the version and the components inside. No transform, no minification, no autoprefixing — a build that improved a value on the way through would be a second source of it. Neither output contains `tokens.css`: a consumer links tokens separately, because that is the file a client theme overrides. A component directory without its authored CSS fails the build.
+The independent CSS export (SPEC 0010 §2.2), run by `npm run ui:generate` after the two generators above. It copies each built component's authored `src/components/<name>/<name>.css` to `packages/ui/dist/css/<name>.css` unchanged, and concatenates all of them, in registry order, into `dist/css/stylos.css` with a generated header naming the version and the components inside. No transform, no minification, no autoprefixing — a build that improved a value on the way through would be a second source of it. Neither output contains `tokens.css`: a consumer links tokens separately, because that is the file a client theme overrides. A component directory without its authored CSS fails the build.
 
 The CSS build fails loudly on: two token names that slugify to one custom property, naming both; a role whose alias contradicts its slot; a `var()` referencing a name the file does not define; the two scopes declaring different sets of properties; a string token with no authored fallback stack; and a token in `tokens/` that did not reach the output — there is no allowlist and no pruning by current usage, because that would make the CSS a function of the component set rather than of the token set.
 
@@ -168,7 +168,7 @@ The CSS build fails loudly on: two token names that slugify to one custom proper
 
 Shared, dependency-free modules for the above.
 
-`lib/theme.mjs` dresses the generated pages from `tokens/`. Seventeen colour roles, six radii, a seven-step type scale and both families, each an address into the canonical set, resolved on every build through the same loader `tokens-report.mjs` uses and emitted as custom properties for light and for dark. [SPEC 0002](../docs/specs/0002-registry-viewer.md) §4.3 asked for no hand-coded Stylos colour in the viewer and there is none — the rule it was protecting is that a copied value rots, and a resolved one cannot. It is a theme and not an implementation: the pages are hand-written HTML, no Stylos component is used in them, and it is not the CSS build — that is `build-css.mjs` below, [SPEC 0007](../docs/specs/0007-tokens-to-css.md). A role whose token stops resolving is dropped and named on stderr rather than defaulted, so a page degrades to the browser's own colours instead of to a wrong one.
+`lib/theme.mjs` dresses the generated pages from `tokens/`. Seventeen colour roles, six radii, a seven-step type scale and both families, each an address into the canonical set, resolved on every build through the same loader `tokens-report.mjs` uses and emitted as custom properties for light and for dark. SPEC 0002 §4.3 asked for no hand-coded Stylos colour in the viewer and there is none — the rule it was protecting is that a copied value rots, and a resolved one cannot. It is a theme and not an implementation: the pages are hand-written HTML, no Stylos component is used in them, and it is not the CSS build — that is `build-css.mjs` below, SPEC 0007. A role whose token stops resolving is dropped and named on stderr rather than defaulted, so a page degrades to the browser's own colours instead of to a wrong one.
 
 `lib/yaml.mjs` is a writer and reader for a deliberately restricted subset of YAML, as a matched pair — block collections only, everything non-numeric quoted, no anchors or flow syntax. The reader throws on anything the writer would not have produced, naming the line. This is what keeps `tools/` dependency-free without pretending to implement the YAML spec; if the subset stops being enough, that is the signal to take a dependency in a new decision record, not to stretch the parser.
 
@@ -180,7 +180,7 @@ Shared, dependency-free modules for the above.
 
 ## Future candidates
 
-Not built yet — see [docs/decisions/0001-figma-connection-model.md](../docs/decisions/0001-figma-connection-model.md):
+Not built yet. The reasoning was decision 0001; what survives of it is the one-directional rule in [`ARCHITECTURE.md`](../ARCHITECTURE.md) §1:
 
 - A Figma REST API script to pull variable snapshots and/or component screenshots automatically, now that a real component inventory exists to point it at (`docs/components/registry/`).
 - Link/heading/duplicate-rule validation across skill sources (not implemented — `build-skills.mjs` currently only validates structural completeness, not cross-skill rule conflicts).

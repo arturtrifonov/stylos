@@ -22,7 +22,7 @@ use the families the system actually declares rather than approximating them.
 
 They are self-hosted rather than linked because the pages are opened from disk
 as often as from the web, and `tools/` reaches nothing over the network — a
-constraint the tests enforce ([SPEC 0002](../docs/specs/0002-registry-viewer.md)
+constraint the tests enforce (SPEC 0002
 §4.1). Four files, 116 KB, one shared copy for the whole tree.
 
 Both are licensed under the SIL Open Font License 1.1 — Georama by Font Bureau,

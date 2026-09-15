@@ -12,11 +12,8 @@ Authored design-system knowledge. Written and maintained by hand — none of it 
 | [`patterns/`](patterns/README.md) | one decided answer per recurring task — forms, tables, filtering, search, dialogs |
 | [`content/`](content/README.md) | the words — voice, terminology, labels, error messages, formats |
 | [`components/`](components/README.md) | the documentation standard and the component registry |
-| [`specs/`](specs/README.md) | work orders — what to build, disposable once built |
-| [`decisions/`](decisions/README.md) | the few boundaries expensive enough to reverse that they earn a record |
-| [`research/`](research/README.md) | open investigations that have not produced a rule yet |
 
-The four guideline directories are mostly empty and say so per file: [SPEC 0013](specs/0013-guideline-structure.md) created the whole set with a scope line each, so that a rule has somewhere to be written before it is decided. A file marked *Yet to fill* is a place, not a claim.
+The four guideline directories are mostly empty and say so per file: SPEC 0013 created the whole set with a scope line each, so that a rule has somewhere to be written before it is decided. A file marked *Yet to fill* is a place, not a claim.
 
 ## Editorial rules
 

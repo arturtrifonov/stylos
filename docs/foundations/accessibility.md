@@ -22,7 +22,7 @@ Serves: PRN-07.
 
 **MUST.** A role means what **WAI-ARIA 1.2** says it means, and a composite pattern behaves as the **ARIA Authoring Practices Guide** says it behaves.
 
-Why: two authorities would have to be reconciled, per component, by whoever noticed. Zag.js implements the APG patterns, so [decision 0002](../decisions/0002-frontend-stack.md) and this target name the same source rather than adding a second one.
+Why: two authorities would have to be reconciled, per component, by whoever noticed. Zag.js implements the APG patterns, so decision 0002 and this target name the same source rather than adding a second one.
 
 ### FND-ACCESSIBILITY-03 — A finding cites its criterion
 

@@ -27,4 +27,4 @@ Written to the grammar in [`docs/RULES.md`](../RULES.md); rules here carry `BEH-
 | [timing.md](timing.md) | Yet to fill |
 | [text-input.md](text-input.md) | Yet to fill |
 
-**Every file is a scope line and nothing else**, and says so in its status. The set was created complete and empty by [SPEC 0013](../specs/0013-guideline-structure.md): a rule needs somewhere to be written before it is decided, or it gets written in whichever document its author happened to have open. Nothing here is settled yet, and no file should be read as though it were.
+**Every file is a scope line and nothing else**, and says so in its status. The set was created complete and empty by SPEC 0013: a rule needs somewhere to be written before it is decided, or it gets written in whichever document its author happened to have open. Nothing here is settled yet, and no file should be read as though it were.

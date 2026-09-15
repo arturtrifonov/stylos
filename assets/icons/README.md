@@ -1,6 +1,6 @@
 # assets/icons/
 
-The Stylos icon set: one fixed instance, as SVG. Twenty-nine drawings — the marks the Figma library already carries as system components ([SPEC 0012](../../docs/specs/0012-icon-system.md) §2). The set is grown on demand, not stocked.
+The Stylos icon set: one fixed instance, as SVG. Twenty-nine drawings — the marks the Figma library already carries as system components (SPEC 0012 §2). The set is grown on demand, not stocked.
 
 | Path | Kind |
 | --- | --- |

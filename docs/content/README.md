@@ -17,4 +17,4 @@ Written to the grammar in [`docs/RULES.md`](../RULES.md); rules here carry `CNT-
 | [help.md](help.md) | Yet to fill |
 | [formats.md](formats.md) | Yet to fill |
 
-**Every file is a scope line and nothing else**, and says so in its status. The set was created complete and empty by [SPEC 0013](../specs/0013-guideline-structure.md); the system's voice is not settled by having a file for it.
+**Every file is a scope line and nothing else**, and says so in its status. The set was created complete and empty by SPEC 0013; the system's voice is not settled by having a file for it.
