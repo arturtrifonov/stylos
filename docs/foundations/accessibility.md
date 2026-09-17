@@ -1,9 +1,9 @@
-# Accessibility target and browser baseline
+# Accessibility
 
 Status: Confirmed
-Scope: The conformance target and the browser floor everything else is judged against; per-topic accessibility rules live with their topic.
+Scope: The conformance target every design and implementation decision is judged against; per-topic accessibility rules live with their topic, and which browsers the package may rely on is a build constraint in [`ARCHITECTURE.md`](../../ARCHITECTURE.md) §7 rather than a rule of the design language.
 
-Two bars in one document, because they answer the same question — *may this ship?* — and a judgement split across two files is how the two halves drift apart. The accessibility target is what a contract's findings are judged against; the browser baseline is the floor a CSS or platform feature must clear before `@stylos/ui` may rely on it.
+The target is what a contract's findings are judged against — the bar a `warning` or a `fail` in the registry refers to. The rules here fix which standard that is, who says what a role means, and what a finding has to name; how a particular surface meets it is decided in the foundation of that surface.
 
 ## The target
 
@@ -38,24 +38,6 @@ Both sides of the system, asymmetrically:
 
 - **Contracts judge the design against it.** Target size, contrast, use of colour are properties of what Figma holds, and the registry records findings about them component by component. The vocabulary — `warning`, `fail`, `open`, `requires` — is defined in [`registry/README.md`](../components/registry/README.md); this document is the bar those statuses refer to. A `warning` means *fails a criterion of this target* and ships through a stated exception; without a named target the status meant nothing.
 - **Conformance is claimable only of the rendered package.** A Figma library is not web content; WCAG applies to what a browser shows. Stage 5's accessibility tests run against this target, and only they can turn recorded findings into a conformance statement.
-
-## The browser floor
-
-### FND-ACCESSIBILITY-04 — A feature is relied on when it is Baseline Widely available
-
-**MUST.** A CSS or platform feature may be relied on once it is **[Baseline Widely available](https://web.dev/baseline)** — interoperable across the core browser set and stable for 30 months.
-
-Why: not a browser list, deliberately.
-
-- **It is checkable mechanically.** `web-features` data and caniuse answer "is X widely available" with a lookup, which is the shape every gate in this project aims for — a check, not a judgement call.
-- **It is maintained by someone else.** A version list authored here ("last 2 versions of…") is a moving target nobody re-evaluates on a schedule; it would be stale within a quarter, and this repository already knows what copied facts do.
-- **It is stricter than the scope strictly needs, and that is accepted.** Baseline's browser set includes mobile browsers; Stylos is desktop-only. A feature held back solely by a browser outside the scope is exactly what the exception mechanism is for.
-
-Exception: a feature below the floor may be used where the code states which feature, why, and what happens in a browser without it — a `@supports` fallback, or a degradation that loses polish rather than function. Exceptions work like raw values in Figma: allowed, named, and the size of the case they cover. An exception nobody wrote down is a bug.
-
-Serves: PRN-01.
-
-The current CSS output is comfortably inside the floor — custom properties have been universal for years — so the floor's first real work is in Stage 5, deciding questions of the form "may the package use `:has` / nesting / `color-mix`".
 
 ## Open
 

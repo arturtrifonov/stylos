@@ -263,3 +263,69 @@ test("RETIRED is a level, so a withdrawn rule is still a rule block", () => {
   assert.deepEqual(result.errors, []);
   assert.equal(parseDocument(document.text).rules[0].level, "RETIRED");
 });
+
+// RUL-19. The fixture is principles.md rather than a guideline file, because
+// the direction only means something where a document sits above the rules.
+function principles(body) {
+  return {
+    file: "docs/principles.md",
+    area: "PRN",
+    topic: null,
+    header: true,
+    text: [
+      "# Principles",
+      "",
+      "Status: Confirmed",
+      "Scope: what is valued; the rules live in [`foundations/`](foundations/README.md).",
+      "",
+      ...body,
+      "",
+      "## Open",
+      "",
+      "- Whether PRN-01 belongs in [`foundations/sizing.md`](foundations/sizing.md) instead.",
+      "",
+    ].join("\n"),
+  };
+}
+
+test("fails a principle whose reasoning links down into a guideline directory", () => {
+  const result = check([
+    principles([
+      "### PRN-01 — The module is strict",
+      "",
+      "**MUST.** Every dimension is taken from the scale.",
+      "",
+      "Why: an unnamed correction is a mistake ([`foundations/sizing.md`](foundations/sizing.md)).",
+    ]),
+  ]);
+  assert.match(result.errors.join("\n"), /"PRN-01" links into a guideline directory .*RUL-19/);
+  assert.equal(result.ok, false);
+});
+
+test("fails a principle citing a rule that follows from it", () => {
+  const result = check([
+    principles([
+      "### PRN-01 — The module is strict",
+      "",
+      "**MUST.** Every dimension is taken from the scale.",
+      "",
+      "Why: the raw values it permits are bounded by FND-SIZING-09.",
+    ]),
+  ]);
+  assert.match(result.errors.join("\n"), /"PRN-01" cites FND-SIZING-09 .*RUL-19/);
+  assert.equal(result.ok, false);
+});
+
+test("the scope line and an open question may name a guideline file", () => {
+  const result = check([
+    principles([
+      "### PRN-01 — The module is strict",
+      "",
+      "**MUST.** Every dimension is taken from the scale.",
+      "",
+      "Why: an unbounded correction stops the module being a module.",
+    ]),
+  ]);
+  assert.deepEqual(result.errors, []);
+  assert.equal(result.ok, true);
+});

@@ -5,7 +5,7 @@ Scope: What Stylos values when two options both look defensible; the rules those
 
 **A principle decides a call the rules do not reach.** The rules settle the cases that have come up; a principle settles the one that has not, and is what a new rule has to be consistent with. A rule that follows from a principle names it in `Serves:` ([`RULES.md`](RULES.md) RUL-03).
 
-Principles sit under the [charter](charter.md) and above the rules: the charter says what the system is for and what it is like, a principle says how a choice inside that is made. Neither restates the other — a principle cites the charter for its reasoning rather than repeating it.
+Principles sit under the [charter](charter.md) and above the rules: the charter says what the system is for and what it is like, a principle says how a choice inside that is made. Neither restates the other — a principle cites the charter for its reasoning rather than repeating it, and never reaches down into the rules for it (RUL-19).
 
 ---
 
@@ -15,13 +15,13 @@ Principles sit under the [charter](charter.md) and above the rules: the charter 
 
 Why: an unnamed correction is indistinguishable from a mistake, and an unbounded one stops the module being a module. What the module is in service of is [charter §Character](charter.md#character).
 
-An optical correction and a raw value are the same act under two names, and both carry the same obligation — named, and no wider than the case ([`foundations/sizing.md`](foundations/sizing.md), [`foundations/accessibility.md`](foundations/accessibility.md)).
+An optical correction and a raw value are the same act under two names, and both carry the same obligation — named, and no wider than the case.
 
 ### PRN-02 — Decisions are made in relations, not in measurements
 
 **MUST.** A value is chosen by its relation to the base — one base, one and a half, two — never by the pixel count that relation happens to produce.
 
-Why: a decision made in pixels does not survive the scale moving, a density mode, or a second product. The scale is named in ratios so that the relation is what gets chosen and the number is a consequence ([`foundations/spacing.md`](foundations/spacing.md)).
+Why: a decision made in pixels does not survive the scale moving, a density mode, or a second product. The scale is named in ratios so that the relation is what gets chosen and the number is a consequence.
 
 ### PRN-03 — Density is the case the system is designed for
 
@@ -37,13 +37,13 @@ Not licence to compress: what a dense screen needs is legibility under repetitio
 
 Why: a binding made on appearance is correct exactly once — against the palette, the theme and the icon set it was made against — and afterwards there is no way to find it except by eye.
 
-Both conversions this system performs are this principle: an icon is chosen by function rather than by resemblance to a reference ([`foundations/icons.md`](foundations/icons.md)), and an external reference is reconstructed by mapping its meanings onto Stylos roles rather than by matching its picture.
+Both conversions this system performs are this principle: an icon is chosen by function rather than by resemblance to a reference, and an external reference is reconstructed by mapping its meanings onto Stylos roles rather than by matching its picture.
 
 ### PRN-05 — Judgement where a formula would lie
 
 **MUST.** Where a mechanical derivation would produce a defensible-looking wrong answer, the value is authored by hand and the document says it was.
 
-Why: a formula that is nearly right is trusted at exactly the point where it fails. The dark palette is the worked example — a literal inversion of the light ramp is unusable, and no single transform holds across hue groups ([`foundations/color.md`](foundations/color.md)).
+Why: a formula that is nearly right is trusted at exactly the point where it fails. The dark palette is the worked example — a literal inversion of the light ramp is unusable, and no single transform holds across hue groups.
 
 Not licence for an unexplained number: what was decided by eye says so, and says against what.
 
@@ -57,7 +57,7 @@ Why: everything below the boundary can be changed for everyone at once, and noth
 
 **MUST.** Where visual quality and the conformance target disagree, the target decides and the design changes.
 
-Why: the trade is always on offer — a lower-contrast label is calmer, a smaller hit area is tidier — and a bar that may be traded is not a bar. The target and the browser floor are fixed in [`foundations/accessibility.md`](foundations/accessibility.md), and an exception to them is named and sized like any other.
+Why: the trade is always on offer — a lower-contrast label is calmer, a smaller hit area is tidier — and a bar that may be traded is not a bar. An exception to the target is named and sized like any other.
 
 ## Open
 
