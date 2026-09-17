@@ -179,6 +179,16 @@ Why: without a direction, two true-looking rules leave the reader to guess which
 
 The fix for a real contradiction is one of two things, and never a third: amend the broader rule, or give the narrower one a named exception (RUL-07).
 
+### RUL-19 — A principle reasons against the charter, never against the rules
+
+**MUST.** A rule block in [`principles.md`](principles.md) neither cites a rule of the four guideline directories nor links into one; its reasoning reaches up, to [`charter.md`](charter.md).
+
+Why: a rule names the principle it follows from in `Serves:`, so a principle naming the rule back closes the reasoning into a loop in which neither end is the ground. It also dates the principle to the rule set of the day it was written — a principle exists to decide the case that has not come up, and one whose `Why:` points at the worked example in some foundation reads false the moment that example is decided differently. Nothing is lost in the other direction: `Serves:` *is* the index of which rules follow from a principle, and unlike a list kept by hand it cannot fall behind.
+
+The header and an `## Open` bullet sit outside every rule block and are not reasoning: the `Scope:` line of RUL-15 is obliged to say where the neighbouring topic starts, and an open question may name the file it would move to.
+
+Checked by: `npm run validate:rules` — a link into a guideline directory, or a citation of an `FND`, `BEH`, `PAT` or `CNT` rule, inside a rule block in [`principles.md`](principles.md).
+
 ---
 
 ## Lifecycle

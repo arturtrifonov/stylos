@@ -4,6 +4,18 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-09-17 (the browser floor is not a rule of the design language)
+
+- **`FND-ACCESSIBILITY-04` is gone, and what it said is a convention in [`ARCHITECTURE.md`](ARCHITECTURE.md) §7.** Which CSS and platform features the package may rely on is a constraint on the build, not a rule of the design language: that a browser supports a feature has never been a reason for a design to use it, and the floor's only power over a design is a veto on what cannot be built. It could therefore never be cited as grounds for a design decision, which is what a rule ID promises — and the ID itself said so, since `FND-ACCESSIBILITY-04` filed `:has` and `color-mix` under accessibility. The content is unchanged: Baseline Widely available, not an authored browser list, with a per-case exception that names the feature, the reason and what a browser without it does.
+- **Removed rather than retired.** Nothing outside the file ever cited it, and the guideline set has not had a release, so the RUL-13 exception applies and `foundations/accessibility.md` is compacted to `01`–`03`; the next rule written there takes `04`. The stated 30-month window went with it — it is a fact maintained by [Baseline](https://web.dev/baseline), and this repository already knows what copied facts do.
+- **`docs/foundations/accessibility.md` is about one thing and is called `Accessibility`.** It had joined two bars under one title on the grounds that both answer *may this ship?* — which every `MUST` in the set does — and defended the join by saying a judgement split across two files drifts, which is the argument the rule grammar exists to refute. What the target binds, and the deferred assistive-technology matrix, were always about the target alone.
+
+### Changed — 2026-09-17 (a principle reasons upward)
+
+- **`RUL-19`: a rule block in [`docs/principles.md`](docs/principles.md) neither cites a rule nor links into a guideline directory.** A rule names the principle it follows from in `Serves:`; a principle naming the rule back closes the reasoning into a loop where neither end is the ground, and dates the principle to the rule set of the day it was written. The reverse index is not lost — `Serves:` is that index, and unlike a list kept by hand it cannot fall behind.
+- **Five such links removed**, from `PRN-01`, `PRN-02`, `PRN-04`, `PRN-05` and `PRN-07`. All five were bare links to whole files rather than citations by ID, so nothing checked them and none would have failed when its target was deleted — maximum exposure, no guarantee. `PRN-07` also stopped speaking for the browser floor, which was never party to the trade it governs.
+- **`npm run validate:rules` fails one now.** The `Scope:` line and an `## Open` bullet are exempt because both sit outside every rule block and neither is reasoning: the first is obliged by `RUL-15` to say where the neighbouring topic starts, the second may name the file a question would move to. `tools/validate-rules.mjs` tracks the line number of every line inside a rule block so a finding names the sentence rather than the heading.
+
 ### Added — 2026-09-15 (the guidelines are on the site)
 
 - **[`build/guidelines.html`](https://stylos.arturtrifonov.com/guidelines.html) and a page per document.** The site published the inventory — 114 component contracts — and not the language they are instances of. This is the other half: one index over the whole set, and a page for each of the 61 documents, rendered by `tools/build-guidelines-view.mjs` and reached from the header nav and a card on the front page.

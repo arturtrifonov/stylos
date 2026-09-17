@@ -41,6 +41,14 @@ const ID_ANYWHERE = /\b(?:PRN|RUL|STD)-\d{2}\b|\b(?:FND|BEH|PAT|CNT)-[A-Z]+(?:-[
 // got the ID wrong fails instead of being read as ordinary prose.
 const ID_CANDIDATE = /^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$/;
 
+// docs/RULES.md RUL-19. A principle grounds itself in the charter; a rule
+// block in principles.md that reaches back down into the rules closes the
+// reasoning into a loop, because the rule already names the principle in
+// `Serves:`. Both shapes of reach are looked for — a link into one of the four
+// directories, and a citation of a rule that lives in one.
+const GUIDELINE_LINK = /\]\(\s*(?:\.{1,2}\/)*(?:foundations|behavior|patterns|content)\//;
+const GUIDELINE_ID = /\b(?:FND|BEH|PAT|CNT)-[A-Z]+(?:-[A-Z]+)*-\d{2}\b/;
+
 // Directory, area prefix. Every .md in one of these but README.md is a
 // guideline file: it carries the header of RUL-15 and its README indexes it.
 export const AREAS = [
@@ -87,6 +95,13 @@ export function topicOf(file) {
 export function parseDocument(text) {
   const lines = text.split("\n");
   const rules = [];
+  // The body and its line numbers are kept in step, so a finding about a
+  // sentence inside a rule can name the line it is on rather than the heading.
+  const keep = (line, index) => {
+    if (!current) return;
+    current.body.push(line);
+    current.lines.push(index + 1);
+  };
   let fenced = false;
   let sectioned = false;
   let current = null;
@@ -96,11 +111,11 @@ export function parseDocument(text) {
   for (const [index, line] of lines.entries()) {
     if (/^\s*```/.test(line)) {
       fenced = !fenced;
-      if (current) current.body.push(line);
+      keep(line, index);
       continue;
     }
     if (fenced) {
-      if (current) current.body.push(line);
+      keep(line, index);
       continue;
     }
 
@@ -130,6 +145,7 @@ export function parseDocument(text) {
             title: title.trim().slice(candidate.length).replace(/^\s*[—-]\s*/, ""),
             line: index + 1,
             body: [],
+            lines: [],
           };
           rules.push(current);
         }
@@ -137,7 +153,7 @@ export function parseDocument(text) {
       continue;
     }
 
-    if (current) current.body.push(line);
+    keep(line, index);
   }
 
   for (const rule of rules) {
@@ -271,6 +287,31 @@ export function checkRules({ documents, indexes = [], sources = [] }) {
         errors.push(`${where}: "${rule.id}" has no "Why:" paragraph (RUL-03)`);
       }
       if (!rule.checkedBy) doc.unchecked = (doc.unchecked ?? 0) + 1;
+
+      // RUL-19. Which rules follow from a principle is read off their own
+      // `Serves:` lines, so a pointer kept here would be a hand-maintained
+      // copy of that — and it would date the principle to the rule set of the
+      // day it was written.
+      if (doc.area === "PRN") {
+        let fenced = false;
+        for (const [index, line] of rule.body.entries()) {
+          if (/^\s*```/.test(line)) {
+            fenced = !fenced;
+            continue;
+          }
+          if (fenced) continue;
+          const at = `${doc.file}:${rule.lines[index]}`;
+          const upward =
+            "a principle reasons against the charter, not against the rules it produces (RUL-19)";
+          if (GUIDELINE_LINK.test(line)) {
+            errors.push(`${at}: "${rule.id}" links into a guideline directory — ${upward}`);
+          }
+          const cited = GUIDELINE_ID.exec(line.replace(/`[^`]*`/g, ""));
+          if (cited) {
+            errors.push(`${at}: "${rule.id}" cites ${cited[0]} — ${upward}`);
+          }
+        }
+      }
     }
   }
 
