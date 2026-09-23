@@ -118,8 +118,6 @@ Serves: PRN-04.
 
 Why: it is WCAG 2.2 SC 1.4.1 at the smallest element the system ships, and a status set distinguished by hue alone fails for the readers the mark was added to help.
 
-Serves: PRN-07.
-
 ## Superseded: the interim Material Icons source
 
 Until 2026-09-07 the source was the **[Default Kit / Material Icons](https://www.figma.com/design/mal5Fp20UXdswiLoBTVDvI/Default-Kit--Material-Icons)** Figma library — Google's older set, taken because it was free, comprehensive and available as a Figma library, and it unblocked component work without spending Alpha time drawing icons. The reasoning that replaced it is above; what it correctly said still stands: **this is not a claim that Material's visual language matches Stylos's classical and structural character.** A native Stylos icon set is still expected rather than merely possible, and drawing one is still too expensive now. What changed is that the placeholder is now a generated artifact in this repository rather than a link to someone else's Figma file — so replacing it later is a manifest and a generator, not a hunt through instances.

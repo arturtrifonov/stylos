@@ -131,6 +131,22 @@ An absent `Checked by:` means review. That is a legitimate check and not a gap �
 
 ---
 
+## The language
+
+### RUL-19 — Plain English that a B2 reader follows
+
+**MUST.** A rule and the text around it are written in plain English that a reader with B2-level English understands on the first reading, without losing precision.
+
+Why: many people who read these files, and build from them, read English as a second language. A reader who has to decode a sentence acts on a guess about what it means, and a review cannot check a guess. Hard wording also hides gaps: the accessibility principle this set used to have was three metaphors around a rule that FND-ACCESSIBILITY-01 already stated, and nobody could see that until it was rewritten plainly.
+
+- **The exact term stays.** Plain does not mean vague. Where a technical word is the exact one — `accessible name`, `token`, `WCAG 2.2 SC 2.5.8` — it is used, not replaced with an easier word that means something close.
+- **One idiom or metaphor per rule, at most**, and only where it says the thing better than plain words would. Two images for one idea turn the rule into a puzzle.
+- **Nothing is harder than the content needs.** A common word where it is exact, and a sentence that can be read once.
+
+In review the test is simple: if a reader has to read a sentence twice to find out what it requires, the sentence is rewritten.
+
+---
+
 ## What is not a rule
 
 ### RUL-09 — A rule names a token, never the value it holds

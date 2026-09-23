@@ -16,7 +16,7 @@ Why: this ratifies practice rather than introducing a bar. Every criterion citat
 - **2.2 over 2.1** because it is the current W3C Recommendation, and because 2.2 AA contains 2.1 AA — the only removal is SC 4.1.1 Parsing, obsolete by W3C's own errata. Conforming to 2.2 AA therefore also covers what EN 301 549 asks for via WCAG 2.1 AA, which matters from the moment the charter's commercial distribution happens: the European Accessibility Act has been enforceable since June 2025.
 - **AA over AAA** because W3C itself does not recommend AAA as a general policy — it is not achievable for all content — and because nothing in the registry aims at it.
 
-Serves: PRN-07.
+The target holds when the design would look better without it. A lighter label looks calmer and a smaller hit area looks tidier, and in any one case the cost seems small. Where a design and the target disagree, the design changes.
 
 ### FND-ACCESSIBILITY-02 — One ARIA authority: WAI-ARIA 1.2, patterns per the APG
 

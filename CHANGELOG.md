@@ -4,6 +4,11 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-09-24 (the guidelines in plain English)
+
+- **[`docs/RULES.md`](docs/RULES.md) gains `RUL-19`: a rule and the text around it are written in plain English that a reader with B2-level English understands on the first reading, without losing precision.** The exact technical term stays; one idiom or metaphor per rule is the most a rule may carry. It is checked in review, and rewriting the existing set against it starts here.
+- **`PRN-07` is gone.** It said that where a design and WCAG 2.2 AA disagree, the design changes — which `FND-ACCESSIBILITY-01` already required as a **MUST**, so the principle decided nothing a rule did not. Three metaphors (a floor, a trade, a bar) hid that, and its last sentence allowed exceptions to the bar it said could not be traded. The one useful thought is now a plain paragraph in `FND-ACCESSIBILITY-01`, and neither that rule nor `FND-ICONS-10` names a principle in `Serves:` any more. It was removed rather than retired, under `RUL-13`'s exception for the set before its first release. `principles.md` holds six principles.
+
 ### Added — 2026-09-15 (the guidelines are on the site)
 
 - **[`build/guidelines.html`](https://stylos.arturtrifonov.com/guidelines.html) and a page per document.** The site published the inventory — 114 component contracts — and not the language they are instances of. This is the other half: one index over the whole set, and a page for each of the 61 documents, rendered by `tools/build-guidelines-view.mjs` and reached from the header nav and a card on the front page.

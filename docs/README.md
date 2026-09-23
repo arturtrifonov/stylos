@@ -25,3 +25,4 @@ They are rules, so they live where rules live — [`RULES.md`](RULES.md), with I
 | RUL-09 | a rule names a token, never the value it holds |
 | RUL-17 | where a skill defines a rule for its own operation, the skill is the source |
 | RUL-18 | a gap is stated, never filled with a plausible answer |
+| RUL-19 | plain English that a B2 reader follows on the first reading, without losing precision |

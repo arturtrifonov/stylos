@@ -53,13 +53,6 @@ Not licence for an unexplained number: what was decided by eye says so, and says
 
 Why: everything below the boundary can be changed for everyone at once, and nothing below it is anyone else's to have depended on. Where the line runs is [charter §The customization boundary](charter.md#the-customization-boundary).
 
-### PRN-07 — The accessibility target is a floor, not a trade
-
-**MUST.** Where visual quality and the conformance target disagree, the target decides and the design changes.
-
-Why: the trade is always on offer — a lower-contrast label is calmer, a smaller hit area is tidier — and a bar that may be traded is not a bar. The target and the browser floor are fixed in [`foundations/accessibility.md`](foundations/accessibility.md), and an exception to them is named and sized like any other.
-
 ## Open
 
-- Whether PRN-07 is a principle at all, or a precedence rule that belongs in [`foundations/accessibility.md`](foundations/accessibility.md) beside the target it protects.
 - Whether the set needs a principle about where attention is spent — nothing here says what earns emphasis on a screen where everything is competing for it, and `foundations/color.md` decides it per role rather than in general.
