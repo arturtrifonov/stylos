@@ -3,56 +3,56 @@
 Status: Partial
 Scope: What Stylos values when two options both look defensible; the rules those values produce live in [`foundations/`](foundations/README.md), [`behavior/`](behavior/README.md), [`patterns/`](patterns/README.md) and [`content/`](content/README.md).
 
-**A principle decides a call the rules do not reach.** The rules settle the cases that have come up; a principle settles the one that has not, and is what a new rule has to be consistent with. A rule that follows from a principle names it in `Serves:` ([`RULES.md`](RULES.md) RUL-03).
+**A principle decides a question the rules do not cover.** The rules settle the cases that have already come up. A principle settles a case that has not, and a new rule has to be consistent with it. A rule that follows from a principle names it in `Serves:` ([`RULES.md`](RULES.md) RUL-03).
 
-Principles sit under the [charter](charter.md) and above the rules: the charter says what the system is for and what it is like, a principle says how a choice inside that is made. Neither restates the other — a principle cites the charter for its reasoning rather than repeating it.
+Principles sit under the [charter](charter.md) and above the rules. The charter says what the system is for and what it is like; a principle says how a choice is made within that. Neither restates the other: a principle cites the charter for its reasoning rather than repeating it.
 
 ---
 
-### PRN-01 — The module is strict, and the corrections are optical
+### PRN-01 — The scale is strict, and a departure is an optical correction
 
-**MUST.** Every dimension, space and step is taken from the scale; a departure from it exists only where the eye needs one, and it is named where it is made.
+**MUST.** Every dimension, space and step is taken from the scale, and a departure from it is made only where the eye needs one and is named where it is made.
 
-Why: an unnamed correction is indistinguishable from a mistake, and an unbounded one stops the module being a module. What the module is in service of is [charter §Character](charter.md#character).
+Why: a correction that is not named cannot be told apart from a mistake. A correction with no limit means the scale is no longer a strict module. What that module is for is set out in [charter §Character](charter.md#character).
 
-An optical correction and a raw value are the same act under two names, and both carry the same obligation — named, and no wider than the case ([`foundations/sizing.md`](foundations/sizing.md), [`foundations/accessibility.md`](foundations/accessibility.md)).
+An optical correction and a raw value are the same act under two names. Both carry the same obligation: each is named, and each is no wider than the case it covers ([`foundations/sizing.md`](foundations/sizing.md), [`foundations/accessibility.md`](foundations/accessibility.md)).
 
-### PRN-02 — Decisions are made in relations, not in measurements
+### PRN-02 — A value is chosen as a relation to the base, not as a measurement
 
 **MUST.** A value is chosen by its relation to the base — one base, one and a half, two — never by the pixel count that relation happens to produce.
 
-Why: a decision made in pixels does not survive the scale moving, a density mode, or a second product. The scale is named in ratios so that the relation is what gets chosen and the number is a consequence ([`foundations/spacing.md`](foundations/spacing.md)).
+Why: a decision made in pixels no longer holds when the scale changes, in a density mode, or in a second product. The scale is named in ratios so that people choose the relation and the number follows from it ([`foundations/spacing.md`](foundations/spacing.md)).
 
 ### PRN-03 — Density is the case the system is designed for
 
-**MUST.** Where a decision reads better with air around it and costs a dense screen, the dense screen decides it.
+**MUST.** Where an option looks better with more space around it but makes a dense screen worse, the choice is made for the dense screen.
 
-Why: nearly every default the system sets has a version that looks better on a sparse page, and deciding each on its own merits produces a system that fails at the only screen it was built for ([charter §Purpose](charter.md#purpose)).
+Why: nearly every default the system sets has a version that looks better on a sparse page. Deciding each default on its own merits produces a system that fails on the only kind of screen it was built for ([charter §Purpose](charter.md#purpose)).
 
-Not licence to compress: what a dense screen needs is legibility under repetition, which is usually a matter of contrast and rhythm rather than of less space.
+This is not permission to take space away. What a dense screen needs is legibility across many repeated elements, and that usually comes from contrast and rhythm rather than from less space.
 
-### PRN-04 — Meaning binds, not appearance
+### PRN-04 — A binding follows meaning, not appearance
 
-**MUST.** A decision resolves to the role that says what the thing *is*; two things that look alike and mean differently do not share a binding.
+**MUST.** A decision is bound to the role that says what the thing *is*, and two things that look alike but mean different things do not share a binding.
 
-Why: a binding made on appearance is correct exactly once — against the palette, the theme and the icon set it was made against — and afterwards there is no way to find it except by eye.
+Why: a binding made because of how something looks is correct only for the palette, the theme and the icon set it was made with, and later it can be found only by eye.
 
-Both conversions this system performs are this principle: an icon is chosen by function rather than by resemblance to a reference ([`foundations/icons.md`](foundations/icons.md)), and an external reference is reconstructed by mapping its meanings onto Stylos roles rather than by matching its picture.
+The two conversions this system performs both follow this principle. An icon is chosen by function rather than by looking like a reference ([`foundations/icons.md`](foundations/icons.md)). An external reference is reconstructed by mapping its meanings onto Stylos roles rather than by matching how it looks.
 
-### PRN-05 — Judgement where a formula would lie
+### PRN-05 — Judgement where a formula would give a wrong answer
 
-**MUST.** Where a mechanical derivation would produce a defensible-looking wrong answer, the value is authored by hand and the document says it was.
+**MUST.** Where deriving a value mechanically would give a wrong answer that looks reasonable, the value is authored by hand and the document says so.
 
-Why: a formula that is nearly right is trusted at exactly the point where it fails. The dark palette is the worked example — a literal inversion of the light ramp is unusable, and no single transform holds across hue groups ([`foundations/color.md`](foundations/color.md)).
+Why: a formula that is nearly right is trusted at exactly the point where it fails. The dark palette is the worked example: a literal inversion of the light ramp is unusable, and no single transform works across all hue groups ([`foundations/color.md`](foundations/color.md)).
 
-Not licence for an unexplained number: what was decided by eye says so, and says against what.
+This is not permission for an unexplained number. Where a value was decided by eye, the document says so, and says what it was judged against.
 
-### PRN-06 — The character is not configurable
+### PRN-06 — A product sets content, colour and properties, not Stylos's character
 
-**MUST.** A product supplies its content, its colour through the semantic roles, and the properties a component publishes; anatomy, scale, typography logic, interaction patterns and proportional character stay Stylos's.
+**MUST.** A product supplies its content, supplies its colour through the semantic roles, and sets the properties a component publishes; Stylos keeps anatomy, scale, typography logic, interaction patterns and proportional character.
 
-Why: everything below the boundary can be changed for everyone at once, and nothing below it is anyone else's to have depended on. Where the line runs is [charter §The customization boundary](charter.md#the-customization-boundary).
+Why: everything below the customization boundary can be changed for everyone at once, and nobody else has the right to depend on anything below it. Where the boundary runs is set out in [charter §The customization boundary](charter.md#the-customization-boundary).
 
 ## Open
 
-- Whether the set needs a principle about where attention is spent — nothing here says what earns emphasis on a screen where everything is competing for it, and `foundations/color.md` decides it per role rather than in general.
+- Whether the set needs a principle about where attention goes. Nothing here says what deserves emphasis on a screen where everything competes for it, and `foundations/color.md` decides it per role rather than in general.

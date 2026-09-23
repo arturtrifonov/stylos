@@ -1,10 +1,10 @@
 # docs/patterns/
 
-**One decided answer per recurring task.** A form, a table, a filter row, a wizard: work that every product does, solved once here so that it is not re-solved differently in each screen that needs it.
+**One decided answer per recurring task.** A form, a table, a filter row, a wizard: work that every product does. Each is solved once here, so that a screen that needs it does not solve it again in a different way.
 
-A pattern composes [`behavior/`](../behavior/README.md) and [`foundations/`](../foundations/README.md) rather than restating them — it says which of the available options this system takes, and cites the rule it is choosing among ([RULES.md](../RULES.md) RUL-11, RUL-12). A pattern is not a component: it can name several, and a component can appear in several patterns.
+A pattern combines [`behavior/`](../behavior/README.md) and [`foundations/`](../foundations/README.md) rather than restating them. It says which of the available options this system takes, and cites the rule whose options it is choosing from ([RULES.md](../RULES.md) RUL-11, RUL-12). A pattern is not a component: one pattern can name several components, and one component can appear in several patterns.
 
-Written to the grammar in [`docs/RULES.md`](../RULES.md); rules here carry `PAT-` IDs. `npm run validate:rules` holds this table and the files in agreement.
+Written to the grammar in [`docs/RULES.md`](../RULES.md); rules here carry `PAT-` IDs. `npm run validate:rules` checks that this table and the files agree.
 
 | File | Status |
 | --- | --- |
@@ -24,4 +24,4 @@ Written to the grammar in [`docs/RULES.md`](../RULES.md); rules here carry `PAT-
 | [shortcuts.md](shortcuts.md) | Yet to fill |
 | [error-pages.md](error-pages.md) | Yet to fill |
 
-**Every file is a scope line and nothing else**, and says so in its status. The set was created complete and empty by SPEC 0013; what each pattern decides is settled per topic, not here.
+**Every file is a scope line and nothing else**, and says so in its status. SPEC 0013 created the complete set, with every file empty. What each pattern decides is settled for each topic separately, not here.
