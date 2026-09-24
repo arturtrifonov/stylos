@@ -1,6 +1,6 @@
 # Spacing
 
-Status: Confirmed
+Status: Draft
 Scope: The spacing scale and the distance between things; a control's own dimensions are [sizing.md](sizing.md).
 
 ## The scale
@@ -9,7 +9,7 @@ Scope: The spacing scale and the distance between things; a control's own dimens
 
 **MUST.** The scale is base-8, and every step is named as a ratio to that base, never as the measurement it produces: `s-1_000` is one base, `s-1_500` is one and a half.
 
-Why: `s-1_500` says "one and a half bases", and that is the purpose of the name, not a convenience: the scale exists so that decisions are made in relations, not in measurements.
+Why: `s-1_500` says "one and a half bases". That is the purpose of the name, not a convenience: a name that states the relation is what PRN-02 asks for.
 
 Absolute names (`s-12`), ordinals (`s-3`) and T-shirt names all lose that. An absolute name invites reasoning in pixels, and the other two hide the ratio completely. The cost is one multiplication when a pixel value is really needed, which is rare.
 

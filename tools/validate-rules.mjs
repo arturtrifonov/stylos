@@ -27,7 +27,7 @@ import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const STATUSES = ["Yet to fill", "Partial", "Confirmed"];
+export const STATUSES = ["Yet to fill", "Draft", "Partial", "Confirmed"];
 // RETIRED is a level like the other three: a rule that has been withdrawn keeps
 // its block, so the ID still answers when someone arrives with it (RUL-14).
 export const LEVELS = ["MUST", "SHOULD", "MAY", "RETIRED"];

@@ -25,7 +25,7 @@ The system is intended to:
 - support dense application interfaces rather than marketing pages;
 - encode visual and behavioural decisions in variables, styles, components, and public component properties;
 - implement light and dark as **modes** of the semantic layer, so that one component and one variable render both without a rebuild;
-- keep **theming** separate from the mode: a product recolours Stylos by changing what the roles point at, and in future by supplying its own hue group, but never by renaming roles or editing the mode mechanism;
+- keep **theming** separate from the mode: a product recolours Stylos by changing what the roles point at, and possibly also by supplying its own hue group, but never by renaming roles or editing the mode mechanism;
 - reduce manual design decisions and uncontrolled local overrides;
 - support rebuilding external references consistently, through semantic mapping.
 

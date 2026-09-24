@@ -25,7 +25,7 @@ One more document carries rules without being a guideline file: [`components/STA
 
 Why: a rule that cannot be cited is read once and then restated from memory. That is how two files come to state the same rule differently. An ID does not drift; a quotation does.
 
-A file may open with a paragraph saying what its topic is, and a rule may carry explanation, a table or a list in its body. What it may not carry is an obligation with no ID. A reviewer who finds one treats it as an error in the document, not as a rule of the system. Either it becomes a rule block or it becomes explanation.
+A file may open with a paragraph saying what its topic is, and a rule may carry explanation, a table or a list in its body. Neither may carry an obligation with no ID. A reviewer who finds one treats it as an error in the document, not as a rule of the system. Either it becomes a rule block or it becomes explanation.
 
 Checked by: `npm run validate:rules`.
 
@@ -189,9 +189,11 @@ Checked by: `npm run validate:rules` — a cited ID that no rule carries is a fa
 
 ### RUL-12 — A narrower rule narrows, never contradicts
 
-**MUST.** A pattern may say which of a behaviour's options it takes, and a component contract may say which of a pattern's options it takes; where two rules contradict, the broader one stands and the narrower one is a defect.
+**MUST.** Where a narrower rule and a broader one contradict, the broader one stands and the narrower one is a defect.
 
 Why: without a set direction, two rules that both look true leave the reader to guess which one the system means. The reader usually picks whichever rule is closer to their work.
+
+Narrowing is what a narrower rule is for: a pattern says which of a behaviour's options it takes, and a component contract says which of a pattern's options it takes.
 
 The fix for a real contradiction is one of two things, and never a third: amend the broader rule, or give the narrower one a named exception (RUL-07).
 
@@ -207,7 +209,7 @@ Why: a reused number makes an old citation resolve to a rule it did not mean. Th
 
 There are no gaps in the sequence: a retired rule keeps its number and its place, marked **RETIRED** (RUL-14).
 
-Exception: until the guideline set's first release, a file's numbering may be compacted, retired rules included, because nothing outside the repository has cited it yet. `foundations/color.md` was compacted on 2026-09-15.
+Exception: until the guideline set's first release, a file's numbering may be compacted or put back in file order, retired rules included, because nothing outside the repository has cited it yet. `foundations/color.md` was compacted on 2026-09-15.
 
 ### RUL-14 — A change of meaning is a new rule
 
@@ -227,6 +229,7 @@ Why: it asked for a fact the export already stated, and failed the build when no
 
 Why it stays rather than disappearing: someone is reading the rule somewhere this repository cannot see — in a review comment, a commit message, a contract written last month. The question they come with is whether it still holds. If the ID is missing from the file, the answer they get is that it was never a rule. A retired block tells them what it was, that it no longer holds, and since when.
 
+Exception: a rule in a *Draft* file may change meaning in place and keep its ID, because nothing is built against a draft as settled.
 Checked by: `npm run validate:rules` — **RETIRED** is a level like the other three, so a retired block is still a rule block and still needs its reasoning.
 
 ---
@@ -240,13 +243,14 @@ Checked by: `npm run validate:rules` — **RETIRED** is a level like the other t
 ```markdown
 # <Title>
 
-Status: <Yet to fill | Partial | Confirmed>
+Status: <Yet to fill | Draft | Partial | Confirmed>
 Scope: <one sentence>
 ```
 
 | Status | Means |
 | --- | --- |
 | Yet to fill | no rule yet; the scope line is the whole content |
+| Draft | rules are written and not yet confirmed; they can still change |
 | Partial | rules exist; named gaps remain, listed under `## Open` |
 | Confirmed | the structure and the rules are settled; `## Open` may still list questions inside the settled model |
 

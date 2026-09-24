@@ -1,6 +1,6 @@
 # Sizing
 
-Status: Confirmed
+Status: Draft
 Scope: How a component's dimensions are arrived at on each axis and what the size levels mean; the space between components is [spacing.md](spacing.md).
 
 ## What an axis can do
@@ -83,9 +83,9 @@ The collection is called `dimension` because it holds both sizes and gaps: a con
 | Element | `s-2_000` | `s-2_500` | `s-3_000` | `s-3_500` | `s-4_000` |
 | Object | `s-3_000` | `s-4_000` | `s-5_000` | `s-6_000` | `s-7_000` |
 
-Why: the recommendation exists to make matching easy, not to make departing from it wrong. It says what a component of that level and size usually is — a medium Object is normally 40px tall — so a new component built to it lines up with most of what already exists. A status indicator showing "online" is 8px, well below the smallest recommended Primitive, because at 12 it would look enormous, and nothing flags that.
+Why: the recommendation exists to make matching easy, not to make departing from it wrong. It says what a component of that level and size usually is — a medium Object is normally `s-5_000` tall — so a new component built to it lines up with most of what already exists. A status indicator showing "online" is `s-1_000`, below the smallest recommended Primitive, because at `s-1_500` it would look enormous, and nothing flags that.
 
-The rows overlap on purpose, by two steps at each boundary: `s-2_000` and `s-2_500` serve both a large Primitive and a small Element, and `s-3_000` and `s-4_000` serve both a large Element and a small Object. Take a different value when the component's visual weight, borders, or treatment call for it.
+The rows overlap on purpose, by two steps at each boundary: `s-2_000` and `s-2_500` sit in the upper half of the Primitive row and the lower half of the Element row, and `s-3_000` and `s-4_000` do the same for Element and Object. Take a different value when the component's visual weight, borders, or treatment call for it.
 
 ### FND-SIZING-08 — Only Element and Object have a mechanically applied grid
 
@@ -108,11 +108,15 @@ The exemption is narrow, on purpose:
 - **Only `width` and `height`, and only where they are fixed.** Padding, gap, corner radius and stroke weight above the top of the scale are not exempt but suspicious: they are treatments, and a treatment that large is usually a mistake.
 - **Only above the top.** A fixed dimension inside the scale's range that matches no step is an off-scale value and is still a finding: in that range a token exists and was not used.
 
-Anything that applies this exemption states the top of the scale it read, so the basis is visible rather than assumed.
-
 Serves: PRN-01.
 
-### FND-SIZING-10 — A `SCALE` constraint may carry an unbound number
+### FND-SIZING-10 — Applying the above-scale exemption states the top it read
+
+**MUST.** Anything that applies FND-SIZING-09 states the top of the scale it read.
+
+Why: the exemption is measured against that top, so stating it makes the basis visible rather than assumed.
+
+### FND-SIZING-11 — A `SCALE` constraint may carry an unbound number
 
 **MAY.** A layer outside auto layout whose constraint on an axis is `SCALE` may hold an unbound number on that axis.
 
@@ -124,7 +128,7 @@ The exemption is per axis and no wider. A layer that scales horizontally gets no
 
 **This one is worth seeing.** Unlike a dimension above the scale, a scale-constrained value is a real design decision with a cost: it will not follow a token when the scale changes. So it is reported as information, not skipped in silence.
 
-### FND-SIZING-11 — A layer's sizing is judged where it is visible
+### FND-SIZING-12 — A layer's sizing is judged where it is visible
 
 **MUST.** A hidden layer's dimensions are not judged: if the same layer is visible in another variant, any finding is reported on that visible occurrence, and if the layer is hidden in every variant, the report says once that its sizing cannot be established, instead of giving a warning per variant.
 

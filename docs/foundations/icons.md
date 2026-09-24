@@ -1,6 +1,6 @@
 # Icons
 
-Status: Confirmed
+Status: Draft
 Scope: Where the icon set comes from, how it is delivered, and how an icon is used and named.
 
 SPEC 0012 built the source and delivery decisions below.
@@ -21,7 +21,7 @@ Serves: PRN-04.
 
 Why: the swap property is the component's API for the mark. A nested edit is invisible to every consumer of that API, and it is lost when the component changes.
 
-`leading`/`trailing` are preferred over `left`/`right`, for localization and RTL. The property names themselves are set in [naming.md](naming.md) §7.
+Positional names follow FND-NAMING-25, and the property names themselves are set in [naming.md](naming.md) §7.
 
 Serves: PRN-06.
 
@@ -51,7 +51,7 @@ Why: a single instance is what makes the icons one set. Mixed axis values look l
 
 | Axis | Value | Why this one |
 | --- | ---: | --- |
-| `wght` | 500 | Heavier than the text beside it (Georama base 400, emphasis 450). This keeps a 16px mark from looking thinner than its label. |
+| `wght` | 500 | Heavier than the text beside it (`weight/base`, `weight/emphasis`). This keeps a 16px mark from looking thinner than its label. |
 | `FILL` | 1 | The whole set is filled. |
 | `GRAD` | 0 | Unused — the correction it makes is too small to matter for this system. |
 | `opsz` | 20 | The bottom of the axis: strokes redrawn for a small mark rather than scaled down from a large one. |
@@ -72,9 +72,9 @@ Reversing this means regenerating the set and re-checking every place that relie
 
 ### FND-ICONS-07 — Icons ship as SVG, never as an icon font
 
-**MUST.** The set is delivered as SVG. The files live in [`assets/icons/`](../../assets/icons/README.md): `manifest.yaml` is authored, `svg/*.svg` is written by `npm run icons:import` and committed.
+**MUST.** The set is delivered as SVG, never as an icon font.
 
-Why: screen-reader behaviour is not the reason. Both forms handle it the same way, with `aria-hidden` on the mark and the name on the control (FND-ICONS-09). The reason is a kind of failure that an icon font cannot avoid:
+Why: screen-reader behaviour is not the reason. Both forms handle it the same way, with `aria-hidden` on the mark and the name on the control (FND-ICONS-10). The reason is a kind of failure that an icon font cannot avoid:
 
 - **The font does not load** — because of the network, CSP or a corporate proxy — and a ligature renders as the literal word: a button reads `delete_forever` instead of showing a mark. The accessible name is intact, but what the screen shows is not.
 - **The reader has overridden fonts** — with Windows *ignore font styles*, Firefox with page fonts off, a dyslexia extension or a user stylesheet. The result is the same, and it affects exactly the readers the accessibility work is for.
@@ -86,9 +86,15 @@ A second reason is specific to this repository: SPEC 0010 already decided that f
 
 **One instance, not a set of stops.** Putting several optical sizes in one file and switching between them with `<use>` does not work automatically: `href` is an attribute, not a CSS property, so nothing in CSS can change its target. Two versions do work: stops as `<g>` elements toggled by a container query, or — far simpler — the component picking a stop from the size it already knows. Neither is needed while one instance covers 16–40px. A second stop is added only if a real case shows the first one failing.
 
+### FND-ICONS-08 — The SVG set is generated from the manifest and committed
+
+**MUST.** The SVGs in [`assets/icons/`](../../assets/icons/README.md) are written by `npm run icons:import` from the authored `manifest.yaml`, and they are committed.
+
+Why: a set generated from a manifest can be reproduced (FND-ICONS-12), and a committed set turns every change to it into a diff.
+
 Checked by: `npm test` fails if the set and the manifest disagree.
 
-### FND-ICONS-08 — A generated icon file carries geometry alone
+### FND-ICONS-09 — A generated icon file carries geometry alone
 
 **MUST.** The written SVG holds the outline and nothing else — no size, no colour of its own, no ARIA.
 
@@ -98,7 +104,7 @@ Why: the same file has to be correct inline, in a sprite and inside a button. Si
 
 The same for every icon, whatever renders it.
 
-### FND-ICONS-09 — An icon never carries the accessible name
+### FND-ICONS-10 — An icon never carries the accessible name
 
 **MUST.** An icon is always `aria-hidden="true"`, and on an inline `<svg>` also `focusable="false"`; the name lives on what the icon is inside.
 
@@ -112,7 +118,7 @@ Why: only the context of a mark can say whether it needs a name. An icon that na
 
 Serves: PRN-04.
 
-### FND-ICONS-10 — Colour is never the only carrier of an icon's meaning
+### FND-ICONS-11 — Colour is never the only carrier of an icon's meaning
 
 **MUST.** An icon's meaning stays clear when its colour is not available.
 
@@ -124,7 +130,7 @@ Until 2026-09-07 the source was the **[Default Kit / Material Icons](https://www
 
 ## The direction of travel between Figma and code
 
-### FND-ICONS-11 — The code set is authoritative and Figma moves to match
+### FND-ICONS-12 — The code set is authoritative and Figma moves to match
 
 **MUST.** Where the two sets disagree, the committed SVG set is right and the Figma library is what changes.
 
@@ -134,7 +140,7 @@ Until the swap, a component's icons are different drawings in Figma and in code:
 
 Three marks change appearance in the swap. They are named here so the change is not taken for a mistake: **Success, Warning and Error are outlined today and become filled**, because the instance is `FILL 1`.
 
-### FND-ICONS-12 — An unresolved icon renders nothing
+### FND-ICONS-13 — An unresolved icon renders nothing
 
 **MUST.** A name the set does not carry draws nothing: no fallback mark, no warning glyph, and no placeholder crossing from Figma into code.
 

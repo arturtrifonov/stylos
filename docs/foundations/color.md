@@ -1,13 +1,13 @@
 # Color
 
-Status: Confirmed
+Status: Draft
 Scope: The palette, the semantic roles and the mode mechanism — how a colour is chosen; how a whole theme is applied is in [theming.md](theming.md).
 
 ## Two layers
 
 | Layer | Collection | What it is |
 | --- | --- | --- |
-| Primitive | `palette` | hue groups × steps, one value per mode |
+| Primitive | `palette.light`, `palette.dark` | hue groups × steps, in two collections with no modes: one for light, one for dark |
 | Semantic | `color` | roles — `surface`, `text`, `background`, `border`, `shadow` — each naming a palette step |
 
 The dark ramp is authored by hand, not generated from the light one. A literal inversion of the light ramp gives near-black, saturated surfaces that are unusable, and no single transform works for every hue group. It is the worked example behind PRN-05.
@@ -47,7 +47,7 @@ Why: the mode is a property of the collection, not of the name (FND-COLOR-05). A
 
 **MUST.** The modes belong to the `color` collection: in each mode, a role picks a step from the palette with the same name as that mode, and the palettes themselves are two plain sources with no modes.
 
-Why: a role has to be able to choose a **different step** in each mode — indigo/700 in light, indigo/800 in dark — because a dark context is not simply the light one with its colours changed. If the palette carried the modes itself, a mode could only change a step's *value*. That is the weaker of the two, and it is not the one a dark context needs.
+Why: a role has to be able to choose a **different step** in each mode — the disabled surfaces take a different `slate` step in dark than in light — because a dark context is not simply the light one with its colours changed. If the palette carried the modes itself, a mode could only change a step's *value*. That is the weaker of the two, and it is not the one a dark context needs.
 
 A `ref` such as `palette/indigo/700` therefore names a step, **not a collection**. The role's mode supplies the collection, and the mapping from mode name to palette is declared in [`tokens/_naming.yaml`](../../tokens/_naming.yaml) as part of the contract.
 
@@ -65,9 +65,9 @@ The semantic layer is cut first by **what a colour paints**. Inside an area that
 
 | Second cut | Where | Values |
 | --- | --- | --- |
-| intensity | `surface` | `bold` — the object *is* the colour; `subtle` — the colour is a wash the ground still shows through |
-| tone | `surface`, `text`, `background`, `border` | `base` for neutral structure, then `primary`, `success`, `warning`, `danger` |
-| prominence | `text`, `background` | `base`, `secondary`, `tertiary` |
+| intensity | `surface` | `bold` — the object *is* the colour; `subtle` — the object is a pale tint of it |
+| tone | `surface`, `text`, `background`, `border`, `shadow` | `base` for neutral structure (`default` on `border`), then `primary`, `success`, `warning`, `danger`; `shadow` has only `base` and `primary` |
+| prominence | `text`, `background`, `border` | `base`, `secondary`, `tertiary`; `border` has `default` and `secondary` |
 | state | `surface` | `default`, `hover`, `active`, `disabled` |
 | type | `surface`, `text` | `special/<hue>` — one role per named hue |
 
@@ -128,13 +128,7 @@ Why: a dark region inside a light page is not a supported case. Supporting it la
 
 ## Values
 
-### FND-COLOR-13 — The palette exists only in `tokens/`
-
-**MUST.** Anything outside `tokens/` that claims to be the Stylos palette is not the palette.
-
-Why: it is an input someone used once, and it will drift. A value copied into a document is wrong as soon as a variable is adjusted, and people build against a stale value in a foundation document (RUL-09).
-
-**Not written here.** Run `npm run tokens:report` — the values live in [`tokens/palette.yaml`](../../tokens/) and `tokens/color.yaml`.
+**Not written here** (RUL-09). Run `npm run tokens:report` — the values live in [`tokens/palette.yaml`](../../tokens/palette.yaml) and [`tokens/color.yaml`](../../tokens/color.yaml).
 
 ## Open
 

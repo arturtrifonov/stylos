@@ -1,9 +1,9 @@
 # Typography
 
-Status: Confirmed
+Status: Draft
 Scope: Type sizes, measures, line heights, weight and the typeface; what the words say is [content/](../content/README.md).
 
-Canonical component size values are full words — that rule is [naming.md](naming.md) FND-NAMING-17, and it is not restated here.
+Canonical component size values are full words — that rule is [naming.md](naming.md) FND-NAMING-19, and it is not restated here.
 
 ## Size and measure
 
@@ -54,19 +54,19 @@ The asymmetry is deliberate, not an oversight. Do not "fix" it.
 
 ## Values
 
-**Not copied here.** Run `npm run tokens:report`. See [effects.md](effects.md) for why documentation does not carry copied token values, and RUL-09 for the rule.
+**Not copied here** (RUL-09). Run `npm run tokens:report`.
 
 ## Weight
 
 ### FND-TYPOGRAPHY-06 — Three weight roles, named for the accent they carry
 
-**MUST.** Weight is taken from `weight/base` 400, `weight/emphasis` 450 or `weight/strong` 600 — the name carries the role, the value carries the number, and there is no third layer.
+**MUST.** Weight is taken from `weight/base`, `weight/emphasis` or `weight/strong` — the name carries the role, the value carries the number, and there is no third layer.
 
-Why: the roles were renamed from `normal`/`semibold`/`bold` on 2026-09-06. Those words are the names of typeface weights, and in that vocabulary two of the three meant a different weight from ours: CSS `bold` means 700 (ours is 600), and across the industry `semibold` means 600 (ours is 450). The role is a level of accent, not a weight name: `base` for running text, `emphasis` for what stands out in it, `strong` for what leads it. `emphasis` and `strong` also carry the order every HTML author already knows from `em` and `strong`. This section used to say bold was 700; the record and Figma say 600, and 600 is the decision.
+Why: the roles were renamed from `normal`/`semibold`/`bold` on 2026-09-06. Those words are the names of typeface weights, and in that vocabulary two of the three meant a different weight from ours: CSS `bold` means 700 and, across the industry, `semibold` means 600, and neither is what `weight/strong` and `weight/emphasis` hold. The role is a level of accent, not a weight name: `base` for running text, `emphasis` for what stands out in it, `strong` for what leads it. `emphasis` and `strong` also carry the order every HTML author already knows from `em` and `strong`. This section once gave the strongest weight the CSS `bold` value; the value in Figma is the decision.
 
-Exception: **off-scale weights are allowed**, because the typeface is variable. 450 exists only because the weight axis is continuous, and 437 may exist for the same reason if a design really calls for it. This departs on purpose from the usual rule that a value off the scale is not a value: the variable axis is the reason to choose a variable font, and refusing to use it would be formality with no purpose. The exception covers weight only; it does not extend to size, line height or spacing.
+Exception: **off-scale weights are allowed**, because the typeface is variable. `weight/emphasis` falls between the standard weights only because the weight axis is continuous, and a weight such as 437 may exist for the same reason if a design really calls for it. This departs on purpose from the usual rule that a value off the scale is not a value: the variable axis is the reason to choose a variable font, and refusing to use it would be formality with no purpose. The exception covers weight only; it does not extend to size, line height or spacing.
 
-If the family is ever replaced by static instances, this breaks without warning: 450 resolves to the nearest available weight, and the difference between `base` and `emphasis` disappears with no error. Check the weights when changing the family, not after.
+If the family is ever replaced by static instances, this breaks without warning: `weight/emphasis` resolves to the nearest available weight, and the difference between `base` and `emphasis` disappears with no error. Check the weights when changing the family, not after.
 
 ## Typeface
 
@@ -74,7 +74,7 @@ If the family is ever replaced by static instances, this breaks without warning:
 
 **MUST.** `family/normal` and `family/display` are Georama; `family/code` is JetBrains Mono.
 
-Why: both are under the SIL Open Font License, which permits embedding and redistribution, including in a commercial product. The charter intends the system to be distributed, and that rules out a typeface whose licence does not permit this.
+Why: both are under the SIL Open Font License, which permits embedding and redistribution, including in a commercial product. Nothing is decided about distributing Stylos, and the typeface must not be what rules it out, as a face whose licence forbids commercial redistribution would.
 
 Georama covers the Google Fonts Latin Plus glyph set: Latin, Western European and Vietnamese. That is the supported range.
 
@@ -86,7 +86,7 @@ The Figma text styles are the 32 named combinations of values from this collecti
 
 Figma holds the variable names, and they are currently `font/size/[measure]` and `font/line height/[family]/[measure]`.
 
-`stylos-text-sizing` *bound* to that dead path, which is one of the reasons it was removed. `component-integrity-check` showed it in example messages and has been corrected. Nothing in the repository now refers to the old scheme.
+`stylos-text-sizing` *bound* to the older scheme, `Text Size / [measure]`, which no longer exists; that is one of the reasons it was removed. `component-integrity-check` showed the older scheme in example messages and has been corrected. Nothing in the repository now refers to the old scheme.
 
 ## Default size→measure profiles
 
@@ -122,7 +122,7 @@ These are authored rules, not exported values, so they are written here and not 
 
 **MUST.** No architectural level other than Element and Object gains a shared size/text profile.
 
-Why: this is a permanent design boundary, not an unfinished feature; see [sizing.md](sizing.md). Widget- and Layout-level components vary too much in size for a shared rule, and their typography is documented per component in `docs/components/`. Primitive-level components have preferred sizes but no grid that a skill enforces.
+Why: it is the boundary FND-SIZING-08 draws for sizing, for the same reason. The typography of every other level is documented per component in `docs/components/`.
 
 ## Open
 
