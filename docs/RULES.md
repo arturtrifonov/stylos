@@ -209,7 +209,7 @@ Why: a reused number makes an old citation resolve to a rule it did not mean. Th
 
 There are no gaps in the sequence: a retired rule keeps its number and its place, marked **RETIRED** (RUL-14).
 
-Exception: until the guideline set's first release, a file's numbering may be compacted or put back in file order, retired rules included, because nothing outside the repository has cited it yet. `foundations/color.md` was compacted on 2026-09-15.
+Exception: until the guideline set's first release, a file's numbering may be compacted, retired rules included, because nothing outside the repository has cited it yet. `foundations/color.md` was compacted on 2026-09-15.
 
 ### RUL-14 — A change of meaning is a new rule
 
@@ -229,7 +229,7 @@ Why: it asked for a fact the export already stated, and failed the build when no
 
 Why it stays rather than disappearing: someone is reading the rule somewhere this repository cannot see — in a review comment, a commit message, a contract written last month. The question they come with is whether it still holds. If the ID is missing from the file, the answer they get is that it was never a rule. A retired block tells them what it was, that it no longer holds, and since when.
 
-Exception: a rule in a *Draft* file may change meaning in place and keep its ID, because nothing is built against a draft as settled.
+Exception: until every rule has been confirmed for the first time — no file is *Draft* — a rule may change in place, meaning and number included. Delete this exception once the last draft is confirmed.
 Checked by: `npm run validate:rules` — **RETIRED** is a level like the other three, so a retired block is still a rule block and still needs its reasoning.
 
 ---
