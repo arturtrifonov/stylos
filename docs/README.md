@@ -13,11 +13,11 @@ Authored design-system knowledge. Written and maintained by hand — none of it 
 | [`content/`](content/README.md) | the words — voice, terminology, labels, error messages, formats |
 | [`components/`](components/README.md) | the documentation standard and the component registry |
 
-The four guideline directories are mostly empty and say so per file: SPEC 0013 created the whole set with a scope line each, so that a rule has somewhere to be written before it is decided. A file marked *Yet to fill* is a place, not a claim.
+The four guideline directories are still mostly empty, and each file says whether it is. SPEC 0013 created the whole set with one scope line per file, so that the place for a rule exists before the rule is decided. A file marked *Yet to fill* only reserves that place; it does not say that anything about its topic is decided.
 
 ## Editorial rules
 
-They are rules, so they live where rules live — [`RULES.md`](RULES.md), with IDs, checked by `npm run validate:rules`:
+They are rules, so they live where rules live: in [`RULES.md`](RULES.md), with IDs, checked by `npm run validate:rules`.
 
 | | |
 | --- | --- |
@@ -25,3 +25,4 @@ They are rules, so they live where rules live — [`RULES.md`](RULES.md), with I
 | RUL-09 | a rule names a token, never the value it holds |
 | RUL-17 | where a skill defines a rule for its own operation, the skill is the source |
 | RUL-18 | a gap is stated, never filled with a plausible answer |
+| RUL-19 | plain English that a B2 reader follows on the first reading, without losing precision |

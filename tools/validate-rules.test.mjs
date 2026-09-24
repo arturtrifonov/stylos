@@ -121,10 +121,10 @@ test("fails a status outside the vocabulary, and a file with no scope", () => {
     area: "CNT",
     topic: "VOICE",
     header: true,
-    text: "# Voice\n\nStatus: draft\n",
+    text: "# Voice\n\nStatus: Done\n",
   };
   const errors = check([document]).errors.join("\n");
-  assert.match(errors, /status "draft" is not one of Yet to fill, Partial, Confirmed/);
+  assert.match(errors, /status "Done" is not one of Yet to fill, Draft, Partial, Confirmed/);
   assert.match(errors, /no "Scope:" line/);
 });
 

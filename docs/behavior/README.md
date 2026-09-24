@@ -2,9 +2,9 @@
 
 **The laws components inherit** — how anything in the system responds to a person: what a state means, where focus goes, what a key does, what happens while data is loading and what is shown when there is none.
 
-A behaviour is written once and inherited by every component that has the situation. A component contract may say which of a behaviour's options it takes; it may not answer the question differently ([RULES.md](../RULES.md) RUL-12). What a surface is *made of* is [`foundations/`](../foundations/README.md); how a whole recurring screen is assembled from these behaviours is [`patterns/`](../patterns/README.md).
+A behaviour is written once, and every component in that situation inherits it. A component contract may say which of a behaviour's options it takes. It may not decide the same question differently ([RULES.md](../RULES.md) RUL-12). What a surface is *made of* belongs in [`foundations/`](../foundations/README.md). How a whole recurring screen is assembled from these behaviours belongs in [`patterns/`](../patterns/README.md).
 
-Written to the grammar in [`docs/RULES.md`](../RULES.md); rules here carry `BEH-` IDs. `npm run validate:rules` holds this table and the files in agreement.
+Written to the grammar in [`docs/RULES.md`](../RULES.md); rules here carry `BEH-` IDs. `npm run validate:rules` checks that this table and the files agree.
 
 | File | Status |
 | --- | --- |
@@ -27,4 +27,4 @@ Written to the grammar in [`docs/RULES.md`](../RULES.md); rules here carry `BEH-
 | [timing.md](timing.md) | Yet to fill |
 | [text-input.md](text-input.md) | Yet to fill |
 
-**Every file is a scope line and nothing else**, and says so in its status. The set was created complete and empty by SPEC 0013: a rule needs somewhere to be written before it is decided, or it gets written in whichever document its author happened to have open. Nothing here is settled yet, and no file should be read as though it were.
+**Every file is a scope line and nothing else**, and says so in its status. SPEC 0013 created the complete set, with every file empty. The place for a rule has to exist before the rule is decided; otherwise the rule is written in whatever document its author happens to have open. Nothing here is settled yet, and no file should be read as if it were.
