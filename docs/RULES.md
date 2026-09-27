@@ -197,6 +197,16 @@ Narrowing is what a narrower rule is for: a pattern says which of a behaviour's 
 
 The fix for a real contradiction is one of two things, and never a third: amend the broader rule, or give the narrower one a named exception (RUL-07).
 
+### RUL-20 — A principle reasons from the charter, not from the rules
+
+**MUST.** A rule block in [`principles.md`](principles.md) does not cite a rule of the four guideline directories and does not link into one; it reasons from [`charter.md`](charter.md).
+
+Why: a rule names the principle it follows from in `Serves:`. If the principle names the rule back, the reasoning is a circle, and neither end is the ground the other stands on. It also ties the principle to the rule set of the day it was written: a principle exists to settle a case that has not come up yet, and one whose `Why:` points at the worked example in some foundation reads false as soon as that example is decided differently. Nothing is lost in the other direction. `Serves:` already is the index of which rules follow from a principle, and unlike a list kept by hand it cannot fall behind.
+
+Two places in the file sit outside every rule block and are not reasoning, so they may name a guideline file: the `Scope:` line, which RUL-15 requires to say where the neighbouring topic starts, and an `## Open` bullet, which may name the file a question would move to.
+
+Checked by: `npm run validate:rules` — inside a rule block in [`principles.md`](principles.md), a link into a guideline directory or a citation of an `FND`, `BEH`, `PAT` or `CNT` rule.
+
 ---
 
 ## Lifecycle
