@@ -32,7 +32,7 @@ Validates the guideline documents — `docs/RULES.md`, `docs/principles.md`, the
 npm run validate:rules   # also runs inside npm test
 ```
 
-**Fails** on: an ID that does not match the grammar or does not follow the file it is in; one ID on two rules; a rule block whose statement opens with no level, or that carries no `Why:`; an ID cited in `docs/`, `skills/src/`, `packages/ui/src/` or `tools/` that no rule carries; a guideline file with no header or a status outside *Yet to fill · Partial · Confirmed*; a directory `README.md` whose table disagrees with a file or omits one.
+**Fails** on: an ID that does not match the grammar or does not follow the file it is in; one ID on two rules; a rule block whose statement opens with no level, or that carries no `Why:`; an ID cited in `docs/`, `skills/src/`, `packages/ui/src/` or `tools/` that no rule carries; a guideline file with no header or a status outside *Yet to fill · Draft · Partial · Confirmed*; a directory `README.md` whose table disagrees with a file or omits one.
 
 **Reports** — exit 0, because they are judgements: the file and rule counts per directory, a *Confirmed* file carrying no rule block, and how many of a document's rules name no `Checked by:` — counted per file rather than listed per rule, since review is a legitimate check and the count is the only part worth seeing on every run.
 

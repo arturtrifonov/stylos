@@ -1,6 +1,6 @@
 # Principles
 
-Status: Partial
+Status: Confirmed
 Scope: What Stylos values when two options both look defensible; the rules those values produce live in [`foundations/`](foundations/README.md), [`behavior/`](behavior/README.md), [`patterns/`](patterns/README.md) and [`content/`](content/README.md).
 
 **A principle decides a question the rules do not cover.** The rules settle the cases that have already come up. A principle settles a case that has not, and a new rule has to be consistent with it. A rule that follows from a principle names it in `Serves:` ([`RULES.md`](RULES.md) RUL-03).
@@ -53,6 +53,14 @@ This is not permission for an unexplained number. Where a value was decided by e
 
 Why: everything below the customization boundary can be changed for everyone at once, and nobody else has the right to depend on anything below it. Where the boundary runs is set out in [charter §The customization boundary](charter.md#the-customization-boundary).
 
-## Open
+### PRN-07 — Emphasis goes to the exception, and the ordinary state stays quiet
 
-- Whether the set needs a principle about where attention goes. Nothing here says what deserves emphasis on a screen where everything competes for it, and `foundations/color.md` decides it per role rather than in general.
+**MUST.** Where an element can be drawn louder or quieter, its ordinary state takes the quieter treatment, and the louder ones — a filled tone, a stronger weight, a higher elevation — are kept for what departs from the ordinary: the action the view exists for, a condition someone has to notice, a change, a selection.
+
+Why: emphasis works only by contrast with what is around it, so every emphasis added makes every other one weaker. Judged one at a time, nearly every element deserves to stand out, and a screen built from those choices has nothing left to stand out against. A dense screen pays this cost many times over: whatever the ordinary state of a row is given, every row repeats it ([charter §Purpose](charter.md#purpose)).
+
+A list of two hundred connections has one that has failed. If each working connection shows a green dot, the red one is one coloured dot among two hundred. If working connections show a neutral dot, the failure is the only colour on the screen.
+
+The principle chooses between treatments an element already has: a tone or none, a filled or an outlined variant, one weight or the next. Structure is not an exception, and this principle does not make it quieter: a heading takes the level its typography role sets.
+
+This is not permission to make the ordinary hard to read. Quiet means the lowest emphasis that still meets the contrast target (FND-ACCESSIBILITY-01), not the lowest one the palette has.
