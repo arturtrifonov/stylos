@@ -5,6 +5,8 @@ Scope: The spacing scale and the distance between things; a control's own dimens
 
 ## The scale
 
+Sizes and gaps share the collection `dimension`, because both are lengths in the layout plane. Spacing is the `g-` half of it. Control dimensions are the `s-` half, and [sizing.md](sizing.md) covers them.
+
 ### FND-SPACING-01 — The scale is base-8, named in ratios to the base
 
 **MUST.** The scale is base-8, and every step is named as a ratio to that base, never as the measurement it produces: `s-1_000` is one base, `s-1_500` is one and a half.
@@ -28,9 +30,3 @@ Serves: PRN-01.
 **MUST.** The scale collection holds the primitives; semantic roles sit beside them, carry a role prefix (`s-` for size, `g-` for gap) and reuse the ratio suffix of the primitive they correspond to.
 
 Why: the shared suffix lets a reader match a role to its primitive without looking it up, so the two layers cannot drift into two different scales.
-
-## Values
-
-**Not copied here.** Run `npm run tokens:report`, which renders the current scale from `tokens/`. See [color.md](color.md) for why.
-
-Sizes and gaps share the collection `dimension`, because both are lengths in the layout plane. Spacing is the `g-` half of it. Control dimensions are the `s-` half, and [sizing.md](sizing.md) covers them.

@@ -4,6 +4,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-09-27 (no empty `Values` sections)
+
+- **`color.md`, `effects.md`, `typography.md` and `spacing.md` lose their `## Values` sections.** Each said only that the values are not there. That dates from before `RUL-09`, when the reason was passed from file to file (`spacing.md` still sent the reader to `color.md` for a reason that `color.md` no longer gave). `RUL-09` now states it once, and the foundations index repeats it for the whole directory. What those sections held besides the absence has moved: the links to `tokens/palette.yaml` and `tokens/color.yaml` are in `color.md`'s *Two layers* table, and the note that sizes and gaps share `dimension` now opens *The scale* in `spacing.md`, outside any rule block.
+
 ### Changed — 2026-09-27 (the browser floor is not a rule of the design language)
 
 - **`FND-ACCESSIBILITY-04` is gone, and what it said is a convention in [`ARCHITECTURE.md`](ARCHITECTURE.md) §7.** Which CSS and platform features the package may rely on is a constraint on the build, not a rule of the design language. That a browser supports a feature is never a reason for a design to use it; the only power the floor has over a design is to rule out what cannot be built. So it could never be cited as grounds for a design decision, which is what a rule ID promises — and the ID said as much itself, since `FND-ACCESSIBILITY-04` filed `:has` and `color-mix` under accessibility. What it requires is unchanged: Baseline Widely available, deliberately not a list of browsers, with a per-case exception that names the feature, the reason, and what a browser without it does.

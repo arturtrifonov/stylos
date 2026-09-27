@@ -52,10 +52,6 @@ Why: `line height` has four families because leading depends on whether content 
 
 The asymmetry is deliberate, not an oversight. Do not "fix" it.
 
-## Values
-
-**Not copied here** (RUL-09). Run `npm run tokens:report`.
-
 ## Weight
 
 ### FND-TYPOGRAPHY-06 — Three weight roles, named for the accent they carry
