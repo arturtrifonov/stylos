@@ -12,9 +12,17 @@ Four Stylos files, plus one external library:
 | [Stylos / Components](https://www.figma.com/design/WUc07ZBtjRvypXtsOlbVut/Stylos--Components) | `WUc07ZBtjRvypXtsOlbVut` | component and component-set definitions |
 | [Stylos / GUI components](https://www.figma.com/design/vmR8eiLdeZQuEVXokZK57c/Stylos--GUI-components) | `vmR8eiLdeZQuEVXokZK57c` | supporting assets that aren't product components — cursors and similar |
 | [Stylos Playground](https://www.figma.com/design/Fx2BP5qzqL9Gkas8JTFKz6/Stylos-Playground) | `Fx2BP5qzqL9Gkas8JTFKz6` | scratch file for testing how components actually behave. Not a source of anything |
-| [Default Kit / Material Icons](https://www.figma.com/design/mal5Fp20UXdswiLoBTVDvI/Default-Kit--Material-Icons) | `mal5Fp20UXdswiLoBTVDvI` | **external** — the icon source, used as an interim measure. See [icons.md](../docs/foundations/icons.md) |
+| [Default Kit / Material Icons](https://www.figma.com/design/mal5Fp20UXdswiLoBTVDvI/Default-Kit--Material-Icons) | `mal5Fp20UXdswiLoBTVDvI` | **external** — the currently unaligned Figma icon library. The repository's default preset is documented in [icons.md](../docs/foundations/icons.md) |
 
 The keys are the segment of each URL after `/design/`. They are what the Figma REST API addresses a file by, and the reason they are written down: without them nothing can ask Figma what it contains.
+
+**A dedicated Stylos icon file is planned for the current preset.** It will
+contain only the Material Symbols Rounded preset shipped by the repository,
+with the same fixed parameters and drawings. Other presets and their Figma
+libraries are the responsibility of the consumers who choose them. Creating
+this file and aligning the existing icon instances remain implementation work;
+its key will be added to the table when it exists. The settled preset scope is
+in [icons.md](../docs/foundations/icons.md).
 
 **The Playground is not documentation and not a library.** It exists to try things; nothing in this repository should ever cite it as evidence of how a component works.
 

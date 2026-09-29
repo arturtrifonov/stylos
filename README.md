@@ -8,7 +8,7 @@ A design system for dense, desktop-oriented web product interfaces. Its visual l
 | --- | --- |
 | Owner | Artur Trifonov |
 | Figma | [Styles](https://www.figma.com/design/2OJYDoTE9EAdQKaJAJK9Kt/Stylos--Styles) · [Components](https://www.figma.com/design/WUc07ZBtjRvypXtsOlbVut/Stylos--Components) · [GUI components](https://www.figma.com/design/vmR8eiLdeZQuEVXokZK57c/Stylos--GUI-components) · [Playground](https://www.figma.com/design/Fx2BP5qzqL9Gkas8JTFKz6/Stylos-Playground) — keys in [`figma/README.md`](figma/README.md) |
-| Icons | [Default Kit / Material Icons](https://www.figma.com/design/mal5Fp20UXdswiLoBTVDvI/Default-Kit--Material-Icons) — external, interim |
+| Icons | Current default preset: [Material Symbols Rounded](assets/icons/README.md); Figma still uses the external [Default Kit / Material Icons](https://www.figma.com/design/mal5Fp20UXdswiLoBTVDvI/Default-Kit--Material-Icons) until it is aligned |
 | Repository | https://github.com/arturtrifonov/stylos |
 | Design tool | Figma |
 | Platform | web, desktop-oriented applications |
@@ -71,6 +71,7 @@ npm test                  # tool tests
 npm run build:skills      # skills/src/ → skills/dist/, imported into Figma Agent by hand
 npm run validate:registry # component registry: contradictions fail, judgements are reported
 npm run build             # → build/, the whole publishable site
+npm run dev               # local site at http://127.0.0.1:4173/, rebuilds and reloads on edits
 npm run build:publish     # the same, plus the Storybook workshop at build/storybook/
 npm run registry:view     # → build/registry.html alone, while editing YAML
 npm run components:view   # → build/components/ alone, one page per component

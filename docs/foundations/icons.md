@@ -1,9 +1,12 @@
 # Icons
 
-Status: Draft
+Status: Confirmed
 Scope: Where the icon set comes from, how it is delivered, and how an icon is used and named.
 
-SPEC 0012 built the source and delivery decisions below.
+This guide defines the system rules for icons. The particular drawings and
+their source are a preset, not a foundation rule; the preset currently shipped
+by the repository is recorded below so that its implementation can be changed
+without turning a vendor choice into a design requirement.
 
 ## Using an icon
 
@@ -39,34 +42,19 @@ Serves: PRN-01.
 
 Why: the icon set is a vocabulary with one visual treatment. A logo has an owner and a specification of its own, and an illustration carries meaning that the set cannot normalise.
 
-## The source: Material Symbols Rounded, at one instance
+## The set
 
-### FND-ICONS-05 — The set is one fixed instance of Material Symbols Rounded
+### FND-ICONS-05 — A set has one declared visual preset
 
-**MUST.** Every mark comes from **Material Symbols** (Apache-2.0), Rounded, at a single fixed instance.
+**MUST.** Every system mark comes from the same declared icon preset. A call site does not choose a family, weight, fill or optical treatment.
 
-Why: a single instance is what makes the icons one set. Mixed axis values look like several icon families on one screen, and the axes are not a decision a call site should be able to make.
+Why: one preset is what makes the icons one set. Mixing families or treatments looks like several icon systems on one screen, and those choices belong to the set's owner, not to a call site.
 
-**Amended 2026-09-07, replacing the interim Material Icons source below.** The instance:
+### FND-ICONS-06 — State in a drawing is an explicit preset capability
 
-| Axis | Value | Why this one |
-| --- | ---: | --- |
-| `wght` | 500 | Heavier than the text beside it (`weight/base`, `weight/emphasis`). This keeps a 16px mark from looking thinner than its label. |
-| `FILL` | 1 | The whole set is filled. |
-| `GRAD` | 0 | Unused — the correction it makes is too small to matter for this system. |
-| `opsz` | 20 | The bottom of the axis: strokes redrawn for a small mark rather than scaled down from a large one. |
+**MUST.** A component uses a filled/unfilled or otherwise alternate drawing to show state only when the active preset explicitly supplies that state pair.
 
-What matters is the pairing: **heavier weight against a smaller optical size**. It reads well at 16px and does not look coarse at 40px, so one instance covers the whole size range. It was chosen by eye, not derived, on a test bench that showed the axes against the real type scale.
-
-Serves: PRN-05.
-
-### FND-ICONS-06 — `FILL` is not a state axis
-
-**MUST.** Selection is not shown by a filled/unfilled icon pair.
-
-Why: in Material Symbols, FILL 0 → 1 *is* the unselected → selected pair, and a set that ships only FILL 1 has used that pair up. A navigation item, a tab or a toggle shows selection some other way — colour, surface, label weight — because the set does not carry the pair.
-
-Reversing this means regenerating the set and re-checking every place that relied on the single fill.
+Why: a visual difference that happens to exist in one source is not a system state model. Treating it as one makes components depend on a preset detail that the next preset may not have.
 
 ## The delivery form: SVG, generated, committed
 
@@ -82,21 +70,17 @@ Why: screen-reader behaviour is not the reason. Both forms handle it the same wa
 
 A second reason is specific to this repository: SPEC 0010 already decided that faces are *copied, never fetched*, so a font update is a deliberate commit with a diff. That decision ruled out the Google Fonts CSS API, subsetting included, before this one was made.
 
-**What SVG costs, and why the cost is acceptable.** The variable axes can no longer be adjusted at runtime. Only `opsz` is a real loss, because a change of optical size redraws the mark rather than scaling it. That loss is recovered by instancing the variable font at import time, instead of taking the stock `@material-symbols/svg-NNN` packages, which are drawn at `opsz 48` only. The other three axes were never wanted at runtime: a design system that tokenises its decisions should give consumers one weight, not a slider.
+### FND-ICONS-08 — The delivered set is reproducible and committed
 
-**One instance, not a set of stops.** Putting several optical sizes in one file and switching between them with `<use>` does not work automatically: `href` is an attribute, not a CSS property, so nothing in CSS can change its target. Two versions do work: stops as `<g>` elements toggled by a container query, or — far simpler — the component picking a stop from the size it already knows. Neither is needed while one instance covers 16–40px. A second stop is added only if a real case shows the first one failing.
+**MUST.** The delivered icons are reproducible from their declared preset and are committed with it.
 
-### FND-ICONS-08 — The SVG set is generated from the manifest and committed
-
-**MUST.** The SVGs in [`assets/icons/`](../../assets/icons/README.md) are written by `npm run icons:import` from the authored `manifest.yaml`, and they are committed.
-
-Why: a set generated from a manifest can be reproduced (FND-ICONS-12), and a committed set turns every change to it into a diff.
+Why: reproducible assets let a preset be replaced deliberately, and committed assets turn every change to it into a diff.
 
 Checked by: `npm test` fails if the set and the manifest disagree.
 
 ### FND-ICONS-09 — A generated icon file carries geometry alone
 
-**MUST.** The written SVG holds the outline and nothing else — no size, no colour of its own, no ARIA.
+**MUST.** A delivered SVG holds the outline and nothing else — no size, no colour of its own, no ARIA.
 
 Why: the same file has to be correct inline, in a sprite and inside a button. Size is a token and the accessible name belongs on the control, so a file that carried either would be wrong in two of the three places it is used.
 
@@ -124,29 +108,63 @@ Serves: PRN-04.
 
 Why: this is WCAG 2.2 SC 1.4.1 applied to the smallest element the system ships. A status set told apart by hue alone fails the readers the mark was added to help.
 
-## Superseded: the interim Material Icons source
+## Current default preset — Material Symbols Rounded
 
-Until 2026-09-07 the source was the **[Default Kit / Material Icons](https://www.figma.com/design/mal5Fp20UXdswiLoBTVDvI/Default-Kit--Material-Icons)** Figma library, Google's older set. It was taken because it was free, comprehensive and available as a Figma library, and because it unblocked component work without spending Alpha time on drawing icons. The reasoning that replaced it is above. One thing this section said correctly still stands: **this is not a claim that Material's visual language matches Stylos's classical and structural character.** A native Stylos icon set is still expected, not merely possible, and drawing one is still too expensive now. What changed is that the placeholder is now a generated artifact in this repository, not a link to someone else's Figma file. Replacing it later means changing a manifest and a generator, not searching through instances.
+This is the preset the repository currently builds, not a rule that Stylos
+icons must be Material. Its source, axes and names live in the authored
+[`assets/icons/manifest.yaml`](../../assets/icons/manifest.yaml); the importer
+turns those choices into the committed SVGs in
+[`assets/icons/svg/`](../../assets/icons/README.md). A replacement preset must
+continue to satisfy the rules above and the `Icon` drawing contract, but may
+use different drawings, names and an importer appropriate to its source.
+
+Stylos supplies this preset. A consumer choosing another preset is responsible
+for its assets, integration and Figma library. A managed way to supply other
+presets may be considered later; none is promised now.
+
+The current instance is Material Symbols Rounded (Apache-2.0), `wght 500`,
+`FILL 1`, `GRAD 0`, `opsz 20`. It was selected for this implementation because
+it is available, comprehensive and works at the system's icon sizes. It does
+not claim that Material is Stylos's visual language.
+
+The importer instances that variable font rather than using the stock SVG
+packages, which are drawn at a different optical size. That is a property of
+this preset's source, not a requirement for a later source. Its variable axes
+are fixed at import time; no call site receives an axis control.
+
+The owner chose these parameters by visual comparison so that one optical
+version works across the system's icon sizes. The preset supplies one drawing
+per mark, scaled to the required footprint, with no second optical version.
+
+The current preset provides only filled drawings. Stylos currently has no
+component that uses a filled/unfilled pair to show state, so omitting the
+unfilled version loses no behaviour the system currently supports. A state
+pair is outside this preset's scope.
+
+The Figma implementation will have a dedicated icon file containing this
+preset only. It will supply the same drawings as the repository. Creating the
+file and aligning existing components are implementation work still to do;
+the choice of library structure is settled. See
+[figma/README.md](../../figma/README.md) for the existing files.
 
 ## The direction of travel between Figma and code
 
-### FND-ICONS-12 — The code set is authoritative and Figma moves to match
+### FND-ICONS-12 — The published preset has one authority
 
-**MUST.** Where the two sets disagree, the committed SVG set is right and the Figma library is what changes.
+**MUST.** Each published preset identifies one authoritative artifact. Other representations, including Figma, move to match it.
 
-Why: decided on 2026-09-07, together with the source. The set is generated from a manifest in this repository, so it is the only side of the pair that can be reproduced.
+Why: an icon mismatch cannot be resolved by taste at every component. One authority makes a replacement auditable and prevents the two representations quietly becoming different sets.
 
-Until the swap, a component's icons are different drawings in Figma and in code: the thirty components at [node `2839:2469`](https://www.figma.com/design/WUc07ZBtjRvypXtsOlbVut/Stylos--Components?node-id=2839-2469) still use the old Default Kit set. The swap is cheapest to do before the Button family (Stage 5) fills in its icon slots.
+For the current default preset, the committed SVGs are authoritative because
+they are reproducible from the manifest. The thirty Figma icon components at
+[node `2839:2469`](https://www.figma.com/design/WUc07ZBtjRvypXtsOlbVut/Stylos--Components?node-id=2839-2469)
+still use the earlier external Material Icons library and have not yet been
+aligned.
 
-Three marks change appearance in the swap. They are named here so the change is not taken for a mistake: **Success, Warning and Error are outlined today and become filled**, because the instance is `FILL 1`.
+Three marks will change appearance during that alignment: **Success, Warning and Error** are outlined in Figma today and filled in the current preset.
 
 ### FND-ICONS-13 — An unresolved icon renders nothing
 
 **MUST.** A name the set does not carry draws nothing: no fallback mark, no warning glyph, and no placeholder crossing from Figma into code.
 
 Why: Figma's placeholder marks an instance that nobody has chosen yet. A design file has that state; a program does not. With a default mark, a forgotten property would draw a real icon without any warning. That is worse than drawing nothing: an empty place is visibly wrong, but a magnifier where a trash can belongs is wrong in a way nobody sees.
-
-## Open
-
-- Whether Stylos will own a dedicated Figma file for icons once the swap happens — see [figma/README.md](../../figma/README.md) for the current library layout.
-- Whether the set needs a second optical stop, and whether losing the FILL state pair costs anything in the navigation and tab components — both answerable only once those components exist.

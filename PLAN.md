@@ -212,7 +212,7 @@ Do **not** pull: the consumer skill or `registry.json` — requirement 2 of the 
 
 ## 8. Explicitly not in this plan
 
-A native Stylos icon set (Material Icons stays interim — Google's older set, not Symbols; [`icons.md`](docs/foundations/icons.md)), mobile support, writing to Figma from the repository, framework adapters beyond Svelte, and any licensing or commercial work.
+A dedicated native Stylos icon preset, mobile support, writing to Figma from the repository, framework adapters beyond Svelte, and any licensing or commercial work.
 
 *Amended 2026-09-06:* a public documentation site was on this list and is no longer — the owner decided, explicitly, to publish the generated tree with the workshop inside it. SPEC 0011 is the work order; the deploy itself stays a manual act outside the plan.
 

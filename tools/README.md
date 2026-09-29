@@ -48,6 +48,13 @@ The one command that produces something uploadable. It writes the home page, the
 
 It calls the renderers rather than spawning them — one process, one read of `tokens/` and of the registry, and an error that stops the build instead of leaving half a tree behind. It clears `build/` first, so a page belonging to a component that has since been renamed cannot survive into a publish.
 
+### `dev-site.mjs` — local preview
+
+`npm run dev` builds the site and serves it at `http://127.0.0.1:4173/`.
+Documentation, tokens, assets, Figma metadata and renderer edits trigger a rebuild
+and reload the browser tab. The server serves only `build/`, binds to loopback,
+and needs no dependencies. Set `PORT` to use a different port; Ctrl+C stops it.
+
 ## `build-home.mjs`
 
 The front door, and deliberately a placeholder: a wordmark, one sentence about what Stylos is, three counts derived from the registry, and a door into each of the two views. It exists so the published tree opens on something other than a 101-row table, and it is the first thing a real documentation surface replaces ([`PLAN.md`](../PLAN.md) Stage 6).
