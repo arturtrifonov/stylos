@@ -7,8 +7,10 @@ Scope: The palette, the semantic roles and the mode mechanism — how a colour i
 
 | Layer | Collection | What it is |
 | --- | --- | --- |
-| Primitive | `palette.light`, `palette.dark` | hue groups × steps, in two collections with no modes: one for light, one for dark |
-| Semantic | `color` | roles — `surface`, `text`, `background`, `border`, `shadow` — each naming a palette step |
+| Primitive | `palette.light`, `palette.dark` — [`tokens/palette.yaml`](../../tokens/palette.yaml) | hue groups × steps, in two collections with no modes: one for light, one for dark |
+| Semantic | `color` — [`tokens/color.yaml`](../../tokens/color.yaml) | roles — `surface`, `text`, `background`, `border`, `shadow` — each naming a palette step |
+
+In `tokens/` the two palettes are stored as one collection, `palette`, with `light` and `dark` as its modes. The import joins them, as [`tokens/_naming.yaml`](../../tokens/_naming.yaml) declares. Only the storage differs: in Figma they are two collections with no modes, and a role picks its step from each one separately (FND-COLOR-05).
 
 The dark ramp is authored by hand, not generated from the light one. A literal inversion of the light ramp gives near-black, saturated surfaces that are unusable, and no single transform works for every hue group. It is the worked example behind PRN-05.
 
@@ -125,10 +127,6 @@ Why: if the dark scope redeclared only the roles that differ, a client's overrid
 **MUST.** A mode applies to the document, not to an arbitrary subtree.
 
 Why: a dark region inside a light page is not a supported case. Supporting it later would mean emitting the whole semantic layer again for every node that carries a mode.
-
-## Values
-
-**Not written here** (RUL-09). Run `npm run tokens:report` — the values live in [`tokens/palette.yaml`](../../tokens/palette.yaml) and [`tokens/color.yaml`](../../tokens/color.yaml).
 
 ## Open
 

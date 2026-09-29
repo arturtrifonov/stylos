@@ -55,10 +55,6 @@ X is always zero, and **blur equals the Y offset**. That is why there is no blur
 
 **Every level carries a brand tint.** `shadow/color/primary` appears in all six, so shadows are not neutral. The role it aliases, `color/shadow/primary`, references `indigo` and carries its opacity beside the reference (FND-COLOR-09), so a change to that palette step reaches all six shadows. Until 2026-09-15 the colour was stored flattened, and a change to the step reached none of them.
 
-## Values
-
-**Not copied here** (RUL-09). Run `npm run tokens:report`; the values live in `tokens/`.
-
 ## Open
 
 - **When to use which level.** The scale is defined. What an elevation *means* — which surface sits at which level — is not, and that belongs with the components that use the levels.
