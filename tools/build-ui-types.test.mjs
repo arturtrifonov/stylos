@@ -40,6 +40,15 @@ test("a sole slot is named children", () => {
   assert.equal(fieldFor({ name: "content", kind: "slot" }, { soleSlot: false }).propName, "content");
 });
 
+test("a string identifier stays an open string prop with its role name", () => {
+  const rendered = renderProps({
+    id: "Icon",
+    api: [{ name: "name", kind: "string", values: [{ value: "check_circle" }] }],
+  });
+  assert.match(rendered, /name\?: string;/);
+  assert.doesNotMatch(rendered, /nameText|name\?: "check_circle"/);
+});
+
 test("an unknown kind fails loudly rather than generating nothing", () => {
   assert.throws(() => fieldFor({ name: "x", kind: "mystery" }), /unknown kind/);
 });

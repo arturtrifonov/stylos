@@ -16,6 +16,18 @@ The Svelte 5 component package, built to SPEC 0009 against the contracts in [`do
 
 `npm run ui:generate` at the root rebuilds all of it; `npm run ui:build` builds the package (generation runs as its `prebuild`).
 
+## Property name conversion
+
+The registry holds the public contract; the generator converts its property names for Svelte under FND-NAMING-32 ([naming.md](../../docs/foundations/naming.md)).
+
+- Names become camelCase: `label text` → `labelText`, `is required` → `isRequired`. The generator removes punctuation within each word before joining the words: `is read-only` → `isReadonly`.
+- When the contract has exactly one slot, its prop is `children`, following Svelte's convention for child content. With several slots, each prop uses the camelCase form of its contract name.
+- Variant values are copied unchanged. For example, `extra small` remains `"extra small"`.
+
+Both `kind: text` (textual content) and `kind: string` (a non-text string value such as an icon identifier) generate TypeScript `string`. The distinction remains in the registry; `Icon.name` stays the `name` prop.
+
+These conversions are implemented in `tools/build-ui-types.mjs`; they change spelling, not the property's meaning.
+
 ## Adding a component
 
 Per SPEC 0009 §5, contract first: the entry's `api` is corrected to describe the web component in the same session the `.svelte` is written. Then a directory under `src/components/` named by the entry's slug, the authored CSS and wrapper, an export in `src/index.ts` — and the generators produce the props type and the workshop story.

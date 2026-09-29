@@ -7,7 +7,8 @@
 // The mapping is SPEC 0009 §3 — props ↔ the entry's `api`, 1:1:
 //
 //   variant  → one prop, camelCased name, values as a string union, verbatim
-//   text     → a string prop
+//   text     → a string prop carrying displayed text
+//   string   → a string prop carrying an identifier or other non-text value
 //   boolean  → a boolean prop
 //   instance → a prop taking a component or snippet
 //   slot     → a snippet, named `children` where the entry has exactly one
@@ -73,6 +74,7 @@ export function fieldFor(property, { soleSlot = false } = {}) {
   const type = {
     variant: () => union(property),
     text: () => "string",
+    string: () => "string",
     boolean: () => "boolean",
     instance: () => "Component | Snippet",
     slot: () => "Snippet",

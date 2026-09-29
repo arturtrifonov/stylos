@@ -4,7 +4,7 @@ description: "Clean up naming in a selected Figma component or component set acc
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.13
+  version: 0.15
 ---
 
 # Stylos Naming Cleanup
@@ -75,9 +75,9 @@ Apply a mapping when a known-wrong word appears. Do not sweep for conformance, d
 | `is filled`, `is expanded` | `false`, `true` |
 | `orientation`, `alignment`, `position`, `icon position` | the component's own |
 
-**`tone` names a colour role, and the system has three kinds of them:** the semantic slots (`base`, `primary`, `success`, `warning`, `danger`), the neutral hierarchy (`secondary`, `tertiary`, `inverted`), and any palette hue by name (`slate`, `amber`, `violet`, and the rest). A component built for categorical colour — an indicator dot, a tag — legitimately exposes the whole palette. That is normal and nothing flags it.
+**`tone` names a colour role:** semantic tones include `base`, `primary`, `info`, `success`, `warning`, `danger`; neutral hierarchy includes `secondary`, `tertiary`, `inverted`; palette hues include `neutral`, `slate`, `amber`, `violet`, and the rest. A component can also mirror a role family, using all of that family's role names unchanged, including `disabled` where that is a colour role. Its contract names the family. See FND-NAMING-16, FND-NAMING-17 and FND-NAMING-18 in [naming.md](../../../docs/foundations/naming.md). A component built for categorical colour legitimately exposes the whole palette. That is normal and nothing flags it.
 
-Only two words are wrong as a tone, and both have a mapping: `error` is a validation outcome and becomes `danger`; `info` names no colour the system has, so it needs a decision rather than a rename.
+The known-wrong tone word is `error`: it is a validation outcome and becomes `danger`. `info` and `neutral` are valid tone names, so preserve them and only normalize their casing.
 
 **`tone` names a colour; `state` and `validation` name a condition.** They map many-to-one: an input in the error state takes the `danger` colour.
 
@@ -264,6 +264,8 @@ Full words, per [Vocabulary](#vocabulary). Their order is fixed and is not alpha
 ### Text component properties
 
 Text component properties must end with `text`.
+
+This applies to textual content (FND-NAMING-20), not every property whose storage type is a string. A registry `kind: string` property such as `Icon.name` identifies a resource; preserve its role name without adding `text`. Figma may represent that choice through an instance swap rather than a text property. The mapping is recorded in the component's `figma_notes` and [figma/naming.md](../../../figma/naming.md).
 
 Good:
 
@@ -463,7 +465,7 @@ Bad:
 
 #### Order inside a controlled property group
 
-**Adjacency holds inside a panel section, never across one.** Figma lists variant properties and component properties separately, so a group cannot span both: `icon position` keeps its place in the variant order and does not join the `has icon` group. Never report a group as split because one of its settings is a variant.
+**Panel adjacency holds inside a section, never across one.** The contract's `controls` group is adjacent in `api` (FND-NAMING-28). Figma projects that group into separate variant and component-property sections, as [figma/naming.md](../../../figma/naming.md) describes: `icon position` keeps its place in the variant order. Never report a panel group as split because one of its settings is a variant.
 
 Use this order inside the group:
 
@@ -491,7 +493,7 @@ Examples:
 
 Use this order for component properties after variant properties.
 
-**This orders the Figma panel, not the contract** ([naming.md](../../../docs/foundations/naming.md) §10). A property that exists only to draw a state in Figma — `has scrollbar` — has a place here even though the component's `api` deliberately omits it. Never move a property out of the order because a contract does not carry it.
+**Use the global relative order for this panel section** (FND-NAMING-29). The Figma projection is described in [figma/naming.md](../../../figma/naming.md). A property that exists only to draw a state in Figma — `has scrollbar` — also has a place here even though the component's `api` deliberately omits it. Never move a property out of the panel order because a contract does not carry it.
 
 **The bands carry the reasoning; the entries carry the answer.** Each controlled property group stays together (§9).
 
@@ -988,8 +990,7 @@ A value cannot be mapped without knowing its property. `Error` is a correct `val
 **`tone`** — after `Status` → `tone`:
 
 - `Error` → `danger`
-- `Info`, `Neutral` → not tone values; ask which of the vocabulary applies
-- `Base`, `Primary`, `Success`, `Warning`, `Danger`, `Inverted` → lowercase
+- `Base`, `Primary`, `Info`, `Success`, `Warning`, `Danger`, `Inverted`, `Neutral` → lowercase
 
 **`state`**
 
