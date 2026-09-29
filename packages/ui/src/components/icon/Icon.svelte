@@ -3,9 +3,9 @@
   // contract's props and renders the drawing icons.ts carries; it is the only
   // Svelte-specific file in the component (ADR 0002).
   //
-  // `name` is a Material Symbols name — decided 2026-09-07, amending SPEC
-  // 0012 §2: one door over the whole library rather than a Stylos vocabulary
-  // covering twenty-nine of 3,905.
+  // `name` is a name in the active icon preset. The default preset currently
+  // retains Material Symbols names; that is an implementation convention, not
+  // part of the Icon contract (docs/foundations/icons.md).
   //
   // A name the build does not carry renders nothing. There is no placeholder
   // mark: in Figma a placeholder marks an instance nobody has chosen yet,

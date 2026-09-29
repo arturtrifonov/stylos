@@ -11,7 +11,7 @@ html: "<svg>"
 status: "ready"
 version: "0.1.0"
 summary: "A single mark from the system set."
-purpose: "Interfaces need a small vocabulary of marks a person recognises faster than they read: close, search, expand, the direction a thing will move. Icon renders one of them. The set is deliberately small and grown only when something needs a mark, and every mark in it is drawn from Material Symbols at one fixed instance (docs/foundations/icons.md) — so a component reaching for a mark gets one that matches every other mark in the system, which is what makes the set a set rather than a folder."
+purpose: "Interfaces need a small vocabulary of marks a person recognises faster than they read: close, search, expand, the direction a thing will move. Icon renders one of them. The set is deliberately small and grown only when something needs a mark. Its drawings come from one declared preset (docs/foundations/icons.md), so a component reaching for a mark gets one that matches every other mark in the system, which is what makes the set a set rather than a folder."
 use_when:
   - "A component needs a mark the set carries, in an icon, leading icon or trailing icon slot."
 do_not_use_when:
@@ -106,7 +106,7 @@ api:
   -
     name: "name"
     kind: "text"
-    description: "Which mark, named as Material Symbols names it. Amended 2026-09-07: this was a variant over twenty-nine Stylos names until the code set was drawn from Material Symbols directly (SPEC 0012), and one door over the whole library beat a vocabulary covering twenty-nine of 3,905. There is no default and no placeholder value: a name the build does not carry renders nothing, because an icon nobody chose is one nobody wrote. Figma expresses the same property as thirty separate components — see the Figma notes below. The values are examples rather than a vocabulary: any name the set carries is valid, and these are what the generated story and the component page render. Written without example names on purpose — this text is rendered as Markdown in Storybook, where an underscored name loses its underscores to emphasis; the values below carry the examples and render intact."
+    description: "Which mark in the active preset. There is no default and no placeholder value: a name the build does not carry renders nothing, because an icon nobody chose is one nobody wrote. The current default preset retains Material Symbols names, but that is a preset convention rather than the Icon contract. Figma expresses the same property as thirty separate components — see the Figma notes below. The values are examples rather than a vocabulary: any name the set carries is valid, and these are what the generated story and the component page render. Written without example names on purpose — this text is rendered as Markdown in Storybook, where an underscored name loses its underscores to emphasis; the values below carry the examples and render intact."
     values:
       -
         value: "search"

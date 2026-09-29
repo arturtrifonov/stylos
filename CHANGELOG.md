@@ -4,6 +4,15 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-09-29 (icon rules and the current preset confirmed)
+
+- **`icons.md` is Confirmed.** Material Symbols Rounded is the current default preset. The foundation rules describe a consistent set, delivery and accessibility without requiring that source. The Icon contract and entry-point documentation follow that distinction.
+- **The preset's open questions are settled.** Its Figma implementation will have a dedicated file for this preset only; creation and instance alignment remain to do. Consumers choosing other presets handle their own integration. The chosen parameters supply one optical version across the system's sizes. Filled/unfilled state pairs are outside the current preset's scope because the system has no component that uses them. The guide no longer carries these as open questions.
+
+### Added — 2026-09-29 (local site preview)
+
+- **`npm run dev` serves the documentation site on loopback at port 4173.** Edits to its source rebuild the generated pages and reload the browser tab. The preview uses Node's built-in server and file watcher, with no added dependencies.
+
 ### Changed — 2026-09-27 (no empty `Values` sections)
 
 - **`color.md`, `effects.md`, `typography.md` and `spacing.md` lose their `## Values` sections.** Each said only that the values are not there. That dates from before `RUL-09`, when the reason was passed from file to file (`spacing.md` still sent the reader to `color.md` for a reason that `color.md` no longer gave). `RUL-09` now states it once, and the foundations index repeats it for the whole directory. What those sections held besides the absence has moved: the links to `tokens/palette.yaml` and `tokens/color.yaml` are in `color.md`'s *Two layers* table, with a sentence under it saying that the import stores the two palettes as one collection with two modes, which is what a reader who follows the link finds; and the note that sizes and gaps share `dimension` now opens *The scale* in `spacing.md`, outside any rule block.

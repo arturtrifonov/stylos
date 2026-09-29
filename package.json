@@ -12,6 +12,7 @@
     "apps/workshop"
   ],
   "scripts": {
+    "dev": "node tools/dev-site.mjs",
     "build": "node tools/build-site.mjs",
     "build:publish": "npm run workshop:build && npm run build",
     "build:skills": "node tools/build-skills.mjs",

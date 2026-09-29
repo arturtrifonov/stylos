@@ -1,13 +1,17 @@
 # assets/icons/
 
-The Stylos icon set: one fixed instance, as SVG. Twenty-nine drawings — the marks the Figma library already carries as system components (SPEC 0012 §2). The set is grown on demand, not stocked.
+The current default Stylos icon preset: one fixed Material Symbols Rounded
+instance, delivered as SVG. Twenty-nine drawings — the marks the Figma library
+already carries as system components. The set is grown on demand, not stocked.
 
 | Path | Kind |
 | --- | --- |
 | [`manifest.yaml`](manifest.yaml) | **authored** — the set and the instance it is drawn at |
 | `svg/*.svg` | **generated** by `npm run icons:import`, committed, never hand-edited |
 
-The rule that governs both — why the set is SVG rather than an icon font, and why it is one instance rather than an axis exposed to consumers — is [`docs/foundations/icons.md`](../../docs/foundations/icons.md). This file is the mechanics.
+The foundation rules — one declared preset, SVG delivery, accessibility and
+replacement — are in [`docs/foundations/icons.md`](../../docs/foundations/icons.md).
+This file documents the mechanics of the current default preset.
 
 ## Adding an icon
 
