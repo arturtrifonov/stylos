@@ -1,15 +1,48 @@
 # GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export.
-# Imported 2026-09-15 20:34Z from Stylos / Styles.
+# Imported 2026-09-28 23:48Z from Stylos / Styles.
 collection: "color"
 layer: "semantic"
 source:
-  imported: "2026-09-15 20:34Z"
+  imported: "2026-09-28 23:48Z"
   figma_file: "Stylos / Styles"
   figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
 modes:
   - "light"
   - "dark"
 tokens:
+  "surface/bold/base/default":
+    type: "color"
+    id: "VariableID:1943:1238"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/700"
+  "surface/bold/base/hover":
+    type: "color"
+    id: "VariableID:1943:1239"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/800"
+  "surface/bold/base/active":
+    type: "color"
+    id: "VariableID:1943:1240"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/900"
+  "surface/bold/base/disabled":
+    type: "color"
+    id: "VariableID:1943:1253"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      light: "palette/slate/100"
+      dark: "palette/slate/200"
   "surface/bold/primary/default":
     type: "color"
     id: "VariableID:1943:1229"
@@ -43,33 +76,33 @@ tokens:
     ref:
       light: "palette/slate/100"
       dark: "palette/slate/200"
-  "surface/bold/base/default":
+  "surface/bold/info/default":
     type: "color"
-    id: "VariableID:1943:1238"
+    id: "VariableID:2763:1616"
     scopes:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/slate/700"
-  "surface/bold/base/hover":
+      default: "palette/blue/700"
+  "surface/bold/info/hover":
     type: "color"
-    id: "VariableID:1943:1239"
+    id: "VariableID:2763:1617"
     scopes:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/slate/800"
-  "surface/bold/base/active":
+      default: "palette/blue/800"
+  "surface/bold/info/active":
     type: "color"
-    id: "VariableID:1943:1240"
+    id: "VariableID:2763:1618"
     scopes:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/slate/900"
-  "surface/bold/base/disabled":
+      default: "palette/blue/900"
+  "surface/bold/info/disabled":
     type: "color"
-    id: "VariableID:1943:1253"
+    id: "VariableID:2763:1619"
     scopes:
       - "FRAME_FILL"
       - "SHAPE_FILL"
@@ -234,6 +267,38 @@ tokens:
   "surface/subtle/primary/disabled":
     type: "color"
     id: "VariableID:2579:818"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/slate/25"
+  "surface/subtle/info/default":
+    type: "color"
+    id: "VariableID:2763:1620"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/blue/50"
+  "surface/subtle/info/hover":
+    type: "color"
+    id: "VariableID:2763:1621"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/blue/100"
+  "surface/subtle/info/active":
+    type: "color"
+    id: "VariableID:2763:1622"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/blue/200"
+  "surface/subtle/info/disabled":
+    type: "color"
+    id: "VariableID:2763:1623"
     scopes:
       - "FRAME_FILL"
       - "SHAPE_FILL"
@@ -543,6 +608,14 @@ tokens:
       - "TEXT_FILL"
     ref:
       default: "palette/indigo/800"
+  "text/info":
+    type: "color"
+    id: "VariableID:2763:1624"
+    scopes:
+      - "SHAPE_FILL"
+      - "TEXT_FILL"
+    ref:
+      default: "palette/blue/800"
   "text/warning":
     type: "color"
     id: "VariableID:1943:1261"
@@ -810,6 +883,14 @@ tokens:
       - "SHAPE_FILL"
     ref:
       default: "palette/indigo/50"
+  "background/info":
+    type: "color"
+    id: "VariableID:2763:1625"
+    scopes:
+      - "FRAME_FILL"
+      - "SHAPE_FILL"
+    ref:
+      default: "palette/blue/50"
   "background/success":
     type: "color"
     id: "VariableID:2339:6898"
@@ -855,6 +936,13 @@ tokens:
       - "STROKE"
     ref:
       default: "palette/indigo/800"
+  "border/info":
+    type: "color"
+    id: "VariableID:2763:1626"
+    scopes:
+      - "STROKE"
+    ref:
+      default: "palette/blue/800"
   "border/success":
     type: "color"
     id: "VariableID:1943:1306"

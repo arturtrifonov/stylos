@@ -13,7 +13,7 @@ version: "0.1.0"
 summary: "A dot reporting one of the system's semantic conditions."
 purpose: "A condition has to be visible down a long list without spending a row, a column or a sentence on it. This is the smallest thing that can carry one. It draws only from the semantic and neutral colour roles, so what it shows is a judgement the system already makes — good, wrong, dangerous, ranked — rather than a category."
 use_when:
-  - "The thing being shown is a condition the system already has a colour for: success, warning, danger, primary emphasis, or a neutral rank."
+  - "The thing being shown is a condition the system already has a colour for: information, success, warning, danger, primary emphasis, or a neutral rank."
 do_not_use_when:
   -
     text: "The colour identifies which of several things this is rather than reporting a condition. A project colour or a calendar colour carries no judgement and must not borrow one."
@@ -125,6 +125,8 @@ api:
         value: "danger"
       -
         value: "primary"
+      -
+        value: "info"
       -
         value: "secondary"
       -

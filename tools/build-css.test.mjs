@@ -6,7 +6,15 @@ import { fileURLToPath } from "node:url";
 
 import { loadCanonical } from "./lib/tokens.mjs";
 import { readNaming } from "./check-tokens.mjs";
-import { buildCss, slug, property, cssColor, cssNumber, claimedGroup } from "./build-css.mjs";
+import {
+  buildCss,
+  slug,
+  property,
+  cssColor,
+  cssNumber,
+  claimedGroup,
+  specialFamilyErrors,
+} from "./build-css.mjs";
 
 // Every test here is one line of docs/specs/0007-tokens-to-css.md §8. The
 // build runs against the real token set, because the checks worth having —
@@ -162,15 +170,32 @@ test("a hue-named role rebound off its own hue fails — the hue is the meaning"
   );
 });
 
+test("special is a complete generated family at palette step 700", () => {
+  const color = collections.find((collection) => collection.name === "color");
+  const palette = collections.find((collection) => collection.name === "palette");
+  assert.deepEqual(specialFamilyErrors({ color, palette, paletteName: "palette" }), []);
+
+  const incomplete = collections.map((collection) => {
+    if (collection.name !== "color") return collection;
+    const tokens = new Map(collection.tokens);
+    tokens.delete("text/special/amber");
+    return { ...collection, tokens };
+  });
+  assert.match(
+    buildCss({ collections: incomplete, naming }).errors.join("\n"),
+    /color\/text\/special\/amber is missing.*FND-COLOR-13/s
+  );
+});
+
 // --- §4.3 and §4.4, the two scopes and the switch --------------------------
 
 // §8.6 — the light and dark scopes declare the same names.
-test("both scopes declare all 110 roles, complete both times", () => {
+test("both scopes declare all 121 roles, complete both times", () => {
   const light = [...declarations(scope(built.css, ":root {\n  color-scheme: light;")).keys()];
   const dark = [...declarations(scope(built.css, ':root[data-theme="dark"] {')).keys()];
 
   assert.deepEqual(light, dark);
-  assert.equal(light.filter((n) => n.startsWith("--stylos-color-")).length, 110);
+  assert.equal(light.filter((n) => n.startsWith("--stylos-color-")).length, 121);
 });
 
 test("a role that does not vary is still declared in dark, so an override cannot inherit into it", () => {
@@ -300,11 +325,11 @@ test("refuses to run when the canonical set does not check out, and writes nothi
   assert.equal(existsSync(path.join(empty, "dist")), false);
 });
 
-// Counted against the real set: 44 roles name a hue and must land on it, 66
-// name what they paint and may land anywhere — 110 in all.
+// Counted against the real set: 44 roles name a hue and must land on it, 77
+// name what they paint and may land anywhere — 121 in all.
 test("only the hue-named roles carry a claim about their hue", () => {
   const color = collections.find((c) => c.name === "color");
   const claimed = [...color.tokens.keys()].filter((p) => claimedGroup(p) !== null);
   assert.equal(claimed.length, 44);
-  assert.equal(color.tokens.size, 110);
+  assert.equal(color.tokens.size, 121);
 });

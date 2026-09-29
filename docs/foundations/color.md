@@ -1,6 +1,6 @@
 # Color
 
-Status: Draft
+Status: Confirmed
 Scope: The palette, the semantic roles and the mode mechanism — how a colour is chosen; how a whole theme is applied is in [theming.md](theming.md).
 
 ## Two layers
@@ -68,7 +68,7 @@ The semantic layer is cut first by **what a colour paints**. Inside an area that
 | Second cut | Where | Values |
 | --- | --- | --- |
 | intensity | `surface` | `bold` — the object *is* the colour; `subtle` — the object is a pale tint of it |
-| tone | `surface`, `text`, `background`, `border`, `shadow` | `base` for neutral structure (`default` on `border`), then `primary`, `success`, `warning`, `danger`; `shadow` has only `base` and `primary` |
+| tone | `surface`, `text`, `background`, `border`, `shadow` | `base` for neutral structure (`default` on `border`), then `primary`, `info`, `success`, `warning`, `danger`; `shadow` has only `base` and `primary` |
 | prominence | `text`, `background`, `border` | `base`, `secondary`, `tertiary`; `border` has `default` and `secondary` |
 | state | `surface` | `default`, `hover`, `active`, `disabled` |
 | type | `surface`, `text` | `special/<hue>` — one role per named hue |
@@ -128,7 +128,14 @@ Why: if the dark scope redeclared only the roles that differ, a client's overrid
 
 Why: a dark region inside a light page is not a supported case. Supporting it later would mean emitting the whole semantic layer again for every node that carries a mode.
 
+### FND-COLOR-13 — Special roles are generated from the palette
+
+**MUST.** `surface/special/<hue>` and `text/special/<hue>` are a complete generated family: one role in each area for every palette hue group except `mono`, each bound to `palette/<hue>/700` in both modes.
+
+Why: categorical colour is the one semantic family whose names, membership and palette bindings are entirely determined by another collection. Generating it makes a new hue group available everywhere categorical colour is offered, and prevents a hand-maintained subset, a wrong hue or a different step from quietly becoming part of the language. The generated variables remain semantic variables in Figma, so components still bind roles rather than palette primitives.
+
+Checked by: `npm run tokens:css` — a missing, extra or incorrectly bound `special` role fails the build.
+
 ## Open
 
-- **`info`.** A well-known sixth status colour. Stylos uses it nowhere, and the tokens do not have it. Adding it means adding a sixth tone across the areas that carry one, not a role in one place.
-- **`special` could be generated.** The hue-named roles are authored one by one, and they are the one part of the set that is mechanical: one chosen step per hue group. Generating them means deciding that step — and deciding whether light and dark take the same one.
+No open colour questions.
