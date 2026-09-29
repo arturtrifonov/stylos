@@ -184,6 +184,8 @@ api:
       -
         value: "primary"
       -
+        value: "info"
+      -
         value: "warning"
       -
         value: "danger"

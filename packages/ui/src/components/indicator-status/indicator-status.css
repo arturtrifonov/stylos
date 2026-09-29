@@ -75,6 +75,10 @@
   --_stylos-indicator-status-fill: var(--stylos-color-text-primary);
 }
 
+.stylos-indicator-status[data-tone="info"] {
+  --_stylos-indicator-status-fill: var(--stylos-color-text-info);
+}
+
 .stylos-indicator-status[data-tone="secondary"] {
   --_stylos-indicator-status-fill: var(--stylos-color-text-secondary);
 }

@@ -8,7 +8,7 @@ This table is an index of the files and nothing more. Where the table and a file
 
 | File | Status |
 | --- | --- |
-| [color.md](color.md) | Draft |
+| [color.md](color.md) | Confirmed |
 | [typography.md](typography.md) | Draft |
 | [spacing.md](spacing.md) | Draft |
 | [sizing.md](sizing.md) | Draft |

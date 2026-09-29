@@ -93,6 +93,11 @@
   --_stylos-badge-label: var(--stylos-color-text-inverted);
 }
 
+.stylos-badge[data-tone="info"] {
+  --_stylos-badge-surface: var(--stylos-color-text-info);
+  --_stylos-badge-label: var(--stylos-color-text-inverted);
+}
+
 .stylos-badge[data-tone="warning"] {
   --_stylos-badge-surface: var(--stylos-color-text-warning);
   --_stylos-badge-label: var(--stylos-color-text-inverted);

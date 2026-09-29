@@ -152,19 +152,18 @@ Why: that is the whole rule. The kinds below show where those roles come from; t
 
 | Kind | Values | For |
 | --- | --- | --- |
-| semantic tones | `base`, `primary`, `success`, `warning`, `danger` | meaning — a primary action, a destructive one |
+| semantic tones | `base`, `primary`, `info`, `success`, `warning`, `danger` | meaning — a primary action, an informational message, a destructive one |
 | neutral hierarchy | `secondary`, `tertiary`, `inverted` | rank within neutral structure |
 | palette hues by name | `slate`, `amber`, `violet`, … | categorical colour, per the hue-bound roles in [`color.md`](color.md) |
 | a mirrored role family | that family's role names, all of them | a component drawn as an extension of something that already has a colour, rather than as an object of its own |
 
 **Each component decides which of them it offers**, and a component built for categorical colour legitimately exposes the whole palette. Indicator does; that is not a violation, and no list of tone values anywhere is a whitelist that every component must satisfy.
 
-Only two words are wrong as a tone:
+Only one word is wrong as a tone:
 
 | Not a `tone` | Why |
 | --- | --- |
 | `error` | a validation outcome, not a colour — the colour is `danger` |
-| `info` | the system has no such colour ([`color.md`](color.md)) |
 
 `neutral` is not one of the two: it is a palette hue group like `slate` or `zinc`, and `surface/special/neutral` exists.
 

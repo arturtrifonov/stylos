@@ -100,6 +100,70 @@ export function claimedGroup(tokenPath) {
   return segments.includes("special") ? segments.at(-1) : null;
 }
 
+/**
+ * The categorical roles are the one semantic family whose membership and
+ * bindings are derivable from the palette. Keep the Figma export honest: a
+ * palette group gains both roles, no role survives for a removed group, and
+ * all of them land on its 700 step (FND-COLOR-13).
+ */
+export function specialFamilyErrors({ color, palette, paletteName }) {
+  const errors = [];
+  const hues = new Set(
+    [...palette.tokens.keys()].map((tokenPath) => tokenPath.split("/")[0]).filter((hue) => hue !== "mono")
+  );
+  const areas = ["surface", "text"];
+  const actual = new Set();
+
+  for (const tokenPath of color.tokens.keys()) {
+    const parts = tokenPath.split("/");
+    if (parts[1] !== "special") continue;
+    if (!areas.includes(parts[0]) || parts.length !== 3) {
+      errors.push(
+        `color/${tokenPath} is outside the generated special family. ` +
+          `Only surface/special/<hue> and text/special/<hue> exist (FND-COLOR-13).`
+      );
+      continue;
+    }
+    actual.add(tokenPath);
+  }
+
+  for (const hue of hues) {
+    for (const area of areas) {
+      const tokenPath = `${area}/special/${hue}`;
+      const token = color.tokens.get(tokenPath);
+      if (!token) {
+        errors.push(
+          `color/${tokenPath} is missing. Every palette hue except mono needs both generated ` +
+            `special roles (FND-COLOR-13).`
+        );
+        continue;
+      }
+
+      const expected = `${paletteName}/${hue}/700`;
+      for (const mode of color.modes) {
+        const target = token.ref ? (token.ref.get(mode) ?? token.ref.get("default")) : null;
+        if (target !== expected) {
+          errors.push(
+            `color/${tokenPath} (${mode}) references "${target ?? "no palette token"}", but generated ` +
+              `special roles reference "${expected}" (FND-COLOR-13).`
+          );
+        }
+      }
+    }
+  }
+
+  for (const tokenPath of actual) {
+    const hue = tokenPath.split("/")[2];
+    if (!hues.has(hue)) {
+      errors.push(
+        `color/${tokenPath} has no palette hue group "${hue}" to generate it (FND-COLOR-13).`
+      );
+    }
+  }
+
+  return errors;
+}
+
 // --- The build -------------------------------------------------------------
 
 /**
@@ -131,6 +195,8 @@ export function buildCss({ collections, naming }) {
   if (!color) {
     return { css: "", manifest: {}, errors: [`tokens/color.yaml is missing — nothing to scope.`] };
   }
+
+  errors.push(...specialFamilyErrors({ color, palette, paletteName }));
 
   /** property name -> where it came from. Also the duplicate-slug check. */
   const manifest = new Map();
