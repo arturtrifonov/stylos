@@ -47,7 +47,7 @@ export const COLOR_ROLES = new Map([
   ["ok", "text/success"],
   ["warn", "text/warning"],
   ["bad", "text/danger"],
-  ["info", "text/special/cyan"],
+  ["info", "text/info"],
 ]);
 
 /** Radius names, as `--radius-*`. `round` is the pill, 1000. */
