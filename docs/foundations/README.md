@@ -14,13 +14,12 @@ This table is an index of the files and nothing more. Where the table and a file
 | [sizing.md](sizing.md) | Draft |
 | [naming.md](naming.md) | Draft |
 | [icons.md](icons.md) | Draft |
-| [effects.md](effects.md) | Draft |
+| [effects.md](effects.md) | Confirmed |
 | [accessibility.md](accessibility.md) | Draft |
 | [tokens.md](tokens.md) | Yet to fill |
 | [layout.md](layout.md) | Yet to fill |
 | [adaptivity.md](adaptivity.md) | Yet to fill |
 | [density.md](density.md) | Yet to fill |
-| [elevation.md](elevation.md) | Yet to fill |
 | [motion.md](motion.md) | Yet to fill |
 | [theming.md](theming.md) | Yet to fill |
 | [localization.md](localization.md) | Yet to fill |
