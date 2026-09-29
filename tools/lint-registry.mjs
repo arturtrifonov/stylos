@@ -324,6 +324,17 @@ function checkContract(entry, byId, errors, resolveToken, systemVersion) {
 
     const values = valuesOf(property);
 
+    if (property.kind === "text" || property.kind === "string") {
+      if (property.default !== undefined && typeof property.default !== "string") {
+        errors.push(`${file}: ${where} has kind "${property.kind}" but its default is not a string`);
+      }
+      for (const value of values) {
+        if (typeof value?.value !== "string") {
+          errors.push(`${file}: ${where} has kind "${property.kind}" but an example value is not a string`);
+        }
+      }
+    }
+
     if (property?.kind === "variant" && property.default !== undefined && values.length > 0) {
       const allowed = values.map((value) => value?.value);
       if (!allowed.includes(property.default)) {

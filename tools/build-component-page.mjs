@@ -381,6 +381,7 @@ const KIND_GLYPHS = {
   variant: "◇",
   boolean: "◧",
   text: "T",
+  string: "S",
   instance: "▣",
 };
 

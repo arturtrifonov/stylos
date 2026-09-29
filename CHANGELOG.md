@@ -4,6 +4,13 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-09-30 (global naming rules and property kinds)
+
+- **The registry distinguishes `kind: text` from `kind: string`.** Text carries interface content; string carries an identifier or another non-text string value. `Icon.name` is migrated to string. Both generate TypeScript `string` props and retain their example stories; the validator checks string defaults and example values. The code API is unchanged.
+- **Naming rule blocks describe the system independently of Figma.** Figma's property types, separate panel sections, drawing-only controls and Plugin API limitations move to `figma/naming.md`, linked from implementation notes. Contract order and controlled-group adjacency remain in `api`; panel order is a projection of that contract. The component standard and registry documentation describe the same boundary. The state vocabulary allows a condition to be represented as a boolean or a variant without making the representation its meaning, and limits `mixed` to checkbox selection.
+- **FND-NAMING-32 replaces FND-NAMING-31:** public code props correspond one-to-one to contract properties through a documented naming conversion. The retired rule required literal name equality, which contradicted the package's existing generator. `packages/ui/README.md` now records camelCase conversion, the sole-slot mapping to `children`, and unchanged variant values. No code API changes.
+- **`stylos-naming-cleanup` v0.15 accepts `info` and `neutral` as tone names**, documents mirrored role families following FND-NAMING-16, FND-NAMING-17 and FND-NAMING-18, and preserves string identifiers without adding the text suffix. It follows the separated contract and panel guidance. The distribution is rebuilt from source.
+
 ### Changed — 2026-09-29 (icon rules and the current preset confirmed)
 
 - **`icons.md` is Confirmed.** Material Symbols Rounded is the current default preset. The foundation rules describe a consistent set, delivery and accessibility without requiring that source. The Icon contract and entry-point documentation follow that distinction.

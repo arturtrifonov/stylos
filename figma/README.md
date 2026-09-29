@@ -4,6 +4,8 @@ Documentation of the Figma library structure. **Figma holds the values — varia
 
 ## Library structure
 
+The implementation's naming, property representations and panel order are described in [naming.md](naming.md). The global naming rules stay in [docs/foundations/naming.md](../docs/foundations/naming.md).
+
 Four Stylos files, plus one external library:
 
 | File | Key | Contents |

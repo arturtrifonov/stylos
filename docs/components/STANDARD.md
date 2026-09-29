@@ -38,7 +38,7 @@ Appearance is in Figma, and it is better there.
 
 - `summary`, `purpose`, at least one `use_when` and at least one `do_not_use_when` are present;
 - every `do_not_use_when` that names an alternative resolves to a component that exists in the registry;
-- every property in Figma appears in `api`, with the same name, the same values, in the same order. The one exception is a property that exists only to draw a state that a real component decides for itself: it is recorded and named in `figma_notes` ([`registry/README.md`](registry/README.md));
+- every public property appears in `api`, with its supported values and contract order; implementation names map to it through a documented conversion (FND-NAMING-32). A different Figma representation and controls that only draw states derived by code are recorded in `figma_notes` ([`registry/README.md`](registry/README.md)), and the panel projection is described in [figma/naming.md](../../figma/naming.md);
 - every property has a `description`, and every default is one of that property's values;
 - any property combination that does not exist is stated as a rule, in `limitations` or on the value it constrains;
 - `sizing_model` has a row per size value and an `intent`, and every dimension and type measure in it is a token name that resolves against `tokens/`, never a number;
