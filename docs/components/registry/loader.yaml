@@ -106,7 +106,6 @@ motion:
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
-  positioning: "flow"
   adjustable:
     horizontal: true
     vertical: true

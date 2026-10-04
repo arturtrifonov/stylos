@@ -75,7 +75,6 @@ a11y:
 sizing_model:
   horizontal: "fill"
   vertical: "hug"
-  positioning: "flow"
   adjustable:
     horizontal: true
     vertical: false

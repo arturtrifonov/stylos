@@ -52,9 +52,16 @@ export function titleOf(text, file) {
  * order, because a table under a rule is usually what the rule *is*.
  */
 export function splitRule(rule) {
-  const parts = { statement: rule.statement ?? "", why: "", exceptions: [], checkedBy: "", serves: "", body: [] };
+  const parts = { statement: rule.statement ?? "", why: "", exceptions: [], checkedBy: "", serves: "", body: [], blocks: [] };
   let seenStatement = false;
   let fenced = false;
+  let prose = [];
+  const flush = () => {
+    while (prose.length > 0 && prose[0].trim() === "") prose.shift();
+    while (prose.length > 0 && prose[prose.length - 1].trim() === "") prose.pop();
+    if (prose.length > 0) parts.blocks.push({ kind: "body", lines: prose });
+    prose = [];
+  };
 
   for (const line of rule.body) {
     if (/^\s*```/.test(line)) fenced = !fenced;
@@ -68,6 +75,8 @@ export function splitRule(rule) {
     const labelled = fenced ? null : LABELLED.exec(line.trim());
     if (labelled) {
       const [, label, rest] = labelled;
+      flush();
+      parts.blocks.push({ kind: label, text: rest });
       if (label === "Why") parts.why = rest;
       else if (label === "Exception") parts.exceptions.push(rest);
       else if (label === "Checked by") parts.checkedBy = rest;
@@ -76,10 +85,12 @@ export function splitRule(rule) {
     }
 
     parts.body.push(line);
+    prose.push(line);
   }
+  flush();
 
-  // A `Why:` that wraps onto the next line is one paragraph, and the wrapped
-  // half would otherwise open the body with an orphan.
+  // Keep the unlabelled body for callers that inspect it, and the ordered
+  // blocks for rendering without relocating lists or labelled paragraphs.
   while (parts.body.length > 0 && parts.body[0].trim() === "") parts.body.shift();
   while (parts.body.length > 0 && parts.body[parts.body.length - 1].trim() === "") parts.body.pop();
 

@@ -7,31 +7,37 @@ These rules define the sizing contract across implementations. Figma authoring a
 
 ## What an axis can do
 
-### FND-SIZING-01 — Size and positioning are separate
+### FND-SIZING-01 — Each axis has one of three sizing types
 
-**MUST.** Record each axis as `hug`, `fixed` or `fill` in `sizing_model.horizontal` and `sizing_model.vertical`, and record participation in layout separately in `sizing_model.positioning`.
+**MUST.** Record how each axis gets its dimension as `hug`, `fixed` or `fill` in `sizing_model.horizontal` and `sizing_model.vertical`.
 
-Why: how a dimension is chosen and where a component is placed are different decisions. An overlay may have a fixed width and a content-sized height; being outside the flow does not replace either answer.
+Why: the type explains where a dimension comes from. It does not say whether the consumer may change it or which control they use; those decisions are recorded separately.
 
-| Axis value | The dimension is |
+| Type | How the dimension is chosen |
 | --- | --- |
-| `hug` | derived from the contents |
-| `fixed` | an explicit length |
-| `fill` | derived from the space the parent provides |
+| `hug` | The contents determine it. |
+| `fixed` | An explicit length determines it. |
+| `fill` | The space provided by the parent determines it. |
 
-`positioning` is `flow` for a component participating in normal layout, or `absolute` for one placed outside that flow. It describes the component's placement, not how its internal layers are positioned. An implementation chooses the positioning mechanism that satisfies that contract.
+A `fixed` dimension may have one value, switch between the values defined for `size`, or accept a consumer-chosen value. For example, Button height changes between its supported sizes, while Icon's footprint can accept a chosen dimension. Both are still `fixed`: changing the number does not change how the dimension is determined.
 
-The axis values describe the default behaviour. A supported override, such as setting a hugging button's width, is recorded in `intent`.
+The axes describe default behaviour. A supported override, such as setting a hugging button's width, is recorded in `intent`.
 
-Checked by: `npm run validate:registry` — both axes and positioning must be present and use these values when a sizing model is recorded.
+Checked by: `npm run validate:registry` — both axes must be present and use one of these three types when a sizing model is recorded.
 
-### FND-SIZING-02 — Adjustability is recorded per axis
+### FND-SIZING-02 — Each axis records how its dimension may change
 
-**MUST.** Record whether the consumer may choose each dimension in `sizing_model.adjustable.horizontal` and `sizing_model.adjustable.vertical`, independently of the axis's default sizing behaviour.
+**MUST.** Record each axis's supported size choices in its public API and its permission for a consumer-chosen dimension in `sizing_model.adjustable.horizontal` or `sizing_model.adjustable.vertical`.
 
 Why: a button can allow an explicit width while keeping its height controlled by `size`. A single flag for the whole component cannot describe that difference. A fixed dimension may be adjustable, and a hugging dimension may allow a supported explicit width.
 
-Each flag is a boolean. `true` permits an external dimension or layout override described in `intent`; `false` keeps the axis governed by its content, parent or public properties. Selecting a supported `size` value is not an external override and does not require `adjustable: true`.
+For a fixed dimension, there are three cases:
+
+- **One fixed value:** no size choice and no external adjustment.
+- **A defined size set:** the public `size` property chooses among the supported values. The dimension remains fixed at each choice.
+- **A consumer-chosen value:** the relevant `adjustable` flag is `true`; `intent` describes the external dimension or layout override and its limits.
+
+The flags are booleans for the third case. `false` does not mean the dimension can never change: content, the parent or a public `size` property may still determine it. A component can support both a size set and an external adjustment where the contract allows that combination.
 
 The contract also records any relationship between the axes, such as a required square footprint or aspect ratio. Permission to choose a dimension does not remove those constraints.
 
@@ -99,11 +105,13 @@ The values refer to the `size` group in `dimension`. The contract says which dim
 
 The rows share two values at each boundary: `s-2_000` and `s-2_500` for Primitive and Element, and `s-3_000` and `s-4_000` for Element and Object.
 
-### FND-SIZING-08 — Shared size profiles are defaults for Element and Object
+### FND-SIZING-08 — Start Element and Object sizing from their recommended rows
 
-**SHOULD.** Use the Element or Object recommendation as the starting profile unless the component's contract records a different mapping.
+**SHOULD.** Start an Element or Object component with its row in FND-SIZING-07 unless its contract specifies different size values.
 
-Why: these levels have enough common structure for a shared starting point. The contract's mapping takes priority because it describes the actual component. Primitive uses the table as a reference only; Widget and Layout have no shared size profile and record sizing per component.
+Why: components at these levels often need to line up with each other. A common starting row makes that easier, while a documented component mapping takes priority over the row.
+
+For a new Object button, start with the Object row for its height, then record any required differences in its contract. The row does not prescribe its width or the size of every internal part. Primitive's row is a reference, without a default to follow. Widget and Layout have no shared row: a modal's dimensions, for example, are defined by its own contract.
 
 Typography uses the same level boundary (FND-TYPOGRAPHY-09), with its own default and override rules in FND-TYPOGRAPHY-08.
 

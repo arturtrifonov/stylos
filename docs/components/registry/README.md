@@ -218,7 +218,6 @@ Absorbs sizing, typography and responsive behaviour, because they are one model:
 sizing_model:
   horizontal: "hug"        # hug | fixed | fill
   vertical: "hug"
-  positioning: "flow"      # flow | absolute
   adjustable:
     horizontal: false
     vertical: false
@@ -232,7 +231,7 @@ sizing_model:
       line_height: "line height/string/0_750"
 ```
 
-**Sizing behaviour, positioning and adjustment permissions are separate.** [Sizing](../../foundations/sizing.md) defines the three axis values, `positioning` and the per-axis `adjustable` flags. All are required when a sizing model is present. The axes describe defaults; `intent` describes supported overrides, constraints and how internal parts respond. A button may hug horizontally and allow an explicit width while its height remains controlled by `size`. A default token binding does not prohibit a contract-supported external override. Figma representation details are in [figma/sizing.md](../../../figma/sizing.md).
+**Sizing type and adjustment permissions are separate.** [Sizing](../../foundations/sizing.md) defines the three axis types and the per-axis `adjustable` flags. Both axes and both flags are required when a sizing model is present. The public `size` property records preset choices; the adjustment flags record permission for an external dimension. Fixed dimensions can use either mechanism, or both when their contract supports it. The axes describe defaults; `intent` describes supported overrides, constraints and how internal parts respond. A button may hug horizontally and allow an explicit width while its height remains controlled by `size`. A default token binding does not prohibit a contract-supported external override. Figma representation details are in [figma/sizing.md](../../../figma/sizing.md).
 
 **Every dimension and every type measure is a token name. Never a number.** `box: 16` would be a transcription of a value that lives in `tokens/`, and it rots the first time the scale moves. The generated page resolves these names against `tokens/` at build time and shows the value with the name beside it — a build-time join, not a second copy.
 
@@ -244,7 +243,7 @@ The field name says which collection to resolve against: `box` and `gap` are dim
 
 Typography has no separate block. Size, gap, font size and line height change together, and a reader comparing them across sizes needs them on one row.
 
-`flow_behavior` predates this block and remains as historical inventory metadata. Where `sizing_model` is present, its axes and separate `positioning` field are authoritative. Entries without a sizing model remain incomplete inventory; their old flow values do not supply a contract.
+`flow_behavior` predates this block and remains as historical inventory metadata. Where `sizing_model` is present, its axes are authoritative for sizing. Entries without a sizing model remain incomplete inventory; their old flow values do not supply a contract.
 
 ### `motion`
 

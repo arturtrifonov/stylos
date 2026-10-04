@@ -4,13 +4,12 @@ The system contract is defined in [Sizing](../docs/foundations/sizing.md). This 
 
 ## Applying a contract
 
-Read the component's registry entry before changing an instance. `sizing_model` records the default behaviour of each axis, per-axis adjustment permissions, positioning and the explanation in `intent`.
+Read the component's registry entry before changing an instance. `sizing_model` records the default behaviour of each axis, per-axis adjustment permissions and the explanation in `intent`.
 
 - Use the exposed property that governs the affected dimension first.
 - On an adjustable axis, use the dimension or layout override the contract permits. A default variable binding may be replaced at that external boundary when the contract allows a consumer-chosen value; it does not permit removing internal bindings.
 - On other axes, preserve the authored dimension and bindings. Switch variables only where the contract supports that choice.
 - Represent `hug` with Hug contents and `fill` with Fill container where the parent supports it. Apply a fixed override only where the contract allows one, and preserve minimums, maximums and required proportions.
-- An absolutely positioned layer can still have a fixed or content-sized dimension. Record the root component's positioning separately from its dimensions; an internal overlay does not make the whole component absolute.
 - Follow FND-SIZING-05 when reconstructing a reference: changing an adjustable footprint is distinct from using Figma's Scale tool to scale the whole component.
 
 ## Scale constraints outside auto layout

@@ -12,6 +12,7 @@ import {
   linkRewriter,
   renderIndex,
   renderPage,
+  renderRule,
 } from "./build-guidelines-view.mjs";
 
 // Built against the real guideline set, for the same reason the registry view
@@ -59,6 +60,33 @@ test("a labelled line inside a fence is not a label", () => {
   });
   assert.equal(parts.why, "");
   assert.ok(parts.body.includes("Why: this is a specimen."));
+});
+
+test("a statement list stays before its reasoning, followed by explanatory prose", () => {
+  const sizing = data.files.find((file) => file.slug === "foundations/sizing");
+  const rule = sizing.rules.find((rule) => rule.id === "FND-SIZING-03");
+  const html = renderRule(rule);
+  assert.ok(html.indexOf("<ol>") < html.indexOf('<p class="why">'));
+  assert.ok(html.indexOf("</ol>") < html.indexOf('<p class="why">'));
+  assert.ok(html.indexOf('<p class="why">') < html.indexOf("For Button"));
+  assert.equal((html.match(/<b>Why:<\/b>/g) ?? []).length, 1);
+});
+
+test("labelled paragraphs keep their source positions around tables and fenced examples", () => {
+  const rule = { id: "FND-EXAMPLE-01", title: "Example", level: "MUST", ...splitRule({
+    statement: "**MUST.** Keep the order.",
+    body: ["**MUST.** Keep the order.", "", "Why: early reasoning.", "",
+      "| A | B |", "| --- | --- |", "| first | second |", "",
+      "Exception: after the table.", "", "```markdown", "Why: fenced specimen.", "```", "",
+      "Checked by: `npm test`.", "Serves: PRN-04."],
+  }) };
+  const html = renderRule(rule);
+  const positions = ['<p class="why">', '<table>', '<b>Exception:</b>', '<pre>', '<b>Checked by:</b>', '<b>Serves:</b>']
+    .map((part) => html.indexOf(part));
+  assert.ok(positions.every((position) => position >= 0));
+  assert.deepEqual(positions, [...positions].sort((a, b) => a - b));
+  assert.match(html, /Why: fenced specimen/);
+  assert.equal((html.match(/<b>Why:<\/b>/g) ?? []).length, 1);
 });
 
 // --- links out of a document written to be read in a repository ------------

@@ -56,7 +56,6 @@ a11y:
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
-  positioning: "flow"
   adjustable:
     horizontal: false
     vertical: false

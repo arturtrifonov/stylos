@@ -38,7 +38,6 @@ import {
   PROPERTY_KINDS,
   A11Y_STATUSES,
   SIZING_AXES,
-  SIZING_POSITIONING,
   LINE_HEIGHT_FAMILIES,
   MOTION_FIELDS,
   COMPONENT_FILE_KEYS,
@@ -460,11 +459,6 @@ function checkContract(entry, byId, errors, resolveToken, systemVersion) {
       }
     }
 
-    if (!SIZING_POSITIONING.includes(sizing.positioning)) {
-      errors.push(
-        `${file}: sizing_model.positioning is "${sizing.positioning}", not one of ${SIZING_POSITIONING.join(", ")}`
-      );
-    }
     const adjustable = sizing.adjustable;
     if (!adjustable || typeof adjustable !== "object" || Array.isArray(adjustable)) {
       errors.push(`${file}: sizing_model.adjustable must record horizontal and vertical booleans`);

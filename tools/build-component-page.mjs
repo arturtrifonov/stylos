@@ -815,7 +815,6 @@ function renderSizing(entry, resolveToken) {
   const axes = [
     ["Horizontal", sizing.horizontal],
     ["Vertical", sizing.vertical],
-    ["Positioning", sizing.positioning],
     ["Width adjustment", typeof sizing.adjustable?.horizontal === "boolean" ? (sizing.adjustable.horizontal ? "Allowed" : "Not allowed") : undefined],
     ["Height adjustment", typeof sizing.adjustable?.vertical === "boolean" ? (sizing.adjustable.vertical ? "Allowed" : "Not allowed") : undefined],
   ].filter(([, value]) => value !== undefined);

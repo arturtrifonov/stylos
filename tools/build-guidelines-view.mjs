@@ -245,14 +245,14 @@ export function renderRule(rule, { linkTo = "", href } = {}) {
     `<p class="statement">${inline(rule.statement.replace(/^\*\*[A-Z]+\.?\*\*\s*/, ""), { href })}</p>`,
   ];
 
-  if (rule.why) parts.push(`<p class="why"><b>Why:</b> ${inline(rule.why, { href })}</p>`);
-  if (rule.body.length > 0)
-    parts.push(`<div class="prose">${markdown(rule.body, { headingLevel: 4, href })}</div>`);
-  for (const exception of rule.exceptions) {
-    parts.push(`<p class="note"><b>Exception:</b> ${inline(exception, { href })}</p>`);
+  for (const block of rule.blocks) {
+    if (block.kind === "body") {
+      parts.push(`<div class="prose">${markdown(block.lines, { headingLevel: 4, href })}</div>`);
+    } else {
+      const className = block.kind === "Why" ? "why" : "note";
+      parts.push(`<p class="${className}"><b>${esc(block.kind)}:</b> ${inline(block.text, { href })}</p>`);
+    }
   }
-  if (rule.checkedBy) parts.push(`<p class="note"><b>Checked by:</b> ${inline(rule.checkedBy, { href })}</p>`);
-  if (rule.serves) parts.push(`<p class="note"><b>Serves:</b> ${inline(rule.serves, { href })}</p>`);
 
   return `<section class="rule" id="${esc(rule.id)}">\n${parts.filter(Boolean).join("\n")}\n</section>`;
 }

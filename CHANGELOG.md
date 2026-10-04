@@ -4,9 +4,14 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Fixed — 2026-10-04 (sizing review and rule rendering)
+
+- **The sizing type describes how a dimension is determined.** `hug`, `fixed` and `fill` are independent of the permitted changes: a fixed dimension may use a single value, supported `size` choices or a consumer-chosen value. The level recommendation rule now explains which dimension a row governs and how component mappings override it.
+- **Guideline cards preserve the source order of their content.** An ordered statement list stays before its `Why:` paragraph instead of being moved below it; labelled notes and fenced examples keep their positions as well.
+
 ### Changed — 2026-10-04 (sizing contracts across implementations)
 
-- **Sizing separates dimensions, positioning and per-axis adjustment permissions.** All 39 recorded sizing models migrate from a component-wide boolean to horizontal and vertical permissions based on their existing intent. The validator requires both axes, positioning and both boolean flags; component pages show the permissions separately.
+- **Sizing records dimension types and per-axis adjustment permissions.** All 39 recorded sizing models migrate from a component-wide boolean to horizontal and vertical permissions based on their existing intent. The validator requires both axes and both boolean flags; component pages show the permissions separately.
 - **Contract-supported changes take priority over default bindings and level recommendations.** The rules distinguish an adjustable footprint from scaling a whole component to match a reference, keep the base-8 pixel decision with an accurate explanation, and measure the above-scale exception against `dimension/size`.
 - **Figma sizing and reporting procedures leave the global rules.** Scale constraints and hidden-layer inspection move to `figma/sizing.md`; the integrity-check skill owns reporting the resolved scale boundary. Former draft rules `FND-SIZING-10`–`FND-SIZING-12` leave the guide under RUL-14. Integrity-check v0.7 and reference-reconstruction v0.4 follow the revised contract; the skill distribution is rebuilt.
 
