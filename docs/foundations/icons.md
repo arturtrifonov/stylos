@@ -24,7 +24,7 @@ Serves: PRN-04.
 
 Why: the swap property is the component's API for the mark. A nested edit is invisible to every consumer of that API, and it is lost when the component changes.
 
-Positional names follow FND-NAMING-16, and the property names themselves are set in [naming.md](naming.md) §7.
+Positional names follow FND-NAMING-17, and the property names themselves are set in [naming.md](naming.md) §7.
 
 Serves: PRN-06.
 

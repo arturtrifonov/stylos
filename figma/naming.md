@@ -4,6 +4,8 @@ The global naming contract is [docs/foundations/naming.md](../docs/foundations/n
 
 ## Names and descriptions
 
+Public component and property names use the canonical spelling from the registry: `Icon Button`, `is checked`, `label text`. Figma keeps the spaces; frontend identifiers follow FND-NAMING-05 instead. A different Figma property representation is recorded in the entry's `figma_notes`, without creating a second public naming contract.
+
 Component descriptions are derived from registry entries by [`stylos-description-sync`](../skills/src/description-sync/SKILL.md). They carry the nested-use explanation required by FND-NAMING-04. Descriptions are visible in the Assets panel and Dev Mode.
 
 ## Component organization
@@ -37,7 +39,7 @@ For drawing interaction states, the Figma vocabulary includes `state = default /
 
 `Icon.name` is a string identifier in the contract. The current Figma implementation represents the choice by swapping an icon instance, not by exposing text content. Its representation is recorded in [Icon's `figma_notes`](../docs/components/registry/icon.yaml).
 
-Documentation and prototype controls such as `show annotations` and `show measurements` sit outside the public component API. Their names can describe the tool action; they are not exceptions to FND-NAMING-14, which applies to public API properties.
+Documentation and prototype controls such as `show annotations` and `show measurements` sit outside the public component API. Their names can describe the tool action.
 
 ## Panel order and controlled groups
 

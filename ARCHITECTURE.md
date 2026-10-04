@@ -32,6 +32,8 @@ Every domain has exactly one authoritative source. When two places disagree, the
 
 **Values are authored where they are judged by eye; contracts are authored where they can bind more than one implementation.** Colours and dimensions are decided in Figma, so Figma holds them and `tokens/` imports them. A component's contract cannot be held by Figma, because Figma is one of the two things that must satisfy it — the Svelte package is the other, and neither can be authoritative over the other. A limitation of one tool would otherwise become a rule of the system. See [`docs/components/README.md`](docs/components/README.md).
 
+Canonical public names belong to the registry and naming guide. The correspondence with design names and frontend identifiers is described in [naming.md](docs/foundations/naming.md#3-contract-and-implementation-names); the package documents its exact [name conversion](packages/ui/README.md#name-conversion).
+
 Authoring values in Figma is current practice, not a permanent commitment; moving them into the repository is an open intention with no date.
 
 The relationship stays **one-directional**: the repository never writes to Figma. Holding the contract here does not change that — it means Figma is *checked against* the contract, not edited from the repository. Reasoning: decision 0001, retired with the rest of `docs/decisions/` and now only in git history (§5).

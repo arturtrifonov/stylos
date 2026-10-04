@@ -3,7 +3,7 @@
 Status: Draft
 Scope: Type sizes, measures, line heights, weight and the typeface; what the words say is [content/](../content/README.md).
 
-Canonical component size values are full words — that rule is [naming.md](naming.md) FND-NAMING-10, and it is not restated here.
+Canonical component size values are full words — that rule is [naming.md](naming.md) FND-NAMING-11, and it is not restated here.
 
 ## Size and measure
 

@@ -11,7 +11,7 @@ Compiled skill document for manual import into Figma Agent. Contains:
 
 - `stylos-component-integrity-check` v0.5
 - `stylos-description-sync` v0.2
-- `stylos-naming-cleanup` v0.16
+- `stylos-naming-cleanup` v0.17
 - `stylos-reference-reconstruction` v0.2
 
 ---
@@ -637,14 +637,14 @@ description: "Clean up naming in a selected Figma component or component set acc
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.16
+  version: 0.17
 ---
 
 # Stylos Naming Cleanup
 
 Clean up naming in a selected Figma component, component set, or related library objects according to Stylos Design System naming rules.
 
-The public contract is defined in [docs/foundations/naming.md](../../../docs/foundations/naming.md). Figma-only conventions for slash groups, nested-component publishing, layer names and drawing controls are defined in [figma/naming.md](../../../figma/naming.md). Apply those conventions in Figma without treating them as requirements for code implementations.
+The public contract is defined in [docs/foundations/naming.md](../../../docs/foundations/naming.md). Figma-only conventions for slash groups, nested-component publishing, layer names and drawing controls are defined in [figma/naming.md](../../../figma/naming.md). Apply those conventions in Figma without treating them as requirements for code implementations. Canonical property names keep spaces in Figma; frontend props use camelCase through FND-NAMING-05. This skill normalizes the Figma names only.
 
 This skill is for naming normalization only. It must not redesign components, change layout, change visual appearance, change token values, or restructure component APIs beyond naming unless the user explicitly asks for that.
 
@@ -710,7 +710,7 @@ Apply a mapping when a known-wrong word appears. Do not sweep for conformance, d
 | `is filled`, `is expanded` | `false`, `true` |
 | `orientation`, `alignment`, `position`, `icon position` | the component's own |
 
-**`tone` names a colour role:** semantic tones include `base`, `primary`, `info`, `success`, `warning`, `danger`; neutral hierarchy includes `secondary`, `tertiary`, `inverted`; palette hues include `neutral`, `slate`, `amber`, `violet`, and the rest. A component can also mirror a role family, using all of that family's role names unchanged, including `disabled` where that is a colour role. Its contract names the family. See FND-NAMING-07, FND-NAMING-08 and FND-NAMING-09 in [naming.md](../../../docs/foundations/naming.md). A component built for categorical colour legitimately exposes the whole palette. That is normal and nothing flags it.
+**`tone` names a colour role:** semantic tones include `base`, `primary`, `info`, `success`, `warning`, `danger`; neutral hierarchy includes `secondary`, `tertiary`, `inverted`; palette hues include `neutral`, `slate`, `amber`, `violet`, and the rest. A component can also mirror a role family, using all of that family's role names unchanged, including `disabled` where that is a colour role. Its contract names the family. See FND-NAMING-08, FND-NAMING-09 and FND-NAMING-10 in [naming.md](../../../docs/foundations/naming.md). A component built for categorical colour legitimately exposes the whole palette. That is normal and nothing flags it.
 
 The known-wrong tone word is `error`: it is a validation outcome and becomes `danger`. `info` and `neutral` are valid tone names, so preserve them and only normalize their casing.
 
@@ -900,7 +900,7 @@ Full words, per [Vocabulary](#vocabulary). Their order is fixed and is not alpha
 
 Text component properties must end with `text`.
 
-This applies to textual content (FND-NAMING-11), not every property whose storage type is a string. A registry `kind: string` property such as `Icon.name` identifies a resource; preserve its role name without adding `text`. Figma may represent that choice through an instance swap rather than a text property. The mapping is recorded in the component's `figma_notes` and [figma/naming.md](../../../figma/naming.md).
+This applies to textual content (FND-NAMING-12), not every property whose storage type is a string. A registry `kind: string` property such as `Icon.name` identifies a resource; preserve its role name without adding `text`. Figma may represent that choice through an instance swap rather than a text property. The mapping is recorded in the component's `figma_notes` and [figma/naming.md](../../../figma/naming.md).
 
 Good:
 
@@ -983,13 +983,7 @@ Bad:
 - `yes`
 - `no`
 
-Do not use `show` for public component API.
-
-Rare exception: `show` is allowed only for temporary documentation or prototype controls, such as:
-
-- `show annotations`
-- `show measurements`
-- `show layout guides`
+These boolean names follow FND-NAMING-15. Documentation and prototype controls sit outside the public API; their naming conventions are described in [figma/naming.md](../../../figma/naming.md#property-representation).
 
 ### Instance swap properties
 
@@ -1006,7 +1000,7 @@ Good:
 - `suffix component`
 - `empty state illustration`
 
-Prefer `leading` and `trailing` over `left` and `right`.
+Apply FND-NAMING-17 to positions relative to reading direction. Preserve `left` and `right` when the contract defines a fixed physical side, such as `Drawer.position`; do not convert those values to logical positions.
 
 Good:
 
@@ -1242,7 +1236,7 @@ Use these common controlled groups:
 - `has tertiary button` → `tertiary button`
 - `has overflow` → `overflow`
 
-Prefer `leading` and `trailing` over `left` and `right`.
+Apply FND-NAMING-17 to positions relative to reading direction. Preserve `left` and `right` when the contract defines a fixed physical side, such as `Drawer.position`; do not convert those values to logical positions.
 
 Good:
 
@@ -1309,8 +1303,6 @@ Common properties:
 - `has page 4`
 - `has page 5`
 - `has page 6`
-
-Avoid `show` in all public property names.
 
 Good:
 
@@ -1415,10 +1407,9 @@ Flag these as errors:
 - layer names not in Sentence case
 - text layers not ending in `text`
 - text properties not ending in `text`
-- boolean properties not starting with `has` or `is`
-- boolean properties starting with `show`
-- a slot property missing its suffix — `content` → `content slot`, `cells` → `cells slot` (§7). The suffix names the kind of property, as `text` does; a bare name says nothing about what the property accepts
-- `left` / `right` used for icon slots
+- public boolean properties outside the `has [object]` / `is [state]` forms (FND-NAMING-15)
+- a slot property missing its suffix — `content` → `content slot`, `cells` → `cells slot` (§5). The suffix names the kind of property, as `text` does; a bare name says nothing about what the property accepts
+- `left` / `right` used for reading-direction icon slots, unless the contract defines a physical side (FND-NAMING-17)
 - variant property names using Title Case
 - variant values using Title Case
 - component size variant values using short aliases: `xs`, `s`, `m`, `l`, `xl`
@@ -1656,7 +1647,8 @@ A value cannot be mapped without knowing its property. `Error` is a correct `val
 
 **`icon position`, `alignment`, `position`**
 
-- `Left` → `leading`, `Right` → `trailing`
+- For reading-direction positions: `Left` → `leading`, `Right` → `trailing`.
+- For fixed physical sides defined in the contract: lowercase only, `Left` → `left`, `Right` → `right` (FND-NAMING-17).
 
 **Open properties** — `type`, `style`, and the rest: lowercase with spaces, nothing else. Their values belong to the component and are not mapped to a system list.
 
@@ -1690,8 +1682,7 @@ The final component should meet these conditions:
 - text layers end with `text`
 - text properties end with `text`
 - boolean properties use `has` or `is`
-- no public boolean property uses `show`
-- instance swap icon properties use `leading` / `trailing`
+- reading-direction properties use `leading` / `trailing`; physical-side names remain `left` / `right` where the contract says so
 - variant property names and values use lowercase
 - `size` values are full words in their fixed order
 - `default` is used instead of `static` for the base state

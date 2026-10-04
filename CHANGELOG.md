@@ -4,6 +4,11 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-04 (canonical names and frontend conversion)
+
+- **The naming guide distinguishes canonical names from frontend identifiers.** Section 3 now explains their one-to-one camelCase conversion, with `is checked` → `isChecked` and unchanged variant values. The variant rule applies to canonical names only; the package documents PascalCase component exports, camelCase props and the existing sole-slot mapping to `children`. Figma keeps the canonical names with spaces.
+- **The separate `show` prohibition is removed.** Boolean names follow the positive `has` / `is` convention. Positional names now carry an explicit exception for fixed physical sides, such as `Drawer.position = right`. Text and slot suffix rules sit together in §5, and current citations follow the consecutive `01`–`22` IDs. Naming-cleanup v0.17 applies the physical-side exception and the same contract boundary; its distribution is rebuilt from source.
+
 ### Changed — 2026-10-04 (sequential naming rule IDs)
 
 - **Naming rules are numbered consecutively from `FND-NAMING-01` to `FND-NAMING-23`**, including the retired rule, under RUL-13's pre-release exception. All current citations are updated; historical IDs in earlier changelog entries remain as code spans. The eleven section numbers stay unchanged.

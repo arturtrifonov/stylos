@@ -29,7 +29,7 @@ This table is an index of the files and nothing more. Where the table and a file
 
 **Yet to fill means the file is a scope line and nothing else.** The file reserves a place, so that the rule which belongs there is not written in a contract's `notes` or in a spec instead (SPEC 0013). This index does not decide what any of these files will say.
 
-The written foundations use the rule grammar: every normative statement in them is a rule block with an `FND-` ID, a level and a `Why:` ([`docs/RULES.md`](../RULES.md)). Cite a rule by its ID, for example `FND-COLOR-02` or `FND-NAMING-10`. If that rule is ever deleted, `npm run validate:rules` fails the citation.
+The written foundations use the rule grammar: every normative statement in them is a rule block with an `FND-` ID, a level and a `Why:` ([`docs/RULES.md`](../RULES.md)). Cite a rule by its ID, for example `FND-COLOR-02` or `FND-NAMING-11`. If that rule is ever deleted, `npm run validate:rules` fails the citation.
 
 ## What belongs here
 
