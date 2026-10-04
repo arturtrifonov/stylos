@@ -46,7 +46,7 @@ A visual treatment that shares anatomy and API with another is a `style` value, 
 
 This is a declared exception in the sense §"Exceptions are declared, not permitted" means: the contract records that these are separate components, and records that the reason is a Figma limit rather than a difference in the components themselves. A Svelte implementation has no such limit and may expose them as one component with a `style` prop — which is exactly the kind of divergence the contract exists to carry.
 
-Related-but-separate components share a name prefix — `Button Base`, `Button Outline`. That prefix is how Figma itself decides components are related, and it survives into instance names, which a slash path does not ([`naming.md`](../foundations/naming.md) §2).
+The Figma implementation uses compound names for related-but-separate components — `Button Base`, `Button Outline`. Assets grouping and instance-name conventions are described in [figma/naming.md](../../figma/naming.md#component-organization); they do not define a code implementation's structure.
 
 ### Where a thing is written down
 

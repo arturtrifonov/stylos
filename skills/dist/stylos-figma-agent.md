@@ -11,7 +11,7 @@ Compiled skill document for manual import into Figma Agent. Contains:
 
 - `stylos-component-integrity-check` v0.5
 - `stylos-description-sync` v0.2
-- `stylos-naming-cleanup` v0.15
+- `stylos-naming-cleanup` v0.16
 - `stylos-reference-reconstruction` v0.2
 
 ---
@@ -637,12 +637,14 @@ description: "Clean up naming in a selected Figma component or component set acc
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.15
+  version: 0.16
 ---
 
 # Stylos Naming Cleanup
 
 Clean up naming in a selected Figma component, component set, or related library objects according to Stylos Design System naming rules.
+
+The public contract is defined in [docs/foundations/naming.md](../../../docs/foundations/naming.md). Figma-only conventions for slash groups, nested-component publishing, layer names and drawing controls are defined in [figma/naming.md](../../../figma/naming.md). Apply those conventions in Figma without treating them as requirements for code implementations.
 
 This skill is for naming normalization only. It must not redesign components, change layout, change visual appearance, change token values, or restructure component APIs beyond naming unless the user explicitly asks for that.
 
@@ -1126,7 +1128,7 @@ Examples:
 
 Use this order for component properties after variant properties.
 
-**Use the global relative order for this panel section** (FND-NAMING-29). The Figma projection is described in [figma/naming.md](../../../figma/naming.md). A property that exists only to draw a state in Figma — `has scrollbar` — also has a place here even though the component's `api` deliberately omits it. Never move a property out of the panel order because a contract does not carry it.
+**Use the global relative order for public properties in this panel section** (FND-NAMING-29), extended by the drawing-control positions in [figma/naming.md](../../../figma/naming.md). `is focused` sits before `is required`; `has scrollbar` sits after `has overflow`. These controls have a panel position even when the component's `api` deliberately omits them. Never move a property out of the panel order because a contract does not carry it.
 
 **The bands carry the reasoning; the entries carry the answer.** Each controlled property group stays together (§9).
 

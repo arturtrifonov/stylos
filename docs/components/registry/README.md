@@ -120,7 +120,7 @@ These are two different questions and both are worth answering. The Airtable-der
 
 #### Families
 
-`family` is a label, not a node. Three components carry `family: "Checkbox"`; no `Checkbox` component exists in Figma or here, and inventing one would create an entity with no properties, variants or instances. No slash group either — `Checkbox / Input` violates [naming.md](../../foundations/naming.md) §2, because `Input` cannot stand alone as an instance name.
+`family` is a label, not a node. Three components carry `family: "Checkbox"`; no `Checkbox` component exists in Figma or here, and inventing one would create an entity with no properties, variants or instances. No slash group either — `Checkbox / Input` violates the [Figma component-organization convention](../../../figma/naming.md#component-organization), because `Input` cannot stand alone as an instance name.
 
 **"Variant of" and "sub-component" are not recorded, because they are derived.** A family member that other members name in their `uses` is the family's base — `Checkbox Input`. One that no sibling uses is a sibling form — `Checkbox Label`, `Checkbox Text`. The relations are not mutually exclusive and no field should pretend they are.
 

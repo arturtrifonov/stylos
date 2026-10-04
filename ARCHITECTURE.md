@@ -19,6 +19,7 @@ Every domain has exactly one authoritative source. When two places disagree, the
 | Components in Figma — one *implementation* of that contract | Figma | Figma cloud | by hand, or via skills through Figma Agent |
 | Components in code — the other *implementation* (`@stylos/ui`) | Svelte and CSS sources | `packages/ui/src/` | by hand per SPEC 0009, slice by slice; validated by `npm run ui:check` and `npm run lint:css` |
 | Rules — the visual language, behaviour, patterns, content | Markdown | `docs/foundations/`, `docs/behavior/`, `docs/patterns/`, `docs/content/` | by hand, validated by `npm run validate:rules` |
+| Figma-specific authoring conventions | Markdown | `figma/`, including `figma/naming.md` | by hand, applied by Figma skills; not rules of the global design language |
 | How a rule is written, identified and cited | Markdown | `docs/RULES.md` | by hand |
 | Design principles — what a rule has to be consistent with | Markdown | `docs/principles.md` | by hand, validated by `npm run validate:rules` |
 | Skill behaviour | Markdown sources | `skills/src/` | by hand, compiled to `skills/dist/` |

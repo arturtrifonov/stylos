@@ -79,7 +79,7 @@ const KNOWN_FIELDS = new Set([
  * `Table Cell Text` → `table-cell-text`, and `Foo / Bar` → `foo/bar`. The same
  * rule the 2026-08-20 import used. No entry carries a `/` since 2026-09-02 —
  * the split survives because the path has to follow whatever Figma's name is,
- * not because a nested path is wanted (docs/foundations/naming.md §2).
+ * not because a nested path is wanted (figma/naming.md).
  */
 export function slugPath(id) {
   return id

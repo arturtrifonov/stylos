@@ -4,6 +4,11 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-04 (Figma authoring conventions leave the global naming guide)
+
+- **Assets grouping, slash paths and nested-component publishing are conventions in `figma/naming.md`.** The former draft rules `FND-NAMING-06` through `FND-NAMING-10` leave the global guide. The same applies to default layer names, matching layers across variants, sentence-case layers and the text-layer suffix (former `FND-NAMING-02`, `FND-NAMING-04`, `FND-NAMING-12` and `FND-NAMING-13`). The file remains Draft, so these blocks are removed under RUL-14's draft exception; the other IDs and section numbers stay stable.
+- **FND-NAMING-01 covers public component and property names only.** Report language belongs to the reporting skill, not the naming contract. Component-valued properties are described without instance-swap terminology. Drawing controls `is focused` and `has scrollbar`, and pointer/focus preview values, live in the Figma conventions rather than the public vocabulary and order. The Figma index and registry references point to those conventions; naming-cleanup v0.16 follows both sources and is rebuilt from source.
+
 ### Changed — 2026-09-30 (global naming rules and property kinds)
 
 - **The registry distinguishes `kind: text` from `kind: string`.** Text carries interface content; string carries an identifier or another non-text string value. `Icon.name` is migrated to string. Both generate TypeScript `string` props and retain their example stories; the validator checks string defaults and example values. The code API is unchanged.
