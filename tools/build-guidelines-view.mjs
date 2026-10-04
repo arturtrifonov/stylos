@@ -39,7 +39,7 @@ body {
   max-width: 62rem;
   background: var(--stylos-background-base, #fff);
   color: var(--stylos-text-base, #101828);
-  font-family: var(--stylos-font-normal, system-ui), system-ui, sans-serif;
+  font-family: var(--font-sans, system-ui);
   line-height: 1.6;
 }
 main { padding-block-start: 2.5rem; }
@@ -47,7 +47,7 @@ h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 .4rem; }
 h2 { font-size: 1.35rem; margin: 3rem 0 .3rem; }
 h3 { font-size: 1.05rem; margin: 0; }
 a { color: var(--stylos-text-primary, #4338ca); }
-.mono { font-family: var(--stylos-font-code, ui-monospace), ui-monospace, monospace; }
+.mono { font-family: var(--font-mono, ui-monospace); }
 .lede { color: var(--stylos-text-secondary, #475467); margin: 0 0 2rem; max-width: 48rem; }
 .scope { color: var(--stylos-text-secondary, #475467); }
 
@@ -60,7 +60,7 @@ a { color: var(--stylos-text-primary, #4338ca); }
 .files { border-top: 1px solid var(--stylos-border-secondary, #eaecf0); margin-block-start: 1rem; }
 .file {
   display: grid;
-  grid-template-columns: minmax(10rem, 14rem) 1fr auto;
+  grid-template-columns: minmax(10rem, 14rem) minmax(0, 1fr) auto auto;
   gap: .4rem 1.2rem;
   align-items: baseline;
   padding: .75rem 0;
@@ -69,7 +69,16 @@ a { color: var(--stylos-text-primary, #4338ca); }
 .file > .name { font-weight: 600; }
 .file > .scope { font-size: .9rem; }
 .file > .marks { display: flex; gap: .4rem; white-space: nowrap; }
-@media (max-width: 40rem) { .file { grid-template-columns: 1fr; } }
+@media (max-width: 40rem) {
+  .file { grid-template-columns: minmax(0, 1fr) auto; }
+  .file > .name { grid-column: 1; grid-row: 1; }
+  .file > .status { grid-column: 2; grid-row: 1; }
+  .file > .scope { grid-column: 1 / -1; grid-row: 2; }
+  .file > .marks { grid-column: 1 / -1; grid-row: 3; }
+}
+.document-meta { display: flex; align-items: baseline; gap: 1rem; }
+.document-meta > .mono { min-width: 0; overflow-wrap: anywhere; }
+.document-meta > .status { margin-inline-start: auto; }
 
 .badge {
   font-size: .72rem;
@@ -80,8 +89,20 @@ a { color: var(--stylos-text-primary, #4338ca); }
   border: 1px solid var(--stylos-border-secondary, #eaecf0);
   color: var(--stylos-text-secondary, #475467);
 }
-.badge.confirmed { border-color: var(--stylos-border-success, #067647); color: var(--stylos-text-success, #067647); }
-.badge.partial { border-color: var(--stylos-border-warning, #b54708); color: var(--stylos-text-warning, #b54708); }
+.badge.status {
+  justify-self: end;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  min-width: 8rem;
+  font-size: .8125rem;
+  font-weight: 600;
+  text-align: center;
+  border-color: var(--rule-strong, #98a2b3);
+  background: var(--bg-sunken, #f9fafb);
+  color: var(--fg, #101828);
+}
+.badge.confirmed { border-color: var(--ok, #067647); color: var(--ok, #067647); }
+.badge.partial { border-color: var(--warn, #b54708); color: var(--warn, #b54708); }
 .badge.count { font-variant-numeric: tabular-nums; }
 
 /* a rule */
@@ -93,7 +114,7 @@ a { color: var(--stylos-text-primary, #4338ca); }
 }
 .rule > header { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem .8rem; margin-block-end: .7rem; }
 .rule .id {
-  font-family: var(--stylos-font-code, ui-monospace), ui-monospace, monospace;
+  font-family: var(--font-mono, ui-monospace);
   font-size: .85rem;
   color: var(--stylos-text-secondary, #475467);
   text-decoration: none;
@@ -117,7 +138,7 @@ a { color: var(--stylos-text-primary, #4338ca); }
   overflow-x: auto;
   font-size: .85rem;
 }
-code { font-family: var(--stylos-font-code, ui-monospace), ui-monospace, monospace; font-size: .92em; }
+code { font-family: var(--font-mono, ui-monospace); font-size: .92em; }
 .prose table { border-collapse: collapse; margin: 1rem 0; font-size: .92rem; width: 100%; }
 .prose th, .prose td { text-align: left; padding: .35rem .6rem; border-bottom: 1px solid var(--stylos-border-secondary, #eaecf0); vertical-align: top; }
 .empty {
@@ -133,7 +154,7 @@ const LEVEL_CLASS = { MUST: "must", SHOULD: "should", MAY: "may", RETIRED: "reti
 const statusBadge = (status) => {
   if (!status) return "";
   const kind = status === "Confirmed" ? "confirmed" : status === "Partial" ? "partial" : "";
-  return `<span class="badge ${kind}">${esc(status)}</span>`;
+  return `<span class="badge status ${kind}">${esc(status)}</span>`;
 };
 
 /**
@@ -305,9 +326,10 @@ export function renderIndex(data, chrome = {}) {
         return `<div class="file">
   <div class="name"><a href="guidelines/${esc(file.slug)}.html">${esc(file.title)}</a></div>
   <div class="scope">${file.scope ? inline(file.scope, { href: linkRewriter({ file: file.file, prefix: "", slugs: data.slugs ?? new Set(), repoUrl: data.repoUrl }) }) : "<em>No scope line</em>"}</div>
-  <div class="marks">${statusBadge(file.status)}${
+  <div class="marks">${
     count > 0 ? `<span class="badge count">${count} rule${count === 1 ? "" : "s"}</span>` : ""
   }${checked > 0 ? `<span class="badge count">${checked} checked</span>` : ""}</div>
+  ${statusBadge(file.status)}
 </div>`;
       })
       .join("\n");
@@ -374,7 +396,7 @@ export function renderPage(file, data, chrome = {}) {
 <p class="scope"><a href="${prefix}guidelines.html">Guidelines</a></p>
 <h1>${esc(file.title)}</h1>
 <p class="lede">${file.scope ? inline(file.scope, { href }) : ""}</p>
-<p class="scope">${statusBadge(file.status)} <span class="mono">${esc(file.file)}</span></p>
+<p class="scope document-meta"><span class="mono">${esc(file.file)}</span>${statusBadge(file.status)}</p>
 ${body}
 </main>`,
   });

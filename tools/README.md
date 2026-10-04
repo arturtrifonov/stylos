@@ -89,6 +89,8 @@ The other half of what the site publishes. The registry view renders the invento
 
 **Every file is rendered, `Yet to fill` included.** Fifty of the sixty-one are a scope line and nothing else, and that is the honest picture of the system before alpha: a file with a scope and no rules says a decision belongs there and has not been made. A page showing only the eleven written files would answer "what is decided" and lose "what is left", which is most of what the set currently is. The index leads with the tally — rules, rules with a check, files written, files yet to fill — because readiness is what the page is read for.
 
+The status sits at the far right of each index row and document header, separate from rule counts, including on narrow screens. Guideline pages use the shared theme's Georama and JetBrains Mono font stacks.
+
 **Every rule gets a URL, and every citation becomes a link.** The grammar of `docs/RULES.md` exists so a contract, a skill or a test can cite `FND-COLOR-08` and have `validate:rules` fail the citation if it stops resolving. Until this existed the citation resolved only for a reader with the repository open. Each rule is an anchor on its document's page, and an ID written as bare text anywhere in the set is rewritten into a link to it — never one inside a code span, which is a specimen rather than a citation, and never one inside a tag.
 
 It reads the set through `lib/guidelines.mjs`, which reads through `validate-rules.mjs` rather than beside it: that module already knows which files are guideline files and how a rule block comes apart, and a second reader of the same grammar is a second answer waiting to disagree with the first.
