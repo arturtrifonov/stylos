@@ -8,7 +8,7 @@
 
 **MUST.** Every component is described by `registry/<path>.yaml`, at the path its `id` implies, with no companion Markdown document and no template for one.
 
-Why: this replaces the earlier model — a twenty-point Markdown document per component, with a `_template.md` to keep them uniform. That model was withdrawn on 2026-08-26 because a template is an attempt to formalise prose, and prose can only look uniform. Nothing checked that a section was present, that a value existed, that a named alternative still existed, or that a property list matched Figma. Every one of those is checkable once the contract is data.
+Why: this replaces the earlier model — a twenty-point Markdown document per component, with a `_template.md` to keep them uniform. That model was withdrawn on 2026-08-26 because a template is an attempt to formalise prose, and prose can only look uniform. Nothing checked that a section was present, that a value existed, that a named alternative still existed, or that a property list matched the implementation. Every one of those is checkable once the contract is data.
 
 **Prose did not disappear — it moved into fields.** `purpose`, `use_when`, `do_not_use_when`, the `description` on every property, `rationale` on a value, `sizing_model.intent`, `limitations`. What disappeared is prose with nowhere to belong.
 
@@ -22,13 +22,11 @@ Why: an authored page is a second copy of the contract, and people read the copy
 
 ## What the contract is for
 
-### STD-03 — A contract records what Figma cannot show
+### STD-03 — A contract records decisions beyond appearance
 
 **MUST.** A contract records the component's role, its boundaries, its supported composition, its resizable axes and the reasons behind them; a contract that describes only appearance has not met this standard.
 
-Why: a designer and an agent miss the same things. A designer can see a component's appearance in Figma but not its intended role, its boundaries, its supported composition, its resizable axes, or why a size that fails an accessibility criterion is shipped anyway. An agent cannot see these either, and when they are not recorded it will configure the component wrongly, with confidence.
-
-Appearance is in Figma, and it is better there.
+Why: appearance alone does not explain intended use, composition, adjustable axes or the reasons behind an accessibility finding. A designer, developer or agent needs those decisions recorded to configure the component correctly.
 
 ## The two gates
 
@@ -43,7 +41,9 @@ Appearance is in Figma, and it is better there.
 - any property combination that does not exist is stated as a rule, in `limitations` or on the value it constrains;
 - `sizing_model` has a row per size value and an `intent`, and every dimension and type measure in it is a token name that resolves against `tokens/`, never a number;
 - every value carrying an `a11y` finding also carries a `rationale` saying why it is shipped;
-- `figma.node_id` is present and `last_verified` is not older than the component's last change.
+- `figma.node_id` identifies an existing Figma representation, and `last_verified` is not older than the component's last change.
+
+A Figma representation is required for readiness. A component implemented only in code cannot be `ready`; the Figma link and verification record are part of the evidence for the gate.
 
 Why: a half-written contract is worse than none. It reads as the answer, and the fields nobody filled in are exactly the ones a consumer would have had to ask about.
 
@@ -53,8 +53,8 @@ Checked by: `npm run validate:registry`, which fails a `status: ready` entry who
 
 **MUST.** A component is ready for the library when its *contract* is complete (STD-04) and the *component* itself meets every item below:
 
-- its public names and values follow [naming.md](../foundations/naming.md), and its Figma layer names follow [figma/naming.md](../../figma/naming.md#layer-names);
-- no default or meaningless layer names remain;
+- its public names and values follow [naming.md](../foundations/naming.md);
+- its Figma representation passes the [Figma authoring checks](../../figma/components.md#authoring-checks);
 - its public properties are in the canonical order, and controlled groups are adjacent;
 - the supported states and combinations are valid;
 - every value that a token covers is bound to a variable or a style, unless a documented exception applies;
@@ -65,7 +65,7 @@ Checked by: `npm run validate:registry`, which fails a `status: ready` entry who
 - accessibility findings are recorded as findings, with a `rationale` where the component ships anyway;
 - existing instances have an understood migration path for any breaking change.
 
-Why: `status: ready` is a claim consumers build on. Keeping this gate separate from STD-04 lets each of the two be answered on its own. A component that is written up but that nobody has checked in Figma is in the ordinary state between the end of a wave and the moment the release pass reaches it.
+Why: `status: ready` is a claim consumers build on. A documented contract is not proof that the component has been built and checked. The required Figma representation provides that reviewable design; a code implementation alone does not satisfy this gate.
 
 Checked by: `stylos-component-integrity-check` and `stylos-naming-cleanup` cover most of these. Run them; do not re-check by eye what a skill checks reliably.
 
@@ -77,7 +77,7 @@ Checked by: `stylos-component-integrity-check` and `stylos-naming-cleanup` cover
 
 Why: they are recorded for every component, and copying them out again is how they drift (RUL-11).
 
-### STD-07 — Measurements are read from Figma; reasons are authored
+### STD-07 — Measurements are read; reasons are authored
 
 **MUST.** A number in a contract comes from a measurement, and a reason comes from a person.
 
@@ -85,11 +85,11 @@ Why: a number nobody measured is a guess that looks precise. A reason nobody sta
 
 Serves: PRN-05.
 
-### STD-08 — What Figma answers on demand is not recorded
+### STD-08 — Implementation state is inspected, not copied into the contract
 
-**MUST.** Token bindings, layer names, auto-layout settings and stroke positions are read from the file when needed, not copied into the contract.
+**MUST.** Read implementation details from the implementation when needed rather than copying its current state into the component contract.
 
-Why: they belong to the implementation of the design library, and the contract records decisions, not the state of a file. A copy of that state is out of date as soon as anyone opens Figma.
+Why: the contract records decisions that implementations follow. A copied snapshot can become stale after an implementation changes. Figma-specific inspection details are documented in [figma/components.md](../../figma/components.md#inspection).
 
 ### STD-09 — A missing section is stated, not omitted
 

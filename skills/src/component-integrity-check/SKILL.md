@@ -4,7 +4,7 @@ description: "Audit selected Figma components, component sets, instances, or sev
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.5
+  version: 0.6
 ---
 
 # Stylos Component Integrity Check
@@ -246,12 +246,14 @@ Example summary:
 
 Inspect active colors in:
 
-- solid and gradient fills
+- solid fills
 - text fills, including mixed text-range fills
 - strokes
 - effect colors
 
 A color passes when it is directly bound to a valid color variable, inferred from a valid variable binding, or governed by a valid applied style.
+
+Apply FND-COLOR-03 to gradients, meshes and other multi-stop fills: their colours follow image-content logic and do not require palette bindings. Do not report their stop colours as raw-colour warnings or ask to convert them to images. Still report broken variable or style references where a binding is present. The Figma application is documented in [figma/foundations.md](../../../figma/foundations.md#gradients-and-meshes).
 
 Do not report image or video fills as colors. Inspect hidden layers, because they may become visible through a property or variant. Skip only paint or effect entries that are themselves disabled and cannot render.
 

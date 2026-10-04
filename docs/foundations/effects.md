@@ -29,9 +29,9 @@ Serves: PRN-01.
 
 ## Structure
 
-Three separate Figma collections, each with a single mode:
+The token families below define the structure. Their Figma collections are documented in [figma/foundations.md](../../figma/foundations.md#effect-collections).
 
-| Collection | Shape |
+| Token family | Shape |
 | --- | --- |
 | `radius` | seven steps — `zero`, the five full-word sizes, and `round` |
 | `border` | `width/normal`, `width/thick` |
@@ -51,7 +51,7 @@ Six styles, `shadow/elevation 1`…`shadow/elevation 6`. One layer at step *k* i
 
 X is always zero, and **blur equals the Y offset**. That is why there is no blur token, and none is missing. Only two number scales exist: `shadow/elevation/level-k`, which is both the Y offset and the blur, and `shadow/spread/level-k`.
 
-**`level-k` is a parameter of one layer, not a shadow style.** The same level parameters are reused across several styles. `shadow/elevation N` is a complete style: layers 1…N in `shadow/color/base`, followed by layer N again in `shadow/color/primary` — N + 1 layers, so `shadow/elevation 6` is seven. This composition and the two number scales reproduce all six styles exactly. That is why nothing about a shadow is exported from Figma: `npm run tokens:css` composes the six stacks from the two scales (SPEC 0007 §4.5) instead of reading them.
+**`level-k` is a parameter of one layer, not a shadow style.** The same level parameters are reused across several styles. `shadow/elevation N` is a complete style: layers 1…N in `shadow/color/base`, followed by layer N again in `shadow/color/primary` — N + 1 layers, so `shadow/elevation 6` is seven. This composition and the two number scales reproduce all six styles exactly. The generation process is documented in [tools/README.md](../../tools/README.md#the-token-pipeline).
 
 **Every elevation style carries a brand tint.** `shadow/color/primary` appears in all six, so shadows are not neutral. The role it aliases, `color/shadow/primary`, references `indigo` and carries its opacity beside the reference (FND-COLOR-09), so a change to that palette step reaches all six shadows. Until 2026-09-15 the colour was stored flattened, and a change to the step reached none of them.
 

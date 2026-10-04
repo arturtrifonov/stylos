@@ -7,10 +7,10 @@ Scope: The palette, the semantic roles and the mode mechanism — how a colour i
 
 | Layer | Collection | What it is |
 | --- | --- | --- |
-| Primitive | `palette.light`, `palette.dark` — [`tokens/palette.yaml`](../../tokens/palette.yaml) | hue groups × steps, in two collections with no modes: one for light, one for dark |
+| Primitive | [`tokens/palette.yaml`](../../tokens/palette.yaml) | hue groups × steps, with separate light and dark ramps |
 | Semantic | `color` — [`tokens/color.yaml`](../../tokens/color.yaml) | roles — `surface`, `text`, `background`, `border`, `shadow` — each naming a palette step |
 
-In `tokens/` the two palettes are stored as one collection, `palette`, with `light` and `dark` as its modes. The import joins them, as [`tokens/_naming.yaml`](../../tokens/_naming.yaml) declares. Only the storage differs: in Figma they are two collections with no modes, and a role picks its step from each one separately (FND-COLOR-05).
+The palette supplies the light and dark ramps; semantic roles choose a step from the appropriate ramp in each mode (FND-COLOR-05). Figma collection layout and its import mapping are documented in [figma/foundations.md](../../figma/foundations.md#color-collections).
 
 The dark ramp is authored by hand, not generated from the light one. A literal inversion of the light ramp gives near-black, saturated surfaces that are unusable, and no single transform works for every hue group. It is the worked example behind PRN-05.
 
@@ -34,7 +34,7 @@ Serves: PRN-04.
 
 Why: a colour chosen outside the palette is bound to nothing. It holds one person's choice and none of their reasoning, and no later palette change reaches it. Once a few such colours exist, nobody can say which colours the system actually has.
 
-Exception: a gradient, a mesh or any other multi-stop fill that no single palette step can express is placed as an image instead of a colour fill, and adds no variables.
+Exception: a gradient, a mesh or another multi-stop fill is treated as image content for colour selection, so its colours may fall outside the palette and need no new variables; the fill may remain an editable gradient or mesh and does not need conversion to an image.
 Serves: PRN-04.
 
 ## Modes
@@ -43,15 +43,15 @@ Serves: PRN-04.
 
 **MUST.** No variable name carries a theme or mode in it.
 
-Why: the mode is a property of the collection, not of the name (FND-COLOR-05). A name that says `dark` has to be duplicated for every other mode, and the duplicates then have to be kept in sync by hand.
+Why: the mode selects the bindings of semantic roles, not their names (FND-COLOR-05). A name that says `dark` has to be duplicated for every other mode, and the duplicates then have to be kept in sync by hand.
 
-### FND-COLOR-05 — The mode is a property of the semantic layer, not of the palette
+### FND-COLOR-05 — A semantic role chooses its palette step per mode
 
-**MUST.** The modes belong to the `color` collection: in each mode, a role picks a step from the palette with the same name as that mode, and the palettes themselves are two plain sources with no modes.
+**MUST.** Choose each semantic colour role's palette step separately for each mode, using that mode's palette ramp.
 
-Why: a role has to be able to choose a **different step** in each mode — the disabled surfaces take a different `slate` step in dark than in light — because a dark context is not simply the light one with its colours changed. If the palette carried the modes itself, a mode could only change a step's *value*. That is the weaker of the two, and it is not the one a dark context needs.
+Why: a role may need a different step in each mode — the disabled surfaces take a different `slate` step in dark than in light. Changing only the value behind one fixed step would not express that decision.
 
-A `ref` such as `palette/indigo/700` therefore names a step, **not a collection**. The role's mode supplies the collection, and the mapping from mode name to palette is declared in [`tokens/_naming.yaml`](../../tokens/_naming.yaml) as part of the contract.
+A `ref` such as `palette/indigo/700` names a hue and step. The role's mode selects the ramp from which that step is resolved; the storage arrangement does not change this meaning.
 
 ## How the roles are organised
 
@@ -132,7 +132,7 @@ Why: a dark region inside a light page is not a supported case. Supporting it la
 
 **MUST.** `surface/special/<hue>` and `text/special/<hue>` are a complete generated family: one role in each area for every palette hue group except `mono`, each bound to `palette/<hue>/700` in both modes.
 
-Why: categorical colour is the one semantic family whose names, membership and palette bindings are entirely determined by another collection. Generating it makes a new hue group available everywhere categorical colour is offered, and prevents a hand-maintained subset, a wrong hue or a different step from quietly becoming part of the language. The generated variables remain semantic variables in Figma, so components still bind roles rather than palette primitives.
+Why: categorical colour is the one semantic family whose names, membership and palette bindings are entirely determined by another collection. Generating it makes a new hue group available everywhere categorical colour is offered, and prevents a hand-maintained subset, a wrong hue or a different step from quietly becoming part of the language. The generated tokens remain semantic roles, so components still bind roles rather than palette primitives.
 
 Checked by: `npm run tokens:css` — a missing, extra or incorrectly bound `special` role fails the build.
 

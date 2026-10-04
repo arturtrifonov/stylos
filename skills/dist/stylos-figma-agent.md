@@ -9,10 +9,10 @@
 
 Compiled skill document for manual import into Figma Agent. Contains:
 
-- `stylos-component-integrity-check` v0.5
+- `stylos-component-integrity-check` v0.6
 - `stylos-description-sync` v0.2
 - `stylos-naming-cleanup` v0.17
-- `stylos-reference-reconstruction` v0.2
+- `stylos-reference-reconstruction` v0.3
 
 ---
 
@@ -22,7 +22,7 @@ description: "Audit selected Figma components, component sets, instances, or sev
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.5
+  version: 0.6
 ---
 
 # Stylos Component Integrity Check
@@ -264,12 +264,14 @@ Example summary:
 
 Inspect active colors in:
 
-- solid and gradient fills
+- solid fills
 - text fills, including mixed text-range fills
 - strokes
 - effect colors
 
 A color passes when it is directly bound to a valid color variable, inferred from a valid variable binding, or governed by a valid applied style.
+
+Apply FND-COLOR-03 to gradients, meshes and other multi-stop fills: their colours follow image-content logic and do not require palette bindings. Do not report their stop colours as raw-colour warnings or ask to convert them to images. Still report broken variable or style references where a binding is present. The Figma application is documented in [figma/foundations.md](../../../figma/foundations.md#gradients-and-meshes).
 
 Do not report image or video fills as colors. Inspect hidden layers, because they may become visible through a property or variant. Skip only paint or effect entries that are themselves disabled and cannot render.
 
@@ -1705,7 +1707,7 @@ description: "Rebuild a Figma interface from a screenshot, image, mockup, wirefr
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.2
+  version: 0.3
 ---
 
 # Stylos Reference Reconstruction
@@ -1980,7 +1982,7 @@ Do not create local text styles or manual typography overrides to improve visual
 
 ## Color rules
 
-Infer the semantic role of every source color, then use the corresponding Stylos semantic color.
+Infer the semantic role of source interface colours, then use the corresponding Stylos semantic colour. Content covered by FND-COLOR-03 follows the exception described below.
 
 Map roles such as:
 
@@ -1995,7 +1997,7 @@ Map roles such as:
 
 Use component variants or semantic variables to apply these roles. When a component exposes `type`, `tone`, `state`, or another semantic property, use that property instead of recoloring the instance.
 
-Do not:
+For interface colours outside that content exception, do not:
 
 - sample or copy source hex, RGB, HSL, opacity, gradient, or shadow values
 - preserve a source hue because it is visually prominent
@@ -2006,7 +2008,7 @@ Do not:
 
 For example, if the reference uses purple for primary actions and Stylos uses another primary color, use the Stylos primary role.
 
-Treat a logo, illustration, photograph, or user-generated image as content. Its own colors may remain inside the asset, but they must not define the reconstructed interface palette.
+Treat a logo, illustration, photograph, or user-generated image as content. Its own colors may remain inside the asset, but they must not define the reconstructed interface palette. Apply FND-COLOR-03 to gradients, meshes and other multi-stop content fills too: preserve their content colours without requiring conversion to image files. The Figma handling is documented in [figma/foundations.md](../../../figma/foundations.md#gradients-and-meshes).
 
 ## Layout and spacing rules
 

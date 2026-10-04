@@ -19,7 +19,7 @@ Every domain has exactly one authoritative source. When two places disagree, the
 | Components in Figma — one *implementation* of that contract | Figma | Figma cloud | by hand, or via skills through Figma Agent |
 | Components in code — the other *implementation* (`@stylos/ui`) | Svelte and CSS sources | `packages/ui/src/` | by hand per SPEC 0009, slice by slice; validated by `npm run ui:check` and `npm run lint:css` |
 | Rules — the visual language, behaviour, patterns, content | Markdown | `docs/foundations/`, `docs/behavior/`, `docs/patterns/`, `docs/content/` | by hand, validated by `npm run validate:rules` |
-| Figma-specific authoring conventions | Markdown | `figma/`, including `figma/naming.md` | by hand, applied by Figma skills; not rules of the global design language |
+| Figma-specific authoring conventions | Markdown | `figma/`, including naming, foundations, icons and component readiness | by hand, applied by Figma skills; not rules of the global design language |
 | How a rule is written, identified and cited | Markdown | `docs/RULES.md` | by hand |
 | Design principles — what a rule has to be consistent with | Markdown | `docs/principles.md` | by hand, validated by `npm run validate:rules` |
 | Skill behaviour | Markdown sources | `skills/src/` | by hand, compiled to `skills/dist/` |
@@ -31,6 +31,8 @@ Every domain has exactly one authoritative source. When two places disagree, the
 | Published documentation | *derived* | `build/` | `tools/build-site.mjs`; uploaded by hand — see §4 |
 
 **Values are authored where they are judged by eye; contracts are authored where they can bind more than one implementation.** Colours and dimensions are decided in Figma, so Figma holds them and `tokens/` imports them. A component's contract cannot be held by Figma, because Figma is one of the two things that must satisfy it — the Svelte package is the other, and neither can be authoritative over the other. A limitation of one tool would otherwise become a rule of the system. See [`docs/components/README.md`](docs/components/README.md).
+
+Component readiness requires a verified Figma representation under [STD-04 and STD-05](docs/components/STANDARD.md#the-two-gates); a code implementation alone cannot establish `ready`. Tool-specific authoring checks live in [figma/components.md](figma/components.md).
 
 Canonical public names belong to the registry and naming guide. The correspondence with design names and frontend identifiers is described in [naming.md](docs/foundations/naming.md#3-contract-and-implementation-names); the package documents its exact [name conversion](packages/ui/README.md#name-conversion).
 
