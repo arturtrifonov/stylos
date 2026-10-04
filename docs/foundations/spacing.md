@@ -1,6 +1,6 @@
 # Spacing
 
-Status: Draft
+Status: Confirmed
 Scope: Internal padding, gaps between items and external margins; a component's own dimensions are [sizing.md](sizing.md).
 
 ## The scale

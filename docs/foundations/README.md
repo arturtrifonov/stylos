@@ -10,7 +10,7 @@ This table is an index of the files and nothing more. Where the table and a file
 | --- | --- |
 | [color.md](color.md) | Confirmed |
 | [typography.md](typography.md) | Draft |
-| [spacing.md](spacing.md) | Draft |
+| [spacing.md](spacing.md) | Confirmed |
 | [sizing.md](sizing.md) | Confirmed |
 | [naming.md](naming.md) | Confirmed |
 | [icons.md](icons.md) | Confirmed |
