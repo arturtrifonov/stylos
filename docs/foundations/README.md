@@ -12,7 +12,7 @@ This table is an index of the files and nothing more. Where the table and a file
 | [typography.md](typography.md) | Draft |
 | [spacing.md](spacing.md) | Draft |
 | [sizing.md](sizing.md) | Draft |
-| [naming.md](naming.md) | Draft |
+| [naming.md](naming.md) | Confirmed |
 | [icons.md](icons.md) | Confirmed |
 | [effects.md](effects.md) | Confirmed |
 | [accessibility.md](accessibility.md) | Draft |

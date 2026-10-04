@@ -4,6 +4,11 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-04 (confirmed naming and guideline presentation)
+
+- **Naming and public API rules are Confirmed.** The guide and foundations index record the approved status, and the guide points to the rule lifecycle for subsequent changes.
+- **Guideline statuses sit at the far right**, separate from rule counts, on the index and document pages, including narrow screens. Status labels are larger and more prominent. Guideline text and code use the shared Georama and JetBrains Mono font stacks instead of falling back to system fonts through missing theme variables.
+
 ### Changed — 2026-10-04 (Figma conventions separated from confirmed foundations)
 
 - **Confirmed foundations describe system requirements independently of Figma authoring.** Icon instance swaps, nested-layer handling, the dedicated-library plan and the recorded alignment work move to `figma/icons.md`. Color collection storage and effect collections move to `figma/foundations.md`; global semantic role selection and shadow composition remain in the foundations. Rule IDs remain unchanged under RUL-14's temporary exception for the guideline set before all rules are confirmed.

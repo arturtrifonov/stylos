@@ -1,13 +1,13 @@
 # Naming and public API rules
 
-Status: Draft
+Status: Confirmed
 Scope: Public component names, property names and values across implementations; contract completeness is in [components/STANDARD.md](../components/STANDARD.md), and Figma authoring conventions are in [figma/naming.md](../../figma/naming.md).
 
 **Normative.** These rules describe the public naming contract. An implementation follows them through its documented naming conversion; tool-specific authoring conventions and skill procedures are documented separately.
 
 Components are public APIs — see [charter](../charter.md). A name is part of that API: renaming one is a breaking change, not a tidy-up.
 
-The eleven numbered sections are cited by contracts and tools. Rule IDs may still be reordered while this guide is Draft; citations are updated in the same change.
+The eleven numbered sections are cited by contracts and tools. These rules are confirmed; changes follow the rule lifecycle in [docs/RULES.md](../RULES.md).
 
 ---
 
