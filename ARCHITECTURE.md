@@ -34,6 +34,8 @@ Every domain has exactly one authoritative source. When two places disagree, the
 
 Component readiness requires a verified Figma representation under [STD-04 and STD-05](docs/components/STANDARD.md#the-two-gates); a code implementation alone cannot establish `ready`. Tool-specific authoring checks live in [figma/components.md](figma/components.md).
 
+**Amended 2026-10-04 — spacing contract clarified with the owner's approval.** [Spacing](docs/foundations/spacing.md) defines the shared base and ratio names, the use of semantic gap roles for explicit spacing, their aliases to the primitive scale, and the boundary between authored spacing and distributed free space. Its named optical-correction exception follows PRN-01; token values remain in the canonical record.
+
 Canonical public names belong to the registry and naming guide. The correspondence with design names and frontend identifiers is described in [naming.md](docs/foundations/naming.md#3-contract-and-implementation-names); the package documents its exact [name conversion](packages/ui/README.md#name-conversion).
 
 Authoring values in Figma is current practice, not a permanent commitment; moving them into the repository is an open intention with no date.
