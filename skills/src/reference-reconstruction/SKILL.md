@@ -4,7 +4,7 @@ description: "Rebuild a Figma interface from a screenshot, image, mockup, wirefr
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.2
+  version: 0.3
 ---
 
 # Stylos Reference Reconstruction
@@ -279,7 +279,7 @@ Do not create local text styles or manual typography overrides to improve visual
 
 ## Color rules
 
-Infer the semantic role of every source color, then use the corresponding Stylos semantic color.
+Infer the semantic role of source interface colours, then use the corresponding Stylos semantic colour. Content covered by FND-COLOR-03 follows the exception described below.
 
 Map roles such as:
 
@@ -294,7 +294,7 @@ Map roles such as:
 
 Use component variants or semantic variables to apply these roles. When a component exposes `type`, `tone`, `state`, or another semantic property, use that property instead of recoloring the instance.
 
-Do not:
+For interface colours outside that content exception, do not:
 
 - sample or copy source hex, RGB, HSL, opacity, gradient, or shadow values
 - preserve a source hue because it is visually prominent
@@ -305,7 +305,7 @@ Do not:
 
 For example, if the reference uses purple for primary actions and Stylos uses another primary color, use the Stylos primary role.
 
-Treat a logo, illustration, photograph, or user-generated image as content. Its own colors may remain inside the asset, but they must not define the reconstructed interface palette.
+Treat a logo, illustration, photograph, or user-generated image as content. Its own colors may remain inside the asset, but they must not define the reconstructed interface palette. Apply FND-COLOR-03 to gradients, meshes and other multi-stop content fills too: preserve their content colours without requiring conversion to image files. The Figma handling is documented in [figma/foundations.md](../../../figma/foundations.md#gradients-and-meshes).
 
 ## Layout and spacing rules
 

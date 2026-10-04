@@ -18,11 +18,11 @@ Why: a mark matched by appearance brings with it the meaning it had in the other
 
 Serves: PRN-04.
 
-### FND-ICONS-02 — An icon reaches a component through an exposed swap property
+### FND-ICONS-02 — An icon reaches a component through its public API
 
-**MUST.** A component takes its icon through the instance-swap property it publishes — `icon`, `leading icon`, `trailing icon` — and not by editing a nested layer.
+**MUST.** Set a component's icon through the public property it exposes for that role, such as `icon`, `leading icon` or `trailing icon`.
 
-Why: the swap property is the component's API for the mark. A nested edit is invisible to every consumer of that API, and it is lost when the component changes.
+Why: the public API defines how the mark can change. Editing the component's internal structure bypasses that contract and may be lost when the component changes.
 
 Positional names follow FND-NAMING-17, and the property names themselves are set in [naming.md](naming.md) §7.
 
@@ -30,9 +30,9 @@ Serves: PRN-06.
 
 ### FND-ICONS-03 — An icon keeps the system's size, stroke and optical treatment
 
-**MUST.** System icon size, stroke and optical treatment are preserved: no tracing from a screenshot, no manually resizing a nested icon.
+**MUST.** Preserve the system's icon sizes and the active preset's stroke and optical treatment.
 
-Why: the instance below was chosen so that one drawing works at every size from 16 to 40px. A manual resize is the one operation that undoes this without anyone noticing.
+Why: these choices make the marks a consistent set. A local change to their proportions or treatment breaks that consistency without changing the declared preset.
 
 Serves: PRN-01.
 
@@ -119,7 +119,7 @@ continue to satisfy the rules above and the `Icon` drawing contract, but may
 use different drawings, names and an importer appropriate to its source.
 
 Stylos supplies this preset. A consumer choosing another preset is responsible
-for its assets, integration and Figma library. A managed way to supply other
+for its assets and implementation integrations. A managed way to supply other
 presets may be considered later; none is promised now.
 
 The current instance is Material Symbols Rounded (Apache-2.0), `wght 500`,
@@ -141,30 +141,20 @@ component that uses a filled/unfilled pair to show state, so omitting the
 unfilled version loses no behaviour the system currently supports. A state
 pair is outside this preset's scope.
 
-The Figma implementation will have a dedicated icon file containing this
-preset only. It will supply the same drawings as the repository. Creating the
-file and aligning existing components are implementation work still to do;
-the choice of library structure is settled. See
-[figma/README.md](../../figma/README.md) for the existing files.
+Figma authoring, library structure and the recorded alignment work are documented in [figma/icons.md](../../figma/icons.md).
 
-## The direction of travel between Figma and code
+## Preset authority and unresolved names
 
 ### FND-ICONS-12 — The published preset has one authority
 
-**MUST.** Each published preset identifies one authoritative artifact. Other representations, including Figma, move to match it.
+**MUST.** Identify one authoritative artifact for each published preset and make its other representations match it.
 
 Why: an icon mismatch cannot be resolved by taste at every component. One authority makes a replacement auditable and prevents the two representations quietly becoming different sets.
 
-For the current default preset, the committed SVGs are authoritative because
-they are reproducible from the manifest. The thirty Figma icon components at
-[node `2839:2469`](https://www.figma.com/design/WUc07ZBtjRvypXtsOlbVut/Stylos--Components?node-id=2839-2469)
-still use the earlier external Material Icons library and have not yet been
-aligned.
-
-Three marks will change appearance during that alignment: **Success, Warning and Error** are outlined in Figma today and filled in the current preset.
+For the current default preset, the committed SVGs are authoritative because they are reproducible from the manifest.
 
 ### FND-ICONS-13 — An unresolved icon renders nothing
 
-**MUST.** A name the set does not carry draws nothing: no fallback mark, no warning glyph, and no placeholder crossing from Figma into code.
+**MUST.** Render nothing for an icon name absent from the set, without a fallback mark or warning glyph.
 
-Why: Figma's placeholder marks an instance that nobody has chosen yet. A design file has that state; a program does not. With a default mark, a forgotten property would draw a real icon without any warning. That is worse than drawing nothing: an empty place is visibly wrong, but a magnifier where a trash can belongs is wrong in a way nobody sees.
+Why: a fallback can make a missing or incorrect property look like a valid choice. An empty place exposes the missing mark, while a magnifier where a trash can belongs silently changes the meaning.

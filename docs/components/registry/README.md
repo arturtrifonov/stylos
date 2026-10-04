@@ -44,6 +44,8 @@ The two are independent: a component can be finished in Figma with a thin entry,
 
 It stays authored rather than computed because readiness turns on judgements a tool cannot make: whether existing instances have an understood migration path, whether the supported states are the right ones.
 
+A Figma representation is mandatory for `ready`: `figma.node_id` links it, and `last_verified` records its verification. A component implemented only in code cannot pass the readiness gates. The Figma authoring checks are documented in [figma/components.md](../../../figma/components.md).
+
 **The value is `ready`, not `published`, and the reason is not taste.** Figma publishes a *file*: everything in it goes out at once, and there is no per-component publish state to mirror. A `published` value would have been a fact maintained by hand about something the tool does not have, and it would have gone stale the first time the file was published without it being updated. Which release a component's API shipped in is answered by `version`; what moved in the library at that release is answered by `CHANGELOG.md`. `status` answers the one question neither of those does — can this be built against.
 
 **Thirty-nine entries say `ready`** — the `0.1.0` core set, each assessed against both gates on 2026-09-05. The rest say `draft` or say nothing: the inventory rows were never set at all, and setting one is an assessment rather than a default.

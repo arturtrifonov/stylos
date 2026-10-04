@@ -4,6 +4,12 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-04 (Figma conventions separated from confirmed foundations)
+
+- **Confirmed foundations describe system requirements independently of Figma authoring.** Icon instance swaps, nested-layer handling, the dedicated-library plan and the recorded alignment work move to `figma/icons.md`. Color collection storage and effect collections move to `figma/foundations.md`; global semantic role selection and shadow composition remain in the foundations. Rule IDs remain unchanged under RUL-14's temporary exception for the guideline set before all rules are confirmed.
+- **Gradients and meshes follow image-content logic for colour selection, without conversion.** FND-COLOR-03 allows their own colours without new palette variables while keeping editable fills. Component-integrity-check v0.6 stops treating those colours as missing bindings and continues to check broken references; reference-reconstruction v0.3 applies the same content exception; the skill distribution is rebuilt from source.
+- **A verified Figma representation remains mandatory for `ready`.** STD-04 and STD-05 explicitly state that a code-only component cannot pass the gates. Figma authoring and inspection details move to `figma/components.md`; the registry guide and architecture document the same boundary. General rule reasoning no longer treats Figma as the system-wide authority.
+
 ### Changed — 2026-10-04 (canonical names and frontend conversion)
 
 - **The naming guide distinguishes canonical names from frontend identifiers.** Section 3 now explains their one-to-one camelCase conversion, with `is checked` → `isChecked` and unchanged variant values. The variant rule applies to canonical names only; the package documents PascalCase component exports, camelCase props and the existing sole-slot mapping to `children`. Figma keeps the canonical names with spaces.

@@ -5,6 +5,9 @@ Documentation and authoring conventions for the Figma implementation. **Figma ho
 ## Implementation conventions
 
 - [Naming](naming.md): Assets grouping, slash paths, nested-component publishing, layer names and the properties panel.
+- [Foundations](foundations.md): color and effect collections, import mapping, gradients and meshes.
+- [Icons](icons.md): instance swaps, sizing, library structure and the recorded preset alignment.
+- [Component readiness](components.md): Figma representation, authoring checks and implementation inspection.
 - [MCP and connectors](mcp-and-connectors.md): access to the implementation and tool limitations.
 
 These conventions apply to Figma. Public API and design-language rules stay in `docs/`; a tool constraint does not become a rule for the whole system.
@@ -23,13 +26,7 @@ Four Stylos files, plus one external library:
 
 The keys are the segment of each URL after `/design/`. They are what the Figma REST API addresses a file by, and the reason they are written down: without them nothing can ask Figma what it contains.
 
-**A dedicated Stylos icon file is planned for the current preset.** It will
-contain only the Material Symbols Rounded preset shipped by the repository,
-with the same fixed parameters and drawings. Other presets and their Figma
-libraries are the responsibility of the consumers who choose them. Creating
-this file and aligning the existing icon instances remain implementation work;
-its key will be added to the table when it exists. The settled preset scope is
-in [icons.md](../docs/foundations/icons.md).
+The planned dedicated icon file and its preset scope are described in [Icons](icons.md#library-structure). Its key will be added to the table once the file exists.
 
 **The Playground is not documentation and not a library.** It exists to try things; nothing in this repository should ever cite it as evidence of how a component works.
 

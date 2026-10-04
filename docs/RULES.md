@@ -153,7 +153,7 @@ In review the test is simple: if a reader has to read a sentence twice to find o
 
 **MUST.** Where the system has a token for something, the rule names the token; the value stays in [`tokens/`](../tokens/README.md) and is read with `npm run tokens:report`.
 
-Why: a number copied into prose becomes wrong at the next change in Figma. People build against a wrong number in a guideline before anyone re-reads the sentence around it.
+Why: a number copied into prose becomes wrong when the token changes. People build against a wrong number in a guideline before anyone re-reads the sentence around it.
 
 ### RUL-17 — Where a skill defines a rule for its own operation, the skill is the source
 
