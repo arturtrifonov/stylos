@@ -18,7 +18,7 @@ The Svelte 5 component package, built to SPEC 0009 against the contracts in [`do
 
 ## Property name conversion
 
-The registry holds the public contract; the generator converts its property names for Svelte under FND-NAMING-32 ([naming.md](../../docs/foundations/naming.md)).
+The registry holds the public contract; the generator converts its property names for Svelte under FND-NAMING-23 ([naming.md](../../docs/foundations/naming.md)).
 
 - Names become camelCase: `label text` → `labelText`, `is required` → `isRequired`. The generator removes punctuation within each word before joining the words: `is read-only` → `isReadonly`.
 - When the contract has exactly one slot, its prop is `children`, following Svelte's convention for child content. With several slots, each prop uses the camelCase form of its contract name.

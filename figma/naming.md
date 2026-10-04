@@ -4,7 +4,7 @@ The global naming contract is [docs/foundations/naming.md](../docs/foundations/n
 
 ## Names and descriptions
 
-Component descriptions are derived from registry entries by [`stylos-description-sync`](../skills/src/description-sync/SKILL.md). They carry the nested-use explanation required by FND-NAMING-11. Descriptions are visible in the Assets panel and Dev Mode.
+Component descriptions are derived from registry entries by [`stylos-description-sync`](../skills/src/description-sync/SKILL.md). They carry the nested-use explanation required by FND-NAMING-04. Descriptions are visible in the Assets panel and Dev Mode.
 
 ## Component organization
 
@@ -23,7 +23,7 @@ The Assets panel uses `/` to group components. The conventions for that hierarch
 - Use sentence case: `Label text`, `Leading icon`, `Content`, `Actions`, `Background`, `Divider`, `Focus ring`.
 - End a text layer's name with `text`, so its content and type bindings can be found without opening every layer.
 
-[`stylos-naming-cleanup`](../skills/src/naming-cleanup/SKILL.md) applies these authoring conventions. Names still describe roles rather than appearance (FND-NAMING-03).
+[`stylos-naming-cleanup`](../skills/src/naming-cleanup/SKILL.md) applies these authoring conventions. Names still describe roles rather than appearance (FND-NAMING-02).
 
 ## Property representation
 
@@ -37,13 +37,13 @@ For drawing interaction states, the Figma vocabulary includes `state = default /
 
 `Icon.name` is a string identifier in the contract. The current Figma implementation represents the choice by swapping an icon instance, not by exposing text content. Its representation is recorded in [Icon's `figma_notes`](../docs/components/registry/icon.yaml).
 
-Documentation and prototype controls such as `show annotations` and `show measurements` sit outside the public component API. Their names can describe the tool action; they are not exceptions to FND-NAMING-23, which applies to public API properties.
+Documentation and prototype controls such as `show annotations` and `show measurements` sit outside the public component API. Their names can describe the tool action; they are not exceptions to FND-NAMING-14, which applies to public API properties.
 
 ## Panel order and controlled groups
 
-Figma displays variant properties and component properties in separate sections. FND-NAMING-27 gives the relative order of variant properties; FND-NAMING-29 gives the relative order of the other properties. The sections are read separately, never as one merged list.
+Figma displays variant properties and component properties in separate sections. FND-NAMING-18 gives the relative order of variant properties; FND-NAMING-20 gives the relative order of the other properties. The sections are read separately, never as one merged list.
 
-The registry records a controlled group through `controls`, with adjacency in `api` (FND-NAMING-28). The Figma panel shows the same group filtered by section. A variant-level setting such as `icon position` remains in the variant section, so it cannot sit beside a boolean in the component-property section. That is a display limitation, not a change to the contract.
+The registry records a controlled group through `controls`, with adjacency in `api` (FND-NAMING-19). The Figma panel shows the same group filtered by section. A variant-level setting such as `icon position` remains in the variant section, so it cannot sit beside a boolean in the component-property section. That is a display limitation, not a change to the contract.
 
 An implementation-only control also needs a predictable panel position. The naming-cleanup skill uses the canonical lists as a reference for these controls even when they are absent from `api`. Place `is focused` in the condition band, before `is required`, and `has scrollbar` in the presentation band, after `has overflow` and before component-specific properties. These draw a state in Figma; they are not public API props.
 

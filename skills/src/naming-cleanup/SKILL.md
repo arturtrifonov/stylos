@@ -77,7 +77,7 @@ Apply a mapping when a known-wrong word appears. Do not sweep for conformance, d
 | `is filled`, `is expanded` | `false`, `true` |
 | `orientation`, `alignment`, `position`, `icon position` | the component's own |
 
-**`tone` names a colour role:** semantic tones include `base`, `primary`, `info`, `success`, `warning`, `danger`; neutral hierarchy includes `secondary`, `tertiary`, `inverted`; palette hues include `neutral`, `slate`, `amber`, `violet`, and the rest. A component can also mirror a role family, using all of that family's role names unchanged, including `disabled` where that is a colour role. Its contract names the family. See FND-NAMING-16, FND-NAMING-17 and FND-NAMING-18 in [naming.md](../../../docs/foundations/naming.md). A component built for categorical colour legitimately exposes the whole palette. That is normal and nothing flags it.
+**`tone` names a colour role:** semantic tones include `base`, `primary`, `info`, `success`, `warning`, `danger`; neutral hierarchy includes `secondary`, `tertiary`, `inverted`; palette hues include `neutral`, `slate`, `amber`, `violet`, and the rest. A component can also mirror a role family, using all of that family's role names unchanged, including `disabled` where that is a colour role. Its contract names the family. See FND-NAMING-07, FND-NAMING-08 and FND-NAMING-09 in [naming.md](../../../docs/foundations/naming.md). A component built for categorical colour legitimately exposes the whole palette. That is normal and nothing flags it.
 
 The known-wrong tone word is `error`: it is a validation outcome and becomes `danger`. `info` and `neutral` are valid tone names, so preserve them and only normalize their casing.
 
@@ -267,7 +267,7 @@ Full words, per [Vocabulary](#vocabulary). Their order is fixed and is not alpha
 
 Text component properties must end with `text`.
 
-This applies to textual content (FND-NAMING-20), not every property whose storage type is a string. A registry `kind: string` property such as `Icon.name` identifies a resource; preserve its role name without adding `text`. Figma may represent that choice through an instance swap rather than a text property. The mapping is recorded in the component's `figma_notes` and [figma/naming.md](../../../figma/naming.md).
+This applies to textual content (FND-NAMING-11), not every property whose storage type is a string. A registry `kind: string` property such as `Icon.name` identifies a resource; preserve its role name without adding `text`. Figma may represent that choice through an instance swap rather than a text property. The mapping is recorded in the component's `figma_notes` and [figma/naming.md](../../../figma/naming.md).
 
 Good:
 
@@ -467,7 +467,7 @@ Bad:
 
 #### Order inside a controlled property group
 
-**Panel adjacency holds inside a section, never across one.** The contract's `controls` group is adjacent in `api` (FND-NAMING-28). Figma projects that group into separate variant and component-property sections, as [figma/naming.md](../../../figma/naming.md) describes: `icon position` keeps its place in the variant order. Never report a panel group as split because one of its settings is a variant.
+**Panel adjacency holds inside a section, never across one.** The contract's `controls` group is adjacent in `api` (FND-NAMING-19). Figma projects that group into separate variant and component-property sections, as [figma/naming.md](../../../figma/naming.md) describes: `icon position` keeps its place in the variant order. Never report a panel group as split because one of its settings is a variant.
 
 Use this order inside the group:
 
@@ -495,7 +495,7 @@ Examples:
 
 Use this order for component properties after variant properties.
 
-**Use the global relative order for public properties in this panel section** (FND-NAMING-29), extended by the drawing-control positions in [figma/naming.md](../../../figma/naming.md). `is focused` sits before `is required`; `has scrollbar` sits after `has overflow`. These controls have a panel position even when the component's `api` deliberately omits them. Never move a property out of the panel order because a contract does not carry it.
+**Use the global relative order for public properties in this panel section** (FND-NAMING-20), extended by the drawing-control positions in [figma/naming.md](../../../figma/naming.md). `is focused` sits before `is required`; `has scrollbar` sits after `has overflow`. These controls have a panel position even when the component's `api` deliberately omits them. Never move a property out of the panel order because a contract does not carry it.
 
 **The bands carry the reasoning; the entries carry the answer.** Each controlled property group stays together (§9).
 

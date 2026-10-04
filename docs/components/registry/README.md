@@ -140,7 +140,7 @@ These are two different questions and both are worth answering. The Airtable-der
 
 ### `api`
 
-A **sequence**, because property order is part of the public API (FND-NAMING-27, FND-NAMING-28 and FND-NAMING-29 in [naming.md](../../foundations/naming.md)). The variant and non-variant lists give relative order within each kind of property; they do not prescribe one merged sequence. A controlled group remains adjacent in `api`. Figma's separate panel sections are an implementation projection, described in [figma/naming.md](../../../figma/naming.md), not a second source of contract order. Each entry:
+A **sequence**, because property order is part of the public API (FND-NAMING-18, FND-NAMING-19 and FND-NAMING-20 in [naming.md](../../foundations/naming.md)). The variant and non-variant lists give relative order within each kind of property; they do not prescribe one merged sequence. A controlled group remains adjacent in `api`. Figma's separate panel sections are an implementation projection, described in [figma/naming.md](../../../figma/naming.md), not a second source of contract order. Each entry:
 
 ```yaml
 api:
@@ -173,9 +173,9 @@ api:
 
 **`slot` and `instance` are different things.** An `instance` property holds one instance of one type — swapping it changes which component sits in that place. A `slot` holds however many instances the consumer puts in it, of several types, sometimes drawn from a constrained set and sometimes from none. Table Row Body is the case: a row holds as many cells as the table has columns, and a name, a date, a set of tags and a row of actions are four different components in one slot. A slot has no `default` and no `values`; what a slot will accept is recorded where every other allowed composition is, in `children`.
 
-**`text` and `string` use the same storage type but carry different things.** `text` supplies textual content: a label, heading, message, placeholder or input value. Its name follows FND-NAMING-20. `string` supplies an identifier or other non-text string value: `Icon.name` selects a mark rather than displaying the name as copy. A string property is named for its role and does not acquire the `text` suffix just because its value is stored as a string. Both kinds have string defaults and string example values, and both generate TypeScript `string` props.
+**`text` and `string` use the same storage type but carry different things.** `text` supplies textual content: a label, heading, message, placeholder or input value. Its name follows FND-NAMING-11. `string` supplies an identifier or other non-text string value: `Icon.name` selects a mark rather than displaying the name as copy. A string property is named for its role and does not acquire the `text` suffix just because its value is stored as a string. Both kinds have string defaults and string example values, and both generate TypeScript `string` props.
 
-**`controls` is what a "controlled group" is.** FND-NAMING-28 requires that when a boolean governs an element's presence, that element's properties follow it immediately. Recording which properties it governs makes the adjacency checkable instead of conventional.
+**`controls` is what a "controlled group" is.** FND-NAMING-19 requires that when a boolean governs an element's presence, that element's properties follow it immediately. Recording which properties it governs makes the adjacency checkable instead of conventional.
 
 **A property that only draws a state in Figma is not part of the API.** Some properties exist so a mockup can show something the real component decides for itself: `has scrollbar` on Dropdown is the case — a scrollbar appears in a browser when the content overflows, and no consumer sets it. Recording it in `api` would put a property in the contract that the Svelte package can never have, and every later check comparing the two would report a divergence that is correct and useless.
 

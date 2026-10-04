@@ -19,7 +19,7 @@ The section numbers are cited from outside this file: contracts, skills and `npm
 
 Why: one language makes library names predictable and searchable across products and implementations.
 
-### FND-NAMING-03 — Names describe role, never appearance
+### FND-NAMING-02 — Names describe role, never appearance
 
 **MUST.** A name says what the thing is for, not what it looks like: not `Blue rectangle`, not `Grey line`, not `Big text`.
 
@@ -29,13 +29,13 @@ Serves: PRN-04.
 
 ## 2. Components
 
-### FND-NAMING-05 — Component names are Title Case with spaces
+### FND-NAMING-03 — Component names are Title Case with spaces
 
 **MUST.** A component is named in Title Case with spaces: `Button` · `Icon Button` · `Text Field` · `Date Picker` · `Navigation Item`.
 
 Why: one casing convention across the library makes a name predictable enough to be searched or referenced from memory.
 
-### FND-NAMING-11 — A nested component says so in its description
+### FND-NAMING-04 — A nested component says so in its description
 
 **MUST.** A component that is normally used inside another says so in its description.
 
@@ -49,7 +49,7 @@ Layer-tree naming is an authoring convention of the implementation, not part of 
 
 Here, a variant property is a public property with a defined set of alternative values, such as `size` or `tone`. It does not imply a component set in a particular design tool.
 
-### FND-NAMING-14 — Variant property names and values are lowercase
+### FND-NAMING-05 — Variant property names and values are lowercase
 
 **MUST.** Both the name and the values of a variant property are lowercase.
 
@@ -76,7 +76,7 @@ Do not use:
 
 Checked by: `stylos-naming-cleanup`.
 
-### FND-NAMING-15 — A colour is not a state
+### FND-NAMING-06 — A colour is not a state
 
 **MUST.** `tone` says which colour a component takes, and `state` and `validation` say what condition it is in; a component never expresses one through the other.
 
@@ -86,7 +86,7 @@ The rule separates the properties, not their vocabularies. Where the same word i
 
 Serves: PRN-04.
 
-### FND-NAMING-16 — A `tone` value names a colour role the system has
+### FND-NAMING-07 — A `tone` value names a colour role the system has
 
 **MUST.** Every `tone` value is the name of a colour role that exists.
 
@@ -111,21 +111,21 @@ Only one word is wrong as a tone:
 
 **A component whose `tone` carries semantic tones and categorical hues at once is a design question, not a naming one.** The Indicator family separates those purposes into `Indicator Status` and `Indicator Special`.
 
-### FND-NAMING-17 — A mirrored role family is taken whole and unchanged
+### FND-NAMING-08 — A mirrored role family is taken whole and unchanged
 
 **MUST.** Where a component's tones mirror another role family, the values are all of that family's role names, unchanged.
 
-Why: some components are not objects with a colour of their own; they extend something that already has one. Badge is drawn as a continuation of text, so `tone = X` paints it with `text/X`. A list that renames a role, or offers a subset chosen by taste, is not a mirror: it is an ordinary tone list, and FND-NAMING-16 applies to it.
+Why: some components are not objects with a colour of their own; they extend something that already has one. Badge is drawn as a continuation of text, so `tone = X` paints it with `text/X`. A list that renames a role, or offers a subset chosen by taste, is not a mirror: it is an ordinary tone list, and FND-NAMING-07 applies to it.
 
-A mirror can carry a word that also names a condition. `text/disabled` is a colour role, and `disabled` is its name, so a component that mirrors the text family carries `tone = disabled`. The value names a colour role, so the component still expresses its colour through `tone` and nothing else (FND-NAMING-15). This gives no permission to invent `tone = hover` on a component that has no such role to mirror.
+A mirror can carry a word that also names a condition. `text/disabled` is a colour role, and `disabled` is its name, so a component that mirrors the text family carries `tone = disabled`. The value names a colour role, so the component still expresses its colour through `tone` and nothing else (FND-NAMING-06). This gives no permission to invent `tone = hover` on a component that has no such role to mirror.
 
-### FND-NAMING-18 — A contract names the role family its tones mirror
+### FND-NAMING-09 — A contract names the role family its tones mirror
 
 **MUST.** Where a component's tones mirror a role family, its contract states which family.
 
 Why: the values alone do not say where they come from. Naming the family in the contract is the only way a reader can understand the list.
 
-### FND-NAMING-19 — Canonical size values are full words
+### FND-NAMING-10 — Canonical size values are full words
 
 **MUST.** Size values are `extra small`, `small`, `medium`, `large`, `extra large`; `XS`/`S`/`M`/`L`/`XL` are conversational shorthand and never appear as contract values.
 
@@ -135,15 +135,15 @@ Checked by: `stylos-naming-cleanup` flags abbreviations as violations and maps t
 
 ## 5. Text properties
 
-### FND-NAMING-20 — A text property is named by role and ends in `text`
+### FND-NAMING-11 — A text property is named by role and ends in `text`
 
 **MUST.** A text property carries the name of its role with `text` at the end: `label text` · `heading text` · `description text` · `helper text` · `placeholder text` · `button text`.
 
-Why: the suffix tells a reader, and an agent, what kind of property they are looking at before they open it, exactly as `slot` does in FND-NAMING-26.
+Why: the suffix tells a reader, and an agent, what kind of property they are looking at before they open it, exactly as `slot` does in FND-NAMING-17.
 
 A text property supplies textual content, such as a label or a message. A string identifying a resource is not a text property: `Icon.name` identifies a mark. The registry distinguishes these as `kind: text` and `kind: string`; both use string storage. The storage type does not decide the property's role.
 
-### FND-NAMING-21 — A property is never named after its sample content
+### FND-NAMING-12 — A property is never named after its sample content
 
 **MUST.** A property is named for what it holds, never for the words currently in it.
 
@@ -151,13 +151,13 @@ Why: the sample is placeholder copy and changes with the next mockup; the name i
 
 ## 6. Boolean properties
 
-### FND-NAMING-22 — A public boolean is `has [object]` or `is [state]`
+### FND-NAMING-13 — A public boolean is `has [object]` or `is [state]`
 
 **MUST.** Public booleans use exactly two forms — **`has [object]`** for optional anatomy (`has leading icon`, `has helper text`, `has divider`) and **`is [state]`** for a true/false condition (`is expanded`, `is selected`, `is loading`, `is read-only`).
 
 Why: the two forms answer two different questions: *is this part present?* and *what condition is this in?* A single vocabulary for both would hide which question a property asks.
 
-### FND-NAMING-23 — `show` is not a public property name
+### FND-NAMING-14 — `show` is not a public property name
 
 **MUST.** `show` does not appear in a public component API.
 
@@ -165,19 +165,19 @@ Why: it describes what the file does rather than what the component has. It also
 
 ## 7. Component and slot properties
 
-### FND-NAMING-24 — A component-valued property is named for the role it fills
+### FND-NAMING-15 — A component-valued property is named for the role it fills
 
 **MUST.** A property holding a component takes the lowercase name of the role it fills, with no suffix: `icon` · `leading icon` · `trailing icon` · `avatar` · `badge` · `prefix component` · `suffix component` · `empty state illustration`.
 
 Why: the property identifies a place in the component anatomy, independent of which component currently fills it.
 
-### FND-NAMING-25 — Prefer `leading`/`trailing` to `left`/`right`
+### FND-NAMING-16 — Prefer `leading`/`trailing` to `left`/`right`
 
 **SHOULD.** Positional property names are written as `leading` and `trailing`.
 
 Why: localization and RTL depend on it. `left` is a claim about the writing direction, and in a right-to-left script it is wrong.
 
-### FND-NAMING-26 — A slot property carries the `slot` suffix
+### FND-NAMING-17 — A slot property carries the `slot` suffix
 
 **MUST.** A slot is named with the `slot` suffix: `content slot`, `cells slot`.
 
@@ -185,7 +185,7 @@ Why: the suffix distinguishes an area accepting several child components from a 
 
 ## 8. Canonical variant-property order
 
-### FND-NAMING-27 — Variant properties follow the canonical order
+### FND-NAMING-18 — Variant properties follow the canonical order
 
 **MUST.** A component's variant properties are ordered as below; properties the component does not have are left out, and a property this list does not name goes at the end.
 
@@ -223,7 +223,7 @@ Exception: a property this list does not name, but which clearly decides which v
 
 ## 9. Controlled property groups
 
-### FND-NAMING-28 — A boolean's element properties immediately follow it
+### FND-NAMING-19 — A boolean's element properties immediately follow it
 
 **MUST.** If a boolean controls an element's presence, every property for that element immediately follows the boolean, and no unrelated property splits the group.
 
@@ -254,13 +254,13 @@ Checked by: `npm run validate:registry` — a contract's `controls` group must b
 
 ## 10. Canonical non-variant property order
 
-### FND-NAMING-29 — Non-variant properties follow the canonical order
+### FND-NAMING-20 — Non-variant properties follow the canonical order
 
-**MUST.** A component's non-variant properties are ordered by the bands below, with controlled groups kept intact inside the order (FND-NAMING-28).
+**MUST.** A component's non-variant properties are ordered by the bands below, with controlled groups kept intact inside the order (FND-NAMING-19).
 
 Why: **what the component says comes before what decorates it.** Text carries a component's meaning: without it a heading is empty and a field has no name. An icon, an avatar or a badge is added to something that already has a meaning.
 
-**This gives the relative order within the non-variant properties.** §8 does the same for variant properties. The two lists do not prescribe a single merged sequence, but a controlled group stays intact in `api` (FND-NAMING-28). Implementation-only controls are not public contract properties.
+**This gives the relative order within the non-variant properties.** §8 does the same for variant properties. The two lists do not prescribe a single merged sequence, but a controlled group stays intact in `api` (FND-NAMING-19). Implementation-only controls are not public contract properties.
 
 **The bands give the reasoning; the entries give the answer.** A band says why a property sits where it does, so that a new property can be placed. The entries inside each band are listed one by one so that placing a rare property means looking it up rather than making a judgement. A list that names only the obvious cases covers only the cases nobody needed help with.
 
@@ -326,17 +326,17 @@ Notes on settled points, so that they are not re-derived:
 
 - **The value comes before the hint.** `input text` is what the field holds; `placeholder text` is what is shown when it holds nothing. This list had the reverse order until 2026-09-05, and that order was wrong.
 - **A control that operates on the content sits with the content.** `has search` and `has back button` decide how a person reaches what is inside, so they belong beside it rather than among the icons or the closing actions. Select, Multiselect, Tree and the table all use them.
-- **`has buttons` comes before the row of buttons it controls**, by FND-NAMING-28: a boolean that turns a group on stands above its members, never after them. `has close button`, `has clear button` and `has undo button` are separate affordances and not part of that row.
+- **`has buttons` comes before the row of buttons it controls**, by FND-NAMING-19: a boolean that turns a group on stands above its members, never after them. `has close button`, `has clear button` and `has undo button` are separate affordances and not part of that row.
 
 ## 11. Placing a property this list does not name
 
-### FND-NAMING-30 — An unnamed property is placed by band, never alphabetically
+### FND-NAMING-21 — An unnamed property is placed by band, never alphabetically
 
 **MUST.** A property §10 does not name is placed by following these steps in order, and alphabetical order is not a fallback:
 
 1. **Choose the band** — what does the property do: name the thing, hold its content, operate on that content, accompany it, state its condition, act on it, or present it?
 2. **Place it inside that band**, beside the entries it resembles.
-3. **Bring its controlled group with it** (FND-NAMING-28).
+3. **Bring its controlled group with it** (FND-NAMING-19).
 4. **Add it to §10** when a second component uses it. A property that one component has belongs to that component; a property that two components have belongs to the system, and leaving it unnamed means it is placed twice by guesswork.
 
 Why: alphabetical order groups unrelated properties. It puts `has divider` before `has label`, so a reader looking for content has to scan presentation controls too.
@@ -345,13 +345,13 @@ Why: alphabetical order groups unrelated properties. It puts `has divider` befor
 
 ## Implementation property names
 
-### FND-NAMING-31 — Implementation property names matched literally
+### FND-NAMING-22 — Implementation property names matched literally
 
 **RETIRED** 2026-09-30. An implementation's prop name had to match the corresponding library property name literally.
 
-Why: literal equality rejected the naming conversion already used by the code package. FND-NAMING-32 requires one-to-one correspondence with a documented conversion instead.
+Why: literal equality rejected the naming conversion already used by the code package. FND-NAMING-23 requires one-to-one correspondence with a documented conversion instead.
 
-### FND-NAMING-32 — Public implementation props map to the contract
+### FND-NAMING-23 — Public implementation props map to the contract
 
 **MUST.** Map the public props of a code implementation one-to-one to the component's contract properties through a documented naming conversion.
 
