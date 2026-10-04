@@ -1,140 +1,99 @@
 # Naming and public API rules
 
 Status: Draft
-Scope: The naming contract for components, layers, properties and variants; what a contract must contain is [components/STANDARD.md](../components/STANDARD.md).
+Scope: Public component names, property names and values across implementations; contract completeness is in [components/STANDARD.md](../components/STANDARD.md), and Figma authoring conventions are in [figma/naming.md](../../figma/naming.md).
 
-**Normative.** `stylos-naming-cleanup` v0.9 ([`skills/src/naming-cleanup/SKILL.md`](../../skills/src/naming-cleanup/SKILL.md)) enforces these rules in Figma. The skill is derived from this document, never the reverse: where the two disagree, the skill has to change ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §6). This document states the rules; it does not restate the skill's procedure.
+**Normative.** These rules describe the public naming contract. An implementation follows them through its documented naming conversion; tool-specific authoring conventions and skill procedures are documented separately.
 
 Components are public APIs — see [charter](../charter.md). A name is part of that API: renaming one is a breaking change, not a tidy-up.
 
-The section numbers are cited from outside this file: contracts, skills and `npm run validate:registry` cite it as `naming.md §N`. So the eleven sections keep their numbers when rules are added inside them.
+The eleven numbered sections are cited by contracts and tools. Rule IDs may still be reordered while this guide is Draft; citations are updated in the same change.
 
 ---
 
 ## 1. General language
 
-### FND-NAMING-01 — Library names and audit reports are English
+### FND-NAMING-01 — Public names are English
 
-**MUST.** Every name in the library, and every generated audit report, is in English.
+**MUST.** Every public component and property name is in English.
 
-Why: it is the repository's language throughout ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §7), and a mixed-language layer tree cannot be searched with one query.
+Why: one language makes library names predictable and searchable across products and implementations.
 
-### FND-NAMING-02 — Every meaningful object is named, and never with a Figma default
-
-**MUST.** Anything that means something carries a name, and no name is left as `Frame 1`, `Group 1`, `Rectangle 1`, `Text`, `Component 1` or `Variant 1`.
-
-Why: a layer with a default name looks exactly like an unfinished layer. Nobody can tell which of the two they are looking at, and every skill that reads the tree has to treat both the same way.
-
-Checked by: `stylos-naming-cleanup`.
-
-### FND-NAMING-03 — Names describe role, never appearance
+### FND-NAMING-02 — Names describe role, never appearance
 
 **MUST.** A name says what the thing is for, not what it looks like: not `Blue rectangle`, not `Grey line`, not `Big text`.
 
-Why: an appearance name becomes wrong the first time a token changes, and nothing shows that it is wrong. The layer still exists and still renders, but its name now describes something it no longer looks like.
+Why: an appearance name becomes wrong when a theme or token changes. A role name stays true across those changes and across implementations.
 
 Serves: PRN-04.
 
-### FND-NAMING-04 — Equivalent layers keep one name across variants
-
-**MUST.** A logical layer that appears in several variants carries the same name in all of them.
-
-Why: one name is what keeps an override in place when the variant is switched, and what lets a skill compare variants at all. Two names for one layer read as two different layers.
-
-Checked by: `stylos-naming-cleanup`.
-
 ## 2. Components
 
-### FND-NAMING-05 — Component names are Title Case with spaces
+### FND-NAMING-03 — Canonical component names are Title Case with spaces
 
-**MUST.** A component is named in Title Case with spaces: `Button` · `Icon Button` · `Text Field` · `Date Picker` · `Navigation Item`.
+**MUST.** Write a component's canonical contract name in Title Case with spaces: `Button` · `Icon Button` · `Text Field` · `Date Picker` · `Navigation Item`.
 
-Why: one casing convention across the library is what makes a name predictable enough to be typed from memory in the Assets panel.
+Why: one casing convention makes a component easy to find in documentation and design. Frontend exports use PascalCase for that same name, such as `IconButton` for `Icon Button`; the conversion is documented in the [package README](../../packages/ui/README.md#name-conversion).
 
-### FND-NAMING-06 — A property is never encoded as a slash hierarchy
+### FND-NAMING-04 — A nested component says so in its description
 
-**MUST.** `/` groups components in the Assets panel, and size, state, icon presence and any other property that a variant or component property can carry are never encoded as a slash path.
+**MUST.** A component that is normally used inside another says so in its description.
 
-Why: a consumer cannot set a property that is in the path. To change it they have to swap the whole instance, which bypasses the variants that exist to make that change cheap.
+Why: the description explains intended use without adding a marker to the component's name.
 
-### FND-NAMING-07 — The last segment stands on its own
+## 3. Contract and implementation names
 
-**MUST.** Where a slash group is used, the final segment is a name that means something on its own; where no such name is possible, the component takes a compound name instead — `Button Base`, `Button Hollow`.
+### FND-NAMING-05 — Frontend properties map to the contract through camelCase
 
-Why: Figma names an instance after the last segment, so the rest of the path is lost as soon as the component is placed. `Button / Base` becomes a layer called `Base`, which means nothing in a layer tree.
+**MUST.** Map public frontend properties one-to-one to contract properties through a documented camelCase conversion.
 
-### FND-NAMING-08 — A slash group is a category, never the parent component
+Why: documentation and design use readable names with spaces, while code uses identifiers such as `isChecked`. Both refer to the same property, so spelling needs a defined conversion rather than separate naming decisions.
 
-**MUST.** A component used inside another is not filed under it: `Tab Item` is a top-level component whether or not `Tabs` is the only thing that uses it.
+The property names in the rules below are canonical contract names. The registry and documentation use them; frontend props use their converted names. Variant values keep their contract spelling.
 
-Why: the registry records which component is built from which, in `children` and `parents`, and that record can be checked. A folder name cannot be checked, and it becomes out of date the first time a second component uses the same part.
+| Canonical contract name | Frontend prop | Value or kind |
+| --- | --- | --- |
+| `is checked` | `isChecked` | `false`, `true`, `mixed` |
+| `has leading icon` | `hasLeadingIcon` | boolean |
+| `label text` | `labelText` | textual content |
+| `content slot` | `contentSlot` | slot |
+| `size` | `size` | `extra small`, `small`, `medium`, `large`, `extra large` |
 
-### FND-NAMING-09 — Prefer a compound name to a slash group
+Exception: in `@stylos/ui`, a contract's sole slot maps to `children`, following Svelte's child-content convention; with several slots, their names use camelCase. Each prop still maps to one contract property.
 
-**SHOULD.** Where a compound name and a slash group would say the same thing, the compound name is used: `Accordion Header`, not `Accordion / Header`.
-
-Why: a group gives one thing, a heading in the Assets panel. Its cost is paid in the registry path, in every reference that has to spell the path out, and by the reader, who has to know that `Header` means the accordion's header.
-
-No registry entry carries a slash group: the twenty-one that did came from the 2026-08-20 import and were renamed on 2026-09-02.
-
-### FND-NAMING-10 — Nested components stay public and unprefixed
-
-**MUST.** A component used inside another is published under its own plain name: no `_` marker, no hiding, no prefix.
-
-Why: nested components have to be published for composition anyway, so a marker prevents nothing. A name prefix appears in every nested instance and clutters the layer tree it is meant to help.
-
-The registry mirrors this naming as a file path: `Table Cell Text` → `table-cell-text.yaml`, and, for a name that does carry a group, `Foo / Bar` → `foo/bar.yaml`. How a registry `id` relates to the Figma name is set in the [registry README](../components/registry/README.md).
-
-### FND-NAMING-11 — A nested component says so in its Figma description
-
-**MUST.** A component that is normally used inside another says so in its Figma description.
-
-Why: the description is visible in the Assets panel and in Dev Mode, and it adds nothing to the layer tree. It carries what a name marker would have carried, without the clutter FND-NAMING-10 removes.
-
-## 3. Layers
-
-### FND-NAMING-12 — Layer names are sentence case and name the role
-
-**MUST.** A layer is named in sentence case, describing its semantic role: `Label text` · `Leading icon` · `Content` · `Actions` · `Background` · `Divider` · `Focus ring`.
-
-Why: the layer tree is read far more often than it is edited, and a role name is the only kind of name that stays true. Appearance names are covered by FND-NAMING-03.
-
-### FND-NAMING-13 — A text layer's name ends with `text`
-
-**MUST.** Every text layer's name ends with the word `text`.
-
-Why: the suffix makes a component's text layers findable without opening each one. Every audit of copy, of type binding and of the primary text role depends on that.
-
-Checked by: `stylos-naming-cleanup`.
+The exact conversion, including punctuation handling, is documented in the [package README](../../packages/ui/README.md#name-conversion).
 
 ## 4. Variant properties and values
 
-### FND-NAMING-14 — Variant property names and values are lowercase
+Here, a variant property is a public property with a defined set of alternative values, such as `size` or `tone`. It does not imply a component set in a particular design tool.
 
-**MUST.** Both the name and the values of a variant property are lowercase.
+### FND-NAMING-06 — Canonical variant names and values are lowercase
 
-Why: Figma treats `Size` and `size` as two properties, so a difference in casing creates a second variant property that nobody meant to create. The two value lists then have to be made to match by hand.
+**MUST.** Write variant property names and values in lowercase in the canonical contract.
+
+Why: one spelling in the contract prevents duplicate names and inconsistent comparisons across components. This applies to canonical names such as `is checked`; their frontend spelling follows FND-NAMING-05, so `isChecked` is correct in code.
+
+This is the contract's vocabulary, not a required property set. Each contract states which properties and values the component offers. A condition can be represented by a boolean or a named variant value; its meaning does not depend on that choice. Independent conditions, such as focus and pointer interaction, can coexist.
 
 | Property | Values | For |
 | --- | --- | --- |
-| `state` | `default`, `hover`, `active`, `focus`, `disabled`, `read only` | interaction only |
+| `state` | `default`, `disabled`, `read only` | availability; pointer and focus states are derived by interactive code |
 | `tone` | drawn from the colour vocabulary — see below | which semantic colour the component takes |
 | `validation` | `off`, `error`, `warning`, `success` | form outcome |
-| `is checked` | `false`, `true`, `mixed` | checkbox / radio selection |
+| `is checked` | `false`, `true`, `mixed` | checkbox selection; radio uses only `false`, `true` |
 | `is expanded` | `false`, `true` | disclosure |
 | `is filled` | `false`, `true` | filled-input state |
 
-Do not use:
+In the canonical contract, do not use:
 
 - `status` as an overloaded semantic/state property;
 - `Static` for the base state — it is `default`;
 - `Check State` — it is `is checked`;
-- camelCase such as `isOpen`, `isFilled`;
-- Title Case property names or values.
+- Title Case property names or values in the canonical contract.
 
 Checked by: `stylos-naming-cleanup`.
 
-### FND-NAMING-15 — A colour is not a state
+### FND-NAMING-07 — A colour is not a state
 
 **MUST.** `tone` says which colour a component takes, and `state` and `validation` say what condition it is in; a component never expresses one through the other.
 
@@ -144,7 +103,7 @@ The rule separates the properties, not their vocabularies. Where the same word i
 
 Serves: PRN-04.
 
-### FND-NAMING-16 — A `tone` value names a colour role the system has
+### FND-NAMING-08 — A `tone` value names a colour role the system has
 
 **MUST.** Every `tone` value is the name of a colour role that exists.
 
@@ -157,7 +116,7 @@ Why: that is the whole rule. The kinds below show where those roles come from; t
 | palette hues by name | `slate`, `amber`, `violet`, … | categorical colour, per the hue-bound roles in [`color.md`](color.md) |
 | a mirrored role family | that family's role names, all of them | a component drawn as an extension of something that already has a colour, rather than as an object of its own |
 
-**Each component decides which of them it offers**, and a component built for categorical colour legitimately exposes the whole palette. Indicator does; that is not a violation, and no list of tone values anywhere is a whitelist that every component must satisfy.
+**Each component decides which of them it offers**, and a component built for categorical colour legitimately exposes the whole palette. Indicator Special does; that is not a violation, and no list of tone values anywhere is a whitelist that every component must satisfy.
 
 Only one word is wrong as a tone:
 
@@ -165,41 +124,49 @@ Only one word is wrong as a tone:
 | --- | --- |
 | `error` | a validation outcome, not a colour — the colour is `danger` |
 
-`neutral` is not one of the two: it is a palette hue group like `slate` or `zinc`, and `surface/special/neutral` exists.
+`neutral` is a valid palette hue group like `slate` or `zinc`, and `surface/special/neutral` exists.
 
-**A component whose `tone` carries semantic tones and categorical hues at once is a design question, not a naming one.** Indicator is being split for exactly that reason: `Indicator Status` for the semantic tones, and a second component for the categorical hues ([`PLAN.md`](../../PLAN.md) Stage 4).
+**A component whose `tone` carries semantic tones and categorical hues at once is a design question, not a naming one.** The Indicator family separates those purposes into `Indicator Status` and `Indicator Special`.
 
-### FND-NAMING-17 — A mirrored role family is taken whole and unchanged
+### FND-NAMING-09 — A mirrored role family is taken whole and unchanged
 
 **MUST.** Where a component's tones mirror another role family, the values are all of that family's role names, unchanged.
 
-Why: some components are not objects with a colour of their own; they extend something that already has one. Badge is drawn as a continuation of text, so `tone = X` paints it with `text/X`. A list that renames a role, or offers a subset chosen by taste, is not a mirror: it is an ordinary tone list, and FND-NAMING-16 applies to it.
+Why: some components are not objects with a colour of their own; they extend something that already has one. Badge is drawn as a continuation of text, so `tone = X` paints it with `text/X`. A list that renames a role, or offers a subset chosen by taste, is not a mirror: it is an ordinary tone list, and FND-NAMING-08 applies to it.
 
-A mirror can carry a word that also names a condition. `text/disabled` is a colour role, and `disabled` is its name, so a component that mirrors the text family carries `tone = disabled`. The value names a colour role, so the component still expresses its colour through `tone` and nothing else (FND-NAMING-15). This gives no permission to invent `tone = hover` on a component that has no such role to mirror.
+A mirror can carry a word that also names a condition. `text/disabled` is a colour role, and `disabled` is its name, so a component that mirrors the text family carries `tone = disabled`. The value names a colour role, so the component still expresses its colour through `tone` and nothing else (FND-NAMING-07). This gives no permission to invent `tone = hover` on a component that has no such role to mirror.
 
-### FND-NAMING-18 — A contract names the role family its tones mirror
+### FND-NAMING-10 — A contract names the role family its tones mirror
 
 **MUST.** Where a component's tones mirror a role family, its contract states which family.
 
 Why: the values alone do not say where they come from. Naming the family in the contract is the only way a reader can understand the list.
 
-### FND-NAMING-19 — Canonical size values are full words
+### FND-NAMING-11 — Canonical size values are full words
 
-**MUST.** Size values are `extra small`, `small`, `medium`, `large`, `extra large`; `XS`/`S`/`M`/`L`/`XL` are conversational shorthand and never appear as Figma variant values.
+**MUST.** Size values are `extra small`, `small`, `medium`, `large`, `extra large`; `XS`/`S`/`M`/`L`/`XL` are conversational shorthand and never appear as contract values.
 
 Why: the abbreviations are ambiguous across products and cannot be sorted. With two spellings of one value, every comparison across components first needs a mapping between them.
 
 Checked by: `stylos-naming-cleanup` flags abbreviations as violations and maps them to the full words.
 
-## 5. Text properties
+## 5. Text and slot properties
 
-### FND-NAMING-20 — A text property is named by role and ends in `text`
+### FND-NAMING-12 — A text property is named by role and ends in `text`
 
-**MUST.** A text property carries the name of its role with `text` at the end: `label text` · `heading text` · `description text` · `helper text` · `placeholder text` · `button text`.
+**MUST.** Give a text property a canonical name describing its role and ending in `text`: `label text` · `heading text` · `description text` · `helper text` · `placeholder text` · `button text`.
 
-Why: the suffix tells a reader, and an agent, what kind of property they are looking at before they open it, exactly as `slot` does in FND-NAMING-26.
+Why: the suffix tells a reader, and an agent, what kind of property they are looking at before they open it, exactly as `slot` does in FND-NAMING-13.
 
-### FND-NAMING-21 — A property is never named after its sample content
+A text property supplies textual content, such as a label or a message. A string identifying a resource is not a text property: `Icon.name` identifies a mark. The registry distinguishes these as `kind: text` and `kind: string`; both use string storage. The storage type does not decide the property's role.
+
+### FND-NAMING-13 — A slot property carries the `slot` suffix
+
+**MUST.** Give a slot a canonical name with the `slot` suffix: `content slot`, `cells slot`.
+
+Why: the suffix distinguishes an area accepting several child components from a property holding one component. `content` alone could also mean a boolean or text. The name tells a consumer what kind of value the property accepts.
+
+### FND-NAMING-14 — A property is never named after its sample content
 
 **MUST.** A property is named for what it holds, never for the words currently in it.
 
@@ -207,43 +174,31 @@ Why: the sample is placeholder copy and changes with the next mockup; the name i
 
 ## 6. Boolean properties
 
-### FND-NAMING-22 — A public boolean is `has [object]` or `is [state]`
+### FND-NAMING-15 — A public boolean is `has [object]` or `is [state]`
 
-**MUST.** Public booleans use exactly two forms — **`has [object]`** for optional anatomy (`has leading icon`, `has helper text`, `has divider`) and **`is [state]`** for a true/false condition (`is expanded`, `is selected`, `is loading`, `is read-only`).
+**MUST.** Name canonical public booleans using **`has [object]`** for optional anatomy (`has leading icon`, `has helper text`, `has divider`) or **`is [state]`** for a true/false condition (`is expanded`, `is selected`, `is loading`, `is read-only`).
 
 Why: the two forms answer two different questions: *is this part present?* and *what condition is this in?* A single vocabulary for both would hide which question a property asks.
 
-### FND-NAMING-23 — `show` is not a public property name
+## 7. Component-valued and positional properties
 
-**MUST.** `show` does not appear in a public component API.
+### FND-NAMING-16 — A component-valued property is named for the role it fills
 
-Why: it describes what the file does rather than what the component has. It also conflicts with `has` in exactly the cases where that difference matters.
+**MUST.** Give a property holding a component the lowercase canonical name of the role it fills, with no suffix: `icon` · `leading icon` · `trailing icon` · `avatar` · `badge` · `prefix component` · `suffix component` · `empty state illustration`.
 
-Exception: documentation and prototype controls — `show annotations`, `show measurements` — which are not part of any component's API.
+Why: the property identifies a place in the component anatomy, independent of which component currently fills it.
 
-## 7. Instance-swap and slot properties
+### FND-NAMING-17 — Prefer `leading`/`trailing` to `left`/`right`
 
-### FND-NAMING-24 — An instance-swap property is named for the role it fills
+**SHOULD.** Use `leading` and `trailing` for positions relative to reading direction.
 
-**MUST.** An instance-swap property takes the lowercase name of the role it fills, with no suffix: `icon` · `leading icon` · `trailing icon` · `avatar` · `badge` · `prefix component` · `suffix component` · `empty state illustration`.
+Why: a leading icon changes sides in a right-to-left interface. Naming it `left` would tie its role to one writing direction.
 
-Why: swapping it changes which component sits in that one place, so the name has to say which place — not which component happens to be there today.
-
-### FND-NAMING-25 — Prefer `leading`/`trailing` to `left`/`right`
-
-**SHOULD.** Positional property names are written as `leading` and `trailing`.
-
-Why: localization and RTL depend on it. `left` is a claim about the writing direction, and in a right-to-left script it is wrong.
-
-### FND-NAMING-26 — A slot property carries the `slot` suffix
-
-**MUST.** A slot is named with the `slot` suffix: `content slot`, `cells slot`.
-
-Why: the suffix names the kind of property, exactly as `text` does in FND-NAMING-20. Without it, the name says nothing about what the property accepts. `content` could be a boolean, a text or one instance, and a slot is none of those: it takes as many instances as the consumer puts in it, of several types. A reader who cannot tell a slot from an instance swap will fill it wrongly, and so will an agent.
+Exception: use `left` and `right` when a property name or value refers to a fixed physical side, independent of reading direction, and record that meaning in the contract. For example, `Drawer.position = right` means the right screen edge; the consumer can choose another edge for RTL without changing what `right` means.
 
 ## 8. Canonical variant-property order
 
-### FND-NAMING-27 — Variant properties follow the canonical order
+### FND-NAMING-18 — Variant properties follow the canonical order
 
 **MUST.** A component's variant properties are ordered as below; properties the component does not have are left out, and a property this list does not name goes at the end.
 
@@ -281,16 +236,16 @@ Exception: a property this list does not name, but which clearly decides which v
 
 ## 9. Controlled property groups
 
-### FND-NAMING-28 — A boolean's element properties immediately follow it
+### FND-NAMING-19 — A boolean's element properties immediately follow it
 
 **MUST.** If a boolean controls an element's presence, every property for that element immediately follows the boolean, and no unrelated property splits the group.
 
-Why: the boolean and the properties it turns on are one decision in the panel. Anything placed between them hides the group, and a consumer setting the element's tone cannot tell which boolean has to be on for that tone to have any effect.
+Why: the boolean and the properties it turns on are one decision. Anything placed between them hides the group, and a consumer setting the element's tone cannot tell which boolean has to be on for that tone to have any effect.
 
 Order inside a group:
 
 1. `has [element]`
-2. `[element]` — an instance swap — or `[element] slot` — a slot (§7)
+2. `[element]` — a component-valued property — or `[element] slot` — a slot (§5)
 3. `[element] text`
 4. `[element] type`
 5. `[element] tone`
@@ -304,7 +259,7 @@ Examples:
 - `has close button` → `close button icon` → `close button label text` → `close button type`
 - `has additional text` → `additional text` → `additional text tone`
 
-**Adjacency is required inside a panel section, not across sections.** Figma lists variant properties and component properties separately, so a group cannot span both. An element's variant-level setting, such as `icon position`, keeps its place in §8 and does not join the group in §10. A rule that demanded otherwise would ask for something Figma cannot display.
+**The contract records the group.** Its `controls` list names the properties the boolean governs, and those properties are adjacent in `api`. An implementation may display the properties in separate sections; that display does not change the contract's group.
 
 **A boolean comes before its element even when §10 names only the element.** Where §10 lists `helper text` and a component also exposes `has helper text`, the boolean takes the element's position and the text follows it. Where §10 says nothing about the boolean, this rule decides its place; a boolean that §10 does not name is never left to find its own place.
 
@@ -312,13 +267,13 @@ Checked by: `npm run validate:registry` — a contract's `controls` group must b
 
 ## 10. Canonical non-variant property order
 
-### FND-NAMING-29 — Non-variant properties follow the canonical panel order
+### FND-NAMING-20 — Non-variant properties follow the canonical order
 
-**MUST.** A component's non-variant properties are ordered by the bands below, with controlled groups kept intact inside the order (FND-NAMING-28).
+**MUST.** A component's non-variant properties are ordered by the bands below, with controlled groups kept intact inside the order (FND-NAMING-19).
 
 Why: **what the component says comes before what decorates it.** Text carries a component's meaning: without it a heading is empty and a field has no name. An icon, an avatar or a badge is added to something that already has a meaning.
 
-**This orders the Figma properties panel, not the contract.** Every property the panel shows has a place here, including one that exists only to draw a state in Figma, such as `has scrollbar`. What a contract's `api` records is a different question and a smaller set ([`registry/README.md`](../components/registry/README.md)); a property that is outside the API still has a place in the panel.
+**This gives the relative order within the non-variant properties.** §8 does the same for variant properties. The two lists do not prescribe a single merged sequence, but a controlled group stays intact in `api` (FND-NAMING-19). Implementation-only controls are not public contract properties.
 
 **The bands give the reasoning; the entries give the answer.** A band says why a property sits where it does, so that a new property can be placed. The entries inside each band are listed one by one so that placing a rare property means looking it up rather than making a judgement. A list that names only the obvious cases covers only the cases nobody needed help with.
 
@@ -359,57 +314,60 @@ Why: **what the component says comes before what decorates it.** Text carries a 
 
 **What condition it is in**
 
-24. `is focused`
-25. `is required`
-26. `is sorted`
-27. `is filtered`
+24. `is required`
+25. `is sorted`
+26. `is filtered`
 
 **What can be done to it**
 
-28. `has clear button`
-29. `has close button`
-30. `has buttons` → `has primary button` → `has secondary button` → `has tertiary button`
-31. `has undo button`
+27. `has clear button`
+28. `has close button`
+29. `has buttons` → `has primary button` → `has secondary button` → `has tertiary button`
+30. `has undo button`
 
 **How it is presented**
 
-32. `has background`
-33. `has divider`
-34. `has overflow`
-35. `has scrollbar`
+31. `has background`
+32. `has divider`
+33. `has overflow`
 
 **Its own**
 
-36. component-specific properties
+34. component-specific properties
 
 Notes on settled points, so that they are not re-derived:
 
 - **The value comes before the hint.** `input text` is what the field holds; `placeholder text` is what is shown when it holds nothing. This list had the reverse order until 2026-09-05, and that order was wrong.
 - **A control that operates on the content sits with the content.** `has search` and `has back button` decide how a person reaches what is inside, so they belong beside it rather than among the icons or the closing actions. Select, Multiselect, Tree and the table all use them.
-- **`has buttons` comes before the row of buttons it controls**, by FND-NAMING-28: a boolean that turns a group on stands above its members, never after them. `has close button`, `has clear button` and `has undo button` are separate affordances and not part of that row.
-- **`is focused` is a condition, not a presentation**, even though what it draws is a ring. It sits beside `is required` because that is how it reads. It is also the most common component property in the system: 21 of the contracted components carry it.
+- **`has buttons` comes before the row of buttons it controls**, by FND-NAMING-19: a boolean that turns a group on stands above its members, never after them. `has close button`, `has clear button` and `has undo button` are separate affordances and not part of that row.
 
 ## 11. Placing a property this list does not name
 
-### FND-NAMING-30 — An unnamed property is placed by band, never alphabetically
+### FND-NAMING-21 — An unnamed property is placed by band, never alphabetically
 
 **MUST.** A property §10 does not name is placed by following these steps in order, and alphabetical order is not a fallback:
 
 1. **Choose the band** — what does the property do: name the thing, hold its content, operate on that content, accompany it, state its condition, act on it, or present it?
 2. **Place it inside that band**, beside the entries it resembles.
-3. **Bring its controlled group with it** (FND-NAMING-28).
+3. **Bring its controlled group with it** (FND-NAMING-19).
 4. **Add it to §10** when a second component uses it. A property that one component has belongs to that component; a property that two components have belongs to the system, and leaving it unnamed means it is placed twice by guesswork.
 
-Why: alphabetical order groups nothing, and choosing it is a way of not deciding. It puts `has scrollbar` between `has label` and `has search`, so a reader looking for how the component presents itself has to read the whole list.
+Why: alphabetical order groups unrelated properties. It puts `has divider` before `has label`, so a reader looking for content has to scan presentation controls too.
 
 ---
 
-## Relationship to the Svelte package
+## Retired rule
 
-### FND-NAMING-31 — A prop name and its Figma property name are the same name
+### FND-NAMING-22 — Implementation property names matched literally
 
-**MUST.** Component props in `@stylos/ui` map 1:1 onto the variant and component properties defined here; where a prop name and a Figma property name diverge, one of the two is wrong.
+**RETIRED** 2026-09-30. An implementation's prop name had to match the corresponding library property name literally.
 
-Why: such a difference is a defect, not a translation. Two names for one property mean that every consumer, every document and every skill has to know which side it is on ([`PLAN.md`](../../PLAN.md) Stage 5).
+Why: literal equality rejected the naming conversion already used by the code package. FND-NAMING-05 requires one-to-one correspondence with a documented conversion instead.
 
-Behaviour comes from Zag.js (decision 0002); anatomy and naming stay authored by Stylos.
+## Implementation notes
+
+The conversion used by `@stylos/ui` is documented in its [README](../../packages/ui/README.md#name-conversion) and implemented by [`tools/build-ui-types.mjs`](../../tools/build-ui-types.mjs).
+
+The Figma representation, panel sections and tool limitations are documented in [figma/naming.md](../../figma/naming.md). These are implementation details, not rules of the design language.
+
+Registry paths follow component names: `Table Cell Text` → `table-cell-text.yaml`, `Foo / Bar` → `foo/bar.yaml`. The identity mapping is documented in the [registry README](../components/registry/README.md). No entry currently carries a slash group; the imported entries that did were renamed to compound names on 2026-09-02.

@@ -120,7 +120,7 @@ These are two different questions and both are worth answering. The Airtable-der
 
 #### Families
 
-`family` is a label, not a node. Three components carry `family: "Checkbox"`; no `Checkbox` component exists in Figma or here, and inventing one would create an entity with no properties, variants or instances. No slash group either — `Checkbox / Input` violates [naming.md](../../foundations/naming.md) §2, because `Input` cannot stand alone as an instance name.
+`family` is a label, not a node. Three components carry `family: "Checkbox"`; no `Checkbox` component exists in Figma or here, and inventing one would create an entity with no properties, variants or instances. No slash group either — `Checkbox / Input` violates the [Figma component-organization convention](../../../figma/naming.md#component-organization), because `Input` cannot stand alone as an instance name.
 
 **"Variant of" and "sub-component" are not recorded, because they are derived.** A family member that other members name in their `uses` is the family's base — `Checkbox Input`. One that no sibling uses is a sibling form — `Checkbox Label`, `Checkbox Text`. The relations are not mutually exclusive and no field should pretend they are.
 
@@ -140,19 +140,21 @@ These are two different questions and both are worth answering. The Airtable-der
 
 ### `api`
 
-A **sequence**, because property order is part of the public API ([naming.md](../../foundations/naming.md) §8, §10). Each entry:
+Property names in `api` use the canonical contract spelling. Frontend props map to them through FND-NAMING-05; Figma uses the canonical names as described in [figma/naming.md](../../../figma/naming.md#names-and-descriptions).
+
+A **sequence**, because property order is part of the public API (FND-NAMING-18, FND-NAMING-19 and FND-NAMING-20 in [naming.md](../../foundations/naming.md)). The variant and non-variant lists give relative order within each kind of property; they do not prescribe one merged sequence. A controlled group remains adjacent in `api`. Figma's separate panel sections are an implementation projection, described in [figma/naming.md](../../../figma/naming.md), not a second source of contract order. Each entry:
 
 ```yaml
 api:
   -
     name: "size"
-    kind: "variant"          # variant | text | boolean | instance | slot
+    kind: "variant"          # variant | text | string | boolean | instance | slot
     default: "extra small"
     description: "What the property means and what it governs."
     a11y:                     # optional, property-level finding
       status: "open"
       note: "…"
-    values:                   # a variant's vocabulary; on a text property, examples
+    values:                   # a variant's vocabulary; on text/string, examples
       -
         value: "extra small"
         note: "…"             # optional — what this value means
@@ -173,11 +175,13 @@ api:
 
 **`slot` and `instance` are different things.** An `instance` property holds one instance of one type — swapping it changes which component sits in that place. A `slot` holds however many instances the consumer puts in it, of several types, sometimes drawn from a constrained set and sometimes from none. Table Row Body is the case: a row holds as many cells as the table has columns, and a name, a date, a set of tags and a row of actions are four different components in one slot. A slot has no `default` and no `values`; what a slot will accept is recorded where every other allowed composition is, in `children`.
 
-**`controls` is what a "controlled group" is.** [naming.md](../../foundations/naming.md) §9 requires that when a boolean governs an element's presence, that element's properties follow it immediately. Recording which properties it governs makes the adjacency checkable instead of conventional.
+**`text` and `string` use the same storage type but carry different things.** `text` supplies textual content: a label, heading, message, placeholder or input value. Its name follows FND-NAMING-12. `string` supplies an identifier or other non-text string value: `Icon.name` selects a mark rather than displaying the name as copy. A string property is named for its role and does not acquire the `text` suffix just because its value is stored as a string. Both kinds have string defaults and string example values, and both generate TypeScript `string` props.
+
+**`controls` is what a "controlled group" is.** FND-NAMING-19 requires that when a boolean governs an element's presence, that element's properties follow it immediately. Recording which properties it governs makes the adjacency checkable instead of conventional.
 
 **A property that only draws a state in Figma is not part of the API.** Some properties exist so a mockup can show something the real component decides for itself: `has scrollbar` on Dropdown is the case — a scrollbar appears in a browser when the content overflows, and no consumer sets it. Recording it in `api` would put a property in the contract that the Svelte package can never have, and every later check comparing the two would report a divergence that is correct and useless.
 
-Such a property is recorded in [`figma_notes`](#figma_notes) instead, saying what it draws and what decides it in the real component. It is the one allowed exception to *every property in Figma appears in `api`* ([STANDARD.md](../STANDARD.md)), and it is narrow: a property is exempt only when the consumer cannot set it, not when it is merely inconvenient.
+Such a property is recorded in [`figma_notes`](#figma_notes) instead, saying what it draws and what decides it in the real component ([STANDARD.md](../STANDARD.md)). A different Figma representation of a public property is also recorded there: Icon chooses a mark by instance swap while the contract exposes its string identifier. These notes explain the implementation; they do not add or rename public properties.
 
 **Examples are addresses, not assets.** An example is a property assignment against `figma.node_id`; the generator renders it. Nothing image-like is stored, and an example cannot go stale against the component.
 
@@ -268,8 +272,8 @@ Keep it to what a reader would otherwise misread. Layer names, auto-layout setti
 
 - **`file_key` belongs to the entry, not to the repository.** Components live in two files ([`figma/README.md`](../../../figma/README.md)); a key belonging to any other file is a failure.
 - **`node_id` is stored exactly as the URL gives it** — the dash form, `4479-13507`. Both parts are then a straight copy out of the address bar and the link is a concatenation. The URL itself is never stored: it is derivable, and a stored URL rots in a way the parts do not.
-- **Contract prose is rendered as Markdown.** `summary`, `purpose`, `use_when`, `do_not_use_when` and `limitations` reach Storybook's docs page through `build-ui-stories.mjs`, which assembles them into one Markdown block. An identifier written bare in that prose is read as markup — `chevron_right, check_circle` loses both underscores to emphasis and italicises everything after it, which is how Icon's own property names were displayed wrong. Write such a name inside backticks, or keep it out of the prose; a text property's `values` are the place for examples and are not rendered as Markdown.
-- **`values` mean different things on a variant and on a text property.** On a variant they are the vocabulary: exhaustive, checked, and projected into a TypeScript union. On a text property they are **examples** — the value space is open (Icon's `name` is any Material Symbols name), and they exist so the generated story and the component page render a real sample instead of an empty box. A text property with no `default` starts its sample from the first of them; that is the sample's fallback and never the component's.
+- **Contract prose is rendered as Markdown.** `summary`, `purpose`, `use_when`, `do_not_use_when` and `limitations` reach Storybook's docs page through `build-ui-stories.mjs`, which assembles them into one Markdown block. An identifier written bare in that prose is read as markup — `chevron_right, check_circle` loses both underscores to emphasis and italicises everything after it, which is how Icon's own property names were displayed wrong. Write such a name inside backticks, or keep it out of the prose; text and string properties' `values` are the place for examples and are not rendered as Markdown.
+- **`values` mean different things on a variant and on text or string properties.** On a variant they are the vocabulary: exhaustive, checked, and projected into a TypeScript union. On `text` and `string` they are **examples** — the value space is open (Icon's string `name` is any name the active preset carries), and they exist so the generated story and the component page render a real sample instead of an empty box. Either kind with no `default` starts its sample from the first of them; that is the sample's fallback and never the component's.
 - **There is no `type` field.** Nothing reads a node's kind, and Figma reports it itself when anything asks.
 - **`last_verified` is the date a person compared this entry to the live component**, in `YYYY-MM-DD`. Not the date the entry was edited, not the date the component changed in Figma, and nothing derives it — a field that moved on every touch of the file would stop answering its one question, which is *how old is the last time anyone actually looked*. Only a person sets it, and only after looking.
 

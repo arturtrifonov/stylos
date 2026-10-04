@@ -106,10 +106,10 @@ export function renderStories(entry) {
 
   const stories = [`<Story name="default" args=${literal(defaults)} />`];
   for (const property of entry.api) {
-    // A variant's values are its vocabulary; a text property's are examples
+    // A variant's values are its vocabulary; text and string values are examples
     // (docs/components/registry/README.md). Both are worth a story — one
     // covers the surface, the other shows what a value looks like.
-    if (property.kind !== "variant" && property.kind !== "text") continue;
+    if (!["variant", "text", "string"].includes(property.kind)) continue;
     for (const value of property.values ?? []) {
       const args = { ...defaults, [camelName(property.name)]: value.value };
       stories.push(storyTag(property, value, args));

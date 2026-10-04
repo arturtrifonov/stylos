@@ -1,6 +1,13 @@
 # figma/
 
-Documentation of the Figma library structure. **Figma holds the values — variables and styles — and this directory never becomes a second copy of them.** Component contracts are not held here; they are authored in [`docs/components/registry/`](../docs/components/registry/README.md), and the Figma library is one implementation of them ([`ARCHITECTURE.md`](../ARCHITECTURE.md) §1). See also decision 0001.
+Documentation and authoring conventions for the Figma implementation. **Figma holds the values — variables and styles — and this directory never becomes a second copy of them.** Component contracts are not held here; they are authored in [`docs/components/registry/`](../docs/components/registry/README.md), and the Figma library is one implementation of them ([`ARCHITECTURE.md`](../ARCHITECTURE.md) §1). See also decision 0001.
+
+## Implementation conventions
+
+- [Naming](naming.md): Assets grouping, slash paths, nested-component publishing, layer names and the properties panel.
+- [MCP and connectors](mcp-and-connectors.md): access to the implementation and tool limitations.
+
+These conventions apply to Figma. Public API and design-language rules stay in `docs/`; a tool constraint does not become a rule for the whole system.
 
 ## Library structure
 

@@ -114,7 +114,7 @@ export function parseMilestones(plan) {
  * after it is joined to that entry's `family`. A full id is tried first, so
  * an id that itself carries a `/` reads as itself rather than as a shorthand —
  * the two use the same punctuation and only the registry can tell them apart.
- * No entry carries one today (docs/foundations/naming.md §2), so the shorthand
+ * No entry carries one today (docs/components/registry/README.md), so the shorthand
  * is the only live reading; the order still matters if one ever does again.
  *
  * A token resolving to nothing throws rather than being skipped. A checklist

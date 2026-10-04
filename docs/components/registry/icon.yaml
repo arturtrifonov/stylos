@@ -105,7 +105,7 @@ sizing_model:
 api:
   -
     name: "name"
-    kind: "text"
+    kind: "string"
     description: "Which mark in the active preset. There is no default and no placeholder value: a name the build does not carry renders nothing, because an icon nobody chose is one nobody wrote. The current default preset retains Material Symbols names, but that is a preset convention rather than the Icon contract. Figma expresses the same property as thirty separate components — see the Figma notes below. The values are examples rather than a vocabulary: any name the set carries is valid, and these are what the generated story and the component page render. Written without example names on purpose — this text is rendered as Markdown in Storybook, where an underscored name loses its underscores to emphasis; the values below carry the examples and render intact."
     values:
       -

@@ -5,7 +5,7 @@
 # 2026-09-02: the entry left button/ and its id lost the slash group — a slash
 # group is not how this registry expresses a family, see the registry README,
 # *Families*. 2026-09-03: "Button Basic" became "Button Base", matching the
-# component in Figma and the compound name naming.md §2 gives as its own example.
+# component in Figma and the compound-name convention in figma/naming.md.
 
 id: "Button Base"
 name: "Button Base"

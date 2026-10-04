@@ -41,6 +41,25 @@ function entry(id, fields = {}) {
   };
 }
 
+test("accepts a string identifier without treating examples as a closed vocabulary", () => {
+  const { errors } = checkRegistry([
+    entry("Icon", {
+      api: [{ name: "name", kind: "string", default: "more_horiz", values: [{ value: "check_circle" }] }],
+    }),
+  ]);
+  assert.deepEqual(errors, []);
+});
+
+test("text and string properties reject non-string defaults and examples", () => {
+  for (const kind of ["text", "string"]) {
+    const { errors } = checkRegistry([
+      entry("Icon", { api: [{ name: "name", kind, default: 42, values: [{ value: true }] }] }),
+    ]);
+    assert.ok(errors.some((error) => /default is not a string/.test(error)), kind);
+    assert.ok(errors.some((error) => /example value is not a string/.test(error)), kind);
+  }
+});
+
 // Reciprocal by construction, so a test about something else does not trip the
 // relation report.
 function pair(parentId, childId, fields = {}) {

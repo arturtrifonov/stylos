@@ -76,6 +76,16 @@ export function sampleHtml(entry, props = {}) {
         throw new Error(`preview: "${entry.id}" property "${name}" is a boolean; got "${value}"`);
       }
       attrs.push(`data-${kebab(name)}="${value}"`);
+    } else if (property.kind === "string") {
+      if (typeof value !== "string") {
+        throw new Error(`preview: "${entry.id}" property "${name}" is a string; got "${value}"`);
+      }
+      // Identifiers select resources; they are never displayed as text.
+      // Icon has a real renderer below. Another string property needs its
+      // component's renderer before a real sample can be produced.
+      if (entry.id !== "Icon" || name !== "name") {
+        throw new Error(`preview: "${entry.id}" has no renderer for string property "${name}"`);
+      }
     } else {
       // text and slot render as content, not as attributes.
       content += String(value);
@@ -89,7 +99,7 @@ export function sampleHtml(entry, props = {}) {
   // line are child spans, per the entry's `html` field. The marker span is
   // aria-hidden because the requiredness lives on the control it names.
   // Icon is the second structural case: the mark is a <path>, not content, so
-  // the generic branch below (which renders a text property as text) would
+  // the generic text-content branch would
   // put the name inside the <svg> and draw nothing. The drawing comes from
   // the committed set, the same files the component renders.
   if (entry.id === "Icon") {

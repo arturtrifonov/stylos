@@ -151,9 +151,9 @@ Two things in it are authored rather than read, because Figma has no field for t
 
 The `@stylos/ui` generators (SPEC 0009 §4), run together with `tokens:css` by `npm run ui:generate`. Both read the registry through `lib/registry.mjs` and generate only for components that have a directory under `packages/ui/src/components/` — a directory appears when a component's `.svelte` is written, and a directory matching no registry entry fails the build.
 
-`build-ui-types.mjs` writes `props.ts` per component from the entry's `api`, under the §3 mapping rule — variant values as a string union, verbatim — so a wrong prop value is a compile error and the 1:1 props ↔ `api` mapping is checked by the compiler rather than by eye. This is the condition under which TypeScript was accepted (ADR 0002): types are generated, never hand-written.
+`build-ui-types.mjs` writes `props.ts` per component from the entry's `api`, under FND-NAMING-05 — variant values as a string union, verbatim; `text` and `string` as TypeScript `string`, while the registry retains their different roles. The naming conversion is documented in `packages/ui/README.md`. A wrong prop value is a compile error and the 1:1 props ↔ `api` mapping is checked by the compiler rather than by eye. This is the condition under which TypeScript was accepted (ADR 0002): types are generated, never hand-written.
 
-`build-ui-stories.mjs` writes one Svelte CSF story file per component into `apps/workshop/stories/generated/`, with a `default` case and a case per documented variant value, every other prop at its contract default. The directory is regenerated wholesale, so a story survives exactly as long as its contract does.
+`build-ui-stories.mjs` writes one Svelte CSF story file per component into `apps/workshop/stories/generated/`, with a `default` case and a case per documented variant value or text/string example, every other prop at its contract default. The directory is regenerated wholesale, so a story survives exactly as long as its contract does.
 
 Both outputs are gitignored and rebuilt, like every generated thing.
 

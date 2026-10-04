@@ -7,7 +7,8 @@ import { fileURLToPath } from "node:url";
 import { buildPages, pageContext, readLogo, renderComponentPage } from "./build-component-page.mjs";
 import { loadTheme } from "./lib/theme.mjs";
 import { checkRegistry } from "./lint-registry.mjs";
-import { composeFigmaDescription, registryPathFor } from "./lib/registry.mjs";
+import { composeFigmaDescription, registryPathFor, loadRegistry } from "./lib/registry.mjs";
+import { sampleHtml } from "./lib/preview.mjs";
 
 // The contracts under test are fixtures; the theme is the repository's own,
 // because it is resolved from tokens/ and a fixture has none.
@@ -178,9 +179,9 @@ test("says nothing about version when there is no package.json version to check 
   assert.deepEqual(check(contract({ version: "9.9.9" })).errors, []);
 });
 
-test("fails a property kind outside the four", () => {
+test("fails a property kind outside the supported vocabulary", () => {
   const entry = withApi((api) => [{ ...api[0], kind: "enum" }, api[1]]);
-  assert.match(check(entry).errors.join("\n"), /kind "enum", not one of variant, text, boolean, instance/);
+  assert.match(check(entry).errors.join("\n"), /kind "enum", not one of variant, text, string, boolean, instance, slot/);
 });
 
 test("fails an a11y status outside the four, wherever the finding hangs", () => {
@@ -672,6 +673,21 @@ const PREVIEW = {
   tokensCss: ":root { --stylos-color-text-base: #1a2a3a; }",
   byId: new Map([["Checkbox Input", ".stylos-checkbox-input { color: var(--stylos-color-text-base); }"]]),
 };
+
+test("the real Icon contract renders string identifiers as drawings, never copy", () => {
+  const icon = loadRegistry(repoRoot).find((entry) => entry.id === "Icon");
+  assert.equal(icon.api.find((property) => property.name === "name").kind, "string");
+  const html = sampleHtml(icon, { name: "check_circle" });
+  assert.match(html, /<svg[^>]*data-name="check_circle"[^>]*><path /);
+  assert.doesNotMatch(html, />check_circle</);
+  assert.match(sampleHtml(icon, { name: "missing_mark" }), /<svg[^>]*><\/svg>/);
+  assert.throws(() => sampleHtml(icon, { name: 42 }), /is a string/);
+});
+
+test("a string property without a resource renderer is not previewed as text", () => {
+  const entry = legacy("Asset", { api: [{ name: "source", kind: "string" }] });
+  assert.throws(() => sampleHtml(entry, { source: "resource_id" }), /no renderer for string property/);
+});
 
 test("an implemented component opens on a live preview and ships its CSS", () => {
   const entry = contract();
