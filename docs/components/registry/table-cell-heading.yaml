@@ -53,7 +53,10 @@ a11y:
 sizing_model:
   horizontal: "fill"
   vertical: "hug"
-  adjustable: false
+  positioning: "flow"
+  adjustable:
+    horizontal: false
+    vertical: false
   intent: "The box is the value cell's box, step for step, because a header that did not match would make the header row a different height from every row under it. Width belongs to the column. Height is hugged from the contents and no height token is recorded, because none is bound — what the five steps come out at is a result, not a rule, and writing it down here would make it one. The type run is the Element profile rather than the Object profile its level would give it — the same documented mapping the family's value cell carries, and for the same reason — and it overrides the level default per typography.md. Line heights come from the string family because the header is one line. The controls take the Primitive run rather than the run the rest of the cell is on. Resolve token values with npm run tokens:report."
   sizes:
     -

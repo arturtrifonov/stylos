@@ -92,7 +92,10 @@ a11y:
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
-  adjustable: true
+  positioning: "flow"
+  adjustable:
+    horizontal: true
+    vertical: true
   intent: "Each size ships a minimum footprint, and the dot is the part that does not follow it: centred, with its own fixed dimension, it keeps its size whatever the footprint is set to. That decoupling is the entire reason two runs exist — `size` is chosen for the mark, and the footprint is adjusted around it. The dot advances only every other size, so a larger nominal size reads as a slightly larger dot rather than a circle: the footprint doubles from 8 to 16 while the mark grows only from 8 to 12. Neither run is derived from the other, and moving one does not move the other. For what fixed and adjustable mean together, see sizing.md."
   ring: "width/normal"
   sizes:

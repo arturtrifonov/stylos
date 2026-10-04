@@ -54,7 +54,10 @@ a11y:
 sizing_model:
   horizontal: "hug"
   vertical: "hug"
-  adjustable: false
+  positioning: "flow"
+  adjustable:
+    horizontal: false
+    vertical: false
   intent: "The run is authored per size, not inherited from the box. The box happens to be the tallest element at every size, so the component height follows it — but that is a consequence, not the rule, and the run can move independently of Checkbox Input. Neither axis is adjustable: a fixed width is what Checkbox Text is for. Every dimension is a token name; the component height is not recorded because it is derived from the box and the line box. Resolve values with `npm run tokens:report`."
   sizes:
     -

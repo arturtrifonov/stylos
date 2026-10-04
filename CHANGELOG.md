@@ -4,6 +4,12 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-04 (sizing contracts across implementations)
+
+- **Sizing separates dimensions, positioning and per-axis adjustment permissions.** All 39 recorded sizing models migrate from a component-wide boolean to horizontal and vertical permissions based on their existing intent. The validator requires both axes, positioning and both boolean flags; component pages show the permissions separately.
+- **Contract-supported changes take priority over default bindings and level recommendations.** The rules distinguish an adjustable footprint from scaling a whole component to match a reference, keep the base-8 pixel decision with an accurate explanation, and measure the above-scale exception against `dimension/size`.
+- **Figma sizing and reporting procedures leave the global rules.** Scale constraints and hidden-layer inspection move to `figma/sizing.md`; the integrity-check skill owns reporting the resolved scale boundary. Former draft rules `FND-SIZING-10`–`FND-SIZING-12` leave the guide under RUL-14. Integrity-check v0.7 and reference-reconstruction v0.4 follow the revised contract; the skill distribution is rebuilt.
+
 ### Changed — 2026-10-04 (confirmed naming and guideline presentation)
 
 - **Naming and public API rules are Confirmed.** The guide and foundations index record the approved status, and the guide points to the rule lifecycle for subsequent changes.

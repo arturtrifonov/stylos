@@ -38,6 +38,7 @@ import {
   PROPERTY_KINDS,
   A11Y_STATUSES,
   SIZING_AXES,
+  SIZING_POSITIONING,
   LINE_HEIGHT_FAMILIES,
   MOTION_FIELDS,
   COMPONENT_FILE_KEYS,
@@ -452,10 +453,31 @@ function checkContract(entry, byId, errors, resolveToken, systemVersion) {
   if (sizing) {
     for (const axis of ["horizontal", "vertical"]) {
       const value = sizing[axis];
-      if (value !== undefined && !SIZING_AXES.includes(value)) {
+      if (!SIZING_AXES.includes(value)) {
         errors.push(
           `${file}: sizing_model.${axis} is "${value}", not one of ${SIZING_AXES.join(", ")}`
         );
+      }
+    }
+
+    if (!SIZING_POSITIONING.includes(sizing.positioning)) {
+      errors.push(
+        `${file}: sizing_model.positioning is "${sizing.positioning}", not one of ${SIZING_POSITIONING.join(", ")}`
+      );
+    }
+    const adjustable = sizing.adjustable;
+    if (!adjustable || typeof adjustable !== "object" || Array.isArray(adjustable)) {
+      errors.push(`${file}: sizing_model.adjustable must record horizontal and vertical booleans`);
+    } else {
+      for (const axis of ["horizontal", "vertical"]) {
+        if (typeof adjustable[axis] !== "boolean") {
+          errors.push(`${file}: sizing_model.adjustable.${axis} must be a boolean`);
+        }
+      }
+      for (const key of Object.keys(adjustable)) {
+        if (!["horizontal", "vertical"].includes(key)) {
+          errors.push(`${file}: sizing_model.adjustable has unknown axis "${key}"`);
+        }
       }
     }
 

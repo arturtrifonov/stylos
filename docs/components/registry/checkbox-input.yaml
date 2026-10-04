@@ -58,7 +58,10 @@ a11y:
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
-  adjustable: false
+  positioning: "flow"
+  adjustable:
+    horizontal: false
+    vertical: false
   intent: "Square at every size, and the run is authored rather than derived from anything. Both axes are intrinsic — sizing.md names checkbox indicators among the dimensions never adjusted by hand. The 1px inside stroke does not scale with the box. Sizes are recorded as token names, never as numbers: run `npm run tokens:report dimension` to resolve them."
   sizes:
     -

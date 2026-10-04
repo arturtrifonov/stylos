@@ -4,7 +4,7 @@ description: "Rebuild a Figma interface from a screenshot, image, mockup, wirefr
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.3
+  version: 0.4
 ---
 
 # Stylos Reference Reconstruction
@@ -199,7 +199,7 @@ Choose components by interaction model and semantic role, not by silhouette.
 Do not:
 
 - detach an instance
-- scale an instance
+- scale an instance's whole geometry to match the reference
 - edit a main component to fit one reconstruction
 - rebuild an available component from primitive layers
 - add or remove internal parts outside the exposed API
@@ -209,45 +209,15 @@ Do not:
 
 ## Dimension rules
 
-Apply these rules separately to width and height. A component may allow external control on one axis while keeping the other axis intrinsic.
+Read the component's registry `sizing_model` and apply FND-SIZING-03 through FND-SIZING-05 in [sizing.md](../../../docs/foundations/sizing.md). The Figma application is in [figma/sizing.md](../../../figma/sizing.md#applying-a-contract).
 
-Use this decision order for each axis:
+Evaluate width and height separately. Use the property governing the affected dimension first; otherwise use an external override only on an axis whose `adjustable` flag permits it and whose `intent` explains that override. A default token binding can be replaced at that supported boundary; keep unrelated and internal bindings.
 
-1. **Exposed size control:** If the relevant dimension is governed by a `size` property or another explicit component property, change only that property. Do not resize the instance or replace the governed value manually.
-2. **Variable-bound dimension:** If the dimension is bound to a variable, keep the binding. When the component supports another existing size variable, switch to that variable instead of entering a raw value.
-3. **Externally resizable fixed dimension:** If the dimension is fixed, not variable-bound, and intentionally represents available layout space, adjust it to fit the reconstructed layout.
-4. **Intrinsic dimension:** Otherwise, preserve the component's dimension and resizing behavior.
+When a contract is missing or does not explain the adjustment, preserve the instance's authored sizing and report the gap. Do not infer permission from a raw number, an architectural level or similarity to another component.
 
-Examples of usually adjustable external dimensions:
+Choose component sizes from its contract rather than mechanically enforcing the recommendation in FND-SIZING-07. For an adjustable footprint, inspect whether the interior scales or keeps a separate size; Icon and Indicator are different cases. Preserve the contract's constraints and proportions.
 
-- text field width
-- search field width
-- panel width
-- card or content-container width
-- dialog width when the pattern allows it
-
-Examples of usually intrinsic dimensions:
-
-- control height
-- icon button width and height
-- icon size
-- checkbox or radio indicator size
-- internal action size
-- padding and gaps inside a component
-
-Additional rules:
-
-- A Text Field with a default unbound width of 220 may be set to 120 or 300 when width is an externally resizable layout dimension.
-- An internal Button dimension bound to a size variable must keep that binding or use another supported size variable; do not replace it with a raw value.
-- A component dimension governed by a `size` property must be changed through that property only.
-- Apply the decision per axis. A `size` property may govern control height while an explicitly resizable width still follows its own layout behavior.
-- Preserve `Hug contents` unless the component or layout pattern explicitly supports `Fill container`.
-- Use `Fill container` only for an axis intended to respond to parent layout.
-- Preserve min/max constraints when present.
-- Preserve aspect ratio for assets that require it.
-- Never distort or scale a component to reach a source measurement.
-- Do not force the reference's 10 px element when the smallest supported Stylos size is 12 px. Use the supported size.
-- A fixed unbound value is not automatically editable. Change it only when it represents external layout capacity rather than component anatomy.
+A reference measurement does not permit whole-component scaling. If the requested dimension is unsupported, choose a supported size and state the difference.
 
 ## Typography rules
 
@@ -392,7 +362,7 @@ Never:
 - sample visual values from the reference
 - trace the screenshot
 - use the screenshot as a background or flattened final UI
-- detach or scale component instances
+- detach instances or scale their whole geometry to match the reference
 - override component internals to force a match
 - replace system typography with source typography
 - reproduce the source brand language through local styles
@@ -412,7 +382,7 @@ Then confirm that:
 - the reconstructed screen preserves the reference's task, content, hierarchy, and relationships
 - every source element was interpreted by role rather than copied by appearance
 - all available UI patterns use Stylos component instances
-- no instance was detached or scaled
+- no instance was detached or had its whole geometry scaled to match the reference
 - component variants and exposed properties control type, tone, size, and state
 - component dimensions follow the per-axis decision order
 - no component anatomy or internal spacing was changed

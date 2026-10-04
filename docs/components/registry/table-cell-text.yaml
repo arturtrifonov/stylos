@@ -55,7 +55,10 @@ a11y:
 sizing_model:
   horizontal: "fill"
   vertical: "hug"
-  adjustable: false
+  positioning: "flow"
+  adjustable:
+    horizontal: false
+    vertical: false
   intent: "Width belongs to the column and is never named here, which is why no width token is recorded and the 220 the set is authored at carries no meaning. Height is hugged from the contents and is not named either, which is why there is no box token in the rows below — nothing binds a height, so anything written down here would be a result dressed up as a rule. The type run is the Element profile rather than the Object profile its level would give it, deliberately: a table is dense, and a medium cell set in the Object measure would be a heading. This entry is that documented mapping, and it overrides the level default per typography.md. Line heights come from the string family because the cell is one line by definition. Resolve token values with npm run tokens:report."
   sizes:
     -

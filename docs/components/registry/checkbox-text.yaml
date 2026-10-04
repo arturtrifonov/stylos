@@ -58,7 +58,10 @@ a11y:
 sizing_model:
   horizontal: "fill"
   vertical: "hug"
-  adjustable: true
+  positioning: "flow"
+  adjustable:
+    horizontal: true
+    vertical: false
   intent: "Width is the one dimension a consumer sets — directly, or by filling an auto-layout parent — and no width token is recorded because there is no width the system chooses. Height is the taller of the box and the line box, multiplied by the line count, and is never set by hand. The box stays aligned to the first line however many lines appear, which is the whole reason this component is separate from Checkbox Label. Resolve token values with npm run tokens:report."
   sizes:
     -

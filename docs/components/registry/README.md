@@ -2,7 +2,7 @@
 
 **One YAML file per component, carrying that component's whole contract.** Structured metadata — level, role, composition — and everything that used to be prose in a Markdown document: purpose, boundaries, per-property meaning, accessibility findings, limitations.
 
-This directory, not Airtable and not a set of hand-written `.md` files, is the source of truth. The five-level taxonomy — primitive, element, object, widget, layout — comes from the original component registry and is confirmed; see [sizing.md](../../foundations/sizing.md) for what it means for size grids.
+This directory, not Airtable and not a set of hand-written `.md` files, is the source of truth. The five-level taxonomy — primitive, element, object, widget, layout — comes from the original component registry and is confirmed; see [sizing.md](../../foundations/sizing.md) for what it means for recommended size profiles.
 
 The readable page for a component is **generated** from its entry. Nothing here is written twice.
 
@@ -216,9 +216,12 @@ Absorbs sizing, typography and responsive behaviour, because they are one model:
 
 ```yaml
 sizing_model:
-  horizontal: "hug"        # hug | fixed | fill | absolute
+  horizontal: "hug"        # hug | fixed | fill
   vertical: "hug"
-  adjustable: false
+  positioning: "flow"      # flow | absolute
+  adjustable:
+    horizontal: false
+    vertical: false
   intent: "…"
   sizes:
     -
@@ -229,7 +232,7 @@ sizing_model:
       line_height: "line height/string/0_750"
 ```
 
-**The four axis values are defined in [sizing.md](../../foundations/sizing.md), and `adjustable` is orthogonal to them.** `horizontal` and `vertical` say how the dimension is arrived at; `adjustable` says who names it. A component that is `fixed` and `adjustable` ships a value that a layout may replace with another value — that is not `fill`, which surrenders the dimension to the container.
+**Sizing behaviour, positioning and adjustment permissions are separate.** [Sizing](../../foundations/sizing.md) defines the three axis values, `positioning` and the per-axis `adjustable` flags. All are required when a sizing model is present. The axes describe defaults; `intent` describes supported overrides, constraints and how internal parts respond. A button may hug horizontally and allow an explicit width while its height remains controlled by `size`. A default token binding does not prohibit a contract-supported external override. Figma representation details are in [figma/sizing.md](../../../figma/sizing.md).
 
 **Every dimension and every type measure is a token name. Never a number.** `box: 16` would be a transcription of a value that lives in `tokens/`, and it rots the first time the scale moves. The generated page resolves these names against `tokens/` at build time and shows the value with the name beside it — a build-time join, not a second copy.
 
@@ -241,7 +244,7 @@ The field name says which collection to resolve against: `box` and `gap` are dim
 
 Typography has no separate block. Size, gap, font size and line height change together, and a reader comparing them across sizes needs them on one row.
 
-`flow_behavior` predates this block and remains on the entries with no contract as a coarse whole-component value. Where `sizing_model` is present it is authoritative, being per-axis. Folding the two is open.
+`flow_behavior` predates this block and remains as historical inventory metadata. Where `sizing_model` is present, its axes and separate `positioning` field are authoritative. Entries without a sizing model remain incomplete inventory; their old flow values do not supply a contract.
 
 ### `motion`
 

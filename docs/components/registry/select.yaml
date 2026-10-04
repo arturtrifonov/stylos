@@ -81,8 +81,11 @@ a11y:
 sizing_model:
   horizontal: "fixed"
   vertical: "hug"
-  adjustable: true
-  intent: "Width is the one dimension anyone names, which is what adjustable refers to; the 220 the set is authored at is a canvas artifact carrying no meaning. Height is nobody's to name. The box is a token height per size, and above it the label is one line, or two where it carries a supporting line, or absent — so the component hugs whatever that comes to rather than offering a height to set. The type follows the Element profile rather than the Object one its level would give it, documented here so it overrides the level default per typography.md. Line heights come from the string family because the value is one line. The chevron and the leading mark step on the icon run; the clear control and the validation mark step two below it, so neither competes with the value. Resolve token values with npm run tokens:report."
+  positioning: "flow"
+  adjustable:
+    horizontal: true
+    vertical: false
+  intent: "Width is the one dimension anyone names; the 220 the set is authored at is a canvas artifact carrying no meaning. Height is nobody's to name. The box is a token height per size, and above it the label is one line, or two where it carries a supporting line, or absent — so the component hugs whatever that comes to rather than offering a height to set. The type follows the Element profile rather than the Object one its level would give it, documented here so it overrides the level default per typography.md. Line heights come from the string family because the value is one line. The chevron and the leading mark step on the icon run; the clear control and the validation mark step two below it, so neither competes with the value. Resolve token values with npm run tokens:report."
   sizes:
     -
       size: "extra small"

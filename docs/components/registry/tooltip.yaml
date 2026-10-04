@@ -57,7 +57,10 @@ a11y:
 sizing_model:
   horizontal: "hug"
   vertical: "hug"
-  adjustable: true
+  positioning: "absolute"
+  adjustable:
+    horizontal: true
+    vertical: false
   intent: "Both axes hug in the single-line form: the slab is whatever the words need, and its height is the padding twice over plus the line box. The padding run is authored so that those heights land on the Element run at every size, which is what makes a tooltip sit level with the control it belongs to rather than near it. Choosing the wrapping form swaps the horizontal axis: the width stops hugging and becomes a number the consumer names, and the height goes on hugging however many lines that width produces. No width is recorded here, because there is no right one — it belongs to the place the tooltip is used, not to the component. The type run is a component-specific mapping rather than the Element profile, which typography.md allows where it is documented and this is that documentation: an even ramp of one step per size, where the profile's own run accelerates at the top. A tooltip is read beside content, never instead of it, so it stays below the profile at every size and further below the larger the profile gets. The radius does not move with size."
   sizes:
     -

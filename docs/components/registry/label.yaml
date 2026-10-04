@@ -75,7 +75,10 @@ a11y:
 sizing_model:
   horizontal: "fill"
   vertical: "hug"
-  adjustable: true
+  positioning: "flow"
+  adjustable:
+    horizontal: true
+    vertical: false
   intent: "Height is the sum of what is switched on — one line, or two with the gap between them — and is never set by hand, which is why no height token is recorded: nothing binds one. The name and the supporting line are separate type runs stepping at different rates; see the size property. Nothing here reserves space around the label: the component ends at its text and a form places it."
   sizes:
     -

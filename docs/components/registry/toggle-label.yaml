@@ -57,7 +57,10 @@ a11y:
 sizing_model:
   horizontal: "hug"
   vertical: "hug"
-  adjustable: false
+  positioning: "flow"
+  adjustable:
+    horizontal: false
+    vertical: false
   intent: "The run is authored per size rather than inherited from the track. The track happens to be the taller element at every size, so the component height follows it — a consequence, not the rule. Neither axis is adjustable: a fixed width is what Toggle Text is for. The line height comes from the string family because the label is one line by definition. The component height is not recorded because it is derived from the track and the line box."
   sizes:
     -

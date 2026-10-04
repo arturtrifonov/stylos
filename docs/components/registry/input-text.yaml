@@ -78,7 +78,10 @@ a11y:
 sizing_model:
   horizontal: "fixed"
   vertical: "hug"
-  adjustable: true
+  positioning: "flow"
+  adjustable:
+    horizontal: true
+    vertical: false
   intent: "Width is the one dimension a consumer names — sizing.md lists text-field width among the dimensions usually adjusted — and the 220 the set is authored at is a canvas artifact carrying no meaning, which is why no width token is recorded. Height is not named either: the field is a token height per size, the name and the message above it hug their own text, and the component is the sum. The field run is the Object run its level implies, step for step. The type inside the field follows the Element profile rather than the Object one its level would give it. This entry is that documented mapping and overrides the level default per typography.md. Line heights come from the string family because the field is one line by definition. The label and the message are the nested Label component's own runs and are recorded here only as measured, because they are that component's to decide. Resolve token values with npm run tokens:report."
   sizes:
     -

@@ -39,7 +39,7 @@ Why: appearance alone does not explain intended use, composition, adjustable axe
 - every public property appears in `api`, with its supported values and contract order; implementation names map to it through a documented conversion (FND-NAMING-05). A different Figma representation and controls that only draw states derived by code are recorded in `figma_notes` ([`registry/README.md`](registry/README.md)), and the panel projection is described in [figma/naming.md](../../figma/naming.md);
 - every property has a `description`, and every default is one of that property's values;
 - any property combination that does not exist is stated as a rule, in `limitations` or on the value it constrains;
-- `sizing_model` has a row per size value and an `intent`, and every dimension and type measure in it is a token name that resolves against `tokens/`, never a number;
+- `sizing_model` records both default axes, positioning and per-axis adjustment permissions, has a row per size value and an `intent`, and every dimension and type measure in it is a token name that resolves against `tokens/`, never a number;
 - every value carrying an `a11y` finding also carries a `rationale` saying why it is shipped;
 - `figma.node_id` identifies an existing Figma representation, and `last_verified` is not older than the component's last change.
 

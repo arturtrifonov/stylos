@@ -17,12 +17,14 @@ Fails loudly (not silently) if: the include order references a skill directory t
 
 `import-component-registry.mjs` converts an Airtable component-registry CSV export into one YAML file per component under `docs/components/registry/`. It's a one-time-per-refresh bootstrap tool, not a sync — see [docs/components/registry/README.md](../docs/components/registry/README.md) for why hand-editing YAML directly is the expected long-term workflow rather than re-running this against Airtable repeatedly.
 
-`lint-registry.mjs` validates the generated (or hand-edited) YAML on two levels. The registry as a whole: every `children`/`parents` reference resolves to a real component `id`, ids are unique, each file sits at the path its `id` implies, and every `level` is one of the five confirmed values. And each contract, for the fields it carries: statuses, property kinds, accessibility statuses, sizing axes and line-height families inside their vocabularies; a default among its property's values; a `do_not_use_when` alternative that exists; a variant count matching the product; a controlled group that is adjacent; a sizing run matching the size property value for value; every dimension and type measure in that run written as a token name rather than a number, and resolving against `tokens/`; a value with a finding and a reason for shipping it. **Absence is never a failure** — most entries carry no contract at all, and every contract check runs only where its field is present. See SPEC 0003 §3.
+`lint-registry.mjs` validates the generated (or hand-edited) YAML on two levels. The registry as a whole: every `children`/`parents` reference resolves to a real component `id`, ids are unique, each file sits at the path its `id` implies, and every `level` is one of the five confirmed values. And each contract, for the fields it carries: statuses, property kinds, accessibility statuses, sizing axes and line-height families inside their vocabularies; a default among its property's values; a `do_not_use_when` alternative that exists; a variant count matching the product; a controlled group that is adjacent; a sizing run matching the size property value for value; every dimension and type measure in that run written as a token name rather than a number, and resolving against `tokens/`; a value with a finding and a reason for shipping it. **An absent contract is reported rather than fabricated** — most entries carry no contract at all. Once a sizing model is recorded, its axes, positioning and per-axis adjustment permissions are required; an incomplete model fails validation. See SPEC 0003 §3.
 
 ```bash
 npm run import:registry     # regenerate docs/components/registry/*.yaml from the stored CSV (overwrites hand edits)
 npm run validate:registry   # check the registry and every contract in it against itself
 ```
+
+The sizing vocabulary and required fields are defined in [Sizing](../docs/foundations/sizing.md). Component pages display width and height adjustment permissions separately.
 
 ## `validate-rules.mjs`
 

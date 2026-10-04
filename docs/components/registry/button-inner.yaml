@@ -91,7 +91,10 @@ a11y:
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
-  adjustable: true
+  positioning: "flow"
+  adjustable:
+    horizontal: true
+    vertical: true
   intent: "One footprint bound to one token, with proportions locked so the second axis follows the first. There is no size run and no size property: a consumer that needs another dimension sets the number outright, and everything inside follows by scale constraint. The footprint is the icon's rather than the control's — the component is laid out as if it were the icon it contains, which is why a parent gives it exactly an icon's room. The pressable area is not that footprint. It is the halo, deliberately larger and drawn outside the bounds, so it behaves as an effect that appears under the pointer rather than as a box in the flow. That separation is the component: the icon holds the space, the halo holds the target."
   footprint: "size/s-5_000"
   halo: "larger than the footprint and outside it, by a raw dimension rather than a token — see limitations"

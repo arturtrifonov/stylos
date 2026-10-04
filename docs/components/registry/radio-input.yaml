@@ -53,7 +53,10 @@ a11y:
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
-  adjustable: false
+  positioning: "flow"
+  adjustable:
+    horizontal: false
+    vertical: false
   intent: "Circular at every size, and the run is authored rather than derived from anything. Both axes are intrinsic — sizing.md names radio indicators among the dimensions never adjusted by hand — so only the width is bound and the height follows by locked proportion. The centre is a fixed fraction of the circle rather than a second run: it advances with the box at every step, unlike Indicator where the mark deliberately does not follow. The 1px inside stroke does not scale with the box. Sizes are recorded as token names, never as numbers: run npm run tokens:report dimension to resolve them."
   sizes:
     -

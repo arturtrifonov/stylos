@@ -99,7 +99,10 @@ a11y:
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
-  adjustable: true
+  positioning: "flow"
+  adjustable:
+    horizontal: true
+    vertical: true
   intent: "One square footprint, and the drawing inside is set to scale with it, so a consumer that needs another dimension sets the number and everything follows. That is why the set is authored at a single size rather than in a run: the components that use it already have size runs of their own and bind the icon slot to whichever step they are on. The drawing does not fill the footprint — each mark is inset by whatever its own optical balance needs, and those insets are the drawing's business rather than the system's."
   footprint: "size/s-3_000"
 api:

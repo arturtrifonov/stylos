@@ -70,7 +70,10 @@ a11y:
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
-  adjustable: false
+  positioning: "flow"
+  adjustable:
+    horizontal: false
+    vertical: false
   intent: "A square, and fixed on both axes, because the whole point of the component is that it occupies a known amount of room in a strip of controls. The box is the Object run, the same one the labelled buttons use, so an icon button and a labelled button of the same size are the same height and sit on the same line. The icon inside is the Element run, one level down — the pairing that holds everywhere a mark sits inside a control in this system. There is no padding: the box is the icon's box and the icon is centred in it. The border is drawn inside the box, so it costs no room and an outlined square and a filled one of the same size are the same size on screen. There is no type row, because there is no text. The radius does not move with size, matching the labelled buttons."
   sizes:
     -

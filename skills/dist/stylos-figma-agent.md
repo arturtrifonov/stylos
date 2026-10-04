@@ -9,10 +9,10 @@
 
 Compiled skill document for manual import into Figma Agent. Contains:
 
-- `stylos-component-integrity-check` v0.6
+- `stylos-component-integrity-check` v0.7
 - `stylos-description-sync` v0.2
 - `stylos-naming-cleanup` v0.17
-- `stylos-reference-reconstruction` v0.3
+- `stylos-reference-reconstruction` v0.4
 
 ---
 
@@ -22,7 +22,7 @@ description: "Audit selected Figma components, component sets, instances, or sev
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.6
+  version: 0.7
 ---
 
 # Stylos Component Integrity Check
@@ -243,11 +243,11 @@ Do not report:
 - prototype timing or interaction values
 - implicit Figma defaults that are exposed on every node but are not actively used, such as opacity `1` or stroke weight on a layer with no visible stroke
 
-Apply these dimension classifications, in order, before producing a raw-numeric warning. Both of the first two come from [sizing.md](../../../docs/foundations/sizing.md), which holds the reasoning; this list only applies it.
+Apply these dimension classifications, in order, before producing a raw-numeric warning. [Sizing](../../../docs/foundations/sizing.md) defines the system contract and above-scale exception; [figma/sizing.md](../../../figma/sizing.md) describes hidden-layer inspection and scale constraints. This skill owns the reporting procedure.
 
 1. **A hidden layer's `width` and `height` are not evidence.** Figma takes a hidden layer out of the auto-layout flow, so it reports `layoutSizingHorizontal: FIXED` — and, for text, `textAutoResize: NONE` — with whatever number it last held, whatever it will do when visible. Judge a layer's dimensions on the variants where it is visible: if the same layer is visible anywhere in the set, that occurrence carries the finding and the hidden ones are silent. If it is hidden in every variant, emit one information finding saying its sizing could not be established, and no warning.
-2. **A fixed `width` or `height` above the top of the scale is deliberately raw.** Where the value is larger than the largest the `dimension` collection defines, there is no token to bind it to and none is wanted — do not warn. Read the top of the scale and **state the value you read, once, in the report**, so the basis is visible; if you cannot read the collection, say so instead of guessing, and skip this class rather than warning through it. A fixed dimension *inside* the scale's range that matches no step is not covered by this and stays a warning.
-3. **A scale-constrained axis outside auto layout is allowed to be raw.** Where the layer's parent is not an auto-layout frame and the layer's constraint on that axis is `SCALE`, emit the scale-constraint information finding defined below instead of a warning for that axis. A bound variable pins a value and leaves scaling nothing to move, so the two are alternatives; this is how `adjustable: true` is built. Judge each axis on its own constraint.
+2. **A fixed `width` or `height` above the top of the scale is deliberately raw.** Where the value is larger than the largest resolved token in the `size` group of the `dimension` collection, there is no token to bind it to and none is wanted — do not warn. Read that group's resolved maximum, excluding gap roles and unaliased `dimension-scale` primitives, and **state the value and group you read, once, in the report**, so the basis is visible; if you cannot read the collection, say so instead of guessing, and skip this class rather than warning through it. A dimension inside that range is not covered by this exception. For an instance, first verify whether it is a consumer override on an axis permitted by the registry contract under FND-SIZING-03. If so, do not warn about the supported external dimension; this does not exempt internal values. If the contract cannot be read, report that the override could not be verified and apply the ordinary rules.
+3. **A scale-constrained axis outside auto layout is allowed to be raw.** Where the layer's parent is not an auto-layout frame and the layer's constraint on that axis is `SCALE`, emit the scale-constraint information finding defined below instead of a warning for that axis. A bound variable pins a value and leaves scaling nothing to move, so the two are alternatives. This is one representation of a proportional interior; per-axis adjustment permission does not imply every interior layer scales. Judge each axis on its own constraint.
 4. If exactly one of `width` or `height` is bound to a valid variable, the other is a fixed numeric value, and the layer's aspect ratio is locked, treat the unbound dimension as derived from the bound dimension. Do not warn about it. If the rendered layer is non-square, emit the aspect-ratio information finding defined below; if it is square, emit no finding.
 5. Otherwise, if an unbound fixed width belongs to a verified icon container, emit the icon-container information finding defined below instead of a warning for that width.
 6. Apply the ordinary raw-numeric warning to dimensions that meet none of these.
@@ -345,7 +345,7 @@ Example summary:
 
 `Info: A scale-constrained dimension is unbound so that the layer can scale with its parent`
 
-Use this information finding — never a warning — when the layer's parent is not an auto-layout frame, the layer's constraint on the affected axis is `SCALE`, and the dimension on that axis is an unbound non-zero number. Name the axis, the constraint, and the value. See [sizing.md](../../../docs/foundations/sizing.md).
+Use this information finding — never a warning — when the layer's parent is not an auto-layout frame, the layer's constraint on the affected axis is `SCALE`, and the dimension on that axis is an unbound non-zero number. Name the axis, the constraint, and the value. See [figma/sizing.md](../../../figma/sizing.md#scale-constraints-outside-auto-layout).
 
 It is information rather than silence because the value is a real decision with a cost: it will not follow the scale when the scale moves, and a person reading the report should see where those places are.
 
@@ -1707,7 +1707,7 @@ description: "Rebuild a Figma interface from a screenshot, image, mockup, wirefr
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.3
+  version: 0.4
 ---
 
 # Stylos Reference Reconstruction
@@ -1902,7 +1902,7 @@ Choose components by interaction model and semantic role, not by silhouette.
 Do not:
 
 - detach an instance
-- scale an instance
+- scale an instance's whole geometry to match the reference
 - edit a main component to fit one reconstruction
 - rebuild an available component from primitive layers
 - add or remove internal parts outside the exposed API
@@ -1912,45 +1912,15 @@ Do not:
 
 ## Dimension rules
 
-Apply these rules separately to width and height. A component may allow external control on one axis while keeping the other axis intrinsic.
+Read the component's registry `sizing_model` and apply FND-SIZING-03 through FND-SIZING-05 in [sizing.md](../../../docs/foundations/sizing.md). The Figma application is in [figma/sizing.md](../../../figma/sizing.md#applying-a-contract).
 
-Use this decision order for each axis:
+Evaluate width and height separately. Use the property governing the affected dimension first; otherwise use an external override only on an axis whose `adjustable` flag permits it and whose `intent` explains that override. A default token binding can be replaced at that supported boundary; keep unrelated and internal bindings.
 
-1. **Exposed size control:** If the relevant dimension is governed by a `size` property or another explicit component property, change only that property. Do not resize the instance or replace the governed value manually.
-2. **Variable-bound dimension:** If the dimension is bound to a variable, keep the binding. When the component supports another existing size variable, switch to that variable instead of entering a raw value.
-3. **Externally resizable fixed dimension:** If the dimension is fixed, not variable-bound, and intentionally represents available layout space, adjust it to fit the reconstructed layout.
-4. **Intrinsic dimension:** Otherwise, preserve the component's dimension and resizing behavior.
+When a contract is missing or does not explain the adjustment, preserve the instance's authored sizing and report the gap. Do not infer permission from a raw number, an architectural level or similarity to another component.
 
-Examples of usually adjustable external dimensions:
+Choose component sizes from its contract rather than mechanically enforcing the recommendation in FND-SIZING-07. For an adjustable footprint, inspect whether the interior scales or keeps a separate size; Icon and Indicator are different cases. Preserve the contract's constraints and proportions.
 
-- text field width
-- search field width
-- panel width
-- card or content-container width
-- dialog width when the pattern allows it
-
-Examples of usually intrinsic dimensions:
-
-- control height
-- icon button width and height
-- icon size
-- checkbox or radio indicator size
-- internal action size
-- padding and gaps inside a component
-
-Additional rules:
-
-- A Text Field with a default unbound width of 220 may be set to 120 or 300 when width is an externally resizable layout dimension.
-- An internal Button dimension bound to a size variable must keep that binding or use another supported size variable; do not replace it with a raw value.
-- A component dimension governed by a `size` property must be changed through that property only.
-- Apply the decision per axis. A `size` property may govern control height while an explicitly resizable width still follows its own layout behavior.
-- Preserve `Hug contents` unless the component or layout pattern explicitly supports `Fill container`.
-- Use `Fill container` only for an axis intended to respond to parent layout.
-- Preserve min/max constraints when present.
-- Preserve aspect ratio for assets that require it.
-- Never distort or scale a component to reach a source measurement.
-- Do not force the reference's 10 px element when the smallest supported Stylos size is 12 px. Use the supported size.
-- A fixed unbound value is not automatically editable. Change it only when it represents external layout capacity rather than component anatomy.
+A reference measurement does not permit whole-component scaling. If the requested dimension is unsupported, choose a supported size and state the difference.
 
 ## Typography rules
 
@@ -2095,7 +2065,7 @@ Never:
 - sample visual values from the reference
 - trace the screenshot
 - use the screenshot as a background or flattened final UI
-- detach or scale component instances
+- detach instances or scale their whole geometry to match the reference
 - override component internals to force a match
 - replace system typography with source typography
 - reproduce the source brand language through local styles
@@ -2115,7 +2085,7 @@ Then confirm that:
 - the reconstructed screen preserves the reference's task, content, hierarchy, and relationships
 - every source element was interpreted by role rather than copied by appearance
 - all available UI patterns use Stylos component instances
-- no instance was detached or scaled
+- no instance was detached or had its whole geometry scaled to match the reference
 - component variants and exposed properties control type, tone, size, and state
 - component dimensions follow the per-axis decision order
 - no component anatomy or internal spacing was changed
