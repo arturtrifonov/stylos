@@ -4,6 +4,12 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-04 (spacing review)
+
+- **Spacing names ratios to an 8 px base, including fractional steps.** Gap examples replace size-role examples; the guide points to the token record for the supported set and resolved values.
+- **Explicit padding, gaps and margins use semantic gap tokens.** Raw numbers, size roles and unaliased primitives are not substitutes. Container-distributed free space is distinguished from authored spacing, and a named optical-correction exception follows PRN-01 without allowing unrelated raw values.
+- **Spacing roles alias matching scale primitives.** The guide identifies both collections and the reference relationship; the shared suffix makes it readable, while the alias keeps values in sync. Spacing stays Draft and retains its three rule IDs under RUL-14.
+
 ### Changed — 2026-10-04 (confirmed sizing and rule cards)
 
 - **Sizing is Confirmed.** The foundation and its index record the approved rules.
