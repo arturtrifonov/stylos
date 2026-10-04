@@ -99,7 +99,7 @@ It reads the set through `lib/guidelines.mjs`, which reads through `validate-rul
 
 Links are rewritten on the way out. A guideline is written to be read in a repository, so it links to `theming.md` and to `tokens/_naming.yaml`; the first becomes the other document's page, the second becomes the file on GitHub when `package.json` records a repository, and is left alone when it does not. A link that resolves to nothing is worse than no link, and stripping them would quietly delete half the reasoning.
 
-`lib/markdown.mjs` renders the subset the documents use — paragraphs, tables, lists, fences, headings, and four inline forms. It is not a Markdown implementation: the input is written to one grammar, so the subset is closed, and a parser dependency is the kind that arrives with a hundred files to render eleven. Rule cards preserve the source order of lists, tables, reasoning and labelled notes; a list before `Why:` stays before it. The pages carry no script.
+`lib/markdown.mjs` renders the subset the documents use — paragraphs, tables, lists, fences, headings, and four inline forms. It is not a Markdown implementation: the input is written to one grammar, so the subset is closed, and a parser dependency is the kind that arrives with a hundred files to render eleven. Rule cards show MUST, SHOULD, MAY and RETIRED as tags aligned to the right of their headers, including on narrow screens. Lists, tables and labelled notes keep their source order. Reasoning sits in a native `Why` disclosure at the bottom of each card, closed by default and operable by keyboard. The pages carry no script.
 
 ## `build-registry-view.mjs` and `build-component-page.mjs`
 

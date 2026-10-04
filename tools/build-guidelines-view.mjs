@@ -112,7 +112,13 @@ a { color: var(--stylos-text-primary, #4338ca); }
   padding: 1.1rem 1.3rem;
   margin: var(--gap) 0;
 }
-.rule > header { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem .8rem; margin-block-end: .7rem; }
+.rule > header { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: baseline; gap: .5rem .8rem; margin-block-end: .7rem; }
+.rule > header h3 { min-width: 0; }
+@media (max-width: 40rem) {
+  .rule > header { grid-template-columns: minmax(0, 1fr) auto; }
+  .rule > header .id { grid-column: 1; grid-row: 2; }
+  .rule > header .level { grid-column: 2; grid-row: 1; }
+}
 .rule .id {
   font-family: var(--font-mono, ui-monospace);
   font-size: .85rem;
@@ -120,15 +126,30 @@ a { color: var(--stylos-text-primary, #4338ca); }
   text-decoration: none;
 }
 .rule .id:hover { text-decoration: underline; }
-.level { font-size: .72rem; font-weight: 700; letter-spacing: .06em; }
-.level.must { color: var(--stylos-text-danger, #b42318); }
-.level.should { color: var(--stylos-text-warning, #b54708); }
-.level.may { color: var(--stylos-text-secondary, #475467); }
-.level.retired { color: var(--stylos-text-tertiary, #667085); text-decoration: line-through; }
+.level {
+  justify-self: end;
+  box-sizing: border-box;
+  min-width: 5.5rem;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-align: center;
+  white-space: nowrap;
+  border-color: currentColor;
+  background: var(--bg-sunken, #f9fafb);
+}
+.level.must { color: var(--bad, #b42318); }
+.level.should { color: var(--warn, #b54708); }
+.level.may { color: var(--fg-quiet, #475467); }
+.level.retired { color: var(--fg-faint, #667085); text-decoration: line-through; }
 .cite { text-decoration-style: dotted; text-underline-offset: 2px; }
 .statement { margin: 0 0 .8rem; }
 .why, .note { margin: .6rem 0 0; color: var(--stylos-text-secondary, #475467); font-size: .95rem; }
-.why b, .note b { color: var(--stylos-text-base, #101828); font-weight: 600; }
+.note b { color: var(--stylos-text-base, #101828); font-weight: 600; }
+.why { padding-block-start: .7rem; border-top: 1px solid var(--rule, #eaecf0); }
+.why summary { width: fit-content; cursor: pointer; font-weight: 600; }
+.why summary:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.why p { margin: .6rem 0 0; }
 .rule table { border-collapse: collapse; margin: .9rem 0; font-size: .92rem; width: 100%; }
 .rule th, .rule td { text-align: left; padding: .35rem .6rem; border-bottom: 1px solid var(--stylos-border-secondary, #eaecf0); vertical-align: top; }
 .rule pre {
@@ -240,18 +261,24 @@ export function renderRule(rule, { linkTo = "", href } = {}) {
     `<header>`,
     `<h3>${esc(rule.title)}</h3>`,
     `<a class="id" href="${esc(linkTo)}#${esc(rule.id)}">${esc(rule.id)}</a>`,
-    rule.level ? `<span class="level ${level}">${esc(rule.level)}</span>` : "",
+    rule.level ? `<span class="badge level ${level}">${esc(rule.level)}</span>` : "",
     `</header>`,
     `<p class="statement">${inline(rule.statement.replace(/^\*\*[A-Z]+\.?\*\*\s*/, ""), { href })}</p>`,
   ];
 
+  const reasoning = [];
   for (const block of rule.blocks) {
-    if (block.kind === "body") {
+    if (block.kind === "Why") {
+      reasoning.push(block.text);
+    } else if (block.kind === "body") {
       parts.push(`<div class="prose">${markdown(block.lines, { headingLevel: 4, href })}</div>`);
     } else {
-      const className = block.kind === "Why" ? "why" : "note";
-      parts.push(`<p class="${className}"><b>${esc(block.kind)}:</b> ${inline(block.text, { href })}</p>`);
+      parts.push(`<p class="note"><b>${esc(block.kind)}:</b> ${inline(block.text, { href })}</p>`);
     }
+  }
+
+  if (reasoning.length > 0) {
+    parts.push(`<details class="why"><summary>Why</summary>${reasoning.map((text) => `<p>${inline(text, { href })}</p>`).join("")}</details>`);
   }
 
   return `<section class="rule" id="${esc(rule.id)}">\n${parts.filter(Boolean).join("\n")}\n</section>`;

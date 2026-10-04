@@ -1,6 +1,6 @@
 # Sizing
 
-Status: Draft
+Status: Confirmed
 Scope: How a component's dimensions are arrived at on each axis and what the size levels mean; the space between components is [spacing.md](spacing.md).
 
 These rules define the sizing contract across implementations. Figma authoring and inspection conventions are in [figma/sizing.md](../../figma/sizing.md).

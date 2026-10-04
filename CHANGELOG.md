@@ -4,10 +4,15 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-04 (confirmed sizing and rule cards)
+
+- **Sizing is Confirmed.** The foundation and its index record the approved rules.
+- **Rule levels are tags aligned to the right.** MUST, SHOULD, MAY and RETIRED remain at the right edge of the card header on wide and narrow screens. Reasoning moves to a native `Why` disclosure at the bottom of the card, closed by default; rule text and notes remain visible.
+
 ### Fixed — 2026-10-04 (sizing review and rule rendering)
 
 - **The sizing type describes how a dimension is determined.** `hug`, `fixed` and `fill` are independent of the permitted changes: a fixed dimension may use a single value, supported `size` choices or a consumer-chosen value. The level recommendation rule now explains which dimension a row governs and how component mappings override it.
-- **Guideline cards preserve the source order of their content.** An ordered statement list stays before its `Why:` paragraph instead of being moved below it; labelled notes and fenced examples keep their positions as well.
+- **Guideline cards preserve the order of their rule content.** Lists, labelled notes and fenced examples keep their source positions; reasoning is presented separately at the bottom.
 
 ### Changed — 2026-10-04 (sizing contracts across implementations)
 

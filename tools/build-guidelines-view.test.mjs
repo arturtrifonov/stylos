@@ -62,17 +62,18 @@ test("a labelled line inside a fence is not a label", () => {
   assert.ok(parts.body.includes("Why: this is a specimen."));
 });
 
-test("a statement list stays before its reasoning, followed by explanatory prose", () => {
+test("rule text stays visible and reasoning is closed at the bottom", () => {
   const sizing = data.files.find((file) => file.slug === "foundations/sizing");
   const rule = sizing.rules.find((rule) => rule.id === "FND-SIZING-03");
   const html = renderRule(rule);
-  assert.ok(html.indexOf("<ol>") < html.indexOf('<p class="why">'));
-  assert.ok(html.indexOf("</ol>") < html.indexOf('<p class="why">'));
-  assert.ok(html.indexOf('<p class="why">') < html.indexOf("For Button"));
-  assert.equal((html.match(/<b>Why:<\/b>/g) ?? []).length, 1);
+  assert.ok(html.indexOf("</ol>") < html.indexOf("For Button"));
+  assert.ok(html.indexOf("For Button") < html.indexOf('<details class="why">'));
+  assert.match(html, /<details class="why"><summary>Why<\/summary><p>the contract explains/);
+  assert.doesNotMatch(html, /<details[^>]*\bopen\b/);
+  assert.match(html, /<\/details>\s*<\/section>$/);
 });
 
-test("labelled paragraphs keep their source positions around tables and fenced examples", () => {
+test("notes and fenced examples retain their order before the reasoning disclosure", () => {
   const rule = { id: "FND-EXAMPLE-01", title: "Example", level: "MUST", ...splitRule({
     statement: "**MUST.** Keep the order.",
     body: ["**MUST.** Keep the order.", "", "Why: early reasoning.", "",
@@ -81,12 +82,12 @@ test("labelled paragraphs keep their source positions around tables and fenced e
       "Checked by: `npm test`.", "Serves: PRN-04."],
   }) };
   const html = renderRule(rule);
-  const positions = ['<p class="why">', '<table>', '<b>Exception:</b>', '<pre>', '<b>Checked by:</b>', '<b>Serves:</b>']
+  const positions = ['<table>', '<b>Exception:</b>', '<pre>', '<b>Checked by:</b>', '<b>Serves:</b>', '<details class="why">']
     .map((part) => html.indexOf(part));
   assert.ok(positions.every((position) => position >= 0));
   assert.deepEqual(positions, [...positions].sort((a, b) => a - b));
   assert.match(html, /Why: fenced specimen/);
-  assert.equal((html.match(/<b>Why:<\/b>/g) ?? []).length, 1);
+  assert.equal((html.match(/<summary>Why<\/summary>/g) ?? []).length, 1);
 });
 
 // --- links out of a document written to be read in a repository ------------
