@@ -106,7 +106,9 @@ motion:
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
-  adjustable: true
+  adjustable:
+    horizontal: true
+    vertical: true
   intent: "One footprint, bound to a token, with proportions locked. The mark inside is not separately sized: it is inset by a sixth on every side and its constraints are set to scale, so it follows the footprint whenever the footprint is set to something else. That is the opposite of Indicator, where the mark deliberately does not follow — here there is one dimension and the mark is a fixed fraction of it."
   footprint: "size/s-3_000"
   mark_ratio: "5/6 of the footprint, by constraint rather than by a recorded value"

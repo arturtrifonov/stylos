@@ -1,137 +1,130 @@
 # Sizing
 
-Status: Draft
+Status: Confirmed
 Scope: How a component's dimensions are arrived at on each axis and what the size levels mean; the space between components is [spacing.md](spacing.md).
+
+These rules define the sizing contract across implementations. Figma authoring and inspection conventions are in [figma/sizing.md](../../figma/sizing.md).
 
 ## What an axis can do
 
-### FND-SIZING-01 — Every axis is one of four kinds
+### FND-SIZING-01 — Each axis has one of three sizing types
 
-**MUST.** Each axis of each component is `hug`, `fixed`, `fill` or `absolute`, and the contract records which in `sizing_model.horizontal` and `sizing_model.vertical`.
+**MUST.** Record how each axis gets its dimension as `hug`, `fixed` or `fill` in `sizing_model.horizontal` and `sizing_model.vertical`.
 
-Why: the value says **how the dimension is arrived at** — not who decides it, and not whether it ever changes. If it is not recorded, every consumer has to find the answer by resizing the instance and watching what happens.
+Why: the type explains where a dimension comes from. It does not say whether the consumer may change it or which control they use; those decisions are recorded separately.
 
-| Value | The dimension is |
+| Type | How the dimension is chosen |
 | --- | --- |
-| `hug` | whatever the contents need |
-| `fixed` | a definite number |
-| `fill` | whatever the container has left |
-| `absolute` | set by position rather than by layout — the node is out of the flow |
+| `hug` | The contents determine it. |
+| `fixed` | An explicit length determines it. |
+| `fill` | The space provided by the parent determines it. |
 
-Checked by: `npm run validate:registry` — the axis must be one of the four.
+A `fixed` dimension may have one value, switch between the values defined for `size`, or accept a consumer-chosen value. For example, Button height changes between its supported sizes, while Icon's footprint can accept a chosen dimension. Both are still `fixed`: changing the number does not change how the dimension is determined.
 
-### FND-SIZING-02 — `fixed` and adjustable are independent
+The axes describe default behaviour. A supported override, such as setting a hugging button's width, is recorded in `intent`.
 
-**MUST.** The axis records how the dimension is arrived at, `sizing_model.adjustable` records who chooses its value, and neither implies the other.
+Checked by: `npm run validate:registry` — both axes must be present and use one of these three types when a sizing model is recorded.
 
-Why: these two are the ones that get confused. **`fixed` means the component always has a definite dimension, not a flexible one.** **Adjustable means the consumer chooses that number.** A component can be both at once: it ships with a sensible value, and a layout that needs a different one sets it directly. Changing a fixed dimension to another fixed dimension does not make the axis `fill`.
+### FND-SIZING-02 — Each axis records how its dimension may change
 
-`fill` is a different claim. It says the dimension is left to the container and has no value of its own until the container is measured: "take what is left", not "take this number".
+**MUST.** Record each axis's supported size choices in its public API and its permission for a consumer-chosen dimension in `sizing_model.adjustable.horizontal` or `sizing_model.adjustable.vertical`.
 
-The test: **if the number can be written down without knowing what the component is inside, the axis is `fixed`.** If it cannot, it is `fill` or `hug`.
+Why: a button can allow an explicit width while keeping its height controlled by `size`. A single flag for the whole component cannot describe that difference. A fixed dimension may be adjustable, and a hugging dimension may allow a supported explicit width.
+
+For a fixed dimension, there are three cases:
+
+- **One fixed value:** no size choice and no external adjustment.
+- **A defined size set:** the public `size` property chooses among the supported values. The dimension remains fixed at each choice.
+- **A consumer-chosen value:** the relevant `adjustable` flag is `true`; `intent` describes the external dimension or layout override and its limits.
+
+The flags are booleans for the third case. `false` does not mean the dimension can never change: content, the parent or a public `size` property may still determine it. A component can support both a size set and an external adjustment where the contract allows that combination.
+
+The contract also records any relationship between the axes, such as a required square footprint or aspect ratio. Permission to choose a dimension does not remove those constraints.
+
+Checked by: `npm run validate:registry` — both adjustment flags must be booleans.
 
 ## Per-axis decision order
 
-### FND-SIZING-03 — A dimension is decided per axis, in order
+### FND-SIZING-03 — The contract decides how an axis may change
 
-**MUST.** Dimensions are evaluated one axis at a time, in this order:
+**MUST.** Change an axis through the controls or external adjustments its contract supports, in this order:
 
-1. If a `size`-type component property controls the dimension, change only that property.
-2. If the dimension is variable-bound, preserve the binding or switch to another supported variable.
-3. If a fixed, unbound dimension really describes how much room the surrounding layout gives the component, it may be adjusted.
-4. Otherwise, preserve the component's intrinsic dimension and resizing behaviour.
+1. Use the public property that governs the affected dimension, where one exists.
+2. For an adjustable axis, use the external dimension or layout override described in `intent`.
+3. Otherwise, keep the component's default dimension and sizing behaviour.
 
-Why: the cheapest edit is to resize the frame. The order stops that edit from being the first one tried when a published property or a variable could make the same change for everyone.
+Why: the contract explains which changes preserve the component. A default token binding does not prohibit a supported consumer override, and an unbound number does not grant permission to resize an axis.
 
-Usually adjustable: text-field, search-field, panel and card width; dialog width where the pattern allows. Usually intrinsic: control height, icon-button dimensions, icon size, checkbox and radio indicators, internal actions, internal padding, internal gaps.
+For Button, `size` governs height while the consumer may choose width. Icon, Loader and Button Inner allow a consumer-chosen footprint. Their contracts describe how the interior follows it. Internal padding, gaps, type and mark sizes keep their own rules unless the contract exposes a control for them.
 
-### FND-SIZING-04 — An instance keeps the resizing behaviour it was drawn with
+### FND-SIZING-04 — Supported resizing preserves constraints
 
-**MUST.** Preserve `Hug contents` unless a documented pattern supports `Fill container`; use `Fill container` only on an axis meant to respond to its parent; preserve min/max constraints and required aspect ratios.
+**MUST.** Respect the contract's sizing behaviour, minimum and maximum constraints, and required aspect ratios when applying a supported adjustment.
 
-Why: resize behaviour is part of what the component is. An instance that hugs where the component fills reports its own dimensions instead of the layout's, and the difference shows up as one screen that cannot be reflowed.
+Why: changing a dimension must preserve the relationships that make the component work. A supported width override may replace `hug` with `fixed`; changing an unrelated axis or dropping its constraints is a different change.
 
 Serves: PRN-06.
 
-### FND-SIZING-05 — An instance is never scaled to hit a reference measurement
+### FND-SIZING-05 — A reference does not authorize scaling the whole component
 
-**MUST.** An instance is not scaled to match a measurement taken from a reference.
+**MUST.** Use supported sizing controls rather than scaling a component's whole geometry to match a reference measurement.
 
-Why: it is the single most common way a reconstruction ends up with a component that looks right and behaves like nothing else in the library. The geometry matches, but no token binding beneath it describes what is drawn any more.
+Why: whole-component scaling changes padding, type, strokes and other internal measures together, bypassing their tokens and public controls. Matching the reference's outer bounds does not justify those changes.
+
+Resizing an adjustable footprint, with the interior responding as its contract requires, is supported resizing. For example, an icon drawing may follow its footprint while a status indicator's mark keeps its own size.
 
 Serves: PRN-04.
 
 ## The scale, and what the level mapping means
 
-### FND-SIZING-06 — The scale is pixels on a base of 8, and rem is not part of it
+### FND-SIZING-06 — Component dimensions use the base-8 pixel scale
 
-**MUST.** Dimensions come from the pixel scale, which has fine steps at the small end and coarser steps as values grow, and never from a rem-based scale.
+**MUST.** Choose token-backed component dimensions from the base-8 pixel scale, rather than a scale derived from `rem`.
 
-Why: a rem-based scale makes sense when a component's dimensions derive from its font size. Stylos does not work that way: sizes are set directly. A relative unit would add a second base to reason about and nothing else.
+Why: Stylos defines these lengths directly. A `rem` scale would introduce a dependency on the root font size; the pixel scale keeps component dimensions independent of that setting.
 
-Values live in [`tokens/`](../../tokens/README.md) under `dimension-scale` and are aliased by the `size` role in `dimension`; `npm run tokens:report dimension-scale dimension` prints them.
+Exception: **Contract-controlled and above-scale dimensions.** Consumer-chosen dimensions follow FND-SIZING-03, and fixed dimensions above the semantic size scale follow FND-SIZING-09.
 
-The collection is called `dimension` because it holds both sizes and gaps: a control's height and the gap beside it are both lengths in the layout plane. It is not called `space`, because a control's height is not spacing.
+Values live in [`tokens/`](../../tokens/README.md) under `dimension-scale`; the supported component size roles are in `dimension/size`. `npm run tokens:report dimension-scale dimension` prints them.
+
+Sizes and gaps share the collection `dimension` because both are lengths in the layout plane. Its `size` group covers component dimensions; its `gap` group is covered by [spacing.md](spacing.md).
 
 ### FND-SIZING-07 — The level mapping is a recommendation
 
-**MAY.** A component may take any value on the scale; the rows below say what a component of each level and size usually is, and they have no other authority.
+**MAY.** Choose a supported size token outside the level recommendation when the component's contract calls for it.
 
-| Level | XS | S | M | L | XL |
+| Level | Extra small | Small | Medium | Large | Extra large |
 | --- | --- | --- | --- | --- | --- |
 | Primitive | `s-1_500` | `s-1_750` | `s-2_000` | `s-2_250` | `s-2_500` |
 | Element | `s-2_000` | `s-2_500` | `s-3_000` | `s-3_500` | `s-4_000` |
 | Object | `s-3_000` | `s-4_000` | `s-5_000` | `s-6_000` | `s-7_000` |
 
-Why: the recommendation exists to make matching easy, not to make departing from it wrong. It says what a component of that level and size usually is — a medium Object is normally `s-5_000` tall — so a new component built to it lines up with most of what already exists. A status indicator showing "online" is `s-1_000`, below the smallest recommended Primitive, because at `s-1_500` it would look enormous, and nothing flags that.
+Why: shared starting points help components line up, but their structure and visual weight may require a different mapping. A status indicator can use `s-1_000`, below the recommended Primitive row. Its contract records that choice; departing from the table is not a violation.
 
-The rows overlap on purpose, by two steps at each boundary: `s-2_000` and `s-2_500` sit in the upper half of the Primitive row and the lower half of the Element row, and `s-3_000` and `s-4_000` do the same for Element and Object. Take a different value when the component's visual weight, borders, or treatment call for it.
+The values refer to the `size` group in `dimension`. The contract says which dimension they govern: a square footprint, a control's height, or another named part. They are not a requirement to make both axes equal.
 
-### FND-SIZING-08 — Only Element and Object have a mechanically applied grid
+The rows share two values at each boundary: `s-2_000` and `s-2_500` for Primitive and Element, and `s-3_000` and `s-4_000` for Element and Object.
 
-**MUST.** A skill applies the size grid at Element and Object level only; every other level's sizing is documented per component.
+### FND-SIZING-08 — Start Element and Object sizing from their recommended rows
 
-Why: this limit is permanent; it is not unfinished work. A shared grid can only exist where the components at a level have comparable structure, and above Object they do not: Modal, Alert, Breadcrumbs and Header differ too much for a shared rule to mean anything. Primitive has the recommendation in FND-SIZING-07 but no grid that a skill enforces.
+**SHOULD.** Start an Element or Object component with its row in FND-SIZING-07 unless its contract specifies different size values.
 
-The same boundary applies to typography (FND-TYPOGRAPHY-09).
+Why: components at these levels often need to line up with each other. A common starting row makes that easier, while a documented component mapping takes priority over the row.
+
+For a new Object button, start with the Object row for its height, then record any required differences in its contract. The row does not prescribe its width or the size of every internal part. Primitive's row is a reference, without a default to follow. Widget and Layout have no shared row: a modal's dimensions, for example, are defined by its own contract.
+
+Typography uses the same level boundary (FND-TYPOGRAPHY-09), with its own default and override rules in FND-TYPOGRAPHY-08.
 
 ## Exemptions
 
-### FND-SIZING-09 — A fixed dimension above the top of the scale is a legitimate raw value
+### FND-SIZING-09 — A fixed dimension above the semantic size scale may be raw
 
-**MAY.** A fixed `width` or `height` larger than the largest value `dimension` defines is a raw value by design, not a missing binding.
+**MAY.** Use a raw fixed width or height above the largest resolved token in `dimension/size`.
 
-Why: the scale ends where component dimensions end. It holds the heights, widths and gaps a control can plausibly take, and nothing larger, because this system does not set out to constrain layout dimensions. A frame 200 wide is 200 because a screen put it there, and no design decision is hidden in the number. There is no token to bind it to, and adding one would invent a rule about layout that the system does not want to make.
+Why: the semantic size scale covers component measures. Larger layout dimensions do not need new component tokens merely to give a panel or window more room. The primitive collection and the gap roles do not set this boundary: a primitive step is not automatically a supported component size role.
 
-The exemption is narrow, on purpose:
+The exemption covers fixed width and height only. It does not cover padding, gaps, radii, stroke weights or type. An unbound fixed dimension within the semantic size range still needs a supported token unless it is a consumer override permitted by FND-SIZING-03.
 
-- **Only `width` and `height`, and only where they are fixed.** Padding, gap, corner radius and stroke weight above the top of the scale are not exempt but suspicious: they are treatments, and a treatment that large is usually a mistake.
-- **Only above the top.** A fixed dimension inside the scale's range that matches no step is an off-scale value and is still a finding: in that range a token exists and was not used.
+The current boundary is resolved from `tokens/dimension.yaml`; it is not copied into this rule. The [integrity-check skill](../../skills/src/component-integrity-check/SKILL.md#raw-numeric-values) defines how a check reads and reports it.
 
 Serves: PRN-01.
-
-### FND-SIZING-10 — Applying the above-scale exemption states the top it read
-
-**MUST.** Anything that applies FND-SIZING-09 states the top of the scale it read.
-
-Why: the exemption is measured against that top, so stating it makes the basis visible rather than assumed.
-
-### FND-SIZING-11 — A `SCALE` constraint may carry an unbound number
-
-**MAY.** A layer outside auto layout whose constraint on an axis is `SCALE` may hold an unbound number on that axis.
-
-Why: a layer that has to grow with its parent does so through constraints, not through auto layout. The parent is a plain frame, the child's constraint on that axis is `SCALE`, and Figma multiplies the child's dimension as the frame is resized. A dimension bound to a variable does not take part in that: the variable holds the value in place, so the scaling has nothing to move. The two mechanisms are alternatives, and choosing one means giving up the other.
-
-This is the cost of `adjustable: true` in a contract's `sizing_model`. A component that a consumer resizes by setting one number (Button Inner, Loader, Indicator) needs its interior to follow that number. Inside Figma, that means scale constraints with raw values beneath them.
-
-The exemption is per axis and no wider. A layer that scales horizontally gets no exemption for its height. A parent that is a plain frame does not exempt anything by itself; the constraint has to be `SCALE`. Padding, radius, stroke weight and type are not covered, because nothing about scaling requires them to be raw.
-
-**This one is worth seeing.** Unlike a dimension above the scale, a scale-constrained value is a real design decision with a cost: it will not follow a token when the scale changes. So it is reported as information, not skipped in silence.
-
-### FND-SIZING-12 — A layer's sizing is judged where it is visible
-
-**MUST.** A hidden layer's dimensions are not judged: if the same layer is visible in another variant, any finding is reported on that visible occurrence, and if the layer is hidden in every variant, the report says once that its sizing cannot be established, instead of giving a warning per variant.
-
-Why: Figma does not preserve fill sizing on a hidden layer. A hidden layer is taken out of the auto-layout flow, so it reports `layoutSizingHorizontal: FIXED` and keeps whatever width it last had. A hidden text layer reports `textAutoResize: NONE` in the same way. None of that is what the layer will do once it is visible.
-
-This rule is about sizing only. A hidden layer's colours, radii, stroke weights and type are as real as any other layer's: hiding does not distort them, and they become visible with the layer.

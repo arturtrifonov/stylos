@@ -84,7 +84,9 @@ a11y:
 sizing_model:
   horizontal: "hug"
   vertical: "fixed"
-  adjustable: false
+  adjustable:
+    horizontal: false
+    vertical: false
   intent: "The height is authored on the Element run and the width is whatever the label needs, so a tag is a fixed band of a known height wrapping a variable word. The type run is a component-specific mapping rather than the Element profile — one step below it at every size, and topping out at a measure the profile does not carry — which typography.md allows where it is documented, and this is that documentation. Horizontal padding and the gap have their own runs; the radius does not move with size, because a tag reads as the same shape at every size rather than a shape that rounds off as it grows."
   sizes:
     -

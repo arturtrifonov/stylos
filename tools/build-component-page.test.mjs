@@ -80,7 +80,7 @@ function contract(fields = {}) {
     sizingModel: {
       horizontal: "fixed",
       vertical: "fixed",
-      adjustable: false,
+      adjustable: { horizontal: false, vertical: false },
       intent: "Square at every size, and the run is authored.",
       sizes: [
         {
@@ -323,13 +323,49 @@ test("fails a sizing run that does not match the size property, value for value"
   );
 });
 
-test("fails a sizing axis outside the four", () => {
+test("fails a sizing axis outside the three", () => {
   const entry = contract();
   entry.sizingModel = { ...entry.sizingModel, horizontal: "stretch" };
   assert.match(
     check(entry).errors.join("\n"),
-    /sizing_model\.horizontal is "stretch", not one of hug, fixed, fill, absolute/
+    /sizing_model\.horizontal is "stretch", not one of hug, fixed, fill/
   );
+});
+
+test("requires both dimension types", () => {
+  const entry = contract();
+  for (const axis of ["horizontal", "vertical"]) {
+    const sizing = { ...entry.sizingModel };
+    delete sizing[axis];
+    const result = check({ ...entry, sizingModel: sizing });
+    assert.ok(result.errors.some((error) => error.includes(`sizing_model.${axis} is "undefined"`)), axis);
+  }
+  const result = check({ ...entry, sizingModel: { ...entry.sizingModel, horizontal: "absolute" } });
+  assert.ok(result.errors.some((error) => error.includes('sizing_model.horizontal is "absolute"')));
+});
+
+test("rejects incomplete, misspelled and legacy component-wide adjustment permissions", () => {
+  const entry = contract();
+  for (const adjustable of [undefined, false, true, [], {},
+    { horizontal: true }, { vertical: false },
+    { horizontal: "false", vertical: false },
+    { horizontal: true, vertical: false, width: true }]) {
+    const result = check({ ...entry, sizingModel: { ...entry.sizingModel, adjustable } });
+    assert.ok(result.errors.some((error) => error.includes("sizing_model.adjustable")), JSON.stringify(adjustable));
+  }
+});
+
+test("allows a width override independently of default sizing", () => {
+  const entry = contract();
+  for (const horizontal of ["hug", "fixed", "fill"]) {
+    const sizingModel = { ...entry.sizingModel, horizontal,
+      adjustable: { horizontal: true, vertical: false } };
+    assert.deepEqual(check({ ...entry, sizingModel }).errors, []);
+    const html = renderComponentPage({ ...entry, sizingModel }, pageContext([entry, alternative], { resolveToken }));
+    assert.match(html, /Width adjustment<\/span><span class="v">Allowed<\/span>/);
+    assert.match(html, /Height adjustment<\/span><span class="v">Not allowed<\/span>/);
+    assert.doesNotMatch(html, /\[object Object\]/);
+  }
 });
 
 test("fails a dimension or type measure written as a number", () => {
@@ -588,6 +624,7 @@ test("takes the slot height from the taller of the box and the line box", () => 
     sizingModel: {
       horizontal: "hug",
       vertical: "hug",
+      adjustable: { horizontal: false, vertical: false },
       intent: "Height follows the line box where the copy wraps.",
       sizes: [{ size: "extra small", box: "size/s-2_000", line_height: "line height/text/0_750" }],
     },

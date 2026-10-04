@@ -452,10 +452,26 @@ function checkContract(entry, byId, errors, resolveToken, systemVersion) {
   if (sizing) {
     for (const axis of ["horizontal", "vertical"]) {
       const value = sizing[axis];
-      if (value !== undefined && !SIZING_AXES.includes(value)) {
+      if (!SIZING_AXES.includes(value)) {
         errors.push(
           `${file}: sizing_model.${axis} is "${value}", not one of ${SIZING_AXES.join(", ")}`
         );
+      }
+    }
+
+    const adjustable = sizing.adjustable;
+    if (!adjustable || typeof adjustable !== "object" || Array.isArray(adjustable)) {
+      errors.push(`${file}: sizing_model.adjustable must record horizontal and vertical booleans`);
+    } else {
+      for (const axis of ["horizontal", "vertical"]) {
+        if (typeof adjustable[axis] !== "boolean") {
+          errors.push(`${file}: sizing_model.adjustable.${axis} must be a boolean`);
+        }
+      }
+      for (const key of Object.keys(adjustable)) {
+        if (!["horizontal", "vertical"].includes(key)) {
+          errors.push(`${file}: sizing_model.adjustable has unknown axis "${key}"`);
+        }
       }
     }
 

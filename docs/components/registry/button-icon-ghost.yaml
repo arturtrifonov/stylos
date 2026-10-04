@@ -75,7 +75,9 @@ a11y:
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
-  adjustable: false
+  adjustable:
+    horizontal: false
+    vertical: false
   intent: "A square, and fixed on both axes, because the whole point of the component is that it occupies a known amount of room in a strip of controls — and here that matters more than anywhere else in the family, since nothing on screen shows where the button ends. The box is the Object run, the same one the labelled buttons use; the icon inside is the Element run, one level down. There is no padding: the box is the icon's box and the icon is centred in it, so the ring of empty space around the mark is the pointer target and it is kept even though nothing draws it. There is no type row, because there is no text. The radius does not move with size, and matters only under the pointer, where the surface finally appears."
   sizes:
     -

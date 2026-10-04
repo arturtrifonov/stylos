@@ -6,6 +6,7 @@ Documentation and authoring conventions for the Figma implementation. **Figma ho
 
 - [Naming](naming.md): Assets grouping, slash paths, nested-component publishing, layer names and the properties panel.
 - [Foundations](foundations.md): color and effect collections, import mapping, gradients and meshes.
+- [Sizing](sizing.md): contract-supported adjustments, scale constraints and hidden-layer inspection.
 - [Icons](icons.md): instance swaps, sizing, library structure and the recorded preset alignment.
 - [Component readiness](components.md): Figma representation, authoring checks and implementation inspection.
 - [MCP and connectors](mcp-and-connectors.md): access to the implementation and tool limitations.

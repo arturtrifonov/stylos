@@ -59,7 +59,9 @@ a11y:
 sizing_model:
   horizontal: "fill"
   vertical: "hug"
-  adjustable: true
+  adjustable:
+    horizontal: true
+    vertical: false
   intent: "Width is the one dimension a consumer sets — directly, or by filling an auto-layout parent. The 160 the set is authored at is a starting value and carries no meaning, which is why no width token is recorded. Height is the taller of the circle and the line box, multiplied by the line count, and is never set by hand. The circle sits in a container that fills the row and pins it to the top, so it stays on the first line however many lines appear; that is the whole reason this component is separate from Radio Label, and the line height comes from the text family rather than the string family for the same reason. Resolve token values with npm run tokens:report."
   sizes:
     -

@@ -45,7 +45,9 @@ a11y:
 sizing_model:
   horizontal: "fill"
   vertical: "hug"
-  adjustable: false
+  adjustable:
+    horizontal: false
+    vertical: false
   intent: "Width belongs to the table. Height is hugged from the cells and is not named — the row adds its own block padding around them, which is what makes the header band taller than a body row at the same size, and the body row has none. The cells sit flush with no gap between them: where one column ends and the next begins is the cells' own padding, not a space in the row. The inline padding is the table's outer margin, held here rather than on the table, so the first and last columns do not sit against the edge. Resolve token values with npm run tokens:report."
   sizes:
     -

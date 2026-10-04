@@ -17,12 +17,14 @@ Fails loudly (not silently) if: the include order references a skill directory t
 
 `import-component-registry.mjs` converts an Airtable component-registry CSV export into one YAML file per component under `docs/components/registry/`. It's a one-time-per-refresh bootstrap tool, not a sync — see [docs/components/registry/README.md](../docs/components/registry/README.md) for why hand-editing YAML directly is the expected long-term workflow rather than re-running this against Airtable repeatedly.
 
-`lint-registry.mjs` validates the generated (or hand-edited) YAML on two levels. The registry as a whole: every `children`/`parents` reference resolves to a real component `id`, ids are unique, each file sits at the path its `id` implies, and every `level` is one of the five confirmed values. And each contract, for the fields it carries: statuses, property kinds, accessibility statuses, sizing axes and line-height families inside their vocabularies; a default among its property's values; a `do_not_use_when` alternative that exists; a variant count matching the product; a controlled group that is adjacent; a sizing run matching the size property value for value; every dimension and type measure in that run written as a token name rather than a number, and resolving against `tokens/`; a value with a finding and a reason for shipping it. **Absence is never a failure** — most entries carry no contract at all, and every contract check runs only where its field is present. See SPEC 0003 §3.
+`lint-registry.mjs` validates the generated (or hand-edited) YAML on two levels. The registry as a whole: every `children`/`parents` reference resolves to a real component `id`, ids are unique, each file sits at the path its `id` implies, and every `level` is one of the five confirmed values. And each contract, for the fields it carries: statuses, property kinds, accessibility statuses, sizing axes and line-height families inside their vocabularies; a default among its property's values; a `do_not_use_when` alternative that exists; a variant count matching the product; a controlled group that is adjacent; a sizing run matching the size property value for value; every dimension and type measure in that run written as a token name rather than a number, and resolving against `tokens/`; a value with a finding and a reason for shipping it. **An absent contract is reported rather than fabricated** — most entries carry no contract at all. Once a sizing model is recorded, its axes and per-axis adjustment permissions are required; an incomplete model fails validation. See SPEC 0003 §3.
 
 ```bash
 npm run import:registry     # regenerate docs/components/registry/*.yaml from the stored CSV (overwrites hand edits)
 npm run validate:registry   # check the registry and every contract in it against itself
 ```
+
+Supported `size` choices are recorded in the public API; per-axis adjustment flags describe external dimension overrides. A fixed axis can support preset choices, a consumer-chosen value, or both. The sizing vocabulary and required fields are defined in [Sizing](../docs/foundations/sizing.md). Component pages display width and height adjustment permissions separately.
 
 ## `validate-rules.mjs`
 
@@ -97,7 +99,7 @@ It reads the set through `lib/guidelines.mjs`, which reads through `validate-rul
 
 Links are rewritten on the way out. A guideline is written to be read in a repository, so it links to `theming.md` and to `tokens/_naming.yaml`; the first becomes the other document's page, the second becomes the file on GitHub when `package.json` records a repository, and is left alone when it does not. A link that resolves to nothing is worse than no link, and stripping them would quietly delete half the reasoning.
 
-`lib/markdown.mjs` renders the subset the documents use — paragraphs, tables, lists, fences, headings, and four inline forms. It is not a Markdown implementation: the input is written to one grammar, so the subset is closed, and a parser dependency is the kind that arrives with a hundred files to render eleven. The pages carry no script.
+`lib/markdown.mjs` renders the subset the documents use — paragraphs, tables, lists, fences, headings, and four inline forms. It is not a Markdown implementation: the input is written to one grammar, so the subset is closed, and a parser dependency is the kind that arrives with a hundred files to render eleven. Rule cards show MUST, SHOULD, MAY and RETIRED as tags aligned to the right of their headers, including on narrow screens. Lists, tables and labelled notes keep their source order. Reasoning sits in a native `Why` disclosure at the bottom of each card, closed by default and operable by keyboard. The pages carry no script.
 
 ## `build-registry-view.mjs` and `build-component-page.mjs`
 

@@ -60,7 +60,9 @@ a11y:
 sizing_model:
   horizontal: "fixed"
   vertical: "hug"
-  adjustable: true
+  adjustable:
+    horizontal: true
+    vertical: true
   intent: "Width is named by whoever opens the panel, usually to match the control it drops from. Height is the sum of the bands that are switched on and hugs them, up to max_height, past which the list scrolls inside while the bands around it stay put. max_height is the one number here rather than a token, because it is not a step on any scale: it is six rows, the five gaps between them, the list padding on both sides and the panel border — the height of a six-row panel, which is the count at which a list stops being read and starts being scanned — plus half a row, so a longer list is cut mid-row and reads as continuing rather than ending flush and looking complete. Recomputing it is the row height from the item at that size and the list padding recorded here, put back through that sum. It is a default and a consumer may name another. Every band steps with size except the space between rows, which stays at one value on purpose: the rows grow and their own padding grows, and holding the gap keeps a long list dense instead of loosening as it gets bigger. Resolve token values with npm run tokens:report."
   sizes:
     -

@@ -136,7 +136,9 @@ a11y:
 sizing_model:
   horizontal: "fixed"
   vertical: "hug"
-  adjustable: true
+  adjustable:
+    horizontal: true
+    vertical: false
   intent: "A window, not a control: the width is a definite number per size and the height is whatever the content needs, so a dialog is as tall as its question and never taller. The widths are the one run in this system deliberately left out of the token scale — the scale is built for the inside of components and tops out well below a window, and a dialog width is a decision about a viewport rather than about a component. Each size therefore names a default width, recorded on the size values rather than here, and a consumer that needs another sets it outright; that is still fixed, not fill. One spacing measure runs through the whole frame: the padding of all three regions, the gap between the heading and the close, and the gap between whatever the slot holds are the same token at every size, so the dialog reads as one box rather than three stacked ones. The footer keeps its own tighter run, because buttons sitting side by side want less air between them than regions do. The heading is the only place the display family and the heading line heights appear in this component, which is what makes it read as a title rather than as the first line of the content. This is a layout, so there is no level profile to deviate from — typography.md documents layouts per component, and this is that documentation."
   sizes:
     -

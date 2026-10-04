@@ -69,7 +69,9 @@ a11y:
 sizing_model:
   horizontal: "hug"
   vertical: "fixed"
-  adjustable: true
+  adjustable:
+    horizontal: true
+    vertical: false
   intent: "Identical to Button Base, and deliberately so: the three treatments are interchangeable in a layout only if a row of them lines up without anyone arranging it, which means one height run, one padding run, one gap run and one type run across the family. The height is authored on the Object run and the width is whatever the label needs. The label neither wraps nor truncates, so a phrase too long for its column widens the button rather than being cut. The type run is a component-specific mapping rather than the Object profile — one step below it at every size — which typography.md allows where it is documented, and this is that documentation. The border is drawn inside the box, so turning it on costs no width and a bordered button and a filled one of the same size and label are the same size on screen. The radius does not move with size. Width is the consumer's to name where a layout calls for it — a named width is still fixed, not fill."
   sizes:
     -

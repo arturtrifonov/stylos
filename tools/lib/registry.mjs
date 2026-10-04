@@ -27,7 +27,7 @@ export const ROLES = ["content", "trigger", "input", "toolbar", "output", "conta
 export const STATUSES = ["draft", "ready", "deprecated"];
 export const PROPERTY_KINDS = ["variant", "text", "string", "boolean", "instance", "slot"];
 export const A11Y_STATUSES = ["warning", "fail", "open", "requires"];
-export const SIZING_AXES = ["hug", "fixed", "fill", "absolute"];
+export const SIZING_AXES = ["hug", "fixed", "fill"];
 export const LINE_HEIGHT_FAMILIES = ["text", "string", "heading", "code"];
 
 // The whole key set of the `motion` block, and it is closed on purpose.

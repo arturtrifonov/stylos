@@ -77,7 +77,9 @@ a11y:
 sizing_model:
   horizontal: "hug"
   vertical: "fixed"
-  adjustable: true
+  adjustable:
+    horizontal: true
+    vertical: false
   intent: "The height is authored on the Object run and the width is whatever the label needs, so a button is a band of a known height wrapping a variable phrase. The label neither wraps nor truncates — it has no width to truncate against — so a phrase too long for its column widens the button rather than being cut. The type run is a component-specific mapping rather than the Object profile: one step below it at every size, which typography.md allows where it is documented, and this is that documentation. A button carries two or three words beside the content it acts on, and at the profile's own measures it would out-shout that content. Padding and gap have their own runs; the radius does not move with size, because a button reads as the same shape at every size rather than a shape that rounds off as it grows. Width is the consumer's to name where a layout calls for it — a named width is still fixed, not fill."
   sizes:
     -

@@ -55,7 +55,9 @@ a11y:
 sizing_model:
   horizontal: "hug"
   vertical: "hug"
-  adjustable: false
+  adjustable:
+    horizontal: false
+    vertical: false
   intent: "The run is authored per size, not inherited from the circle. The circle happens to be the taller element at every size, so the component height follows it — but that is a consequence, not the rule, and the run can move independently of Radio Input. Neither axis is adjustable: a fixed width is what Radio Text is for. The line height comes from the string family because the label is one line by definition. Every dimension is a token name; the component height is not recorded because it is derived from the circle and the line box. Resolve values with npm run tokens:report."
   sizes:
     -

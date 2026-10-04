@@ -72,7 +72,9 @@ a11y:
 sizing_model:
   horizontal: "hug"
   vertical: "hug"
-  adjustable: false
+  adjustable:
+    horizontal: false
+    vertical: false
   intent: "The component is its text. Both axes hug, so a link takes exactly the room its label needs and nothing reserves space for it — that is the whole reason to reach for one instead of a button. What the run authors is the box: the Element run from 16 to 32, with the label measure taken from the Element profile in typography.md and no component-specific override. The vertical padding on the text container is not authored; it is half the difference between the box and the line box, which is why it stalls at the same value for the top three sizes. The icon slots track the box exactly, so a link is one row however it is composed. The hover and active surface is outside this model entirely — see limitations."
   sizes:
     -

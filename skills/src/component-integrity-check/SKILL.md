@@ -4,7 +4,7 @@ description: "Audit selected Figma components, component sets, instances, or sev
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.6
+  version: 0.7
 ---
 
 # Stylos Component Integrity Check
@@ -225,11 +225,11 @@ Do not report:
 - prototype timing or interaction values
 - implicit Figma defaults that are exposed on every node but are not actively used, such as opacity `1` or stroke weight on a layer with no visible stroke
 
-Apply these dimension classifications, in order, before producing a raw-numeric warning. Both of the first two come from [sizing.md](../../../docs/foundations/sizing.md), which holds the reasoning; this list only applies it.
+Apply these dimension classifications, in order, before producing a raw-numeric warning. [Sizing](../../../docs/foundations/sizing.md) defines the system contract and above-scale exception; [figma/sizing.md](../../../figma/sizing.md) describes hidden-layer inspection and scale constraints. This skill owns the reporting procedure.
 
 1. **A hidden layer's `width` and `height` are not evidence.** Figma takes a hidden layer out of the auto-layout flow, so it reports `layoutSizingHorizontal: FIXED` — and, for text, `textAutoResize: NONE` — with whatever number it last held, whatever it will do when visible. Judge a layer's dimensions on the variants where it is visible: if the same layer is visible anywhere in the set, that occurrence carries the finding and the hidden ones are silent. If it is hidden in every variant, emit one information finding saying its sizing could not be established, and no warning.
-2. **A fixed `width` or `height` above the top of the scale is deliberately raw.** Where the value is larger than the largest the `dimension` collection defines, there is no token to bind it to and none is wanted — do not warn. Read the top of the scale and **state the value you read, once, in the report**, so the basis is visible; if you cannot read the collection, say so instead of guessing, and skip this class rather than warning through it. A fixed dimension *inside* the scale's range that matches no step is not covered by this and stays a warning.
-3. **A scale-constrained axis outside auto layout is allowed to be raw.** Where the layer's parent is not an auto-layout frame and the layer's constraint on that axis is `SCALE`, emit the scale-constraint information finding defined below instead of a warning for that axis. A bound variable pins a value and leaves scaling nothing to move, so the two are alternatives; this is how `adjustable: true` is built. Judge each axis on its own constraint.
+2. **A fixed `width` or `height` above the top of the scale is deliberately raw.** Where the value is larger than the largest resolved token in the `size` group of the `dimension` collection, there is no token to bind it to and none is wanted — do not warn. Read that group's resolved maximum, excluding gap roles and unaliased `dimension-scale` primitives, and **state the value and group you read, once, in the report**, so the basis is visible; if you cannot read the collection, say so instead of guessing, and skip this class rather than warning through it. A dimension inside that range is not covered by this exception. For an instance, first verify whether it is a consumer override on an axis permitted by the registry contract under FND-SIZING-03. If so, do not warn about the supported external dimension; this does not exempt internal values. If the contract cannot be read, report that the override could not be verified and apply the ordinary rules.
+3. **A scale-constrained axis outside auto layout is allowed to be raw.** Where the layer's parent is not an auto-layout frame and the layer's constraint on that axis is `SCALE`, emit the scale-constraint information finding defined below instead of a warning for that axis. A bound variable pins a value and leaves scaling nothing to move, so the two are alternatives. This is one representation of a proportional interior; per-axis adjustment permission does not imply every interior layer scales. Judge each axis on its own constraint.
 4. If exactly one of `width` or `height` is bound to a valid variable, the other is a fixed numeric value, and the layer's aspect ratio is locked, treat the unbound dimension as derived from the bound dimension. Do not warn about it. If the rendered layer is non-square, emit the aspect-ratio information finding defined below; if it is square, emit no finding.
 5. Otherwise, if an unbound fixed width belongs to a verified icon container, emit the icon-container information finding defined below instead of a warning for that width.
 6. Apply the ordinary raw-numeric warning to dimensions that meet none of these.
@@ -327,7 +327,7 @@ Example summary:
 
 `Info: A scale-constrained dimension is unbound so that the layer can scale with its parent`
 
-Use this information finding — never a warning — when the layer's parent is not an auto-layout frame, the layer's constraint on the affected axis is `SCALE`, and the dimension on that axis is an unbound non-zero number. Name the axis, the constraint, and the value. See [sizing.md](../../../docs/foundations/sizing.md).
+Use this information finding — never a warning — when the layer's parent is not an auto-layout frame, the layer's constraint on the affected axis is `SCALE`, and the dimension on that axis is an unbound non-zero number. Name the axis, the constraint, and the value. See [figma/sizing.md](../../../figma/sizing.md#scale-constraints-outside-auto-layout).
 
 It is information rather than silence because the value is a real decision with a cost: it will not follow the scale when the scale moves, and a person reading the report should see where those places are.
 

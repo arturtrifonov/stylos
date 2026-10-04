@@ -56,8 +56,10 @@ a11y:
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
-  adjustable: false
-  intent: "The track is the authored dimension and the only one bound: its height takes a step of the Element run and its width follows at three halves by locked proportion, which is what makes a switch read as a switch rather than a wide box. The thumb has its own run, two steps below the track at every size, so the gap around it stays constant as both grow. Neither axis is adjustable — sizing.md names controls of this kind among the dimensions never set by hand. Resolve token values with npm run tokens:report."
+  adjustable:
+    horizontal: false
+    vertical: false
+  intent: "The track is the authored dimension and the only one bound: its height takes a step of the Element run and its width follows at three halves by locked proportion, which is what makes a switch read as a switch rather than a wide box. The thumb has its own run, two steps below the track at every size, so the gap around it stays constant as both grow. Neither axis accepts a consumer override; the size property controls the authored run. Resolve token values with npm run tokens:report."
   sizes:
     -
       size: "extra small"

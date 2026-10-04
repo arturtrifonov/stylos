@@ -39,7 +39,9 @@ a11y:
 sizing_model:
   horizontal: "fill"
   vertical: "hug"
-  adjustable: false
+  adjustable:
+    horizontal: false
+    vertical: false
   intent: "Width belongs to the list, which gives every option the same one so the labels line up down the column. Height is nobody's to name — the block padding twice over plus whatever the row is carrying — and the run is deliberately tighter than the Object run the components inside it sit on, because options stack and a tall option multiplies down the list. The inline padding is set so that it plus the list's own padding comes to the padding the closed control above uses, which is what puts the text in the control and the text in every option on one line. The type follows the Element profile rather than the Object one its level would give it, documented here so it overrides the level default per typography.md. Line heights come from the string family because an option is one line. Resolve token values with npm run tokens:report."
   sizes:
     -
