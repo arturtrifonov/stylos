@@ -19,3 +19,11 @@ Use [`stylos-component-integrity-check`](../skills/src/component-integrity-check
 Read token bindings, layer names, auto-layout settings and stroke positions from the Figma file when needed. They are implementation details covered by STD-08, rather than a second set of contract fields. The registry records the public decisions and explicit representation differences, not a copy of the layer tree.
 
 Measurements come from inspecting the implementation; rationale is authored by the person making the decision (STD-07).
+
+## Accessibility evidence
+
+The shared target is FND-ACCESSIBILITY-01 in [Accessibility](../docs/foundations/accessibility.md). Inspection can provide evidence about visual contrast, use of colour, dimensions and the spacing between targets. Check the relevant combinations and the intended surroundings, rather than assigning an unconditional result to a visual part.
+
+Record findings in the registry, with the source citation described by FND-ACCESSIBILITY-03. Record consumer obligations as `requires` and unresolved questions as `open`. A drawing does not verify keyboard behaviour, accessible names, focus management or screen-reader output; those checks belong to the rendered implementation.
+
+A verified Figma representation is evidence for component readiness under STD-04 and STD-05, not a WCAG conformance claim.
