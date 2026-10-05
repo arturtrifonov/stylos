@@ -141,14 +141,17 @@ test("reads the header only above the first section — a later Status: line is 
   assert.match(errors, /no "Scope:" line/);
 });
 
-test("does not require the header on a document that is not a guideline file", () => {
+test("requires status and scope on the component standard", () => {
   const document = {
     file: "docs/components/STANDARD.md",
     area: "STD",
     topic: null,
-    header: false,
+    header: true,
     text: "# Standard\n\n## What a contract carries\n\n### STD-01 — Every property carries a description\n\n**MUST.** A property with no description is not documented.\n\nWhy: the page renders the description, and an empty cell reads as a component nobody wrote up.\n",
   };
+  assert.match(check([document]).errors.join("\n"), /no "Status:" line/);
+  assert.match(check([document]).errors.join("\n"), /no "Scope:" line/);
+  document.text = document.text.replace("# Standard\n", "# Standard\n\nStatus: Draft\nScope: Required contract data and readiness.\n");
   assert.deepEqual(check([document]).errors, []);
 });
 

@@ -28,8 +28,7 @@ import { fileURLToPath } from "node:url";
 
 import {
   loadRegistry,
-  derive,
-  readiness,
+  contractGaps,
   registryPathFor,
   insteadIds,
   levelRank,
@@ -250,9 +249,9 @@ function checkVersion(file, version, systemVersion, errors) {
 
 // --- The contract (docs/specs/0003-component-page.md §3) -------------------
 //
-// Every check here is conditional on the field it is about being present. A
-// legacy entry carries none of them and must pass; a contract that carries a
-// field carries it correctly or fails.
+// Inventory and draft entries may be incomplete; fields they do carry are
+// validated. A ready entry additionally needs all required contract data and
+// the recorded Figma verification evidence.
 
 function checkContract(entry, byId, errors, resolveToken, systemVersion) {
   const file = entry.file;
@@ -264,29 +263,21 @@ function checkContract(entry, byId, errors, resolveToken, systemVersion) {
 
   checkVersion(file, entry.version, systemVersion, errors);
 
-  // The two columns of the index, and the one direction they are allowed to
-  // disagree in. `status: ready` asserts both gates of STANDARD.md hold, and
-  // the first of them — *Complete enough to publish* — is exactly what the
-  // derived contract state computes: the prose written and `figma.node_id`
-  // present. So a `ready` component whose contract is not complete is the
-  // registry contradicting itself, not a judgement call.
-  //
-  // The converse is not a finding. A complete contract on a `draft` component
-  // is the ordinary state of a written-up entry nobody has checked in Figma
-  // yet, which is most of the core set between a wave closing and the release
-  // pass reaching it.
+  // STD-04 is shared with the site's Contract column. STD-05 additionally
+  // needs representation evidence; a filled contract alone cannot be ready.
   if (entry.status === "ready") {
-    const contract = readiness(entry);
-    if (contract !== "complete") {
-      errors.push(
-        `${file}: status is "ready" but the contract is "${contract}" — ` +
-          `"ready" claims both gates of STANDARD.md, and the first of them is ` +
-          `this contract being complete. ${
-            derive(entry).documented
-              ? "figma.node_id is missing"
-              : "the prose is incomplete: summary, purpose, a use_when, and a description on every property"
-          }.`
-      );
+    const gaps = contractGaps(entry);
+    if (gaps.length > 0) {
+      errors.push(`${file}: status is "ready" but required contract data is missing: ${gaps.join(", ")}`);
+    }
+    if (!entry.figma?.file_key || !entry.figma?.node_id) {
+      errors.push(`${file}: status is "ready" but figma.file_key or figma.node_id is missing`);
+    }
+    const date = entry.figma?.last_verified;
+    const parsed = typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date)
+      ? new Date(`${date}T00:00:00Z`) : null;
+    if (!parsed || Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date) {
+      errors.push(`${file}: status is "ready" but figma.last_verified is missing or is not a valid YYYY-MM-DD date`);
     }
   }
 
@@ -323,6 +314,11 @@ function checkContract(entry, byId, errors, resolveToken, systemVersion) {
     if (property?.a11y) checkFinding(file, where, property.a11y, errors);
 
     const values = valuesOf(property);
+
+    if (property.kind === "boolean" && property.default !== undefined &&
+        ![true, false, "true", "false"].includes(property.default)) {
+      errors.push(`${file}: ${where} has kind "boolean" but its default is not true or false`);
+    }
 
     if (property.kind === "text" || property.kind === "string") {
       if (property.default !== undefined && typeof property.default !== "string") {
@@ -476,16 +472,17 @@ function checkContract(entry, byId, errors, resolveToken, systemVersion) {
     }
 
     const sizes = Array.isArray(sizing.sizes) ? sizing.sizes : [];
+    const sizeProperty = api.find((property) => property?.name === "size" && property.kind === "variant");
+    const declared = valuesOf(sizeProperty).map((value) => value?.value);
+    const rows = sizes.map((row) => row?.size);
+    if ((sizeProperty || sizes.length > 0) && (declared.length !== rows.length ||
+        declared.some((value, index) => value !== rows[index]))) {
+      errors.push(
+        `${file}: sizing_model.sizes is ${rows.join(", ") || "empty"} but the size property is ` +
+          `${declared.join(", ") || "not declared"} — they must match exactly, in order`
+      );
+    }
     if (sizes.length > 0) {
-      const sizeProperty = api.find((property) => property?.name === "size");
-      const declared = valuesOf(sizeProperty).map((value) => value?.value);
-      const rows = sizes.map((row) => row?.size);
-      if (declared.join(" ") !== rows.join(" ")) {
-        errors.push(
-          `${file}: sizing_model.sizes is ${rows.join(", ") || "empty"} but the size property is ` +
-            `${declared.join(", ") || "not declared"} — they must match exactly, in order`
-        );
-      }
       for (const row of sizes) {
         for (const [field, collection] of SIZING_TOKEN_FIELDS) {
           const value = row?.[field];

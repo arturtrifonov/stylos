@@ -9,7 +9,7 @@ A guideline carries more reasoning than a contract does, so guidelines stay in M
 
 **A guideline file** is [`principles.md`](principles.md), this file, or a file in one of the four guideline directories: [`foundations/`](foundations/README.md), [`behavior/`](behavior/README.md), [`patterns/`](patterns/README.md), [`content/`](content/README.md). Each opens with the header RUL-15 describes and is listed in its directory's index.
 
-One more document carries rules without being a guideline file: [`components/STANDARD.md`](components/STANDARD.md). It has its own shape and no per-file status to state, so it does not need the header. Everything else in this file applies to its rules exactly as written.
+[`components/STANDARD.md`](components/STANDARD.md) also carries rules and uses the same status, scope and rule-block grammar. It has the `STD` area and is listed in [`components/README.md`](components/README.md).
 
 [`charter.md`](charter.md) carries no rules. It is prose about what the system is for, and a rule written inside it could not be cited or checked as a rule. That is why the principles have a file of their own.
 
@@ -239,7 +239,6 @@ Why: it asked for a fact the export already stated, and failed the build when no
 
 Why it stays rather than disappearing: someone is reading the rule somewhere this repository cannot see — in a review comment, a commit message, a contract written last month. The question they come with is whether it still holds. If the ID is missing from the file, the answer they get is that it was never a rule. A retired block tells them what it was, that it no longer holds, and since when.
 
-Exception: until every rule has been confirmed for the first time — no file is *Draft* — a rule may change in place, meaning and number included. Delete this exception once the last draft is confirmed.
 Checked by: `npm run validate:rules` — **RETIRED** is a level like the other three, so a retired block is still a rule block and still needs its reasoning.
 
 ---

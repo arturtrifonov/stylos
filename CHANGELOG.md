@@ -4,6 +4,13 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-05 (component standard review)
+
+- **Component standard is Confirmed and has a scope.** Remove its header exemption and display its review status on the site. Seven consecutive rules replace the longer standard, covering the contract source, required data, readiness and evidence without historical prose or placeholder sections.
+- **Contract completeness and implementation readiness are separate.** The site and validator share the required-data check. Ready entries cannot omit use boundaries, sizing intent or applicable size mappings, and additionally require a Figma address and valid verification date. Text and string examples do not close their value space; components without text or a size variant need no corresponding runs.
+- **Figma conventions require published components to pass checks without errors.** The standard does not require pre-publication skill runs. Checking later and finding no errors requires no corrective action; local validation does not prove a skill ran or verify live Figma state.
+- **The temporary RUL-14 exception ends with confirmation of the last written Draft.** Future changes of rule meaning take a new ID and retire the previous rule.
+
 ### Changed — 2026-10-05 (accessibility review)
 
 - **Accessibility distinguishes component evidence from full-interface conformance.** WCAG 2.2 AA remains the target; component contracts describe the conditions that implementations and consumers fulfil. A documented shipping rationale does not waive an actual failure.

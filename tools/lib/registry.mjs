@@ -229,51 +229,80 @@ export function loadRegistry(root) {
     .sort((a, b) => String(a.id).localeCompare(String(b.id)) || a.file.localeCompare(b.file));
 }
 
-/**
- * The two derived flags, neither of them authored — see
- * docs/components/registry/README.md, "Computed, never authored".
- *
- * `documented` used to be whether a Markdown document existed on disk. That
- * model was withdrawn on 2026-08-26: the contract is the entry, so whether it
- * is written is a question about the entry's own fields.
- */
+const hasText = (value) => typeof value === "string" && value.trim().length > 0;
+
+/** Missing required contract data under STD-04, independent of representations. */
+export function contractGaps(entry) {
+  const gaps = [];
+  for (const [field, value] of [["level", entry.level], ["role", entry.role],
+    ["summary", entry.summary], ["purpose", entry.purpose]]) {
+    if (!hasText(value)) gaps.push(field);
+  }
+  if (!Array.isArray(entry.useWhen) || entry.useWhen.length === 0 || !entry.useWhen.every(hasText)) {
+    gaps.push("use_when");
+  }
+  if (!Array.isArray(entry.doNotUseWhen) || entry.doNotUseWhen.length === 0 ||
+      !entry.doNotUseWhen.every((item) => hasText(item?.text))) {
+    gaps.push("do_not_use_when");
+  }
+
+  const properties = Array.isArray(entry.api) ? entry.api : [];
+  for (const [index, property] of properties.entries()) {
+    const where = `api "${property?.name ?? index}"`;
+    if (!hasText(property?.name)) gaps.push(`${where}.name`);
+    if (!PROPERTY_KINDS.includes(property?.kind)) gaps.push(`${where}.kind`);
+    if (!hasText(property?.description)) gaps.push(`${where}.description`);
+    if (property?.kind === "variant" && (!Array.isArray(property.values) ||
+        property.values.length === 0 || !property.values.every((item) => hasText(item?.value)))) {
+      gaps.push(`${where}.values`);
+    }
+    for (const value of Array.isArray(property?.values) ? property.values : []) {
+      if (value?.a11y && !hasText(value.rationale)) {
+        gaps.push(`${where} value "${value.value}".rationale`);
+      }
+    }
+  }
+
+  const sizing = entry.sizingModel;
+  if (!sizing) {
+    gaps.push("sizing_model");
+  } else {
+    for (const axis of ["horizontal", "vertical"]) {
+      if (!SIZING_AXES.includes(sizing[axis])) gaps.push(`sizing_model.${axis}`);
+      if (typeof sizing.adjustable?.[axis] !== "boolean") gaps.push(`sizing_model.adjustable.${axis}`);
+    }
+    if (!hasText(sizing.intent)) gaps.push("sizing_model.intent");
+    const sizeProperty = properties.find((property) => property?.name === "size" && property.kind === "variant");
+    if (sizeProperty) {
+      const declared = Array.isArray(sizeProperty.values) ? sizeProperty.values.map((value) => value?.value) : [];
+      const rows = Array.isArray(sizing.sizes) ? sizing.sizes.map((row) => row?.size) : [];
+      if (declared.length === 0 || declared.length !== rows.length ||
+          declared.some((value, index) => value !== rows[index])) {
+        gaps.push("sizing_model.sizes");
+      }
+    }
+  }
+  return gaps;
+}
+
+/** Prose coverage and the Figma link are separate evidence, not completeness. */
 export function derive(entry) {
   const properties = Array.isArray(entry.api) ? entry.api : [];
   return {
-    documented: Boolean(
-      entry.summary &&
-        entry.purpose &&
-        entry.useWhen.length > 0 &&
-        properties.every((property) => property?.description)
-    ),
-    linked: Boolean(entry.figma?.node_id),
+    documented: Boolean(hasText(entry.summary) && hasText(entry.purpose) &&
+      Array.isArray(entry.useWhen) && entry.useWhen.length > 0 && entry.useWhen.every(hasText) &&
+      properties.every((property) => hasText(property?.description))),
+    linked: Boolean(entry.figma?.file_key && entry.figma?.node_id),
   };
 }
 
-// The two flags above, read as one word: how complete the *contract* is. Both
-// halves are STANDARD.md's first gate, *Complete enough to publish* — the prose
-// fields and `figma.node_id` are named by it together — so `complete` here
-// means that gate holds, and nothing more.
-//
-// It says nothing about the component. That is the authored `status` field
-// (draft / ready / deprecated), which is a judgement about both gates and
-// cannot be computed. The two are read as a pair and in one direction only:
-// `Contract: complete · Status: ready` is a component that is written down and
-// checked; `Contract: complete · Status: draft` is one written down and not yet
-// checked; `Contract: in progress · Status: ready` is a contradiction, and
-// `npm run validate:registry` fails it.
-//
-// The value was `ready` until 2026-09-05, which put the same word in both
-// vocabularies meaning two different things — and put it on the cheaper of the
-// two, since the column that decides whether a component ships is `status`.
-//
-// Most complete first, so a sort on the index puts the finished records first.
 export const READINESS = ["complete", "in progress", "not started"];
 
+/** Required contract data only; verification of representations belongs to ready. */
 export function readiness(entry) {
-  const { documented, linked } = derive(entry);
-  if (documented && linked) return "complete";
-  if (documented || linked) return "in progress";
+  if (contractGaps(entry).length === 0) return "complete";
+  if (entry.summary || entry.purpose || entry.useWhen?.length || entry.doNotUseWhen?.length ||
+      entry.api?.length || entry.sizingModel) return "in progress";
   return "not started";
 }
 

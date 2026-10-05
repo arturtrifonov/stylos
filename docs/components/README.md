@@ -1,11 +1,12 @@
 # docs/components/
 
-**A component is described by exactly one file: its registry entry.** [`registry/<path>.yaml`](registry/README.md), at the path its `id` implies — `Button Icon Base` → `registry/button-icon-base.yaml`, `Table Cell Text` → `registry/table-cell-text.yaml`. There is no companion Markdown document and no template for one; that model was withdrawn on 2026-08-26, and [`STANDARD.md`](STANDARD.md) says what replaced it and why.
+Contracts are registry YAML entries under STD-01; readable pages are generated under STD-02. Two documents define that workflow:
 
-Two files here, then, and both are normative:
+| File | Status |
+| --- | --- |
+| [Component standard](STANDARD.md) | Confirmed |
 
-- [`STANDARD.md`](STANDARD.md) — what a contract must contain, and when a component is ready to publish.
-- [`registry/README.md`](registry/README.md) — the schema, field by field.
+The [registry schema](registry/README.md) describes field syntax and meaning.
 
 The entries were imported from the project owner's Airtable registry on 2026-08-20. How many of them carry a full contract is not stated here: it is derived, and `documented` in the registry view answers it. Writing them is [`PLAN.md`](../../PLAN.md) Stage 4 work, wave by wave, and each starts from its existing entry rather than from scratch — level, role and composition are already filled in.
 
@@ -16,7 +17,7 @@ npm run components:view    # build/components/ — one page per component, plus 
 npm run registry:view      # build/registry.html — the filterable index over every entry
 ```
 
-Both are derived, gitignored and opened from disk; neither reaches the network. `documented` in the index is derived too — an entry counts as documented when it carries a `summary`, a `purpose`, at least one `use_when` and a `description` on every property, so nothing has to be ticked by hand for it to become true.
+Both are derived, gitignored and opened from disk; neither reaches the network. Contract completeness is derived from the required data in STD-04. The `Written` and `Figma` columns show prose coverage and a representation link separately; neither alone establishes completeness or readiness.
 
 ## The contract and its implementations
 

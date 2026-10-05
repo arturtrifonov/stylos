@@ -38,7 +38,20 @@ Text after the table.
 Text after that one too.
 `;
 
-const ready = { api: [], summary: "s", purpose: "p", useWhen: ["u"], figma: { node_id: "1-1" } };
+const ready = {
+  level: "element",
+  role: "content",
+  api: [],
+  summary: "s",
+  purpose: "p",
+  useWhen: ["u"],
+  doNotUseWhen: [{ text: "Another component is needed." }],
+  sizingModel: {
+    horizontal: "hug", vertical: "hug",
+    adjustable: { horizontal: false, vertical: false },
+    intent: "Content sets the dimensions.",
+  },
+};
 
 const entries = [
   { id: "Badge", ...ready },

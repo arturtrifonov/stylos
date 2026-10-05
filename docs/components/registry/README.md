@@ -34,7 +34,7 @@ Files are read and written by the restricted YAML subset in [`tools/lib/yaml.mjs
 
 #### `status` describes the component, not its entry
 
-The two are independent: a component can be finished in Figma with a thin entry, or fully documented and not yet built. Contract completeness is already derived — `documented` and `linked` are computed at build time — so this field is free to mean one thing.
+The two are independent: a component can be finished in Figma with a thin entry, or fully documented and not yet built. Contract completeness is derived from the required data in STD-04. Prose coverage (`documented`) and a Figma address (`linked`) are separate indicators, not the completeness calculation.
 
 | Value | Means |
 | --- | --- |
@@ -274,7 +274,7 @@ Keep it to what a reader would otherwise misread. Layer names, auto-layout setti
 
 `limitations` — a free sequence of strings: unsupported states, absent properties, technical constraints.
 
-`figma` — every key optional, the whole block may be absent, which is the state of most entries.
+`figma` — the block may be absent on inventory or draft entries. STD-05 requires `file_key`, `node_id` and a valid `last_verified` date for `ready`; these are verification evidence, not contract-completeness fields.
 
 - **`file_key` belongs to the entry, not to the repository.** Components live in two files ([`figma/README.md`](../../../figma/README.md)); a key belonging to any other file is a failure.
 - **`node_id` is stored exactly as the URL gives it** — the dash form, `4479-13507`. Both parts are then a straight copy out of the address bar and the link is a concatenation. The URL itself is never stored: it is derivable, and a stored URL rots in a way the parts do not.
@@ -283,9 +283,9 @@ Keep it to what a reader would otherwise misread. Layer names, auto-layout setti
 - **There is no `type` field.** Nothing reads a node's kind, and Figma reports it itself when anything asks.
 - **`last_verified` is the date a person compared this entry to the live component**, in `YYYY-MM-DD`. Not the date the entry was edited, not the date the component changed in Figma, and nothing derives it — a field that moved on every touch of the file would stop answering its one question, which is *how old is the last time anyone actually looked*. Only a person sets it, and only after looking.
 
-  Set it when the comparison is real: the run of [`stylos-component-integrity-check`](../../../skills/src/component-integrity-check/SKILL.md) and [`stylos-naming-cleanup`](../../../skills/src/naming-cleanup/SKILL.md) is done, findings are fixed **in Figma**, and the entry has been brought back into line with what is now there. Not for a glance, not for a description sync, and not because the file was open. The date is the whole record — no report is stored, because a stored report is a changelog of a check nobody re-reads.
+  Set it after comparing the current representation with the contract and resolving discrepancies. It is not updated for opening the file, editing prose or syncing a description. The [Figma conventions](../../../figma/components.md#published-component-checks) define the required error-free state of published components; this date does not prove a pre-publication skill run.
 
-  Two things depend on it. [`STANDARD.md`](../STANDARD.md) requires it to be no older than the component's last change, which is what makes a contract *complete*. And `npm run validate:registry` reports a `ready` entry verified more than 90 days ago — a finding for a person, not a contradiction, because staleness is a judgement about how much the component has moved since.
+  STD-05 requires verification after the latest relevant change as a review condition. The validator requires a valid calendar date for `ready` and reports verification older than 90 days. It does not know when the live component last changed and cannot verify freshness automatically.
 
   **It is not the same fact as `status`.** `last_verified` says when someone looked; `status: ready` says the component passed both gates of `STANDARD.md`. A component can be freshly verified and still `draft`. Order on a pass: fix Figma → correct the entry → `version` if the `api` moved → `last_verified` → `status`.
 
@@ -298,9 +298,11 @@ Two flags are derived at build time:
 | Flag | True when |
 | --- | --- |
 | `documented` | `summary`, `purpose`, at least one `use_when` and a `description` on every property are present |
-| `linked` | `figma.node_id` is present |
+| `linked` | `figma.file_key` and `figma.node_id` are present |
 
-**Read as one word, the two flags are the `Contract` column**: `complete` when both hold, `in progress` when one does, `not started` when neither. They are STANDARD.md's first gate — *Complete enough to publish* names the prose fields and `figma.node_id` together — so `complete` means that gate holds and nothing more. Beside it the index shows `Status`, which is authored and is about the component rather than the record. The pair reads in one direction: `status: ready` claims both gates, so it requires `Contract: complete`, and `npm run validate:registry` fails the contradiction. The converse is ordinary — a complete contract on a `draft` component is every entry written up and not yet checked in Figma.
+The `Contract` column is computed separately from the required fields in STD-04: `complete` when those data are present, `in progress` when some contract data exist, and `not started` for inventory-only entries. The same `contractGaps` function is used by the view and the validator. Field values and references are also checked by the validator; coverage and meaning need review.
+
+Figma evidence is independent. A complete contract without a Figma address remains `complete`, but cannot be `ready`. A link alone does not make a contract started or complete. For `ready`, the validator rejects missing required contract data or verification evidence; the live checks and readiness judgement are not automated.
 
 `used_by` is derived the same way and is a list rather than a flag: for each entry, every other entry whose `uses` names it. It is only as complete as the set of entries that have `uses` filled, and that is the intended trade — an index that follows the files beats a stored one that goes stale the next time an instance is placed.
 

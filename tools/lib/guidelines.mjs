@@ -125,8 +125,6 @@ export function loadGuidelines(root) {
       topic: document.topic,
       slug: slugOf(document.file),
       title: titleOf(document.text, document.file),
-      // STANDARD.md carries rules without carrying a header (RUL-15), so it
-      // has no status of its own to state and is not counted as unfilled.
       status: document.header ? (parsed.status ?? null) : null,
       scope: parsed.scope ?? null,
       rules,
