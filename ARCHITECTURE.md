@@ -46,6 +46,8 @@ The relationship stays **one-directional**: the repository never writes to Figma
 
 ---
 
+**Amended 2026-10-05 — accessibility assessment boundaries clarified with the owner's approval.** [Accessibility](docs/foundations/accessibility.md) retains WCAG 2.2 AA as the shared target and distinguishes component requirements, consumer conditions and full-page/process conformance. Figma evidence belongs in [component readiness conventions](figma/components.md#accessibility-evidence); native HTML, APG guidance, behaviour dependencies and the verification matrix belong in the [package guide](packages/ui/README.md#accessibility-implementation-and-verification). The [plan](PLAN.md) combines automated checks with human evaluation, first for component uses and then for the complete proof interface. Accessibility is Confirmed after the owner's review of the revised rules.
+
 ## 2. The three flows
 
 ### 2.1 Tokens

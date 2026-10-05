@@ -127,11 +127,14 @@ Work:
 - Correct each component's `api` as its contract is opened, per §3.1.
 - Add the independent CSS export to `packages/ui/package.json` — per component plus an aggregate, so a preview links one file and an application pulls only what it uses.
 - Stylelint, Vitest browser mode, Playwright for keyboard behaviour, axe on every story, all into the CI of SPEC 0008.
+- Select the screen-reader/browser matrix before designing manual checks, then assess keyboard, focus and assistive-technology behaviour in representative component compositions. Record the tested conditions and consumer obligations in the [package guide](packages/ui/README.md#accessibility-implementation-and-verification); automated checks alone do not establish conformance.
 
 **Gate:** the `0.2.0` table in §1.
 **Estimate:** 10–12 weeks.
 
 ### 4.3 Stage 6 — the proof, and the consumer surface
+
+Assess the proof interface against FND-ACCESSIBILITY-01 across its complete user processes, including content and composition. Reuse component evidence from Stage 5 and add automated checks and human evaluation of the full interface; record scope, environments and remaining findings.
 
 **Why:** the `0.3.0` gate itself. Nothing before this has been validated by anything but its own tests.
 
@@ -186,7 +189,7 @@ Do **not** pull: the consumer skill or `registry.json` — requirement 2 of the 
 | --- | --- |
 | Dropdown's ARIA model — menu or listbox | component backlog, at its slice |
 | `disabled` contrast against 3:1, system-wide | a colour decision, before the components that carry it |
-| Which AAA criteria the system knowingly will not meet | listed once S5's axe runs measure them |
+| Evidence for WCAG 2.2 AA across complete pages and processes | component evidence in Stage 5; full-interface assessment of the Stage 6 proof, combining automated checks and human evaluation |
 | Component-specific token depth | provisional "none" (SPEC 0007 §9) until a component needs one |
 | Licence, and the distribution channel that depends on it | alpha |
 

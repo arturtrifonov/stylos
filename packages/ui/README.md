@@ -44,3 +44,21 @@ Heading styles follow FND-TYPOGRAPHY-09. For `heading/*`, the CSS generator omit
 ## Adding a component
 
 Per SPEC 0009 §5, contract first: the entry's `api` is corrected to describe the web component in the same session the `.svelte` is written. Then a directory under `src/components/` named by the entry's slug, the authored CSS and wrapper, an export in `src/index.ts` — and the generators produce the props type and the workshop story.
+
+## Accessibility implementation and verification
+
+The shared target and the boundary between component evidence and full-interface conformance are defined in [Accessibility](../../docs/foundations/accessibility.md). Implementation follows the ARIA semantics in FND-ACCESSIBILITY-02 and fulfils the registry obligations it controls; integration examples make consumer obligations visible.
+
+Prefer a native HTML element when it supplies the required semantics and behaviour. For custom widgets, the [ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) supplies typical keyboard, focus and naming patterns, such as dialogs, menus and listboxes. APG is [informative guidance](https://www.w3.org/WAI/ARIA/apg/about/introduction/#apg-is-not-a-normative-standard), not another conformance standard. Use the relevant pattern as the default and document departures in the component's implementation guide. A pattern or a behaviour dependency such as Zag.js does not by itself prove accessibility.
+
+For icons, distinguish decorative use from information and controls. Hide decoration from assistive technology; provide a text alternative for an informative icon, and an action name for an icon-only control. The name can belong to the parent control rather than the visual Icon component. See W3C's [decorative images](https://www.w3.org/WAI/tutorials/images/decorative/) and [functional images](https://www.w3.org/WAI/tutorials/images/functional/) guidance.
+
+### Verification plan
+
+The planned component checks combine automated assertions with manual keyboard, focus and assistive-technology checks in representative compositions. They cover supported states and consumer conditions, including accessible names, label associations and target areas. Passing axe checks alone is not a conformance assessment.
+
+The proof interface is assessed separately for content, composition and complete user processes. Results state which uses, versions and environments were tested; they do not claim conformance for every application using the package. The work is sequenced in [PLAN.md](../../PLAN.md#42-stage-5--stylosui).
+
+### Open
+
+- **Assistive-technology support matrix:** select the screen-reader and browser pairs before the Stage 5 manual checks are designed, and record them here with the tested versions and results. The matrix is not yet chosen, and no screen-reader support is claimed from the registry alone. The browser feature floor remains in [ARCHITECTURE.md](../../ARCHITECTURE.md#7-conventions).

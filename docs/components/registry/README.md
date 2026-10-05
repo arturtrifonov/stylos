@@ -197,12 +197,14 @@ At component level a **sequence** of findings; on a property or a value a **sing
 
 | Status | Means |
 | --- | --- |
-| `warning` | fails a criterion but is conformant through a stated exception |
-| `fail` | fails, and no exception applies |
+| `warning` | needs a stated condition or standard-defined exception to be conformant in use |
+| `fail` | violates a requirement under the assessed conditions, and no exception applies |
 | `open` | the system has not decided; the gap is real and named |
 | `requires` | an obligation the consumer must meet for the component to be accessible at all |
 
 **An absent block means no finding was recorded, not that the component was checked.**
+
+FND-ACCESSIBILITY-03 defines source citations. A finding can describe a consumer obligation without claiming that the component fails on its own. A `warning` is conditional: the note identifies what the surrounding interface supplies or which exception applies; recording the condition does not verify that a consumer fulfils it. A `fail` remains a failure even when its `rationale` explains why the system ships it. Full-interface conformance is assessed separately, as described in [Accessibility](../../foundations/accessibility.md#components-and-complete-interfaces).
 
 **A value carrying a finding must carry a `rationale`.** If the system ships something that fails a criterion, the file has to say why it exists — usually density. A file that records the problem and stays silent on the reason reads as an oversight rather than a decision.
 
