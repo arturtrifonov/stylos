@@ -1,6 +1,6 @@
 # Accessibility
 
-Status: Draft
+Status: Confirmed
 Scope: The shared accessibility target and the evidence recorded against it; topic-specific requirements live with their topic, and implementation checks live with each implementation.
 
 The system targets WCAG 2.2, Level AA. A component contract records the requirements it can meet itself and the conditions that depend on its use. Neither a contract nor an isolated component establishes the conformance of a complete interface.

@@ -7,7 +7,7 @@ All notable changes to the Stylos Design System project (foundations, components
 ### Changed — 2026-10-05 (accessibility review)
 
 - **Accessibility distinguishes component evidence from full-interface conformance.** WCAG 2.2 AA remains the target; component contracts describe the conditions that implementations and consumers fulfil. A documented shipping rationale does not waive an actual failure.
-- **ARIA requirements and APG guidance have distinct roles.** Findings link known source requirements and distinguish obligations and unresolved questions from observed failures. Overbroad legal assurances and implementation details leave the global guide, which remains Draft.
+- **ARIA requirements and APG guidance have distinct roles.** Findings link known source requirements and distinguish obligations and unresolved questions from observed failures. Overbroad legal assurances and implementation details leave the global guide. Accessibility is Confirmed in the guide and foundations index.
 - **Implementation guides and the plan own accessibility verification.** Figma inspection provides visual evidence; frontend checks combine automation and human evaluation in representative uses, followed by assessment of complete pages and processes. The assistive-technology matrix is chosen before manual checks are designed.
 
 ### Changed — 2026-10-05 (typography review)
