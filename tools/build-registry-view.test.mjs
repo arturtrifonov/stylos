@@ -218,10 +218,10 @@ test("offers no queue facets when there is no plan to read", () => {
   assert.equal(data.entries.every((e) => e.milestone === null && e.wave === null), true);
 });
 
-test("reads the two derived flags as one word, so ready rows can be spotted", () => {
+test("completeness uses required contract data, not prose and a Figma link", () => {
   const { data } = build();
   // Badge is linked to Figma but has no contract; TD Text has neither.
-  assert.equal(data.entries.find((e) => e.id === "Badge").readiness, "in progress");
+  assert.equal(data.entries.find((e) => e.id === "Badge").readiness, "not started");
   assert.equal(data.entries.find((e) => e.id === "Table / TD Text").readiness, "not started");
 
   const after = build({
@@ -229,6 +229,16 @@ test("reads the two derived flags as one word, so ready rows can be spotted", ()
 purpose: "Short states need a label that is not a sentence."
 use_when:
   - "A row carries a short state."
+do_not_use_when:
+  -
+    text: "The content needs a sentence."
+sizing_model:
+  horizontal: "hug"
+  vertical: "hug"
+  adjustable:
+    horizontal: false
+    vertical: false
+  intent: "The label follows its content."
 `,
   });
   assert.equal(after.data.entries.find((e) => e.id === "Badge").readiness, "complete");
@@ -267,7 +277,7 @@ test("keeps the authored lifecycle apart from the derived readiness", () => {
   });
   const badgeEntry = data.entries.find((e) => e.id === "Badge");
   assert.equal(badgeEntry.status, "draft");
-  assert.equal(badgeEntry.readiness, "in progress");
+  assert.equal(badgeEntry.readiness, "not started");
   assert.equal(data.entries.find((e) => e.id === "Table / TD Text").status, null);
 });
 

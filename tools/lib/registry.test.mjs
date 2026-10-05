@@ -51,7 +51,7 @@ children:
 notes: ""
 `;
 
-// The narrative half of a contract, appended to an inventory entry.
+// Required contract data, appended to an inventory entry.
 const contract = `summary: "One cell of text."
 purpose: "Tables need a cell that is only text."
 use_when:
@@ -65,6 +65,16 @@ api:
     name: "width"
     kind: "variant"
     description: "How wide."
+    values:
+      -
+        value: "compact"
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable:
+    horizontal: true
+    vertical: false
+  intent: "The table chooses width; content sets height."
 `;
 
 test("slugs a nested name into the path both directories mirror", () => {
@@ -158,7 +168,7 @@ test("derives documented from the contract's own fields, and linked from a node 
   }
 });
 
-test("reads the two flags as one word — complete needs both", () => {
+test("contract completeness is independent of the Figma link", () => {
   const root = fixture({
     "docs/components/registry/badge.yaml": badge,
     "docs/components/registry/table/td-text.yaml": `${tdText}${contract}`,
@@ -166,7 +176,7 @@ test("reads the two flags as one word — complete needs both", () => {
   try {
     const entries = loadRegistry(root);
     assert.equal(readiness(entries[0]), "not started");
-    assert.equal(readiness(entries[1]), "in progress");
+    assert.equal(readiness(entries[1]), "complete");
 
     entries[1].figma = { file_key: "WUc07ZBtjRvypXtsOlbVut", node_id: "4479-13507" };
     assert.equal(readiness(entries[1]), "complete");

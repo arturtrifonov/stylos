@@ -58,17 +58,15 @@ export const AREAS = [
   ["docs/content", "CNT"],
 ];
 
-// Rule-carrying files that are not in a guideline directory. RULES.md and
-// principles.md are guideline files with no directory to be indexed by;
-// STANDARD.md carries rules without being one — a documentation standard has
-// its own shape and no per-file status to state.
+// Rule-carrying files outside the four guideline directories. All carry
+// the status and scope header, including the component standard.
 //
 // docs/charter.md is deliberately absent. It is prose, it carries no rule, and
 // giving it an area would give the PRN rules two possible homes.
 export const SINGLETONS = [
   ["docs/RULES.md", "RUL", { header: true }],
   ["docs/principles.md", "PRN", { header: true }],
-  ["docs/components/STANDARD.md", "STD", { header: false }],
+  ["docs/components/STANDARD.md", "STD", { header: true }],
 ];
 
 // Where a citation is looked for. Fixtures are excepted — those under
@@ -409,6 +407,9 @@ export function loadDocuments(root) {
   for (const [file, area, { header }] of SINGLETONS) {
     if (!existsSync(path.join(root, file))) continue;
     documents.push({ ...read(root, file), area, topic: null, header });
+    if (area === "STD" && existsSync(path.join(root, "docs/components/README.md"))) {
+      indexes.push({ ...read(root, "docs/components/README.md"), dir: "docs/components" });
+    }
   }
 
   return { documents, indexes };

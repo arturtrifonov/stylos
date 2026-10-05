@@ -9,7 +9,7 @@ A guideline carries more reasoning than a contract does, so guidelines stay in M
 
 **A guideline file** is [`principles.md`](principles.md), this file, or a file in one of the four guideline directories: [`foundations/`](foundations/README.md), [`behavior/`](behavior/README.md), [`patterns/`](patterns/README.md), [`content/`](content/README.md). Each opens with the header RUL-15 describes and is listed in its directory's index.
 
-One more document carries rules without being a guideline file: [`components/STANDARD.md`](components/STANDARD.md). It has its own shape and no per-file status to state, so it does not need the header. Everything else in this file applies to its rules exactly as written.
+[`components/STANDARD.md`](components/STANDARD.md) also carries rules and uses the same status, scope and rule-block grammar. It has the `STD` area and is listed in [`components/README.md`](components/README.md).
 
 [`charter.md`](charter.md) carries no rules. It is prose about what the system is for, and a rule written inside it could not be cited or checked as a rule. That is why the principles have a file of their own.
 

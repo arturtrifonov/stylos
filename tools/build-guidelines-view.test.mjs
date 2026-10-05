@@ -175,3 +175,12 @@ test("the pages carry no script", () => {
   for (const [name, html] of pages) assert.ok(!/<script/.test(html), `${name} has a script`);
   assert.ok(!/<script/.test(renderIndex(data)));
 });
+
+
+test("the component standard exposes its review status on the site", () => {
+  const standard = data.files.find((file) => file.area === "STD");
+  assert.ok(standard.status);
+  assert.ok(standard.scope);
+  const html = renderPage(standard, data);
+  assert.match(html, new RegExp(`badge status [^>]*>${standard.status}</span>`));
+});

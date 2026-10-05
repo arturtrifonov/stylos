@@ -4,8 +4,23 @@ import assert from "node:assert/strict";
 import { renderHome } from "./build-home.mjs";
 import { waveProgress } from "./lib/plan.mjs";
 
+const readyContract = {
+  level: "element",
+  role: "content",
+  api: [],
+  summary: "s",
+  purpose: "p",
+  useWhen: ["u"],
+  doNotUseWhen: [{ text: "Another component is needed." }],
+  sizingModel: {
+    horizontal: "hug", vertical: "hug",
+    adjustable: { horizontal: false, vertical: false },
+    intent: "Content sets the dimensions.",
+  },
+};
+
 const entries = [
-  { id: "Badge", name: "Badge", summary: "s", purpose: "p", useWhen: ["u"], api: [], figma: { node_id: "1-2" } },
+  { id: "Badge", name: "Badge", ...readyContract },
   { id: "Icon", name: "Icon", api: [] },
 ];
 
@@ -161,10 +176,10 @@ Text after the table.
 `;
 
 const queued = [
-  { id: "Badge", api: [], summary: "s", purpose: "p", useWhen: ["u"], figma: { node_id: "1-1" } },
+  { id: "Badge", ...readyContract },
   { id: "Checkbox Input", family: "Checkbox", api: [] },
   { id: "Checkbox Label", family: "Checkbox", api: [] },
-  { id: "Table / TD Text", api: [], summary: "s", purpose: "p", useWhen: ["u"], figma: { node_id: "1-2" } },
+  { id: "Table / TD Text", ...readyContract },
   { id: "Tooltip", api: [] },
   { id: "Chips", api: [] },
 ];
@@ -217,7 +232,7 @@ test("gives every milestone track the same width and only varies the fill", () =
 
 test("says less than one percent rather than rounding a finished component to zero", () => {
   const many = [
-    { id: "Badge", api: [], summary: "s", purpose: "p", useWhen: ["u"], figma: { node_id: "1-1" } },
+    { id: "Badge", ...readyContract },
     ...Array.from({ length: 400 }, (_, i) => ({ id: `x${i}`, api: [] })),
   ];
   const wide = `| # | Wave | Entries | Ends with | Est. |

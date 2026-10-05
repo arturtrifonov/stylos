@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
+import { loadRegistry, readiness } from "./lib/registry.mjs";
+import { fileURLToPath } from "node:url";
 import { checkRegistry } from "./lint-registry.mjs";
 
 // A minimal entry in the shape lib/registry.mjs produces, carrying none of the
@@ -275,4 +277,77 @@ test("says nothing about state carrying only real states", () => {
     entry("Modal", { children: ["Popover"] }),
   ]);
   assert.deepEqual(reports.filter((report) => /drawing-only/.test(report)), []);
+});
+
+
+const realEntries = loadRegistry(fileURLToPath(new URL("../", import.meta.url)));
+const realIcon = realEntries.find((item) => item.id === "Icon");
+const checkIcon = (changed) => checkRegistry(realEntries.map((item) => item.id === "Icon" ? changed : item));
+
+test("ready rejects missing required data that prose coverage used to conceal", () => {
+  for (const [field, replacement, expected] of [
+    ["doNotUseWhen", [], "do_not_use_when"],
+    ["sizingModel", null, "sizing_model"],
+    ["sizingModel", {...realIcon.sizingModel, intent: " "}, "sizing_model.intent"],
+    ["role", null, "role"],
+    ["api", realIcon.api.map((item) => ({...item, kind: undefined})), ".kind"],
+  ]) {
+    const changed = {...realIcon, [field]: replacement};
+    assert.equal(readiness(changed), "in progress", field);
+    const result = checkIcon(changed);
+    assert.equal(result.ok, false, field);
+    assert.ok(result.errors.some((line) => line.includes(expected)), field);
+    assert.equal(checkIcon({...changed, status: "draft"}).ok, true, `draft may lack ${field}`);
+  }
+});
+
+test("a complete contract without Figma evidence cannot be marked ready", () => {
+  const changed = {...realIcon, figma: null};
+  assert.equal(readiness(changed), "complete");
+  assert.match(checkIcon(changed).errors.join("\n"), /figma.file_key or figma.node_id is missing/);
+  assert.equal(checkIcon({...changed, status: "draft"}).ok, true);
+});
+
+test("ready requires a valid calendar date for recorded verification", () => {
+  for (const last_verified of [undefined, "", "yesterday", "2026-02-30", "2026-13-01"]) {
+    const changed = {...realIcon, figma: {...realIcon.figma, last_verified}};
+    assert.equal(readiness(changed), "complete");
+    assert.match(checkIcon(changed).errors.join("\n"), /figma.last_verified is missing or is not a valid/);
+  }
+  assert.equal(checkIcon(realIcon).ok, true);
+});
+
+test("a size variant requires sizing rows, while Icon needs no size run", () => {
+  const checkbox = realEntries.find((item) => item.id === "Checkbox Input");
+  for (const sizes of [undefined, []]) {
+    const changed = {...checkbox, sizingModel: {...checkbox.sizingModel, sizes}};
+    assert.equal(readiness(changed), "in progress");
+    const result = checkRegistry(realEntries.map((item) => item.id === checkbox.id ? changed : item));
+    assert.match(result.errors.join("\n"), /sizing_model.sizes/);
+  }
+  assert.equal(realIcon.sizingModel.sizes, undefined);
+  assert.equal(readiness(realIcon), "complete");
+  assert.equal(checkIcon(realIcon).ok, true);
+});
+
+
+test("boolean defaults are booleans while string defaults need not be listed examples", () => {
+  for (const value of [true, false, "true", "false"]) {
+    assert.equal(checkRegistry([entry("Checkbox", {
+      api: [{name: "is checked", kind: "boolean", default: value}],
+    })]).ok, true);
+  }
+  for (const value of [1, "maybe", null]) {
+    assert.match(checkRegistry([entry("Checkbox", {
+      api: [{name: "is checked", kind: "boolean", default: value}],
+    })]).errors.join("\n"), /default is not true or false/);
+  }
+  for (const kind of ["text", "string"]) {
+    const changed = {...realIcon, api: [{
+      name: "name", kind, description: "An open string value.",
+      default: "not_in_examples", values: [{value: "example"}],
+    }]};
+    assert.equal(readiness(changed), "complete");
+    assert.equal(checkIcon(changed).ok, true);
+  }
 });

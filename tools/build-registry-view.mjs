@@ -388,7 +388,7 @@ var COLUMNS = [
   {
     key: "readiness",
     label: "Contract",
-    title: "Derived, and about the record: complete = STANDARD.md's first gate holds, the prose is written and the entry is linked to Figma — the Written and Figma columns on the right. It says nothing about the component itself; that is Status, beside it",
+    title: "Derived: complete = required contract data under STD-04 is filled. Figma linkage and implementation verification are separate; Status records readiness.",
   },
   {
     key: "status",
@@ -411,7 +411,7 @@ var COLUMNS = [
   // Renamed from "Contract" on 2026-09-05: it is one of the two inputs the
   // Contract column is derived from, and calling an input by the name of the
   // result was what made the two unreadable side by side.
-  { key: "documented", label: "Written", title: "One half of Contract: the prose is written — summary, purpose, use_when and a description on every property. The other half is Figma, beside it" },
+  { key: "documented", label: "Written", title: "Prose coverage: summary, purpose, use_when and property descriptions. This is part of the required contract data; it does not establish completeness or readiness." },
   { key: "linked", label: "Figma" },
   { key: "page", label: "Page", title: "The generated component page — npm run components:view" },
 ];
@@ -448,9 +448,7 @@ function renderFilters() {
   host.appendChild(group("Level", LEVELS, state.levels, countBy("level")));
   host.appendChild(group("Role", ROLES, state.roles, countBy("role")));
   host.appendChild(group("Contract", READINESS, state.readiness, countBy("readiness")));
-  // Beside it deliberately, because the two are asked about together: "what is
-  // documented and linked" and "what has been judged ready" are the two halves
-  // of the same question during a release pass, and neither answers the other.
+  // Contract data and verified component readiness answer different questions.
   host.appendChild(group("Status", STATUSES, state.statuses, countBy("status")));
   // The waves are the queue, so the index offers them. They come from PLAN.md
   // on every build; a view built without a plan simply has no wave filter.

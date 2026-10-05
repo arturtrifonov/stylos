@@ -32,7 +32,7 @@ Every domain has exactly one authoritative source. When two places disagree, the
 
 **Values are authored where they are judged by eye; contracts are authored where they can bind more than one implementation.** Colours and dimensions are decided in Figma, so Figma holds them and `tokens/` imports them. A component's contract cannot be held by Figma, because Figma is one of the two things that must satisfy it — the Svelte package is the other, and neither can be authoritative over the other. A limitation of one tool would otherwise become a rule of the system. See [`docs/components/README.md`](docs/components/README.md).
 
-Component readiness requires a verified Figma representation under [STD-04 and STD-05](docs/components/STANDARD.md#the-two-gates); a code implementation alone cannot establish `ready`. Tool-specific authoring checks live in [figma/components.md](figma/components.md).
+Contract completeness follows STD-04 and is independent of implementation links. Component readiness requires a complete contract and verified Figma representation under [STD-05](docs/components/STANDARD.md#std-05--readiness-includes-verification-of-the-implementation); a code implementation alone cannot establish `ready`. The local validator checks required data and recorded verification evidence. Live implementation review and the error-free state of published components belong to [figma/components.md](figma/components.md).
 
 **Amended 2026-10-04 — spacing contract clarified with the owner's approval.** [Spacing](docs/foundations/spacing.md) defines the shared base and ratio names, the use of semantic gap roles for explicit spacing, their aliases to the primitive scale, and the boundary between authored spacing and distributed free space. Its named optical-correction exception follows PRN-01; token values remain in the canonical record.
 
@@ -47,6 +47,8 @@ The relationship stays **one-directional**: the repository never writes to Figma
 ---
 
 **Amended 2026-10-05 — accessibility assessment boundaries clarified with the owner's approval.** [Accessibility](docs/foundations/accessibility.md) retains WCAG 2.2 AA as the shared target and distinguishes component requirements, consumer conditions and full-page/process conformance. Figma evidence belongs in [component readiness conventions](figma/components.md#accessibility-evidence); native HTML, APG guidance, behaviour dependencies and the verification matrix belong in the [package guide](packages/ui/README.md#accessibility-implementation-and-verification). The [plan](PLAN.md) combines automated checks with human evaluation, first for component uses and then for the complete proof interface. Accessibility is Confirmed after the owner's review of the revised rules.
+
+**Amended 2026-10-05 — component standard revised with the owner's approval.** The [component standard](docs/components/STANDARD.md) carries a Draft status and scope under the ordinary rule grammar. Contract completeness uses shared required-data checks in the site and validator, while readiness additionally requires Figma verification evidence. Publication conventions require the current published components to pass Figma checks without errors, without prescribing manual runs before publication; a successful later check needs no corrective action.
 
 ## 2. The three flows
 
@@ -84,7 +86,7 @@ Property kind describes the contract's role, not just its storage: `text` carrie
 
 **Sizing contract amendment — 2026-10-04.** Each recorded sizing model declares `hug`, `fixed` or `fill` and an external adjustment permission per axis. The type explains how a dimension is determined; fixed dimensions may change through public `size` choices or a supported consumer-chosen value. Its `intent` explains supported overrides and relationships between dimensions. The validator requires these fields, and component pages show width and height permissions separately. Figma sizing representation and inspection conventions live in [`figma/sizing.md`](figma/sizing.md), while [`docs/foundations/sizing.md`](docs/foundations/sizing.md) owns the system contract.
 
-An entry carries a `figma:` block naming the file and node it is implemented by, with a `last_verified` date. A complete contract requires it ([`STANDARD.md`](docs/components/STANDARD.md)), so an entry has the address exactly when it has a contract — 39 of 114 at the time of writing — and it arrives with the contract rather than in a sweep of its own.
+An entry carries a `figma:` block naming the file and node it is implemented by, with a `last_verified` date. Readiness requires it ([STD-05](docs/components/STANDARD.md)); contract completeness does not. The address records the representation independently of how much contract data has been written.
 
 **What the address does not do is detect anything.** Nothing polls Figma: a component renamed, added or removed there still produces no signal here, and `last_verified` is the only freshness the repository has — a date a person set, aging on its own. The address makes divergence checkable by hand, not detected.
 
