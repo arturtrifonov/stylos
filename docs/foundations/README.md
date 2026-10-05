@@ -9,7 +9,7 @@ This table is an index of the files and nothing more. Where the table and a file
 | File | Status |
 | --- | --- |
 | [color.md](color.md) | Confirmed |
-| [typography.md](typography.md) | Draft |
+| [typography.md](typography.md) | Confirmed |
 | [spacing.md](spacing.md) | Confirmed |
 | [sizing.md](sizing.md) | Confirmed |
 | [naming.md](naming.md) | Confirmed |

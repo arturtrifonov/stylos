@@ -10,8 +10,6 @@ The text styles combine these variables under `text/*`, `label/*`, `heading/*` a
 
 `tools/import-styles.mjs` writes that record from a Plugin API read because the Variables export does not contain Styles. Import and frontend projection are implementation details, documented in [the frontend package](../packages/ui/README.md#typography-exports).
 
-## Display width
+## Heading width
 
-The recorded heading styles currently set Georama's width axis to 110. Whether to keep that expanded width is the open design question in [Typography](../docs/foundations/typography.md#open).
-
-If the decision removes the expansion, update the Figma heading styles and read them again with `tools/import-styles.mjs`. If it keeps the expansion, the frontend also needs a compatible font asset and face declaration; its current gap is recorded in [heading width](../packages/ui/README.md#heading-width).
+Author heading styles at the typeface's normal width, following FND-TYPOGRAPHY-09. The older [style record](text-styles.yaml) contains heading width metadata from its dated read; it records what was observed then, rather than the current contract. The frontend projection disregards that historical width metadata for heading styles.

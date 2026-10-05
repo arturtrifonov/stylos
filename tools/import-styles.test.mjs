@@ -141,7 +141,7 @@ test("importStyles writes the record and renderTextCss projects it, skipping unr
   assert.match(css, /NOT projected .*label\/broken/);
 });
 
-test("uppercase and width off 100 project as text-transform and font-stretch", () => {
+test("headings retain uppercase styling but do not project historical width", () => {
   const root = scratchRoot();
   const heading = { ...STYLE, name: "heading/h1", textCase: "UPPER", width: 110 };
   const dumpPath = path.join(root, "dump.json");
@@ -151,5 +151,18 @@ test("uppercase and width off 100 project as text-transform and font-stretch", (
   const record = parse(readFileSync(path.join(root, OUT_FILE), "utf8"), { filename: OUT_FILE });
   const { css } = renderTextCss(record);
   assert.ok(css.includes("text-transform: uppercase;"));
-  assert.ok(css.includes("font-stretch: 110%;"));
+  assert.equal(record.get("styles").get("heading/h1").get("width"), 110);
+  assert.doesNotMatch(css, /font-stretch/);
+});
+
+test("width metadata still projects for non-heading text styles", () => {
+  const root = scratchRoot();
+  const style = { ...STYLE, width: 110 };
+  const dumpPath = path.join(root, "dump.json");
+  writeFileSync(dumpPath, JSON.stringify(dump([style])));
+  importStyles(root, dumpPath);
+
+  const record = parse(readFileSync(path.join(root, OUT_FILE), "utf8"), { filename: OUT_FILE });
+  const { css } = renderTextCss(record);
+  assert.match(css, /font-stretch: 110%;/);
 });

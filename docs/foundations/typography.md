@@ -1,6 +1,6 @@
 # Typography
 
-Status: Draft
+Status: Confirmed
 Scope: Font sizes, line heights, typeface roles, weights and text spacing; what the words say is [content/](../content/README.md).
 
 Canonical component size names follow FND-NAMING-11. A text style combines a typeface role, a measure, a line-height family, a weight role and text spacing for a particular use.
@@ -99,6 +99,10 @@ The text style determines the choice. An acronym or user-entered value written i
 
 Paragraph spacing is a separate part of a wrapping text style, expressed through `font/paragraph spacing` tokens. It describes the distance between paragraphs, rather than letter spacing or line height.
 
-## Open
+## Heading width
 
-- **Display width.** Whether headings keep an expanded display width remains open. The current representations and the implementation gap are documented in [Figma typography](../../figma/typography.md#display-width) and [frontend heading width](../../packages/ui/README.md#heading-width); the typeface family, measure and weight choices are already defined above.
+### FND-TYPOGRAPHY-09 — Headings use normal font width
+
+**MUST.** Render heading text styles at the selected typeface's normal width.
+
+Why: the heading hierarchy is defined by its typeface role, measure and weight, without an additional width adjustment.
