@@ -113,7 +113,7 @@ Why: components at these levels often need to line up with each other. A common 
 
 For a new Object button, start with the Object row for its height, then record any required differences in its contract. The row does not prescribe its width or the size of every internal part. Primitive's row is a reference, without a default to follow. Widget and Layout have no shared row: a modal's dimensions, for example, are defined by its own contract.
 
-Typography uses the same level boundary (FND-TYPOGRAPHY-09), with its own default and override rules in FND-TYPOGRAPHY-08.
+Typography has its own recommended size-to-measure profiles in FND-TYPOGRAPHY-07.
 
 ## Exemptions
 

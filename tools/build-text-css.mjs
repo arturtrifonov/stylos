@@ -6,11 +6,12 @@
 //
 //   npm run ui:generate    (after tokens:css, whose custom properties it reads)
 //
-// One class per recorded style, named by the style's slug: "text/normal/medium"
-// → .stylos-text-normal-medium. Every declaration is a var() reference into
+// One class per recorded style, named by the style's slug: "text/base/medium"
+// → .stylos-text-base-medium. Every declaration is a var() reference into
 // tokens.css — the same projection discipline as tokens:css itself, no value
 // improved on the way through. `text case: uppercase` becomes text-transform;
-// a width off 100 becomes font-stretch. Paragraph spacing has no
+// a non-heading width off 100 becomes font-stretch. Headings use normal
+// width under FND-TYPOGRAPHY-09, including with historical records. Paragraph spacing has no
 // non-opinionated CSS analog (it is the space between paragraphs, which is
 // the consumer's layout), so it is emitted as a private custom property
 // `--stylos-paragraph-spacing` on the class, for the consumer to apply.
@@ -59,7 +60,9 @@ export function renderTextCss(record) {
       if (entry.has(key)) lines.push(`  ${cssProperty}: ${varRef(entry.get(key))};`);
     }
     if (entry.get("text case") === "uppercase") lines.push("  text-transform: uppercase;");
-    if (entry.has("width")) lines.push(`  font-stretch: ${entry.get("width")}%;`);
+    if (!name.startsWith("heading/") && entry.has("width")) {
+      lines.push(`  font-stretch: ${entry.get("width")}%;`);
+    }
     if (entry.has("paragraph spacing")) {
       lines.push(`  --stylos-paragraph-spacing: ${varRef(entry.get("paragraph spacing"))};`);
     }

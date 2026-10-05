@@ -36,6 +36,8 @@ Component readiness requires a verified Figma representation under [STD-04 and S
 
 **Amended 2026-10-04 — spacing contract clarified with the owner's approval.** [Spacing](docs/foundations/spacing.md) defines the shared base and ratio names, the use of semantic gap roles for explicit spacing, their aliases to the primitive scale, and the boundary between authored spacing and distributed free space. Its named optical-correction exception follows PRN-01; token values remain in the canonical record.
 
+**Amended 2026-10-05 — typography boundaries clarified with the owner's approval.** [Typography](docs/foundations/typography.md) owns the text role and paired-measure rules, shared typeface and weight roles, English defaults, system-level typeface replacement, optional Element/Object profiles and normal-width headings. Typography is Confirmed; historical heading-width metadata is retained in the imported record but does not enter the frontend projection. Changes to weight values belong to shared token styling, not local component overrides. Figma style representation is documented in [figma/typography.md](figma/typography.md); frontend text-style projection and font delivery belong to the [package guide](packages/ui/README.md#typography-exports).
+
 Canonical public names belong to the registry and naming guide. The correspondence with design names and frontend identifiers is described in [naming.md](docs/foundations/naming.md#3-contract-and-implementation-names); the package documents its exact [name conversion](packages/ui/README.md#name-conversion).
 
 Authoring values in Figma is current practice, not a permanent commitment; moving them into the repository is an open intention with no date.
