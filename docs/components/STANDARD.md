@@ -1,6 +1,6 @@
 # Component standard
 
-Status: Draft
+Status: Confirmed
 Scope: Required component-contract data and readiness for the library; field syntax lives in the registry schema, and implementation checks live with each implementation.
 
 Rules use `STD-` IDs under [Rules of rules](../RULES.md). The [registry schema](registry/README.md) defines the fields they refer to.

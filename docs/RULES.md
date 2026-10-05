@@ -239,7 +239,6 @@ Why: it asked for a fact the export already stated, and failed the build when no
 
 Why it stays rather than disappearing: someone is reading the rule somewhere this repository cannot see — in a review comment, a commit message, a contract written last month. The question they come with is whether it still holds. If the ID is missing from the file, the answer they get is that it was never a rule. A retired block tells them what it was, that it no longer holds, and since when.
 
-Exception: until every rule has been confirmed for the first time — no file is *Draft* — a rule may change in place, meaning and number included. Delete this exception once the last draft is confirmed.
 Checked by: `npm run validate:rules` — **RETIRED** is a level like the other three, so a retired block is still a rule block and still needs its reasoning.
 
 ---
