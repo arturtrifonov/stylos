@@ -1,125 +1,104 @@
 # Typography
 
 Status: Draft
-Scope: Type sizes, measures, line heights, weight and the typeface; what the words say is [content/](../content/README.md).
+Scope: Font sizes, line heights, typeface roles, weights and text spacing; what the words say is [content/](../content/README.md).
 
-Canonical component size values are full words — that rule is [naming.md](naming.md) FND-NAMING-11, and it is not restated here.
+Canonical component size names follow FND-NAMING-11. A text style combines a typeface role, a measure, a line-height family, a weight role and text spacing for a particular use.
 
 ## Size and measure
 
-### FND-TYPOGRAPHY-01 — Font size and line height come from one measure
+### FND-TYPOGRAPHY-01 — Font size and line height share a measure key
 
-**MUST.** Where a font size is bound to a measure, the line height comes from that same measure.
+**MUST.** Use font size and line height tokens with the same measure key.
 
-Why: a size from one measure with a line height from another is a defect. The size and line height of a measure were authored together as a pair, and mixing two pairs produces leading that belongs to neither.
+Why: each font size and its line height were authored as a pair; mixing keys takes the size from one pair and the leading from another.
 
-### FND-TYPOGRAPHY-02 — The line-height family follows the content
+A measure is the shared key, such as `1_000`, in `font/size/1_000` and `font/line height/text/1_000`. It identifies a pair, not equal numeric values. FND-TYPOGRAPHY-02 selects the line-height family.
 
-**MUST.** Line height comes from the family matching what the text is: **string** for single-line content (labels, buttons, tabs, menu items, badges, compact values), **text** for wrapping content (body copy, descriptions, messages).
+### FND-TYPOGRAPHY-02 — The line-height family follows the text role
 
-Why: the same size needs different leading depending on whether the text wraps. A single line with paragraph leading sits wrong in a control, and a paragraph with string leading is hard to read.
+**MUST.** Choose the line-height family for the text role: `heading` for headings, `code` for code, `string` for other single-line content and `text` for other wrapping content.
 
-### FND-TYPOGRAPHY-03 — Measure names are ratios to the base
+Why: headings, code, compact lines and paragraphs have different leading needs, even when they share a font size.
 
-**MUST.** A measure is named as a ratio to the base — `1_000` is the base — the same convention spacing uses.
+The heading and code roles take their own families whether they use one line or several. For other content, labels, buttons, tabs and compact values use `string` when their contract keeps them on one line; descriptions and messages use `text` when they can wrap. A wrapping role still uses `text` when its current content happens to fit on one line.
 
-Why: one convention across the two scales means a name can be read without knowing which collection it came from (FND-SPACING-01).
+These are line-height family names, independent of the public property kinds `text` and `string` described in the [registry guide](../components/registry/README.md).
+
+### FND-TYPOGRAPHY-03 — Measure names are ratios to the font-size base
+
+**MUST.** Name each measure as a ratio to the font-size base, identified by `font/size/1_000`.
+
+Why: ratio names describe the relation to the base rather than an absolute measurement, following PRN-02.
+
+`1_000` is one base and `1_500` is one and a half. The font-size base is separate from the spacing base: FND-SPACING-01 uses the same ratio notation, not the same base value. The base and supported sizes live in [`tokens/font.yaml`](../../tokens/font.yaml); `npm run tokens:report font` prints their resolved values.
+
+The ratio names the font size. The matching line heights are authored for each family, rather than calculated by applying that ratio to the font-size base.
 
 Serves: PRN-02.
 
-### FND-TYPOGRAPHY-04 — A component's size property sizes one primary text role
+## Typeface roles
 
-**MUST.** A component's size property controls exactly one **primary text role**, not every text layer on the component, and that role is identified by the public text property, the semantic layer name and consistency across variants.
+### FND-TYPOGRAPHY-04 — Typeface tokens identify roles
 
-Why: a component's text layers have different roles. Resizing all of them together destroys the internal hierarchy the component was drawn with. The size property is only about the layer that carries the component's meaning.
+**MUST.** Select `font/family/normal` for text and string roles, `font/family/display` for headings and `font/family/code` for code.
 
-## Structure
+Why: a role explains why a typeface is used and remains meaningful when its value changes.
 
-One `font` collection, single-mode, with six groups: `family`, `size`, `line height`, `weight`, `letter spacing`, `paragraph spacing`.
+`normal` and `display` remain separate roles even when they use the same typeface. Line-height families and typeface roles serve different purposes: both `text` and `string` use the normal typeface role, with their own line-height families.
 
-### FND-TYPOGRAPHY-05 — `family` distinguishes only what actually differs
+Serves: PRN-04.
 
-**MUST.** `family` holds the three entries that differ (normal, display and code), and `text` and `string` are not added to it.
+### FND-TYPOGRAPHY-05 — Weight uses shared roles
 
-Why: `line height` has four families because leading depends on whether content is a string or wrapping text. Font family does not: string and text always resolve to the same typeface, so an entry for each would give one value two names.
+**MUST.** Use `font/weight/base`, `font/weight/emphasis` or `font/weight/strong` for typography weight.
 
-| line-height family | resolves to |
-| --- | --- |
-| `text` | `family/normal` |
-| `string` | `family/normal` |
-| `heading` | `family/display` |
-| `code` | `family/code` |
+Why: shared roles keep the levels of emphasis consistent across components and styles.
 
-The asymmetry is deliberate, not an oversight. Do not "fix" it.
+`base` is the ordinary weight, `emphasis` adds emphasis and `strong` provides the strongest of the three roles. Styling the system can change these tokens' numeric values, including intermediate weights supported by a variable font. Components and text styles continue to reference the shared tokens; styling does not permit arbitrary local weights.
 
-## Weight
+A replacement typeface needs to support the chosen role weights so the three levels of emphasis remain distinct.
 
-### FND-TYPOGRAPHY-06 — Three weight roles, named for the accent they carry
+### FND-TYPOGRAPHY-06 — Default typefaces support English
 
-**MUST.** Weight is taken from `weight/base`, `weight/emphasis` or `weight/strong` — the name carries the role, the value carries the number, and there is no third layer.
+**MUST.** Use Georama for the normal and display roles and JetBrains Mono for code in the default system.
 
-Why: the roles were renamed from `normal`/`semibold`/`bold` on 2026-09-06. Those words are the names of typeface weights, and in that vocabulary two of the three meant a different weight from ours: CSS `bold` means 700 and, across the industry, `semibold` means 600, and neither is what `weight/strong` and `weight/emphasis` hold. The role is a level of accent, not a weight name: `base` for running text, `emphasis` for what stands out in it, `strong` for what leads it. `emphasis` and `strong` also carry the order every HTML author already knows from `em` and `strong`. This section once gave the strongest weight the CSS `bold` value; the value in Figma is the decision.
+Why: these defaults give ordinary text, headings and code a consistent typeface choice across the system.
 
-Exception: **off-scale weights are allowed**, because the typeface is variable. `weight/emphasis` falls between the standard weights only because the weight axis is continuous, and a weight such as 437 may exist for the same reason if a design really calls for it. This departs on purpose from the usual rule that a value off the scale is not a value: the variable axis is the reason to choose a variable font, and refusing to use it would be formality with no purpose. The exception covers weight only; it does not extend to size, line height or spacing.
+The default system supports English. Support for other languages depends on the families selected when styling the system.
 
-If the family is ever replaced by static instances, this breaks without warning: `weight/emphasis` resolves to the nearest available weight, and the difference between `base` and `emphasis` disappears with no error. Check the weights when changing the family, not after.
+Exception: **System typeface replacement.** A system theme may replace the family token values with typefaces that support its required languages; typography continues to use the role tokens and paired measures defined by FND-TYPOGRAPHY-01, FND-TYPOGRAPHY-04 and FND-TYPOGRAPHY-05.
 
-## Typeface
+## Recommended size-to-measure profiles
 
-### FND-TYPOGRAPHY-07 — Georama for text and display, JetBrains Mono for code
+### FND-TYPOGRAPHY-07 — Element and Object profiles are starting points
 
-**MUST.** `family/normal` and `family/display` are Georama; `family/code` is JetBrains Mono.
+**MAY.** Use the following size-to-measure profiles as a starting point for Element and Object typography.
 
-Why: both are under the SIL Open Font License, which permits embedding and redistribution, including in a commercial product. Nothing is decided about distributing Stylos, and the typeface must not be what rules it out, as a face whose licence forbids commercial redistribution would.
+Why: a shared starting point helps components fit together, while leaving room for their different text roles and proportions.
 
-Georama covers the Google Fonts Latin Plus glyph set: Latin, Western European and Vietnamese. That is the supported range.
+| Size | Element measure | Object measure |
+| --- | --- | --- |
+| `extra small` | `0_750` | `0_875` |
+| `small` | `0_875` | `1_125` |
+| `medium` | `1_000` | `1_375` |
+| `large` | `1_250` | `1_625` |
+| `extra large` | `1_500` | `1_875` |
 
-## Text styles
+These are recommendations, not required mappings. A component's contract records its actual mappings for its text roles. Those roles can change together at different rates, as Label's name and supporting text do.
 
-The Figma text styles are the 32 named combinations of values from this collection (`text/*`, `label/*`, `heading/*`, `code/*`). They are recorded in [`figma/text-styles.yaml`](../../figma/text-styles.yaml). `tools/import-styles.mjs` writes that file from a Plugin API read, because Styles have no Variables export. The record stores aliases into `tokens/`, never values (RUL-09). `@stylos/ui/text.css` maps each style to a class (`.stylos-heading-h2`, `.stylos-text-normal-medium`, …), and `npm run ui:generate` rebuilds it.
+## Text spacing
 
-## Stale variable names elsewhere
+### FND-TYPOGRAPHY-08 — Tracking follows the text style's case
 
-Figma holds the variable names, and they are currently `font/size/[measure]` and `font/line height/[family]/[measure]`.
+**MUST.** Use `font/letter spacing/style/uppercase` for uppercase text styles and `font/letter spacing/style/normal` for other text styles.
 
-`stylos-text-sizing` *bound* to the older scheme, `Text Size / [measure]`, which no longer exists; that is one of the reasons it was removed. `component-integrity-check` showed the older scheme in example messages and has been corrected. Nothing in the repository now refers to the old scheme.
+Why: uppercase styles need their own tracking, while ordinary styles use no added tracking.
 
-## Default size→measure profiles
+The text style determines the choice. An acronym or user-entered value written in capitals does not by itself turn an ordinary text style into an uppercase style.
 
-### FND-TYPOGRAPHY-08 — Element and Object have default profiles, and a contract may override
-
-**MUST.** A component takes the default size→measure profile of its architectural level, unless its own contract documents a mapping, and then the contract's mapping always wins.
-
-Why: without a default, every component decides its own type scale, and the library no longer has one. Without the override, the components whose text really sits differently would have to change the default for everyone.
-
-#### Element
-
-| Size | Measure |
-| --- | --- |
-| `extra small` | `0_750` |
-| `small` | `0_875` |
-| `medium` | `1_000` |
-| `large` | `1_250` |
-| `extra large` | `1_500` |
-
-#### Object
-
-| Size | Measure |
-| --- | --- |
-| `extra small` | `0_875` |
-| `small` | `1_125` |
-| `medium` | `1_375` |
-| `large` | `1_625` |
-| `extra large` | `1_875` |
-
-These are authored rules, not exported values, so they are written here and not left to `npm run tokens:report`. This is now the only copy: `stylos-text-sizing` restated them and has been removed.
-
-### FND-TYPOGRAPHY-09 — Only Element and Object will ever share a profile
-
-**MUST.** No architectural level other than Element and Object gains a shared size/text profile.
-
-Why: it is the boundary FND-SIZING-08 draws for sizing, for the same reason. The typography of every other level is documented per component in `docs/components/`.
+Paragraph spacing is a separate part of a wrapping text style, expressed through `font/paragraph spacing` tokens. It describes the distance between paragraphs, rather than letter spacing or line height.
 
 ## Open
 
-- **The display width axis, in two halves.** The heading styles in Figma set Georama's width axis to 110, and `text.css` already says `font-stretch: 110%`. But the committed woff2 subsets under `assets/fonts/` were built without the `wdth` axis, so a browser renders headings at normal width and gives no warning. Two decisions are pending, in this order: first *whether* display keeps the 110 width at all (Artur is reviewing examples, 2026-09-06), and only then a re-subset of Georama with the axis. Nothing is blocked by it: everything else about a heading (size, leading, `weight/strong`, the family itself) renders as the contract says; only the extra width is missing. If 110 is withdrawn, the fix is made in Figma and followed by a new read of the styles, and the `font-stretch` line disappears on the next build.
+- **Display width.** Whether headings keep an expanded display width remains open. The current representations and the implementation gap are documented in [Figma typography](../../figma/typography.md#display-width) and [frontend heading width](../../packages/ui/README.md#heading-width); the typeface family, measure and weight choices are already defined above.

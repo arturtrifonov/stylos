@@ -29,6 +29,18 @@ Both `kind: text` (textual content) and `kind: string` (a non-text string value 
 
 These conversions are implemented in `tools/build-ui-types.mjs`; they change spelling, not the property's meaning.
 
+## Typography exports
+
+The global contract is [Typography](../../docs/foundations/typography.md). `npm run ui:generate` projects the recorded styles in [`figma/text-styles.yaml`](../../figma/text-styles.yaml) to `dist/text.css`, with one class per style: `text/base/medium` becomes `.stylos-text-base-medium`, and `heading/h2` becomes `.stylos-heading-h2`. Link the token and font exports alongside the text stylesheet.
+
+A style's paragraph spacing is exposed as `--stylos-paragraph-spacing`. The stylesheet does not add paragraph margins automatically; the consumer applies this property to its paragraph layout. Case metadata becomes `text-transform`, and width metadata becomes `font-stretch`.
+
+A theme replacing the family tokens supplies its own compatible font faces. Weight values remain shared role tokens under FND-TYPOGRAPHY-05; font substitution does not introduce arbitrary component weights.
+
+### Heading width
+
+The recorded heading styles request `font-stretch: 110%`, but the shipped Georama subsets do not provide the `wdth` axis and `FONT_FACES` declares normal stretch. The requested expansion therefore does not match the current font delivery. Whether to retain expanded display width remains open in [Typography](../../docs/foundations/typography.md#open). Keeping it requires compatible font assets and face declarations; removing it requires an updated style record before regenerating `text.css`.
+
 ## Adding a component
 
 Per SPEC 0009 §5, contract first: the entry's `api` is corrected to describe the web component in the same session the `.svelte` is written. Then a directory under `src/components/` named by the entry's slug, the authored CSS and wrapper, an export in `src/index.ts` — and the generators produce the props type and the workshop story.

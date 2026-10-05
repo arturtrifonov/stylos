@@ -6,8 +6,8 @@
 //
 //   npm run ui:generate    (after tokens:css, whose custom properties it reads)
 //
-// One class per recorded style, named by the style's slug: "text/normal/medium"
-// → .stylos-text-normal-medium. Every declaration is a var() reference into
+// One class per recorded style, named by the style's slug: "text/base/medium"
+// → .stylos-text-base-medium. Every declaration is a var() reference into
 // tokens.css — the same projection discipline as tokens:css itself, no value
 // improved on the way through. `text case: uppercase` becomes text-transform;
 // a width off 100 becomes font-stretch. Paragraph spacing has no

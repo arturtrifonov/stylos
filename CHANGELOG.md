@@ -4,6 +4,13 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-05 (typography review)
+
+- **Typography selects all four line-height families and pairs matching measure keys.** Font-size ratios refer to the font-size base, independently of the spacing base. Typeface roles remain distinct even when their family values match; tracking follows the text style's case.
+- **System styling changes shared weight and family tokens.** Arbitrary local weights are not allowed. Georama and JetBrains Mono are defaults with English support; a theme can replace families for its required languages.
+- **Element and Object profiles are optional starting points (MAY).** The single-primary-text-role restriction and the prohibition on profiles for other levels are removed; component contracts describe their chosen mappings without claiming mandatory level defaults. Draft rule IDs become consecutive `FND-TYPOGRAPHY-01`–`FND-TYPOGRAPHY-08` under RUL-13/RUL-14, and current citations follow them.
+- **Figma and frontend typography details leave the global guide.** Variable/style representation moves to `figma/typography.md`; the package guide describes CSS classes, consumer-applied paragraph spacing and the heading-width delivery gap. Historical variable-name prose is removed. The display-width decision remains open and Typography remains Draft.
+
 ### Changed — 2026-10-04 (spacing review)
 
 - **Spacing names ratios to an 8 px base, including fractional steps.** Gap examples replace size-role examples; the guide points to the token record for the supported set and resolved values.
