@@ -249,7 +249,7 @@ Typography has no separate block. Size, gap, font size and line height change to
 
 ### `motion`
 
-Present only on a component whose animation is part of what it is, rather than a transition applied to it. Loader is the case: it has one property, that property exists only to be stepped through, and a static Loader is not a Loader.
+Present only on a component whose animation is part of what it is, rather than a transition applied to it. Loader is the case: its Figma prototype steps an angle, while its public API has no properties and its contract describes continuous rotation.
 
 ```yaml
 motion:
@@ -258,9 +258,15 @@ motion:
   intent: "…"
 ```
 
-**Durations, easing curves and per-step timings do not belong here.** Those are how one implementation runs the idea — a Figma prototype today, CSS tomorrow — and the numbers currently in the file are not a decision anyone made. Recording them turns whatever the prototype happens to be doing into a specification, and the first thing that specification would enshrine is a mistake.
+**Amended 2026-10-06 — shared motion parameters are system decisions.** The owner approved system-defined parameters and recommended profiles by the kind and extent of a change, with the component choosing its treatment. FND-MOTION-03, FND-MOTION-14 and FND-MOTION-15 define those boundaries; this guide defines their recording format.
+
+**The current block still has exactly three fields: `drives`, `loop`, `intent`.** Raw durations, curve definitions and per-step timings are not accepted fields. Shared values will live in the canonical parameter record rather than being copied into this block; they are not automatically implementation-owned. A Figma prototype's current timing does not establish an agreed system value.
 
 What the block *does* record is the part the contract owns: that the component is animated at all, that it loops, which property carries it, and why a stopped instance is wrong. Everything the accessibility fields need — that motion starts on its own and must yield to a reduced-motion preference — hangs off that and nothing more.
+
+For an intrinsic animation, the choice can be stated in `motion.intent`. For a transition-only component, the existing `notes` field can record the choice and its rationale until a structured transition representation is agreed. This does not introduce new `motion` keys or a new public property.
+
+**Open:** agree the structured format for transition profiles, visual delays and parameter references, then update the schema, validation and generated pages together.
 
 ### `figma_notes`
 

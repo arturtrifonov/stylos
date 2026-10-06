@@ -4,6 +4,12 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-06 (motion review)
+
+- **Motion is Confirmed in the guide and foundations index.** The duration model uses a fixed `micro` role for small linear changes and enter/exit pairs for small, medium and large transitions, with a shorter exit in each pair. Recommended profiles distinguish local changes, surfaces and continuous rotation; opacity, translation and scale may be combined.
+- **Shared motion parameters are system decisions.** The easing roles are `linear`, `enter` and `exit`; numerical values are maintained and tuned in tokens. Travel distances and scale amounts remain component decisions, with shared spatial parameters available when recurring needs justify them. The registry guide and diagnostic wording retain the existing intrinsic-animation schema; structured transition records remain open there.
+- **Motion separates visual delay from behavioural waiting.** Visual sequencing adds its delay after the wait defined by Timing. The guide covers interruption, continuous motion, reduced-motion alternatives and component decisions.
+
 ### Changed — 2026-10-05 (component standard review)
 
 - **Component standard is Confirmed and has a scope.** Remove its header exemption and display its review status on the site. Seven consecutive rules replace the longer standard, covering the contract source, required data, readiness and evidence without historical prose or placeholder sections.

@@ -40,6 +40,8 @@ Contract completeness follows STD-04 and is independent of implementation links.
 
 Canonical public names belong to the registry and naming guide. The correspondence with design names and frontend identifiers is described in [naming.md](docs/foundations/naming.md#3-contract-and-implementation-names); the package documents its exact [name conversion](packages/ui/README.md#name-conversion).
 
+**Amended 2026-10-06 — motion ownership agreed with the owner.** [Motion](docs/foundations/motion.md) is Confirmed: the system owns shared duration, easing and visual-delay parameters, while component contracts choose their treatment from recommended profiles. Numerical values are maintained and tuned in tokens. Shared spatial parameters can be introduced when recurring motion needs justify them. Timing owns behavioural waits and display lifetimes; Motion owns any additional delay within the visual transition. The registry guide owns the recording format and its open representation question.
+
 Authoring values in Figma is current practice, not a permanent commitment; moving them into the repository is an open intention with no date.
 
 The relationship stays **one-directional**: the repository never writes to Figma. Holding the contract here does not change that — it means Figma is *checked against* the contract, not edited from the repository. Reasoning: decision 0001, retired with the rest of `docs/decisions/` and now only in git history (§5).
