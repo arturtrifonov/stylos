@@ -1,4 +1,4 @@
 # Timing
 
 Status: Yet to fill
-Scope: Debounce, autosave, polling, timeouts, automatic dismissal.
+Scope: Behavioural waits, display lifetimes, debounce, autosave, polling, timeouts and automatic dismissal; delays within a visual transition belong in [Motion](../foundations/motion.md).

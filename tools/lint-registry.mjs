@@ -394,8 +394,8 @@ function checkContract(entry, byId, errors, resolveToken, systemVersion) {
       if (!MOTION_FIELDS.includes(key)) {
         errors.push(
           `${file}: motion.${key} is not one of ${MOTION_FIELDS.join(", ")} — durations, easing ` +
-            `curves and per-step timings are how one implementation runs the idea, and recording ` +
-            `them here makes a specification out of whatever the prototype happens to do`
+            `curves and per-step timings are not fields of the current intrinsic-animation block; ` +
+            `shared parameters and transition profiles are described in docs/foundations/motion.md`
         );
       }
     }

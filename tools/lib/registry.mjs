@@ -31,10 +31,10 @@ export const SIZING_AXES = ["hug", "fixed", "fill"];
 export const LINE_HEIGHT_FAMILIES = ["text", "string", "heading", "code"];
 
 // The whole key set of the `motion` block, and it is closed on purpose.
-// Durations, easing curves and per-step timings are how one implementation
-// runs the idea; recording them here would turn whatever the Figma prototype
-// happens to be doing into a specification. What the block owns is that the
-// component is animated at all, that it loops, and which property carries it.
+// Shared duration/easing parameters belong to the system's canonical record.
+// This block still describes intrinsic animation only: that it loops, which
+// property carries it, and its intent. A structured transition/profile record
+// remains an open decision in docs/components/registry/README.md; no keys are added here.
 export const MOTION_FIELDS = ["drives", "loop", "intent"];
 
 // The two Figma files that hold components, from figma/README.md. A node id
