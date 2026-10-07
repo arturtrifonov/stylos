@@ -24,11 +24,6 @@ do_not_use_when:
   -
     text: "The change takes effect on click. A checkbox is selected now and applied later."
     instead: "Toggle Input"
-children:
-  - "Label"
-  - "Icon"
-  - "Badge"
-  - "Loader"
 parents:
   - "Dropdown Item Checkbox"
   - "Accordion"
@@ -109,26 +104,21 @@ api:
     name: "state"
     kind: "variant"
     default: "default"
-    description: "Pointer interaction and availability. Hover and active change the box surface only; disabled changes the surface, drops the border to the default role and dims the mark."
+    description: "Availability of the native control. Pointer hover, pressing and keyboard focus are derived by the browser. disabled prevents changes, keyboard focus and form submission. A disabled fieldset has the same effect."
     values:
       -
         value: "default"
       -
-        value: "hover"
-      -
-        value: "active"
-      -
         value: "disabled"
-        note: "Not the same as read-only, which the component does not have: read-only means shown but not editable, disabled means not applicable now."
   -
     name: "is checked"
     kind: "variant"
     default: "false"
-    description: "Selection. The unchecked box is a surface and a border; the checked and mixed box is a filled surface with no border and a mark."
+    description: "Selection, bindable in Svelte through bind:isChecked. Click or Space toggles false/true; activating mixed selects true. Form reset restores the selection supplied at mount, including mixed. The unchecked box is a surface and a border; the checked and mixed box is a filled surface with no border and a mark."
     values:
       -
         value: "false"
-        note: "The component has no children at all in this value — there is no hidden mark layer."
+        note: "No selection mark is drawn in this value. The web decoration keeps its surface mounted, with no hidden mark element."
       -
         value: "true"
         note: "Mark is the Check glyph, sized to the full box rather than inset."
@@ -136,21 +126,53 @@ api:
         value: "mixed"
         note: "Some but not all of what this checkbox governs is selected. Not unknown, not loading, not inapplicable. Identical to true in every other respect; only the glyph differs, and it is Dash."
   -
-    name: "is focused"
+    name: "id"
+    kind: "string"
+    description: "The native input id, used by a surrounding label or other association. The consumer keeps ids unique."
+  -
+    name: "name"
+    kind: "string"
+    default: ""
+    description: "Form field name. An empty name leaves the control out of submitted form data."
+  -
+    name: "value"
+    kind: "string"
+    default: "on"
+    description: "Form value submitted when checked and enabled. false and mixed submit no value."
+  -
+    name: "form"
+    kind: "string"
+    default: ""
+    description: "An optional form id for a control outside its form. Otherwise the enclosing form owns the input."
+  -
+    name: "accessible name"
+    kind: "text"
+    default: ""
+    description: "The input's accessible name, mapped to aria-label. Leave empty when an associated HTML label already supplies the name. The component draws no visible label."
+  -
+    name: "description ids"
+    kind: "string"
+    default: ""
+    description: "Space-separated ids of persistent explanatory content, mapped to aria-describedby. These descriptions supplement the accessible name."
+  -
+    name: "is required"
     kind: "boolean"
-    default: "false"
-    description: "Whether the control holds keyboard focus. A ring is drawn outside it and nothing else changes. It is a boolean rather than a value of state because focus coexists with hover, active and checked instead of replacing them."
+    default: false
+    description: "Native form validity requires a checked value. Unchecked and mixed fail this requirement; no separate error appearance is supplied."
 limitations:
-  - "No validation property: a required unticked checkbox cannot show an error."
+  - "Native required validity is supported, but there is no validation appearance; the consumer supplies persistent error copy and associates it through description ids."
   - "No read-only value. Disabled is the only unavailable state."
 figma_notes:
+  - "Verified on 2026-10-07 on Checkbox page 238:47895, component set 4349:1753. The 60 size/state/selection combinations describe visual samples; web state exposes default/disabled, while hover/active/focus are derived by native input and CSS. Figma is focused is a drawing control rather than a public web property."
+  - "Form identity, value, accessible naming, descriptions and required validity are web integration properties with no extra visual variants. Existing Figma instances need no migration. Native indeterminate state represents mixed; the web component keeps checked false while mixed."
+  - "The Check and Dash glyphs are exact Figma SVG exports at each supported size. They differ from the current Material Symbols preset, so the component retains them as internal masks with shared text colours; no public icon choice is introduced."
   - "Focus is a boolean toggling a Focus ring instance rather than a value of state, which keeps the variant count where it is instead of multiplying it."
   - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4349-1753"
-  last_verified: "2026-09-05"
-notes: "children and parents are carried from the pre-split entry and have not yet been divided between the three family members — that division is a judgement, not a transcription."
+  last_verified: "2026-10-07"
+notes: "Hover, pressing and selection treatment transition surface colour and border with duration/micro and easing/linear; the glyph and selection semantics change immediately, without movement or delay. Reduced motion makes these colour changes immediate. The local-state profile keeps a small control responsive and interrupted transitions continue from their current presentation. Historical unused itemSpacing bindings in Figma use Gap/g-6, Gap/g-8 or Gap/g-10; all visual children are positioned absolutely, so these gaps do not affect its footprint. The visual surface accepts no content children. Surrounding labels and copy belong to the consumer or the Checkbox Label/Text compositions. The historical parents list is carried from the pre-split entry."
 import:
   batch: 1
   ready: true

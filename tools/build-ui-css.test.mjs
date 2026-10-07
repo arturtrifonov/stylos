@@ -75,3 +75,16 @@ test("renderAggregate names the version and the components in the header", () =>
   assert.match(out, /@stylos\/ui 0\.2\.0 — 1 component: Badge\./);
   assert.match(out, /\/\* Badge \*\/\n\.stylos-badge \{\}/);
 });
+
+test("independent CSS embeds exact local SVG masks and needs no adjacent assets", () => {
+  const root = scratchRoot([{id:"Checkbox Input",slug:"checkbox-input",css:'.mark { mask-image: url("./assets/check.svg"); }'}]);
+  const assets = path.join(root, "packages/ui/src/components/checkbox-input/assets");
+  mkdirSync(assets);
+  const svg = '<svg width="16" height="16" viewBox="0 0 16 16"><path d="M0 0L16 16"/></svg>';
+  writeFileSync(path.join(assets,"check.svg"),svg);
+  buildUiCss(root);
+  const css=readFileSync(path.join(root,OUT_DIR,"checkbox-input.css"),"utf8");
+  assert.ok(css.includes(`url("data:image/svg+xml,${encodeURIComponent(svg)}")`));
+  assert.ok(!css.includes('./assets/'));
+  assert.equal(readFileSync(path.join(assets,"check.svg"),"utf8"),svg);
+});

@@ -15,3 +15,5 @@ export { default as Loader } from "./components/loader/Loader.svelte";
 export type { LoaderProps } from "./components/loader/props.ts";
 export { default as Tooltip } from "./components/tooltip/Tooltip.svelte";
 export type { TooltipProps } from "./components/tooltip/props.ts";
+export { default as CheckboxInput } from "./components/checkbox-input/CheckboxInput.svelte";
+export type { CheckboxInputProps } from "./components/checkbox-input/props.ts";

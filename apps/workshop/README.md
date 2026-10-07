@@ -20,3 +20,9 @@ Tooltip's default and variant stories contain a real button to hover or focus.
 `Wrapping description` shows a consumer-chosen width; `Appearance` deliberately
 shows the CSS surface without behaviour. `Interaction` runs browser assertions
 for the tooltip's interaction and description association.
+
+Checkbox Input's generated stories render a native named checkbox.
+`Interaction` exercises keyboard, mixed selection, binding, labels, form data,
+disabled fieldsets, required validity and reset. `Visual states` shows all
+60 Figma size/state/selection combinations as static CSS samples and checks
+their dimensions. Hover, active and focus are derived on live inputs.

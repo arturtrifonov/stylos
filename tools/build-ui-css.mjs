@@ -6,7 +6,7 @@
 //
 //   npm run ui:generate    (with tokens:css, the types and the stories)
 //
-// A copy, in the same sense tokens:css is a projection: no transform, no
+// A projection, in the same sense tokens:css is a projection: no geometry transform, no
 // minification, no autoprefixing — a build that improved a value on the way
 // through would be a second source of it. Neither output contains tokens.css:
 // a consumer links tokens separately, because that is the file a client theme
@@ -15,7 +15,8 @@
 // Only built components are exported — the same rule as the other two
 // generators, through the same `builtComponents`. A component directory
 // without its authored CSS fails the build rather than shipping an aggregate
-// quietly one component short.
+// quietly one component short. Local SVG mask URLs are embedded byte-for-byte
+// so the stylesheet is self-contained without modifying their geometry.
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
@@ -23,6 +24,7 @@ import { fileURLToPath } from "node:url";
 
 import { loadRegistry, slugPath } from "./lib/registry.mjs";
 import { builtComponents, COMPONENTS_DIR } from "./build-ui-types.mjs";
+import { componentCss } from "./lib/component-css.mjs";
 
 export const OUT_DIR = "packages/ui/dist/css";
 export const AGGREGATE = "stylos.css";
@@ -67,7 +69,7 @@ export function buildUiCss(root) {
           `a built component authors its CSS (SPEC 0009 §2)`
       );
     }
-    const css = readFileSync(source, "utf8");
+    const css = componentCss(root, slug);
     writeFileSync(path.join(outDir, `${slug}.css`), css);
     written.push(`${OUT_DIR}/${slug}.css`);
     return { id: entry.id, css };

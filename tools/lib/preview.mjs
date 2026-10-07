@@ -25,6 +25,7 @@ import { slugPath } from "./registry.mjs";
 import { readNaming } from "../check-tokens.mjs";
 import { buildCss } from "../build-css.mjs";
 import { builtComponents } from "../build-ui-types.mjs";
+import { componentCss } from "./component-css.mjs";
 
 const ESCAPES = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ESCAPES[c]);
@@ -84,6 +85,8 @@ export function sampleHtml(entry, props = {}) {
       // String properties need their own renderer; they are not text content.
       if (entry.id === "Tooltip" && name === "content width") {
         styles.push(`--_stylos-tooltip-width:${value}`);
+      } else if (entry.id === "Checkbox Input" && ["id", "name", "value", "form", "description ids"].includes(name)) {
+        // Form integration does not change a static visual surface.
       } else if (entry.id !== "Icon" || name !== "name") {
         throw new Error(`preview: "${entry.id}" has no renderer for string property "${name}"`);
       }
@@ -121,6 +124,10 @@ export function sampleHtml(entry, props = {}) {
     const showsAdditional = (props.validation && props.validation !== "off") || props["has additional text"];
     const additional = showsAdditional ? `<span>${esc(props["additional text"] ?? "Additional text")}</span>` : "";
     return `<label class="${cls}"${attr}>${esc(props["label text"] ?? "Label")}${marker}${additional}</label>`;
+  }
+
+  if (entry.id === "Checkbox Input") {
+    return `<span class="${cls}"${attr} aria-hidden="true"><span class="stylos-checkbox-input-surface"></span></span>`;
   }
 
   return `<span class="${cls}"${attr}>${esc(content)}</span>`;
@@ -169,7 +176,7 @@ export function buildPreviewAssets(root, entries) {
       const slug = slugPath(entry.id);
       return [
         entry.id,
-        readFileSync(path.join(root, "packages/ui/src/components", slug, `${path.basename(slug)}.css`), "utf8"),
+        componentCss(root, slug),
       ];
     })
   );
