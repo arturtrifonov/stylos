@@ -13,7 +13,8 @@ at the repository root regenerates everything and starts Storybook on port 6006.
 Components needing a surrounding composition use an authored fixture in
 `stories/fixtures/<Component>Example.svelte`. The generator passes each
 registry case's args to that fixture, so Controls and variant coverage remain
-generated. Regeneration preserves the watched directory and removes stale
+generated. Control kinds and variant vocabularies are projected from the registry,
+including props with no default; they do not depend on docgen inference. Regeneration preserves the watched directory and removes stale
 story files individually, keeping Storybook hot updates working.
 
 Tooltip's default and variant stories contain a real button to hover or focus.

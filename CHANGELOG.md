@@ -8,7 +8,7 @@ All notable changes to the Stylos Design System project (foundations, components
 
 - Add Checkbox Input with five verified sizes and bindable unchecked, checked and mixed selection. A native input supplies keyboard, label activation, disabled/required behaviour and form participation; the framework-free adapter synchronises mixed selection and reset, including cancellation.
 - Replace drawing-only hover, active and focus props with browser interaction. Record web integration properties and Figma representation differences in the contract, verified against all sixty visual variants.
-- Preserve the exact Figma Check/Dash assets as token-coloured masks. CSS generation and documentation previews embed their unchanged SVG bytes, keeping independent CSS self-contained. Storybook covers live form interactions and the full visual matrix; the component documentation renders its real surface.
+- Preserve the exact Figma Check/Dash assets as token-coloured masks. CSS generation and documentation previews embed their unchanged SVG bytes, keeping independent CSS self-contained. Storybook covers live form interactions and the full visual matrix; the component documentation renders its real surface. Generated Controls use registry vocabularies, including bindable selection and optional form identity.
 
 ### Changed — 2026-10-07 (Tooltip behaviour and Motion tokens)
 
