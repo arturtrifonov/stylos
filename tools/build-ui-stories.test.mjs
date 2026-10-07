@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { defaultArgs, renderStories } from "./build-ui-stories.mjs";
+import { defaultArgs, renderStories, storyArgTypes } from "./build-ui-stories.mjs";
 
 const badge = {
   id: "Badge",
@@ -22,6 +22,17 @@ const badge = {
     },
   ],
 };
+
+test("Controls use registry variant vocabularies and include optional fields", () => {
+  const args = storyArgTypes({api: [
+    {name:"is checked",kind:"variant",values:[{value:"false"},{value:"true"},{value:"mixed"}]},
+    {name:"id",kind:"string"},
+    {name:"is required",kind:"boolean"},
+  ]});
+  assert.deepEqual(args.isChecked, {control:"inline-radio",options:["false","true","mixed"]});
+  assert.deepEqual(args.id, {control:"text"});
+  assert.deepEqual(args.isRequired, {control:"boolean"});
+});
 
 test("a behaviour fixture receives the generated story args and retains every variant case", () => {
   const rendered = renderStories(badge, { fixture: true });

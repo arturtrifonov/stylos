@@ -13,10 +13,19 @@ at the repository root regenerates everything and starts Storybook on port 6006.
 Components needing a surrounding composition use an authored fixture in
 `stories/fixtures/<Component>Example.svelte`. The generator passes each
 registry case's args to that fixture, so Controls and variant coverage remain
-generated. Regeneration preserves the watched directory and removes stale
+generated. Control kinds and variant vocabularies are projected from the registry,
+including props with no default; they do not depend on docgen inference. Regeneration preserves the watched directory and removes stale
 story files individually, keeping Storybook hot updates working.
 
 Tooltip's default and variant stories contain a real button to hover or focus.
 `Wrapping description` shows a consumer-chosen width; `Appearance` deliberately
 shows the CSS surface without behaviour. `Interaction` runs browser assertions
 for the tooltip's interaction and description association.
+
+Checkbox Input's generated stories render a native named checkbox.
+`Interaction` exercises keyboard, mixed selection, binding, labels, form data,
+disabled fieldsets, required validity and reset. `Visual states` shows all
+60 Figma size/state/selection combinations as static CSS samples and checks
+their dimensions. Hover, active and focus are derived on live inputs.
+
+Checkbox Label and Text have generated stories and Controls from their contracts. `Compositions/Checkbox family` includes Interaction, all 60 Label visual states, all 60 Text visual states, wrapping consent, native label/keyboard/form/reset behaviour and an independent inline link.

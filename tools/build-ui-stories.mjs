@@ -17,7 +17,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { loadRegistry, slugPath } from "./lib/registry.mjs";
-import { builtComponents, camelName, pascalName } from "./build-ui-types.mjs";
+import { builtComponents, camelName, pascalName, fieldFor } from "./build-ui-types.mjs";
 
 export const STORIES_DIR = "apps/workshop/stories/generated";
 
@@ -42,6 +42,23 @@ export function defaultArgs(entry) {
 function literal(args) {
   const fields = Object.entries(args).map(([key, value]) => `${key}: ${JSON.stringify(value)}`);
   return `{{ ${fields.join(", ")} }}`;
+}
+
+// Docgen can infer bindable union props as plain strings. The registry owns
+// the vocabulary, so Controls must not depend on that inference.
+export function storyArgTypes(entry) {
+  const soleSlot = entry.api.filter(property => property.kind === "slot").length === 1;
+  return Object.fromEntries(entry.api.map(property => {
+    const { propName } = fieldFor(property, { soleSlot });
+    const control = property.kind === "variant" ? "inline-radio"
+      : property.kind === "boolean" ? "boolean"
+      : ["text", "string"].includes(property.kind) ? "text" : false;
+    return [propName, {
+      control,
+      ...(property.kind === "variant" ? { options: property.values.map(row => row.value) } : {}),
+      ...(property.description ? { description: property.description } : {}),
+    }];
+  }));
 }
 
 /**
@@ -127,6 +144,7 @@ ${fixture ? `  import Example from "../fixtures/${component}Example.svelte";\n` 
   const { Story } = defineMeta({
     title: "Components/${entry.name}",
     component: ${component},
+    argTypes: ${JSON.stringify(storyArgTypes(entry))},
 ${fixture ? `    render: template,\n` : ""}
     tags: ["autodocs"],
     parameters: {

@@ -47,6 +47,42 @@ Per SPEC 0009 §5, contract first: the entry's `api` is corrected to describe th
 
 ## Accessibility implementation and verification
 
+### Checkbox Input
+
+`CheckboxInput` renders a native checkbox with a decorative surface. Supply
+`accessibleName`, or an `id` associated with a surrounding HTML label. A name
+from surrounding row content remains the consumer's responsibility.
+
+```svelte
+<script>
+  let selected = $state("false");
+</script>
+
+<CheckboxInput name="rows" value="42" accessibleName="Select row 42"
+  size="medium" bind:isChecked={selected} />
+```
+
+Click and Space toggle the value; activating `mixed` selects `true`.
+`mixed` uses the native `indeterminate` property with checked false, so it
+submits no value. Checked, enabled controls submit their `name`/`value`.
+`state="disabled"` and disabled fieldsets prevent activation and submission.
+`form` can name an external form. `isRequired` uses native validity; associate
+persistent error copy with `descriptionIds` when validation fails.
+
+Form reset restores the selection supplied at mount, including mixed, and
+updates the bound value. A cancelled reset leaves it unchanged. Hover,
+pressing and focus are browser states, rather than public props. Forced
+colours use the browser's native appearance. Surface colours and borders use
+Motion micro/linear, with immediate changes under reduced motion. The 16 and 20 px sizes require
+the target-area conditions recorded in the contract.
+
+The `Interaction` Storybook story checks keyboard, label activation, mixed
+selection, binding, disabled fieldsets, form data, required validity and
+reset. `Visual states` checks dimensions of all 60 Figma combinations.
+The exact Figma glyphs are internal masks, retaining their original sizes;
+the independent CSS export embeds their SVG bytes and needs no asset folder.
+The assistive-technology matrix below remains open.
+
 ### Tooltip
 
 The trigger is the single root element in the child snippet. Keep its own
@@ -100,3 +136,20 @@ The proof interface is assessed separately for content, composition and complete
 ### Open
 
 - **Assistive-technology support matrix:** select the screen-reader and browser pairs before the Stage 5 manual checks are designed, and record them here with the tested versions and results. The matrix is not yet chosen, and no screen-reader support is claimed from the registry alone. The browser feature floor remains in [ARCHITECTURE.md](../../ARCHITECTURE.md#7-conventions).
+
+### Checkbox Label and Checkbox Text
+
+Both compose `CheckboxInput`, default to medium and expose the same form, selection and description properties. Visible text supplies the name; `accessibleName` may override long copy. The associated input id is generated per instance unless the consumer supplies `id`.
+
+```svelte
+<CheckboxLabel labelText="Send release notes" name="notes" bind:isChecked />
+<div class="consent-column">
+  <CheckboxText name="consent" isRequired bind:isChecked={consent}>
+    I agree to the <a href="/privacy">privacy policy</a>.
+  </CheckboxText>
+</div>
+```
+
+Label hugs its single line and uses emphasis weight with string line height. Text fills the parent width, wraps using text line height and centres the box on its first line; choose the column width in the surrounding layout. Text's optional `children` snippet replaces `labelText`. Supply phrasing content such as text, emphasis and anchors, with no nested labels or additional controls. Native anchor activation follows the link without toggling selection, including inside a disabled option; a disabled checkbox does not disable an independent link. Supplementary copy belongs outside the label and is connected through `descriptionIds`; required validity does not add an error appearance.
+
+Hover and pressing across the full label update the input's existing Motion surface transitions. Native disabled fieldsets also disable the input and copy. The CSS exports for Label/Text include the shared layout and Checkbox Input styles; link tokens and fonts separately as usual.

@@ -24,11 +24,6 @@ do_not_use_when:
   -
     text: "The change takes effect on click. A checkbox is selected now and applied later."
     instead: "Toggle Label"
-children:
-  - "Label"
-  - "Icon"
-  - "Badge"
-  - "Loader"
 parents:
   - "Accordion"
   - "Asset"
@@ -93,7 +88,7 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
+    default: "medium"
     description: "Drives the box, the text measure and the gap together. They are not separately settable."
     values:
       -
@@ -120,14 +115,10 @@ api:
     name: "state"
     kind: "variant"
     default: "default"
-    description: "Pointer interaction and availability. The visual change happens in the box; the label follows only on disabled, and selection does not change the label at all."
+    description: "Availability of the native input; hover, pressing and focus are derived by the browser across the whole label. The visual change happens in the box; the label follows only on disabled, and selection does not change the label at all."
     values:
       -
         value: "default"
-      -
-        value: "hover"
-      -
-        value: "active"
       -
         value: "disabled"
         note: "The label takes the disabled text role along with the box. Removes the control from tab order."
@@ -135,7 +126,7 @@ api:
     name: "is checked"
     kind: "variant"
     default: "false"
-    description: "Selection. Does not affect the label."
+    description: "Bindable selection through bind:isChecked; click or Space toggles false/true and activating mixed selects true. Reset restores the initial value. Does not affect the label."
     values:
       -
         value: "false"
@@ -148,7 +139,7 @@ api:
     name: "label text"
     kind: "text"
     default: "Checkbox"
-    description: "One line, sentence case, no terminal period — it is an option, not a sentence. Wrapping is neither supported nor prevented: long text silently widens the component past its container."
+    description: "One line, sentence case, no terminal period — it is an option, not a sentence. Wrapping is prevented: long text widens the component past its container. Use Checkbox Text when width is constrained."
     examples:
       -
         verdict: "do"
@@ -165,22 +156,52 @@ api:
         props:
           "label text": "I agree to the processing of my personal data in accordance with the privacy policy"
   -
-    name: "is focused"
+    name: "id"
+    kind: "string"
+    description: "Optional native input id. The component generates a stable instance id when omitted; consumers keep supplied ids unique."
+  -
+    name: "name"
+    kind: "string"
+    default: ""
+    description: "Form field name. An empty name leaves the control out of submitted form data."
+  -
+    name: "value"
+    kind: "string"
+    default: "on"
+    description: "Form value submitted when checked and enabled. false and mixed submit no value."
+  -
+    name: "form"
+    kind: "string"
+    default: ""
+    description: "An optional form id for a control outside its form. Otherwise the enclosing form owns the input."
+  -
+    name: "accessible name"
+    kind: "text"
+    default: ""
+    description: "Optional accessible-name override mapped to aria-label. Leave empty for the visible label to supply the name; use a concise override for long copy."
+  -
+    name: "description ids"
+    kind: "string"
+    default: ""
+    description: "Space-separated ids of persistent explanatory content, mapped to aria-describedby. These descriptions supplement the accessible name."
+  -
+    name: "is required"
     kind: "boolean"
-    default: "false"
-    description: "Whether the control holds keyboard focus. A ring is drawn outside it and nothing else changes. It is a boolean rather than a value of state because focus coexists with hover, active and checked instead of replacing them."
+    default: false
+    description: "Native form validity requires a checked value. Unchecked and mixed fail this requirement; no separate error appearance is supplied."
 limitations:
-  - "No validation property: a required unticked option cannot show an error inline."
+  - "Native required validity is supported; there is no error appearance. Associate consumer-supplied error copy through description ids."
   - "No label-position property. The label is always trailing."
   - "No text style on the label — every typographic property is bound to a variable directly, so a consumer cannot restyle it by swapping a style."
 figma_notes:
+  - "Verified on 2026-10-07: all 60 size/state/selection variants, gaps, typography, first-line alignment and Checkbox Input instance references. Web defaults use medium; drawing-only hover/active/focus are derived natively. Form integration properties have no extra Figma variants."
   - "Focus is a boolean toggling a Focus ring instance rather than a value of state, which keeps the variant count where it is instead of multiplying it."
   - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4327-34970"
-  last_verified: "2026-09-05"
-notes: "children and parents are carried from the pre-split entry and have not yet been divided between the three family members — that division is a judgement, not a transcription."
+  last_verified: "2026-10-07"
+notes: "Composes Checkbox Input and shares its native behaviour and Motion treatment. The visible text supplies the accessible name unless accessible name overrides it. Legacy children are removed: Label, Badge and Loader are not content children of this input. The historical parents list is retained."
 import:
   batch: 1
   ready: true

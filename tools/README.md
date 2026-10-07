@@ -191,7 +191,7 @@ Not to be confused with `build-icons.mjs` above: that one draws the set out of t
 
 ## `build-ui-css.mjs`
 
-The independent CSS export (SPEC 0010 §2.2), run by `npm run ui:generate` after the two generators above. It copies each built component's authored `src/components/<name>/<name>.css` to `packages/ui/dist/css/<name>.css` unchanged, and concatenates all of them, in registry order, into `dist/css/stylos.css` with a generated header naming the version and the components inside. No transform, no minification, no autoprefixing — a build that improved a value on the way through would be a second source of it. Neither output contains `tokens.css`: a consumer links tokens separately, because that is the file a client theme overrides. A component directory without its authored CSS fails the build.
+The independent CSS export (SPEC 0010 §2.2), run by `npm run ui:generate` after the two generators above. It copies each built component's authored `src/components/<name>/<name>.css` to `packages/ui/dist/css/<name>.css`, embedding local SVG mask URLs as data URLs with their original bytes, and concatenates all of them, in registry order, into `dist/css/stylos.css` with a generated header naming the version and the components inside. No geometry or token transform, no minification, no autoprefixing — a build that improved a value on the way through would be a second source of it. Neither output contains `tokens.css`: a consumer links tokens separately, because that is the file a client theme overrides. A component directory without its authored CSS fails the build.
 
 The CSS build fails loudly on: two token names that slugify to one custom property, naming both; a hue-named role bound off the hue it names; a `var()` referencing a name the file does not define; the two scopes declaring different sets of properties; a string token with no authored fallback stack; and a token in `tokens/` that did not reach the output — there is no allowlist and no pruning by current usage, because that would make the CSS a function of the component set rather than of the token set.
 
@@ -217,3 +217,5 @@ Not built yet. The reasoning was decision 0001; what survives of it is the one-d
 
 - A Figma REST API script to pull variable snapshots and/or component screenshots automatically, now that a real component inventory exists to point it at (`docs/components/registry/`).
 - Link/heading/duplicate-rule validation across skill sources (not implemented — `build-skills.mjs` currently only validates structural completeness, not cross-skill rule conflicts).
+
+Local relative CSS imports are expanded for independent component styles and documentation previews. This lets Checkbox Label/Text share the option layout and Input's original SVG masks while each CSS export remains self-contained. Import cycles fail the build.
