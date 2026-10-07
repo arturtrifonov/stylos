@@ -9,3 +9,14 @@ npm run workshop
 ```
 
 at the repository root regenerates everything and starts Storybook on port 6006. `npm run workshop:build` is the CI build.
+
+Components needing a surrounding composition use an authored fixture in
+`stories/fixtures/<Component>Example.svelte`. The generator passes each
+registry case's args to that fixture, so Controls and variant coverage remain
+generated. Regeneration preserves the watched directory and removes stale
+story files individually, keeping Storybook hot updates working.
+
+Tooltip's default and variant stories contain a real button to hover or focus.
+`Wrapping description` shows a consumer-chosen width; `Appearance` deliberately
+shows the CSS surface without behaviour. `Interaction` runs browser assertions
+for the tooltip's interaction and description association.

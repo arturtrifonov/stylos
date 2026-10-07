@@ -4,6 +4,14 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-07 (Tooltip behaviour and Motion tokens)
+
+- Import the supplied Motion export as eleven canonical tokens, preserving duration units, easing curves and Figma variable ids. Import, verification, CSS projection and the token report support duration/easing values; no delay values are invented.
+- Tooltip now takes a single trigger child, manages hover and keyboard focus through Zag.js, closes on Escape and other dismissal events, and positions its overlay below the trigger by default with a `gap/g-0_500` separation, adjusting at viewport edges. Existing trigger descriptions and handlers are preserved. Standalone use migrates to a Tooltip wrapping the described control.
+- Tooltip fades with the shared compact-surface Motion profile, reverses interrupted transitions and switches immediately with reduced motion. Behavioural hover waits remain separate, pending shared Timing rules.
+- Generated Tooltip stories use a real trigger while retaining registry-derived Controls and variant coverage. Separate stories cover static appearance, wrapping content and browser interaction checks; regeneration preserves Storybook's watched directory.
+- The documentation preview renderer handles Tooltip's content width as a CSS setting, keeping its default preview and variant samples visible after the API change.
+
 ### Changed — 2026-10-06 (motion review)
 
 - **Motion is Confirmed in the guide and foundations index.** The duration model uses a fixed `micro` role for small linear changes and enter/exit pairs for small, medium and large transitions, with a shorter exit in each pair. Recommended profiles distinguish local changes, surfaces and continuous rotation; opacity, translation and scale may be combined.

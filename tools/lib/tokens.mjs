@@ -17,7 +17,7 @@ import { parse } from "./yaml.mjs";
  * @property {string} type
  * @property {string|Map<string,string>|null} id   per mode where they differ
  * @property {string[]} scopes
- * @property {Map<string, string|number>} values     per mode; empty when the token has a ref
+ * @property {Map<string, string|number|Map<string, string|number>>} values per mode; durations carry value and unit
  * @property {Map<string, number>} alpha             per mode, only where < 1
  * @property {Map<string, string>|null} ref          per mode, or a single "default"
  */
@@ -137,7 +137,7 @@ export function themeModes(collections) {
  * An `alpha` on any hop multiplies into the result, which is how a colour
  * reused at reduced opacity keeps its link to the palette.
  *
- * @returns {{value: string|number, alpha: number, chain: string[]}}
+ * @returns {{value: string|number|Map<string, string|number>, alpha: number, chain: string[]}}
  * @throws if a reference does not resolve, or the chain loops
  */
 export function resolve(collections, collectionName, tokenPath, mode) {

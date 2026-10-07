@@ -37,7 +37,8 @@ draws_from:
 # "Value") are gone as of 2026-09-05, which is what makes an export
 # self-identifying: the mode inside the file now says which collection it came
 # from, so a file handed to the wrong --collection is caught by the mode check
-# rather than by the variable-id check behind it.
+# rather than by the variable-id check behind it. The new motion export still
+# carries "Mode 1"; its explicit declaration below preserves that source name.
 collections:
   # Two Figma collections, one canonical palette with two modes. They are
   # separate in Figma so a semantic role can bind to a *different step* per
@@ -96,3 +97,10 @@ collections:
       default:
         from: "border"
         mode: "border"
+  motion:
+    layer: "primitive"
+    modes:
+      default:
+        from: "motion"
+        # The supplied motion export still uses Figma's initial mode name.
+        mode: "Mode 1"

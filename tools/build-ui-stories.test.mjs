@@ -23,6 +23,14 @@ const badge = {
   ],
 };
 
+test("a behaviour fixture receives the generated story args and retains every variant case", () => {
+  const rendered = renderStories(badge, { fixture: true });
+  assert.match(rendered, /import Example from "\.\.\/fixtures\/BadgeExample.svelte"/);
+  assert.match(rendered, /render: template/);
+  assert.match(rendered, /<Example \{\.\.\.args\} \/>/);
+  assert.equal(rendered.match(/<Story /g).length, 5);
+});
+
 test("defaultArgs takes every contract default, camelCased", () => {
   assert.deepEqual(defaultArgs(badge), {
     numberText: "1",

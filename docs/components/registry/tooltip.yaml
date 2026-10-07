@@ -6,8 +6,8 @@ id: "Tooltip"
 name: "Tooltip"
 level: "element"
 role: "content"
-html: "no semantic html"
-status: "ready"
+html: "role=tooltip"
+status: "draft"
 version: "0.1.0"
 summary: "A short description of another control, shown beside it while it is pointed at or focused."
 purpose: "Interfaces run out of room long before they run out of things worth saying, and the first casualty is the sentence that would have explained a control. This is where that sentence goes. It is a floating slab of text with no arrow — a tail is a second shape to align, a second thing to get wrong against a scrolling edge, and it earns none of that by pointing at something the reader is already looking at. Because it appears only on hover or focus and leaves with them, nothing inside it can be reached and nothing that matters can live only here."
@@ -47,10 +47,10 @@ flow_behavior:
 a11y:
   -
     status: "requires"
-    note: "The tooltip has to be tied to the control it describes, so that the description reaches assistive technology as part of that control rather than as loose text somewhere on the page. Nothing in this component establishes the association; whoever places it does."
+    note: "The web implementation associates the surface with the supplied trigger through a unique id and aria-describedby, preserving existing descriptions. The consumer supplies one focusable root element with its own accessible name; the tooltip supplements that name. A disabled native control cannot receive keyboard focus, so its explanation must also be available beside it."
   -
     status: "requires"
-    note: "It has to appear on keyboard focus and not only under the pointer, and it has to stay while the reader moves onto it. A description available only to a mouse is a description most readers never get."
+    note: "The implementation opens on hover and keyboard focus, remains open while the pointer is over the trigger or surface, and closes on Escape, blur, click or scroll. Focus stays on the trigger. The consumer must keep the trigger keyboard reachable."
   -
     status: "requires"
     note: "Nothing may live only here. The component is unavailable on touch, absent for anyone not hovering, and gone as soon as attention moves, so anything the reader needs in order to finish the task has to be said somewhere that stays."
@@ -99,6 +99,10 @@ sizing_model:
       wrapping_line_height: "line height/text/1_125"
 api:
   -
+    name: "trigger"
+    kind: "slot"
+    description: "One root HTML element that the tooltip describes, usually a button or link. The web component attaches behaviour to that element without adding another focus stop. In Svelte this sole slot is supplied as children. The trigger needs its own accessible name and must be keyboard reachable; no trigger means no tooltip is rendered."
+  -
     name: "type"
     kind: "variant"
     default: "string"
@@ -145,10 +149,29 @@ api:
     kind: "text"
     default: "Tooltip text"
     description: "What the control does or means, in the fewest words that say it. It is not transformed — the case is whatever is written, unlike the label of a button or a tag — because a tooltip is read as a sentence rather than scanned as a marker. Neither form truncates: the single-line one widens until the words fit and the wrapping one grows downward, so length shows up as a slab that has outgrown the thing it describes."
+  -
+    name: "placement"
+    kind: "variant"
+    default: "bottom"
+    description: "The preferred side of the trigger, bottom by default, separated by gap/g-0_500. The overlay may flip or shift when the preferred position would leave the viewport. Placement does not add an arrow."
+    values:
+      -
+        value: "top"
+      -
+        value: "bottom"
+      -
+        value: "left"
+      -
+        value: "right"
+  -
+    name: "content width"
+    kind: "string"
+    default: "auto"
+    description: "A CSS width for the wrapping text form, supplied by its consumer. auto imposes no chosen width; a named width is limited by the available viewport width. The single-line form ignores this property."
 limitations:
   - "There is no arrow, and none is planned. The tooltip is a plain slab placed beside what it describes; the connection is made by proximity and by the fact that it appeared when the reader arrived, not by a tail."
-  - "The wrapping form takes its width from the place it is used. The component names no default, no minimum and no maximum, so a consumer that supplies nothing gets whatever their layout gives it."
-  - "Nothing here is interactive and nothing dismisses it. It has no state, no close control and no way to be pinned open — a tooltip that needs any of those is a Popover."
+  - "The wrapping form uses the consumer's content width, with auto imposing no chosen width. The available viewport width limits it; there is no fixed system minimum or maximum."
+  - "The content is text-only, receives no focus and cannot be pinned open. The component manages open and closed states and dismisses on Escape; content with actions or a persistent open state belongs in a Popover."
   - "Both tones are neutral by construction. There is no way to make a tooltip carry severity, which is deliberate: a coloured tooltip is a message wearing a description's clothes."
   - "The inverted tone measures 4.55:1 between its text and its surface in light mode, clearing 4.5:1 by less than rounding. Any move of surface/bold/base/default or text/inverted is a contrast change, not a colour change."
   - "The base tone is the page surface, so on a white page nothing but a 1.23:1 border and the shadow says where the tooltip ends. That is the reason the inverted tone exists, and the reason it is the one to reach for over anything busy."
@@ -159,7 +182,7 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "1217-172945"
   last_verified: "2026-09-05"
-notes: "The accessibility target is not chosen yet — PLAN.md Stage 5 — so contrast measurements are recorded as facts rather than judged against a criterion the system has not adopted. children is the composition the system permits in principle; the component as built has one text layer and no slot for any of it, and narrowing the list is a later judgement."
+notes: "Readiness is draft until the changed trigger/composition API and Motion treatment are verified against the Figma representation (STD-05). The shared accessibility target is WCAG 2.2 AA; the screen-reader/browser verification matrix remains open in the package guide. The historical children list describes potential composition inside the visual surface; the new trigger slot is outside that text-only surface. Web behaviour uses Zag.js with a 400 ms hover wait and a 150 ms pointer-leave grace period, pending a shared Timing decision; keyboard focus and Escape have no behavioural wait. These waits are independent from Motion. Entry and exit fade opacity using duration/medium/enter with easing/enter and duration/medium/exit with easing/exit, with no spatial movement or added visual delay: a compact description needs a quiet arrival, and retaining the same DOM surface lets interruptions reverse from the current opacity. Reduced motion replaces both fades with immediate visibility changes. Migration: wrap the described control in Tooltip's children slot; the old standalone surface use renders nothing without a trigger. Static visual previews use the independent CSS surface. The existing Figma verification date covers its visual variants, not the new web interaction."
 import:
   batch: 2
   ready: false

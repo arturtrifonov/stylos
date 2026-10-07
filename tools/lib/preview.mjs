@@ -56,6 +56,7 @@ function iconDrawings() {
 export function sampleHtml(entry, props = {}) {
   const api = new Map((entry.api ?? []).map((property) => [property.name, property]));
   const attrs = [];
+  const styles = [];
   let content = "";
 
   for (const [name, value] of Object.entries(props)) {
@@ -80,10 +81,10 @@ export function sampleHtml(entry, props = {}) {
       if (typeof value !== "string") {
         throw new Error(`preview: "${entry.id}" property "${name}" is a string; got "${value}"`);
       }
-      // Identifiers select resources; they are never displayed as text.
-      // Icon has a real renderer below. Another string property needs its
-      // component's renderer before a real sample can be produced.
-      if (entry.id !== "Icon" || name !== "name") {
+      // String properties need their own renderer; they are not text content.
+      if (entry.id === "Tooltip" && name === "content width") {
+        styles.push(`--_stylos-tooltip-width:${value}`);
+      } else if (entry.id !== "Icon" || name !== "name") {
         throw new Error(`preview: "${entry.id}" has no renderer for string property "${name}"`);
       }
     } else {
@@ -93,6 +94,7 @@ export function sampleHtml(entry, props = {}) {
   }
 
   const cls = `stylos-${slugPath(entry.id).replace(/\//g, "-")}`;
+  if (styles.length) attrs.push(`style="${esc(styles.join(";"))}"`);
   const attr = attrs.length ? ` ${attrs.join(" ")}` : "";
 
   // Label is the one structural case: the required marker and the supporting

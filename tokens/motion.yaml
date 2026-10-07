@@ -1,0 +1,104 @@
+# GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export.
+# Imported 2026-10-07 19:07Z from Stylos / Styles.
+collection: "motion"
+layer: "primitive"
+source:
+  imported: "2026-10-07 19:07Z"
+  figma_file: "Stylos / Styles"
+  figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
+modes:
+  - "default"
+tokens:
+  "duration/micro":
+    type: "duration"
+    id: "VariableID:2768:14"
+    scopes:
+      - "ALL_SCOPES"
+    values:
+      default:
+        value: 100
+        unit: "ms"
+  "duration/cycle":
+    type: "duration"
+    id: "VariableID:2768:7"
+    scopes:
+      - "ALL_SCOPES"
+    values:
+      default:
+        value: 1000
+        unit: "ms"
+  "duration/short/enter":
+    type: "duration"
+    id: "VariableID:2768:4"
+    scopes:
+      - "ALL_SCOPES"
+    values:
+      default:
+        value: 150
+        unit: "ms"
+  "duration/short/exit":
+    type: "duration"
+    id: "VariableID:2768:13"
+    scopes:
+      - "ALL_SCOPES"
+    values:
+      default:
+        value: 100
+        unit: "ms"
+  "duration/medium/enter":
+    type: "duration"
+    id: "VariableID:2768:5"
+    scopes:
+      - "ALL_SCOPES"
+    values:
+      default:
+        value: 220
+        unit: "ms"
+  "duration/medium/exit":
+    type: "duration"
+    id: "VariableID:2768:11"
+    scopes:
+      - "ALL_SCOPES"
+    values:
+      default:
+        value: 150
+        unit: "ms"
+  "duration/long/enter":
+    type: "duration"
+    id: "VariableID:2768:6"
+    scopes:
+      - "ALL_SCOPES"
+    values:
+      default:
+        value: 350
+        unit: "ms"
+  "duration/long/exit":
+    type: "duration"
+    id: "VariableID:2768:12"
+    scopes:
+      - "ALL_SCOPES"
+    values:
+      default:
+        value: 260
+        unit: "ms"
+  "easing/linear":
+    type: "easing"
+    id: "VariableID:2768:8"
+    scopes:
+      - "ALL_SCOPES"
+    values:
+      default: "linear"
+  "easing/enter":
+    type: "easing"
+    id: "VariableID:2768:9"
+    scopes:
+      - "ALL_SCOPES"
+    values:
+      default: "cubic-bezier(0.22, 1, 0.36, 1)"
+  "easing/exit":
+    type: "easing"
+    id: "VariableID:2768:10"
+    scopes:
+      - "ALL_SCOPES"
+    values:
+      default: "cubic-bezier(0.32, 0, 0.67, 0)"

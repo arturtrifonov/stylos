@@ -8,6 +8,8 @@
 // lib/verify.mjs against the canonical set, because a reference stores no
 // value of its own and can only be checked by following it.
 
+import { cssDuration, cssEasing } from "./motion.mjs";
+
 const SUPPORTED_COLOR_SPACES = new Set(["srgb"]);
 
 // A component further than this from a multiple of 1/255 did not come from an
@@ -137,6 +139,13 @@ export function alphaOf(value) {
  */
 export function checkRawValues(collectionName, mode, tokens, problems) {
   for (const [tokenPath, record] of tokens) {
+    if (["duration", "easing"].includes(record.type)) {
+      try {
+        (record.type === "duration" ? cssDuration : cssEasing)(record.value);
+      } catch (error) {
+        problems.errors.push(`${collectionName}/${tokenPath} (${mode}): ${error.message}`);
+      }
+    }
     // An opacity bound to a number variable rather than typed in place has no
     // canonical form here: `alpha` is a number, and a reference to a number
     // variable is not one. It fails rather than being flattened, because
@@ -292,7 +301,7 @@ export function buildCollectionDocument({ name, layer, byMode, refs, imported, f
           const alpha = alphaOf(record.value);
           if (alpha !== 1) alphas.set(mode, Math.round(alpha * 1000) / 1000);
         } else {
-          values.set(mode, record.value);
+          values.set(mode, record.type === "duration" ? new Map(Object.entries(record.value)) : record.value);
         }
       }
       entry.set("values", values);

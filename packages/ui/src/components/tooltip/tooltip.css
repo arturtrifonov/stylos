@@ -1,24 +1,17 @@
 /* Tooltip — docs/components/registry/tooltip.yaml.
  *
- * Selectors are keyed on the data attributes that carry the contract's values
- * (ADR 0002). The entry's `html` is "no semantic html": this is a slab of
- * text, and it takes no role of its own, because the association with the
- * control it describes is made by whoever places it.
- *
- * Nothing here is interactive and nothing dismisses it — the contract's own
- * limitation. Appearing on hover and on focus, staying while the reader moves
- * onto it, and being tied to its control are the three `requires` findings,
- * and all three belong to the consumer. A tooltip that needs state, a close
- * control or pinning is a Popover.
+ * tooltipBehavior owns the trigger association, placement and visibility.
+ * CSS owns the surface and reversible fades, using the compact-surface
+ * Motion profile. Static previews omit data-state and show only the surface.
  *
  * `type` changes three things at once because they are one decision. string
  * hugs its width, takes the single-line measure and centres; text takes its
  * width from wherever it is used, wraps inside it, takes the looser wrapping
  * measure and aligns left — centred prose is read a line at a time rather
  * than read. No width is set for either: the component names none, and the
- * wrapping form's width belongs to the place it is used. No max-width
- * either: the contract names no default, no minimum and no maximum, so a
- * consumer that supplies nothing gets whatever their layout gives it.
+ * wrapping form's width belongs to the place it is used. Its maximum is
+ * the available viewport width supplied by the positioner, rather than a
+ * fixed system limit.
  *
  * The border is drawn in both tones and only its colour changes, so the two
  * tones are the same size on screen. The radius does not move with size.
@@ -41,6 +34,41 @@
   background-color: var(--_stylos-tooltip-surface);
   color: var(--_stylos-tooltip-text);
   box-shadow: var(--stylos-shadow-elevation-2);
+}
+
+.stylos-tooltip-root {
+  display: contents;
+}
+
+.stylos-tooltip-positioner {
+  z-index: 1;
+}
+
+.stylos-tooltip[data-type="text"] {
+  width: var(--_stylos-tooltip-width, auto);
+  max-width: var(--available-width);
+}
+
+.stylos-tooltip[data-state] {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--stylos-motion-duration-medium-exit) var(--stylos-motion-easing-exit),
+    visibility var(--stylos-motion-duration-medium-exit) step-end;
+}
+
+.stylos-tooltip[data-state="open"] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity var(--stylos-motion-duration-medium-enter) var(--stylos-motion-easing-enter),
+    visibility var(--stylos-motion-duration-medium-enter) step-start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stylos-tooltip[data-state] {
+    transition: none;
+  }
 }
 
 /* types — the single-line form hugs and centres, the wrapping form does not */

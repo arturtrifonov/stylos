@@ -8,7 +8,7 @@ import { buildPages, pageContext, readLogo, renderComponentPage } from "./build-
 import { loadTheme } from "./lib/theme.mjs";
 import { checkRegistry } from "./lint-registry.mjs";
 import { composeFigmaDescription, registryPathFor, loadRegistry } from "./lib/registry.mjs";
-import { sampleHtml } from "./lib/preview.mjs";
+import { defaultAssignment, sampleHtml } from "./lib/preview.mjs";
 
 // The contracts under test are fixtures; the theme is the repository's own,
 // because it is resolved from tokens/ and a fixture has none.
@@ -724,6 +724,19 @@ test("the real Icon contract renders string identifiers as drawings, never copy"
 test("a string property without a resource renderer is not previewed as text", () => {
   const entry = legacy("Asset", { api: [{ name: "source", kind: "string" }] });
   assert.throws(() => sampleHtml(entry, { source: "resource_id" }), /no renderer for string property/);
+});
+
+test("the real Tooltip contract keeps its preview when content width is present", () => {
+  const entry = loadRegistry(repoRoot).find((entry) => entry.id === "Tooltip");
+  const preview = { tokensCss: "", byId: new Map([[entry.id, ".stylos-tooltip {}"]]) };
+  const html = renderComponentPage(entry, pageContext([entry], { preview }));
+  assert.match(html, /class="preview-hero"><span class="stylos-tooltip"[^>]*>Tooltip text<\/span>/);
+  assert.doesNotMatch(html, /class="slot" style="width:/);
+  const wrapping = sampleHtml(entry, {
+    ...defaultAssignment(entry), type: "text", "content width": "16rem",
+  });
+  assert.match(wrapping, /style="--_stylos-tooltip-width:16rem"/);
+  assert.doesNotMatch(wrapping, />[^<]*16rem/);
 });
 
 test("an implemented component opens on a live preview and ships its CSS", () => {

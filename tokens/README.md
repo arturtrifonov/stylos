@@ -16,14 +16,15 @@ How it works and why it is shaped this way: SPEC 0001.
 
 The `_` prefix marks the files the pipeline treats specially, not the authored ones: `_naming.yaml` is authored and `_history.yaml` is generated. Everything without the prefix is a canonical collection, and every one of those is generated.
 
-## The eight canonical collections
+## The nine canonical collections
 
-Figma's nine collections fold into eight. The folding is declared in `_naming.yaml`, never inferred.
+Figma's ten collections fold into nine. The folding is declared in `_naming.yaml`, never inferred.
 
 | File | Layer | Modes | From |
 | --- | --- | --- | --- |
 | `palette.yaml` | primitive | `light`, `dark` | `palette.light` + `palette.dark` — two Figma collections, one canonical palette |
 | `color.yaml` | semantic | `light`, `dark` | `color` |
+| `motion.yaml` | primitive | `default` | `motion` — the supplied export names its mode `Mode 1` |
 | `dimension-scale.yaml` | primitive | `default` | `dimension.scale` |
 | `dimension.yaml` | semantic | `default` | `dimension` |
 | `font.yaml` | primitive | `default` | `font` |
@@ -44,6 +45,13 @@ A binding that carries its own opacity — Figma's composed colour, which the sh
 A colour Figma did not bind at all is a literal, and is taken exactly as exported. No colour role is one today.
 
 ## Commands
+
+Motion durations retain their exported `{value, unit}` as a nested YAML mapping,
+including `ms` or `s`. Easing values retain the supplied `linear` or
+`cubic-bezier(...)` string. Import and canonical checks validate both types;
+the CSS build emits duration units and unquoted easing expressions under
+`--stylos-motion-*`. The export contains no visual-delay tokens, so none are
+invented. Behavioural waits remain separate from these transition parameters.
 
 ```bash
 npm run tokens:import -- --collection radius ~/Downloads/"Mode 1.tokens.json"

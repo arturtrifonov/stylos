@@ -62,13 +62,19 @@ Figma Variables ──manual export──▶ tokens/*.yaml ──tokens:css─�
                   tokens/_naming.yaml ──┘       └──▶ npm run tokens:report
 ```
 
-Variables are authored in Figma. An export is made by hand and handed to `npm run tokens:import`, which folds Figma's nine collections into eight canonical ones and writes `tokens/*.yaml` — the record everything else reads. **The exported files are not committed**: read once, then discarded. `npm run tokens:check` verifies the record against itself, since `ref` and `values` are deliberately redundant.
+Variables are authored in Figma. An export is made by hand and handed to `npm run tokens:import`, which folds Figma's ten collections into nine canonical ones, including Motion durations and easing curves, and writes `tokens/*.yaml` — the record everything else reads. **The exported files are not committed**: read once, then discarded. `npm run tokens:check` verifies the record against itself, since `ref` and `values` are deliberately redundant.
 
 `npm run tokens:css` projects the record onto CSS custom properties — `tools/build-css.mjs`, writing `packages/ui/dist/tokens.css` and a `tokens.json` manifest beside it (SPEC 0007). It is a projection, not a second record: it reads `tokens/*.yaml` and nothing else, improves no value on the way through, refuses to run on a set that fails `tokens:check`, and its output is not committed. The command is `tokens:css`; there is no `tokens:build`. Its reader is `@stylos/ui` in `packages/ui` (SPEC 0009): every component's CSS is `var(--stylos-…)` references and nothing else, and `tokens:css` runs as the package's `prebuild` (via `npm run ui:generate`, which also generates the props types and the Storybook stories from the registry).
 
 **Break:** the export is still manual and has no cadence. Nothing detects that Figma has moved on, so `tokens/` is only as current as the last person to import. What `npm run tokens:check` does catch is drift *within* the record — an alias that no longer agrees with the value beside it, or a mode dependence that is not declared.
 
 ### 2.2 Components
+
+The code package separates DOM behaviour in `packages/ui/src/behaviors/` from
+Svelte wrappers and component CSS. Tooltip uses Zag.js's vanilla adapter for
+hover, focus, dismissal and floating placement; its wrapper supplies the trigger
+and lifecycle, while CSS uses shared Motion tokens for visibility transitions.
+The package guide records the integration contract and verification limits.
 
 ```
 docs/components/registry/*.yaml  ──▶ figma.node_id ──▶  the component in Figma

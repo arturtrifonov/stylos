@@ -37,7 +37,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { stringify, parse } from "./lib/yaml.mjs";
+import { stringify, parse, deepEqualOrdered } from "./lib/yaml.mjs";
 import { loadCanonical, listCanonical } from "./lib/tokens.mjs";
 import {
   flattenDocument,
@@ -724,14 +724,13 @@ function sameValues(before, document) {
   const tokens = document.get("tokens");
   if (before.tokens.size !== tokens.size) return false;
 
-  const flat = (map) => [...(map ?? new Map())].map(([k, v]) => `${k}=${v}`).join(",");
-
   for (const [p, entry] of tokens) {
     const old = before.tokens.get(p);
     if (!old) return false;
-    if (flat(entry.get("values")) !== flat(old.values)) return false;
-    if (flat(entry.get("alpha")) !== flat(old.alpha)) return false;
-    if (flat(entry.get("ref")) !== flat(old.ref)) return false;
+    if (entry.get("type") !== old.type) return false;
+    for (const field of ["values", "alpha", "ref"]) {
+      if (!deepEqualOrdered(entry.get(field) ?? new Map(), old[field] ?? new Map())) return false;
+    }
   }
   return true;
 }
