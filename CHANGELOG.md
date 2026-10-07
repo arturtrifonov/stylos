@@ -4,8 +4,9 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
-### Added — 2026-10-07 (Checkbox Input)
+### Added — 2026-10-07 (Checkbox family)
 
+- Add Checkbox Label and Checkbox Text as native labelled compositions of Checkbox Input, medium by default. Label hugs a single line; Text fills the consumer column and aligns the box to its first line. Text supports optional phrasing content, including links whose activation does not toggle the checkbox. Both forward binding, form identity, required validity, disabled and reset behaviour. All 120 composition variants are verified against Figma typography, gaps and alignment.
 - Add Checkbox Input with five verified sizes, medium by default, and bindable unchecked, checked and mixed selection. A native input supplies keyboard, label activation, disabled/required behaviour and form participation; the framework-free adapter synchronises mixed selection and reset, including cancellation.
 - Replace drawing-only hover, active and focus props with browser interaction. Record web integration properties and Figma representation differences in the contract, verified against all sixty visual variants.
 - Preserve the exact Figma Check/Dash assets as token-coloured masks. CSS generation and documentation previews embed their unchanged SVG bytes, keeping independent CSS self-contained. Storybook covers live form interactions and the full visual matrix; the component documentation renders its real surface. Generated Controls use registry vocabularies, including bindable selection and optional form identity.

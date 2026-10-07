@@ -824,3 +824,14 @@ test("the real Checkbox contract renders a static surface with its form properti
   assert.match(html,/class="stylos-checkbox-input-surface"/);
   assert.doesNotMatch(html,/>Select row|>rows|>42|<input/);
 });
+
+test("Checkbox compositions preview nested Input surface and only visible label text", () => {
+  for (const id of ["Checkbox Label", "Checkbox Text"]) {
+    const entry = loadRegistry(repoRoot).find(entry => entry.id === id);
+    const html = sampleHtml(entry, {...defaultAssignment(entry),"label text":"Visible <copy>","accessible name":"Short name",name:"consent",value:"yes"});
+    assert.match(html, /stylos-checkbox-input-surface/);
+    assert.match(html, /data-size="medium"/);
+    assert.match(html, /stylos-checkbox-copy">Visible &lt;copy&gt;/);
+    assert.doesNotMatch(html, /Short name|consent|yes|<input/);
+  }
+});

@@ -85,7 +85,7 @@ export function sampleHtml(entry, props = {}) {
       // String properties need their own renderer; they are not text content.
       if (entry.id === "Tooltip" && name === "content width") {
         styles.push(`--_stylos-tooltip-width:${value}`);
-      } else if (entry.id === "Checkbox Input" && ["id", "name", "value", "form", "description ids"].includes(name)) {
+      } else if (["Checkbox Input", "Checkbox Label", "Checkbox Text"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
         // Form integration does not change a static visual surface.
       } else if (entry.id !== "Icon" || name !== "name") {
         throw new Error(`preview: "${entry.id}" has no renderer for string property "${name}"`);
@@ -128,6 +128,13 @@ export function sampleHtml(entry, props = {}) {
 
   if (entry.id === "Checkbox Input") {
     return `<span class="${cls}"${attr} aria-hidden="true"><span class="stylos-checkbox-input-surface"></span></span>`;
+  }
+
+  if (["Checkbox Label", "Checkbox Text"].includes(entry.id)) {
+    const size = esc(props.size ?? "medium");
+    const state = esc(props.state ?? "default");
+    const selection = esc(props["is checked"] ?? "false");
+    return `<span class="${cls}"${attr}><span class="stylos-checkbox-input" data-size="${size}" data-state="${state}" data-is-checked="${selection}" aria-hidden="true"><span class="stylos-checkbox-input-surface"></span></span><span class="stylos-checkbox-copy">${esc(props["label text"] ?? "Checkbox")}</span></span>`;
   }
 
   return `<span class="${cls}"${attr}>${esc(content)}</span>`;

@@ -1,0 +1,16 @@
+@import "../checkbox-input/checkbox-input.css";
+@import "../../behaviors/checkbox-option.css";
+
+.stylos-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  /* Intrinsic hug/fill sizing, not an authored dimension. */
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
+  width: max-content;
+  font-weight: var(--stylos-font-weight-emphasis);
+  line-height: var(--_stylos-checkbox-string-line);
+}
+
+.stylos-checkbox-label > .stylos-checkbox-copy {
+  white-space: nowrap;
+}

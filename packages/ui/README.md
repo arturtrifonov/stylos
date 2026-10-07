@@ -136,3 +136,20 @@ The proof interface is assessed separately for content, composition and complete
 ### Open
 
 - **Assistive-technology support matrix:** select the screen-reader and browser pairs before the Stage 5 manual checks are designed, and record them here with the tested versions and results. The matrix is not yet chosen, and no screen-reader support is claimed from the registry alone. The browser feature floor remains in [ARCHITECTURE.md](../../ARCHITECTURE.md#7-conventions).
+
+### Checkbox Label and Checkbox Text
+
+Both compose `CheckboxInput`, default to medium and expose the same form, selection and description properties. Visible text supplies the name; `accessibleName` may override long copy. The associated input id is generated per instance unless the consumer supplies `id`.
+
+```svelte
+<CheckboxLabel labelText="Send release notes" name="notes" bind:isChecked />
+<div class="consent-column">
+  <CheckboxText name="consent" isRequired bind:isChecked={consent}>
+    I agree to the <a href="/privacy">privacy policy</a>.
+  </CheckboxText>
+</div>
+```
+
+Label hugs its single line and uses emphasis weight with string line height. Text fills the parent width, wraps using text line height and centres the box on its first line; choose the column width in the surrounding layout. Text's optional `children` snippet replaces `labelText`. Supply phrasing content such as text, emphasis and anchors, with no nested labels or additional controls. Native anchor activation follows the link without toggling selection, including inside a disabled option; a disabled checkbox does not disable an independent link. Supplementary copy belongs outside the label and is connected through `descriptionIds`; required validity does not add an error appearance.
+
+Hover and pressing across the full label update the input's existing Motion surface transitions. Native disabled fieldsets also disable the input and copy. The CSS exports for Label/Text include the shared layout and Checkbox Input styles; link tokens and fonts separately as usual.

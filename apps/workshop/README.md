@@ -27,3 +27,5 @@ Checkbox Input's generated stories render a native named checkbox.
 disabled fieldsets, required validity and reset. `Visual states` shows all
 60 Figma size/state/selection combinations as static CSS samples and checks
 their dimensions. Hover, active and focus are derived on live inputs.
+
+Checkbox Label and Text have generated stories and Controls from their contracts. `Compositions/Checkbox family` includes Interaction, all 60 Label visual states, all 60 Text visual states, wrapping consent, native label/keyboard/form/reset behaviour and an independent inline link.

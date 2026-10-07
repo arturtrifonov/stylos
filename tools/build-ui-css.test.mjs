@@ -88,3 +88,24 @@ test("independent CSS embeds exact local SVG masks and needs no adjacent assets"
   assert.ok(!css.includes('./assets/'));
   assert.equal(readFileSync(path.join(assets,"check.svg"),"utf8"),svg);
 });
+
+test("composed CSS expands local dependencies and embeds their original assets", () => {
+  const root = scratchRoot([
+    {id:"Checkbox Input",slug:"checkbox-input",css:'.mark { mask-image: url("./assets/check.svg"); }'},
+    {id:"Checkbox Label",slug:"checkbox-label",css:'@import "../checkbox-input/checkbox-input.css";\n.option { display: flex; }'},
+  ]);
+  const assets = path.join(root,"packages/ui/src/components/checkbox-input/assets");
+  mkdirSync(assets);
+  const svg = '<svg width="24" height="24" viewBox="0 0 24 24"/>';
+  writeFileSync(path.join(assets,"check.svg"),svg);
+  buildUiCss(root);
+  const css = readFileSync(path.join(root,OUT_DIR,"checkbox-label.css"),"utf8");
+  assert.ok(css.includes(`url("data:image/svg+xml,${encodeURIComponent(svg)}")`));
+  assert.ok(css.includes('.option { display: flex; }'));
+  assert.ok(!css.includes('@import'));
+});
+
+test("local CSS import cycles fail instead of recursing indefinitely", () => {
+  const root = scratchRoot([{id:"Checkbox Label",slug:"checkbox-label",css:'@import "./checkbox-label.css";'}]);
+  assert.throws(() => buildUiCss(root), /CSS import cycle/);
+});

@@ -217,3 +217,5 @@ Not built yet. The reasoning was decision 0001; what survives of it is the one-d
 
 - A Figma REST API script to pull variable snapshots and/or component screenshots automatically, now that a real component inventory exists to point it at (`docs/components/registry/`).
 - Link/heading/duplicate-rule validation across skill sources (not implemented — `build-skills.mjs` currently only validates structural completeness, not cross-skill rule conflicts).
+
+Local relative CSS imports are expanded for independent component styles and documentation previews. This lets Checkbox Label/Text share the option layout and Input's original SVG masks while each CSS export remains self-contained. Import cycles fail the build.

@@ -17,3 +17,7 @@ export { default as Tooltip } from "./components/tooltip/Tooltip.svelte";
 export type { TooltipProps } from "./components/tooltip/props.ts";
 export { default as CheckboxInput } from "./components/checkbox-input/CheckboxInput.svelte";
 export type { CheckboxInputProps } from "./components/checkbox-input/props.ts";
+export { default as CheckboxLabel } from "./components/checkbox-label/CheckboxLabel.svelte";
+export type { CheckboxLabelProps } from "./components/checkbox-label/props.ts";
+export { default as CheckboxText } from "./components/checkbox-text/CheckboxText.svelte";
+export type { CheckboxTextProps } from "./components/checkbox-text/props.ts";

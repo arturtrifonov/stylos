@@ -24,11 +24,6 @@ do_not_use_when:
   -
     text: "The text is not the checkbox's own but the field's. A helper line describing a group of options belongs to the group, not to one option."
     instead: null
-children:
-  - "Label"
-  - "Icon"
-  - "Badge"
-  - "Loader"
 parents:
   - "Accordion"
   - "Asset"
@@ -51,17 +46,17 @@ flow_behavior:
 a11y:
   -
     status: "requires"
-    note: "Interactive content inside the copy — the usual Terms link — must not toggle the control, and nesting a link inside the label is an HTML validity problem in some structures. This is the most common bug in the pattern and the implementation has to handle it explicitly."
+    note: "Inline anchors in the content slot retain native label behaviour: activating a link does not toggle the checkbox. Consumers supply phrasing content only, with no nested labels or additional controls."
   -
     status: "warning"
-    note: "The copy is the accessible name, so a screen reader reads the whole paragraph as the control's name with no pause. Where the copy runs past a sentence or two, give the control a short name and leave the full text as adjacent described-by content."
+    note: "The copy is the accessible name, so a screen reader reads the whole paragraph as the control's name with no pause. Where the copy runs past a sentence or two, supply accessible name to override the long label and put supplementary explanation in adjacent content associated through description ids."
 sizing_model:
   horizontal: "fill"
   vertical: "hug"
   adjustable:
     horizontal: true
     vertical: false
-  intent: "Width is the one dimension a consumer sets — directly, or by filling an auto-layout parent — and no width token is recorded because there is no width the system chooses. Height is the taller of the box and the line box, multiplied by the line count, and is never set by hand. The box stays aligned to the first line however many lines appear, which is the whole reason this component is separate from Checkbox Label. Resolve token values with npm run tokens:report."
+  intent: "Width is the one dimension a consumer sets — directly, or by filling an auto-layout parent — and no width token is recorded because there is no width the system chooses. Height follows the wrapping line count and is never set by hand. The box stays aligned to the first line however many lines appear, which is the whole reason this component is separate from Checkbox Label. Resolve token values with npm run tokens:report."
   sizes:
     -
       size: "extra small"
@@ -97,7 +92,7 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
+    default: "medium"
     description: "Drives the box, the text measure and the gap together. It does not set the width."
     values:
       -
@@ -124,14 +119,10 @@ api:
     name: "state"
     kind: "variant"
     default: "default"
-    description: "Pointer interaction and availability. The visual change happens in the box; the copy follows only on disabled, and selection does not change the copy at all."
+    description: "Availability of the native input; hover, pressing and focus are derived by the browser across the whole label. The visual change happens in the box; the copy follows only on disabled, and selection does not change the copy at all."
     values:
       -
         value: "default"
-      -
-        value: "hover"
-      -
-        value: "active"
       -
         value: "disabled"
         note: "The copy takes the disabled text role along with the box. Removes the control from tab order."
@@ -139,7 +130,7 @@ api:
     name: "is checked"
     kind: "variant"
     default: "false"
-    description: "Selection. Does not affect the copy."
+    description: "Bindable selection through bind:isChecked; click or Space toggles false/true and activating mixed selects true. Reset restores the initial value. Does not affect the copy."
     values:
       -
         value: "false"
@@ -164,23 +155,57 @@ api:
         props:
           "label text": "Remember me"
   -
-    name: "is focused"
+    name: "id"
+    kind: "string"
+    description: "Optional native input id. The component generates a stable instance id when omitted; consumers keep supplied ids unique."
+  -
+    name: "name"
+    kind: "string"
+    default: ""
+    description: "Form field name. An empty name leaves the control out of submitted form data."
+  -
+    name: "value"
+    kind: "string"
+    default: "on"
+    description: "Form value submitted when checked and enabled. false and mixed submit no value."
+  -
+    name: "form"
+    kind: "string"
+    default: ""
+    description: "An optional form id for a control outside its form. Otherwise the enclosing form owns the input."
+  -
+    name: "accessible name"
+    kind: "text"
+    default: ""
+    description: "Optional accessible-name override mapped to aria-label. Leave empty for the visible label to supply the name; use a concise override for long copy."
+  -
+    name: "description ids"
+    kind: "string"
+    default: ""
+    description: "Space-separated ids of persistent explanatory content, mapped to aria-describedby. These descriptions supplement the accessible name."
+  -
+    name: "is required"
     kind: "boolean"
-    default: "false"
-    description: "Whether the control holds keyboard focus. A ring is drawn outside it and nothing else changes. It is a boolean rather than a value of state because focus coexists with hover, active and checked instead of replacing them."
+    default: false
+    description: "Native form validity requires a checked value. Unchecked and mixed fail this requirement; no separate error appearance is supplied."
+  -
+    name: "content"
+    kind: "slot"
+    description: "Optional phrasing content rendered as children instead of label text, for inline links or emphasis. Use text and anchors only; no nested labels or additional form controls. Clicking a link follows the link without toggling the checkbox."
 limitations:
-  - "No validation property, which hurts most here: the required-consent checkbox is the canonical case for an inline error."
+  - "Native required validity is supported; there is no inline error appearance. Associate consumer-supplied error copy through description ids."
   - "No supporting-text slot. One text role only."
   - "The box is always leading and always aligned to the first line. No property changes either."
   - "No text style on the copy — every typographic property is bound to a variable directly."
 figma_notes:
+  - "Verified on 2026-10-07: all 60 size/state/selection variants, gaps, typography, first-line alignment and Checkbox Input instance references. Web defaults use medium; drawing-only hover/active/focus are derived natively. Form integration properties have no extra Figma variants."
   - "Focus is a boolean toggling a Focus ring instance rather than a value of state, which keeps the variant count where it is instead of multiplying it."
   - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4349-3554"
-  last_verified: "2026-09-05"
-notes: "children and parents are carried from the pre-split entry and have not yet been divided between the three family members — that division is a judgement, not a transcription."
+  last_verified: "2026-10-07"
+notes: "Composes Checkbox Input and shares its native behaviour and Motion treatment. The visible text supplies the accessible name unless accessible name overrides it. Legacy children are removed: Label, Badge and Loader are not content children of this input. The historical parents list is retained."
 import:
   batch: 1
   ready: true
