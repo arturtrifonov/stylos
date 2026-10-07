@@ -4,7 +4,7 @@
   import type { CheckboxInputProps } from "./props.ts";
 
   let {
-    size = "extra small", state = "default", isChecked = $bindable("false"),
+    size = "medium", state = "default", isChecked = $bindable("false"),
     id, name = "", value = "on", form = "", accessibleName = "",
     descriptionIds = "", isRequired = false,
   }: CheckboxInputProps = $props();

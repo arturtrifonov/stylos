@@ -77,7 +77,7 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
+    default: "medium"
     description: "The box dimension. Nothing else about the component changes with it."
     values:
       -
