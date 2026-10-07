@@ -11,6 +11,7 @@ All notable changes to the Stylos Design System project (foundations, components
 - Tooltip fades with the shared compact-surface Motion profile, reverses interrupted transitions and switches immediately with reduced motion. Behavioural hover waits remain separate, pending shared Timing rules.
 - Generated Tooltip stories use a real trigger while retaining registry-derived Controls and variant coverage. Separate stories cover static appearance, wrapping content and browser interaction checks; regeneration preserves Storybook's watched directory.
 - The documentation preview renderer handles Tooltip's content width as a CSS setting, keeping its default preview and variant samples visible after the API change.
+- Verify all twenty Tooltip variants against the live Figma component, record web-specific representation differences and restore `ready`. Draw the border inside the surface so it preserves the verified dimensions instead of adding two pixels to width and height.
 
 ### Changed — 2026-10-06 (motion review)
 

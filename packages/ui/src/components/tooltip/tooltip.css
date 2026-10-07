@@ -13,8 +13,8 @@
  * the available viewport width supplied by the positioner, rather than a
  * fixed system limit.
  *
- * The border is drawn in both tones and only its colour changes, so the two
- * tones are the same size on screen. The radius does not move with size.
+ * The border is drawn inside the surface, matching Figma's inside stroke
+ * without adding to its measured size. The radius does not move with size.
  */
 
 .stylos-tooltip {
@@ -27,13 +27,12 @@
   line-height: var(--_stylos-tooltip-line-height);
   padding-block: var(--_stylos-tooltip-padding-block);
   padding-inline: var(--_stylos-tooltip-padding-inline);
-  border-width: var(--stylos-border-width-normal);
-  border-style: solid;
-  border-color: var(--_stylos-tooltip-border);
   border-radius: var(--stylos-radius-small);
   background-color: var(--_stylos-tooltip-surface);
   color: var(--_stylos-tooltip-text);
-  box-shadow: var(--stylos-shadow-elevation-2);
+  box-shadow:
+    inset 0 0 0 var(--stylos-border-width-normal) var(--_stylos-tooltip-border),
+    var(--stylos-shadow-elevation-2);
 }
 
 .stylos-tooltip-root {
