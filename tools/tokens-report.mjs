@@ -30,6 +30,7 @@ function renderValue(all, collection, tokenPath, mode) {
     return "—";
   }
   const { value, alpha } = resolved;
+  if (value instanceof Map && value.has("unit")) return `\`${value.get("value")}${value.get("unit")}\``;
   if (typeof value !== "string" || !value.startsWith("#")) return `\`${value}\``;
   return alpha === 1 ? `\`${value}\`` : `\`${value}\` @ ${Math.round(alpha * 100)}%`;
 }

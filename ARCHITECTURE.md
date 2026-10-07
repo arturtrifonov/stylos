@@ -62,13 +62,19 @@ Figma Variables ──manual export──▶ tokens/*.yaml ──tokens:css─�
                   tokens/_naming.yaml ──┘       └──▶ npm run tokens:report
 ```
 
-Variables are authored in Figma. An export is made by hand and handed to `npm run tokens:import`, which folds Figma's nine collections into eight canonical ones and writes `tokens/*.yaml` — the record everything else reads. **The exported files are not committed**: read once, then discarded. `npm run tokens:check` verifies the record against itself, since `ref` and `values` are deliberately redundant.
+Variables are authored in Figma. An export is made by hand and handed to `npm run tokens:import`, which folds Figma's ten collections into nine canonical ones, including Motion durations and easing curves, and writes `tokens/*.yaml` — the record everything else reads. **The exported files are not committed**: read once, then discarded. `npm run tokens:check` verifies the record against itself, since `ref` and `values` are deliberately redundant.
 
 `npm run tokens:css` projects the record onto CSS custom properties — `tools/build-css.mjs`, writing `packages/ui/dist/tokens.css` and a `tokens.json` manifest beside it (SPEC 0007). It is a projection, not a second record: it reads `tokens/*.yaml` and nothing else, improves no value on the way through, refuses to run on a set that fails `tokens:check`, and its output is not committed. The command is `tokens:css`; there is no `tokens:build`. Its reader is `@stylos/ui` in `packages/ui` (SPEC 0009): every component's CSS is `var(--stylos-…)` references and nothing else, and `tokens:css` runs as the package's `prebuild` (via `npm run ui:generate`, which also generates the props types and the Storybook stories from the registry).
 
 **Break:** the export is still manual and has no cadence. Nothing detects that Figma has moved on, so `tokens/` is only as current as the last person to import. What `npm run tokens:check` does catch is drift *within* the record — an alias that no longer agrees with the value beside it, or a mode dependence that is not declared.
 
 ### 2.2 Components
+
+The code package separates DOM behaviour in `packages/ui/src/behaviors/` from
+Svelte wrappers and component CSS. Tooltip uses Zag.js's vanilla adapter for
+hover, focus, dismissal and floating placement; its wrapper supplies the trigger
+and lifecycle, while CSS uses shared Motion tokens for visibility transitions.
+The package guide records the integration contract and verification limits.
 
 ```
 docs/components/registry/*.yaml  ──▶ figma.node_id ──▶  the component in Figma
@@ -146,7 +152,7 @@ Stated explicitly so it is never assumed.
 Ordered by cost of leaving them.
 
 1. **The token record is stale by default.** The import mechanism exists; the habit does not. Neither a script nor a person can rely on `tokens/` reflecting the live Figma file.
-2. **Most contracts are still not exercised by a real build.** *Narrowed 2026-09-06 — the line used to read "nothing is validated by a real build", and that stopped being true when `@stylos/ui` landed:* `npm run ui:check` now generates the token CSS, the props types and the stories from the record and type-checks the built components against them, so the tokens and the implemented contracts are exercised on every run. What remains of the break is coverage — five entries of 114 are implemented, and every contract outside them is still words no build has ever read.
+2. **Most contracts are still not exercised by a real build.** *Narrowed 2026-09-06 — the line used to read "nothing is validated by a real build", and that stopped being true when `@stylos/ui` landed:* `npm run ui:check` now generates the token CSS, the props types and the stories from the record and type-checks the built components against them, so the tokens and the implemented contracts are exercised on every run. What remains of the break is coverage — seven entries of 114 are implemented (2026-09-07: Icon and Tooltip joined the five wave-1 primitives), and every contract outside them is still words no build has ever read.
 
 3. **The retired specs and decision records left content with nothing carrying it.** `docs/specs/` and `docs/decisions/` were deleted on 2026-09-10 — sixteen work orders and two decision records, four of the specs still open at the time. Most citations of them were provenance ("built by SPEC 0008") and read as well without the link. Some were not. `PLAN.md`'s `0.2.0` gate cites SPEC 0009 §3 for the props ↔ `api` mapping; `tools/README.md` cites SPEC 0010 §2.2 for the independent CSS export, SPEC 0012 for the emitted icon shape and SPEC 0001 for the token pipeline's reasoning; `PLAN.md`'s risk table leans on ADR 0002's revisit clause for Zag.js. Those sections are in git history and nowhere in the tree, so a reader who needs one has to know it was deleted before they can find it.
 

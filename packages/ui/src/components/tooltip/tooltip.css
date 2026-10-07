@@ -1,0 +1,160 @@
+/* Tooltip — docs/components/registry/tooltip.yaml.
+ *
+ * tooltipBehavior owns the trigger association, placement and visibility.
+ * CSS owns the surface and reversible fades, using the compact-surface
+ * Motion profile. Static previews omit data-state and show only the surface.
+ *
+ * `type` changes three things at once because they are one decision. string
+ * hugs its width, takes the single-line measure and centres; text takes its
+ * width from wherever it is used, wraps inside it, takes the looser wrapping
+ * measure and aligns left — centred prose is read a line at a time rather
+ * than read. No width is set for either: the component names none, and the
+ * wrapping form's width belongs to the place it is used. Its maximum is
+ * the available viewport width supplied by the positioner, rather than a
+ * fixed system limit.
+ *
+ * The border is drawn inside the surface, matching Figma's inside stroke
+ * without adding to its measured size. The radius does not move with size.
+ */
+
+.stylos-tooltip {
+  box-sizing: border-box;
+  display: inline-block;
+  font-family: var(--stylos-font-family-normal);
+  font-weight: var(--stylos-font-weight-base);
+  letter-spacing: var(--stylos-font-letter-spacing-style-normal);
+  font-size: var(--_stylos-tooltip-font-size);
+  line-height: var(--_stylos-tooltip-line-height);
+  padding-block: var(--_stylos-tooltip-padding-block);
+  padding-inline: var(--_stylos-tooltip-padding-inline);
+  border-radius: var(--stylos-radius-small);
+  background-color: var(--_stylos-tooltip-surface);
+  color: var(--_stylos-tooltip-text);
+  box-shadow:
+    inset 0 0 0 var(--stylos-border-width-normal) var(--_stylos-tooltip-border),
+    var(--stylos-shadow-elevation-2);
+}
+
+.stylos-tooltip-root {
+  display: contents;
+}
+
+.stylos-tooltip-positioner {
+  z-index: 1;
+}
+
+.stylos-tooltip[data-type="text"] {
+  width: var(--_stylos-tooltip-width, auto);
+  max-width: var(--available-width);
+}
+
+.stylos-tooltip[data-state] {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--stylos-motion-duration-medium-exit) var(--stylos-motion-easing-exit),
+    visibility var(--stylos-motion-duration-medium-exit) step-end;
+}
+
+.stylos-tooltip[data-state="open"] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity var(--stylos-motion-duration-medium-enter) var(--stylos-motion-easing-enter),
+    visibility var(--stylos-motion-duration-medium-enter) step-start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stylos-tooltip[data-state] {
+    transition: none;
+  }
+}
+
+/* types — the single-line form hugs and centres, the wrapping form does not */
+
+.stylos-tooltip[data-type="string"] {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.stylos-tooltip[data-type="text"] {
+  white-space: normal;
+  text-align: start;
+}
+
+/* sizes — the padding run is authored so the single-line heights land on the
+   Element run at every step, which is what makes a tooltip sit level with the
+   control it belongs to rather than near it. */
+
+.stylos-tooltip[data-size="extra small"] {
+  --_stylos-tooltip-padding-block: var(--stylos-dimension-gap-g-0_375);
+  --_stylos-tooltip-padding-inline: var(--stylos-dimension-gap-g-0_875);
+  --_stylos-tooltip-font-size: var(--stylos-font-size-0_625);
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-string-0_625);
+}
+
+.stylos-tooltip[data-size="small"] {
+  --_stylos-tooltip-padding-block: var(--stylos-dimension-gap-g-0_500);
+  --_stylos-tooltip-padding-inline: var(--stylos-dimension-gap-g-1_000);
+  --_stylos-tooltip-font-size: var(--stylos-font-size-0_750);
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-string-0_750);
+}
+
+.stylos-tooltip[data-size="medium"] {
+  --_stylos-tooltip-padding-block: var(--stylos-dimension-gap-g-0_625);
+  --_stylos-tooltip-padding-inline: var(--stylos-dimension-gap-g-1_250);
+  --_stylos-tooltip-font-size: var(--stylos-font-size-0_875);
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-string-0_875);
+}
+
+.stylos-tooltip[data-size="large"] {
+  --_stylos-tooltip-padding-block: var(--stylos-dimension-gap-g-0_750);
+  --_stylos-tooltip-padding-inline: var(--stylos-dimension-gap-g-1_500);
+  --_stylos-tooltip-font-size: var(--stylos-font-size-1_000);
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-string-1_000);
+}
+
+.stylos-tooltip[data-size="extra large"] {
+  --_stylos-tooltip-padding-block: var(--stylos-dimension-gap-g-0_875);
+  --_stylos-tooltip-padding-inline: var(--stylos-dimension-gap-g-1_750);
+  --_stylos-tooltip-font-size: var(--stylos-font-size-1_125);
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-string-1_125);
+}
+
+/* the wrapping form takes the same measure in the line-height family for
+   wrapping content — looser, because a paragraph needs leading a label does not */
+
+.stylos-tooltip[data-type="text"][data-size="extra small"] {
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-text-0_625);
+}
+
+.stylos-tooltip[data-type="text"][data-size="small"] {
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-text-0_750);
+}
+
+.stylos-tooltip[data-type="text"][data-size="medium"] {
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-text-0_875);
+}
+
+.stylos-tooltip[data-type="text"][data-size="large"] {
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-text-1_000);
+}
+
+.stylos-tooltip[data-type="text"][data-size="extra large"] {
+  --_stylos-tooltip-line-height: var(--stylos-font-line-height-text-1_125);
+}
+
+/* tones — both neutral by construction. A tooltip that needs a colour is
+   carrying a message, and a message is a different component. */
+
+.stylos-tooltip[data-tone="base"] {
+  --_stylos-tooltip-surface: var(--stylos-color-background-base);
+  --_stylos-tooltip-border: var(--stylos-color-border-secondary);
+  --_stylos-tooltip-text: var(--stylos-color-text-base);
+}
+
+.stylos-tooltip[data-tone="inverted"] {
+  --_stylos-tooltip-surface: var(--stylos-color-surface-bold-base-default);
+  --_stylos-tooltip-border: transparent;
+  --_stylos-tooltip-text: var(--stylos-color-text-inverted);
+}

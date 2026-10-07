@@ -99,6 +99,8 @@ The `0.1` milestone's checklist, and the membership record for every entry the w
 | 5 | The Button family | Button Base, Button Outline, Button Ghost, Button Icon Base, Button Icon Outline, Button Icon Ghost | every action on the screen | 2 wk |
 | 6 | The shell | Modal, Drawer, Tooltip | the Stage 6 proof screen, composed | 1 wk |
 
+*Amended 2026-09-07:* **Tooltip was built out of order**, ahead of the seven elements still open in wave 1 and the rest of wave 2 — the owner chose it explicitly. The table is a sequence rather than a gate, and nothing in it depends on the order being kept: the waves are grouped by what a screen needs next, not by what compiles after what. Wave 6's other two entries, Modal and Drawer, are untouched.
+
 The same six waves order the package's work in §4.2 — a component is implemented in the wave that wrote its contract, so the dependency order is already cut.
 
 ### 4.2 Stage 5 — `@stylos/ui`

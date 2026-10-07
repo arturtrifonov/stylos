@@ -22,6 +22,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { loadCanonical } from "./lib/tokens.mjs";
+import { cssDuration, cssEasing } from "./lib/motion.mjs";
 import { readNaming, runCheck } from "./check-tokens.mjs";
 
 export const PREFIX = "--stylos-";
@@ -292,6 +293,12 @@ export function buildCss({ collections, naming }) {
         value = ref === null ? null : `var(${ref})`;
       } else if (token.type === "color") {
         value = cssColor(token.values.get(mode), token.alpha.get(mode) ?? 1);
+      } else if (["duration", "easing"].includes(token.type)) {
+        try {
+          value = (token.type === "duration" ? cssDuration : cssEasing)(token.values.get(mode));
+        } catch (error) {
+          errors.push(`${canonical}: ${error.message}`);
+        }
       } else if (token.type === "number") {
         value = cssNumber(token.values.get(mode), tokenPath);
       } else if (token.type === "string") {

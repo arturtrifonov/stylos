@@ -4,6 +4,15 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-07 (Tooltip behaviour and Motion tokens)
+
+- Import the supplied Motion export as eleven canonical tokens, preserving duration units, easing curves and Figma variable ids. Import, verification, CSS projection and the token report support duration/easing values; no delay values are invented.
+- Tooltip now takes a single trigger child, manages hover and keyboard focus through Zag.js, closes on Escape and other dismissal events, and positions its overlay below the trigger by default with a `gap/g-0_500` separation, adjusting at viewport edges. Existing trigger descriptions and handlers are preserved. Standalone use migrates to a Tooltip wrapping the described control.
+- Tooltip fades with the shared compact-surface Motion profile, reverses interrupted transitions and switches immediately with reduced motion. Behavioural hover waits remain separate, pending shared Timing rules.
+- Generated Tooltip stories use a real trigger while retaining registry-derived Controls and variant coverage. Separate stories cover static appearance, wrapping content and browser interaction checks; regeneration preserves Storybook's watched directory.
+- The documentation preview renderer handles Tooltip's content width as a CSS setting, keeping its default preview and variant samples visible after the API change.
+- Verify all twenty Tooltip variants against the live Figma component, record web-specific representation differences and restore `ready`. Draw the border inside the surface so it preserves the verified dimensions instead of adding two pixels to width and height.
+
 ### Changed — 2026-10-06 (motion review)
 
 - **Motion is Confirmed in the guide and foundations index.** The duration model uses a fixed `micro` role for small linear changes and enter/exit pairs for small, medium and large transitions, with a shorter exit in each pair. Recommended profiles distinguish local changes, surfaces and continuous rotation; opacity, translation and scale may be combined.
@@ -210,6 +219,14 @@ All notable changes to the Stylos Design System project (foundations, components
 - **The set is grown on demand, not stocked.** Five icons today, which are the ones the instance was chosen against; an icon enters when something needs it. Adding one is a line in the manifest and a re-run, so stocking ahead of demand buys nothing and leaves files nobody checked against a real use.
 - Three devDependencies (`fontkit`, `wawoff2`, `material-symbols`) against `tools/README.md`'s dependency-free norm, recorded there as its only exception: none of them sits on a build path, and instancing a variable font is not something plain Node can do.
 
+### Added — 2026-09-07 (the Tooltip component)
+
+- **`Tooltip` is built** — a slab of text in five sizes, two neutral tones and two forms. The `string` form hugs its width, takes the single-line measure and centres; `text` wraps inside a width the consumer supplies, takes the looser wrapping measure and aligns to the start. No width, no minimum and no maximum are set, because the contract names none.
+- **No behaviour, and that is the contract rather than a gap.** The entry's limitations say it outright: nothing here is interactive, nothing dismisses it, it has no state and no way to be pinned open — a tooltip that needs any of those is a Popover. Appearing on hover and on focus, staying while the reader moves onto it, and being tied to the control it describes are three `requires` findings, and all three belong to whoever places it, the same way Label's association and Icon's accessible name do.
+- **No dependency was added.** [ADR 0002](docs/decisions/0002-frontend-stack.md) classes Tooltip among the pattern components Zag.js covers, and that classification is about what a product's tooltip needs rather than about this component; the contract holds nothing a state machine would drive, and the `0.2.0` gate requires props to map 1:1 onto `api`. `packages/ui` still ships with no runtime dependencies. **Where the hover-and-focus behaviour eventually lives is undecided** — it is not in this entry, and nothing yet says which one owns it.
+- The radius, shadow, surface and border are not in the contract's `sizing_model`, so they were read from the Figma node's bound variables rather than chosen: `radius/small`, `shadow/elevation 2`, `background/base` with `border/secondary` for the base tone, `surface/bold/base/default` with `text/inverted` and no border for the inverted one. The border is drawn in both tones and only its colour changes, so the two are the same size on screen.
+- Verified in the workshop against the contract's sizing table, size by size: 10/12/14/16/18 measures on 3/4/5/6/7 block padding and 7/8/10/12/14 inline, radius 4 at every step, and the wrapping form taking the text line-height family rather than the string one.
+
 ### Added — 2026-09-07 (the Icon component)
 
 - **`Icon` is built** — the first entry of PLAN.md's second wave. The element is the `<svg>` itself, which is what the contract's `html` says, so the footprint is the element and there is no wrapper to size separately. Always `aria-hidden="true"` and `focusable="false"`: whether the mark needs a name is the parent's question and nothing in the component can answer it, so the one thing it refuses to let a call site re-decide is the thing 68 registry entries would otherwise each have to remember.
@@ -224,6 +241,11 @@ All notable changes to the Stylos Design System project (foundations, components
 - **`values` on a `text` property now mean examples rather than a vocabulary**, documented in [the registry README](docs/components/registry/README.md) and read as such by the generators. The component page already rendered rows for any property carrying values; `build-ui-stories.mjs` now writes a story per example too, and a property with no `default` starts its *sample* from the first example — the sample's fallback, never the component's.
 - **`tools/lib/preview.mjs` gains Icon as its second structural case**, beside Label. The generic branch renders a text property as element content, which for an `<svg>` means the name sits inside the tag and nothing is drawn; the Icon case emits the real `<path>` from the committed set.
 - Without these, the one component whose whole point is the drawing documented itself with an empty box — on the component page and in Storybook both.
+
+### Changed — 2026-09-07 (the paper record follows the components)
+
+- `ARCHITECTURE.md` §5 said **five** entries of 114 are implemented; Icon had already made that false and Tooltip makes it seven. Corrected and dated.
+- `PLAN.md` records that **Tooltip was built out of wave order**, ahead of the seven elements still open in wave 1 and the rest of wave 2, because the owner chose it. The wave table is a sequence rather than a gate.
 
 ### Fixed — 2026-09-07 (contract prose is Markdown, and Icon's names are underscored)
 

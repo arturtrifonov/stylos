@@ -94,6 +94,17 @@ test("every number is px except a font weight, and values pass through verbatim"
   assert.equal(cssNumber(450, "weight/emphasis"), "450");
 });
 
+test("the imported motion values become CSS time and easing values without dimensional conversion", () => {
+  const d = declarations(built.css);
+  const motion = collections.find((collection) => collection.name === "motion");
+  for (const [tokenPath, token] of motion.tokens) {
+    const value = token.values.get("default");
+    const expected = token.type === "duration" ? `${value.get("value")}${value.get("unit")}` : value;
+    assert.equal(d.get(property("motion", tokenPath)), expected);
+    assert.equal(built.manifest.properties[property("motion", tokenPath)].token, `motion/${tokenPath}`);
+  }
+});
+
 test("a colour is hex, and rgb() only where alpha is under 1", () => {
   assert.equal(cssColor("#5752F1"), "#5752f1");
   assert.equal(cssColor("#000000", 0.03), "rgb(0 0 0 / 0.03)");

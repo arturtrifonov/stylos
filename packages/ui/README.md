@@ -47,6 +47,44 @@ Per SPEC 0009 §5, contract first: the entry's `api` is corrected to describe th
 
 ## Accessibility implementation and verification
 
+### Tooltip
+
+The trigger is the single root element in the child snippet. Keep its own
+accessible name and keyboard focusability; the wrapper adds no focus stop.
+
+```svelte
+<Tooltip tooltipText="Copy the link" tone="inverted">
+  <button type="button" onclick={copyLink}>Copy</button>
+</Tooltip>
+```
+
+The DOM behaviour uses Zag.js's vanilla adapter, independently of Svelte.
+It links the trigger and text using `aria-describedby`, preserving existing
+descriptions and the trigger's id and event handlers. It opens on hover and
+keyboard focus, retains the surface while hovered, and closes on Escape,
+blur, click and scroll. The body-level overlay avoids clipping ancestors and
+appears below the trigger by default with a `gap/g-0_500` separation, and
+flips or shifts at viewport edges. Do not put focusable content in the text.
+
+Hover waits 400 ms and pointer departure has a 150 ms grace period; these
+component defaults await a shared Timing decision. Keyboard focus and Escape
+have no behavioural wait. Motion is an opacity fade using the shared
+`medium/enter` and `medium/exit` durations and their matching easing roles,
+with no extra visual delay. Reduced motion makes visibility immediate.
+
+For wrapping descriptions, set `type="text"` and `contentWidth` to a CSS width;
+the viewport's available width limits it. A disabled native button cannot
+receive keyboard focus: provide its explanation in persistent text too.
+
+Migration from the earlier surface-only implementation: supply the described
+control as Tooltip's child. Without a trigger the component renders nothing.
+The `Appearance` story and independent CSS retain static visual samples;
+generated stories use a fixture with a real trigger and working controls.
+
+The Storybook interaction story verifies hover, keyboard focus, Escape,
+hover retention and the association in a browser. The screen-reader matrix
+below remains open; these checks do not establish full-page conformance.
+
 The shared target and the boundary between component evidence and full-interface conformance are defined in [Accessibility](../../docs/foundations/accessibility.md). Implementation follows the ARIA semantics in FND-ACCESSIBILITY-02 and fulfils the registry obligations it controls; integration examples make consumer obligations visible.
 
 Prefer a native HTML element when it supplies the required semantics and behaviour. For custom widgets, the [ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/) supplies typical keyboard, focus and naming patterns, such as dialogs, menus and listboxes. APG is [informative guidance](https://www.w3.org/WAI/ARIA/apg/about/introduction/#apg-is-not-a-normative-standard), not another conformance standard. Use the relevant pattern as the default and document departures in the component's implementation guide. A pattern or a behaviour dependency such as Zag.js does not by itself prove accessibility.

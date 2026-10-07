@@ -8,6 +8,7 @@
 // into the wrong primitive mode.
 
 import { resolve, themeModes } from "./tokens.mjs";
+import { cssDuration, cssEasing } from "./motion.mjs";
 
 /** Expand a token's `ref` into a target per mode. */
 function refByMode(ref, modes, key, problems) {
@@ -59,6 +60,17 @@ export function verifyCanonical({ collections }, problems) {
   for (const collection of collections) {
     for (const [tokenPath, token] of collection.tokens) {
       const key = `${collection.name}/${tokenPath}`;
+
+      if (["duration", "easing"].includes(token.type)) {
+        for (const theme of themes) {
+          try {
+            const { value } = resolve(collections, collection.name, tokenPath, theme);
+            (token.type === "duration" ? cssDuration : cssEasing)(value);
+          } catch (error) {
+            problems.errors.push(`${key} (${theme}): ${error.message}`);
+          }
+        }
+      }
 
       if (!token.ref) {
         if (token.values.size === 0) {
