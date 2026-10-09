@@ -37,6 +37,33 @@ A style's paragraph spacing is exposed as `--stylos-paragraph-spacing`. The styl
 
 A theme replacing the family tokens supplies its own compatible font faces. Weight values remain shared role tokens under FND-TYPOGRAPHY-05; font substitution does not introduce arbitrary component weights.
 
+### Content typography
+
+FND-TYPOGRAPHY-10 defines the boundary between content styles and component token use. For individual pieces of content, apply a complete class from `text.css`. For headings and paragraphs rendered from Markdown, import `@stylos/ui/prose.css` alongside tokens and fonts:
+
+```js
+import "@stylos/ui/tokens.css";
+import "@stylos/ui/fonts.css";
+import "@stylos/ui/prose.css";
+```
+
+```html
+<article class="stylos-prose">
+  <h1>Project settings</h1>
+  <p>Change the name and description of your project.</p>
+  <h2>Members</h2>
+  <p>Review access to the project.</p>
+</article>
+```
+
+The body defaults to the complete `text/base/medium` style. `data-text-style` selects one of the recorded `text/base/*` or `text/emphasis/*` styles across the five sizes; for example, `<article class="stylos-prose" data-text-style="text/base/small">`. An absent or unsupported value retains the medium default. Headings `h1`–`h6` use their corresponding `heading/h1`–`heading/h6` styles, independently of body size.
+
+`tools/build-prose-css.mjs` uses the same text-style declaration projection as `text.css` and adds the approved document margins under FND-TYPOGRAPHY-11, FND-TYPOGRAPHY-12 and FND-TYPOGRAPHY-13. Missing, incomplete or unresolved required styles stop generation. Paragraph margins use the selected body's `--stylos-paragraph-spacing`; heading margins reference semantic gap tokens. The export requires tokens and fonts, but no framework, text wrappers or Markdown parser. Tables, quotations, links and code blocks still require their own approved design contracts.
+
+The workshop's `Foundations/Typography` stories show the recorded text styles, headings and paragraphs, the five base body sizes, and spacing cases with adjacent and wrapping headings. Their interaction checks measure rendered block distances and document boundaries.
+
+The [approved Figma spacing reference](../../figma/typography.md#document-spacing-reference) is implemented with logical block margins on headings and paragraphs. Keep these blocks in normal block flow inside the document container so adjacent margins collapse. Flex or grid on a parent outside `.stylos-prose` does not change its internal block flow; making the document container itself flex or grid requires a layout that calculates the single adjacent gap under FND-TYPOGRAPHY-12. Boundary resets apply to direct heading and paragraph children of `.stylos-prose`.
+
 ### Heading width
 
 Heading styles follow FND-TYPOGRAPHY-09. For `heading/*`, the CSS generator omits `font-stretch`, including when an older style record contains width metadata. The selected typeface renders at its normal width.

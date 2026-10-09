@@ -1,7 +1,7 @@
 # Typography
 
 Status: Confirmed
-Scope: Font sizes, line heights, typeface roles, weights and text spacing; what the words say is [content/](../content/README.md).
+Scope: Font sizes, line heights, typeface roles, weights, text spacing, the use of ready-made text styles and spacing between document text blocks; what the words say is [content/](../content/README.md).
 
 Canonical component size names follow FND-NAMING-11. A text style combines a typeface role, a measure, a line-height family, a weight role and text spacing for a particular use.
 
@@ -106,3 +106,57 @@ Paragraph spacing is a separate part of a wrapping text style, expressed through
 **MUST.** Render heading text styles at the selected typeface's normal width.
 
 Why: the heading hierarchy is defined by its typeface role, measure and weight, without an additional width adjustment.
+
+## Applying text styles
+
+### FND-TYPOGRAPHY-10 — Content uses ready-made text styles
+
+**MUST.** Apply a ready-made text style to ordinary content rather than choosing its font tokens separately.
+
+Why: a complete style keeps typography consistent across pages.
+
+This applies to page headings, paragraphs, lists and Markdown output. Classes, wrappers and document containers select existing styles such as `text/base/medium` and `heading/h2`.
+
+Exception: **Component implementation.** Components may combine font tokens for text roles defined in their contracts; FND-TYPOGRAPHY-01, FND-TYPOGRAPHY-02, FND-TYPOGRAPHY-04, FND-TYPOGRAPHY-05 and FND-TYPOGRAPHY-08 still apply. Content wrappers and document containers select complete styles.
+
+[Figma representation](../../figma/typography.md) · [HTML integration](../../packages/ui/README.md#content-typography).
+
+## Document spacing
+
+Approved by the owner on 2026-10-09: [Figma reference, option B](https://www.figma.com/design/2OJYDoTE9EAdQKaJAJK9Kt/Stylos--Styles?node-id=2777-42).
+
+### FND-TYPOGRAPHY-11 — Heading spacing follows its level
+
+**MUST.** Use the following gap-token profile before and after headings in document content.
+
+Why: larger sections need more separation, while headings stay close to their text.
+
+| Heading style | Before | After |
+| --- | --- | --- |
+| `heading/h1`, `heading/h2` | `dimension/gap/g-3_500` | `dimension/gap/g-1_500` |
+| `heading/h3`, `heading/h4` | `dimension/gap/g-3_000` | `dimension/gap/g-1_000` |
+| `heading/h5`, `heading/h6` | `dimension/gap/g-2_000` | `dimension/gap/g-1_000` |
+
+Gaps are measured between text blocks' line-box bounds, separately from line height. They stay the same when a heading wraps or the body text size changes. FND-TYPOGRAPHY-12 determines the resulting gaps.
+
+Checked by: `npm test` and the workshop's `Foundations/Typography` play checks.
+
+### FND-TYPOGRAPHY-12 — Adjacent document gaps collapse
+
+**MUST.** Use the larger of the preceding block's after-gap and the following block's before-gap as the single gap between adjacent document text blocks.
+
+Why: adding both gaps creates excessive space around headings.
+
+For paragraphs and headings, use `max(previous.after, next.before)`. Remove the outside gap before the first block and after the last block. Container padding is separate and follows FND-SPACING-02.
+
+Checked by: the workshop's `Foundations/Typography` play checks.
+
+### FND-TYPOGRAPHY-13 — Paragraph gaps come from the selected style
+
+**MUST.** Use the selected ready-made body text style's paragraph spacing as a paragraph's after-gap, with no before-gap.
+
+Why: each text style already defines its paragraph rhythm.
+
+The gap uses the style's `font/paragraph spacing` token and follows FND-TYPOGRAPHY-12. In Figma, use native paragraph spacing within a text layer or one gap between separate layers; applying both would double the interval.
+
+Checked by: the workshop's `Foundations/Typography` play checks across all five base body sizes.

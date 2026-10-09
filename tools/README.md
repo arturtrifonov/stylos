@@ -197,6 +197,10 @@ The CSS build fails loudly on: two token names that slugify to one custom proper
 
 `tokens:check` and `tokens:import` fail loudly on: a reference that does not resolve or that loops; a token with neither a value nor a reference; a reference bound across modes (a dark-mode variable pointing into `palette.light`); token names differing between a collection's modes; a colour space other than sRGB, which cannot be stored as hex; and a YAML round-trip that does not reproduce what was intended. Colours that are not 8-bit representable are warnings, not failures — `--strict` promotes them.
 
+## `build-text-css.mjs` and `build-prose-css.mjs`
+
+Run by `npm run ui:generate`. Both project complete styles from `figma/text-styles.yaml` through the same declaration renderer. `build-text-css.mjs` writes one class per style to `packages/ui/dist/text.css`; unresolved styles are reported and skipped. `build-prose-css.mjs` writes `packages/ui/dist/prose.css`, applying recorded body and heading text-style declarations and document margins under FND-TYPOGRAPHY-11, FND-TYPOGRAPHY-12 and FND-TYPOGRAPHY-13. Content generation fails on missing, incomplete or unresolved required styles. The public style selection, block-flow requirements, element mappings and stylesheet imports are described in the [package guide](../packages/ui/README.md#content-typography).
+
 ## `lib/`
 
 Shared, dependency-free modules for the above.

@@ -121,7 +121,9 @@ authored ─────────── packages/ui/src/components/<name>/<na
                                     └───svelte-package───▶ packages/ui/dist/package/
 ```
 
-`ui:generate` runs the two generators after `tokens:css`; `ui:build` runs the package build with generation as its `prebuild`. Everything under `dist/` is gitignored and rebuilt.
+`ui:generate` generates component types, stories, independent CSS, fonts and text styles after `tokens:css`; `ui:build` runs the package build with generation as its `prebuild`. Everything under `dist/` is gitignored and rebuilt.
+
+**Amended 2026-10-09:** the owner requested content typography as a basic consumer capability. The independent `prose.css` export now applies complete recorded body and heading text styles to HTML, including Markdown output, with all five body sizes and a medium default. It also implements the approved document-spacing contract under FND-TYPOGRAPHY-11, FND-TYPOGRAPHY-12 and FND-TYPOGRAPHY-13. `Foundations/Typography` in the workshop demonstrates text styles, headings and paragraphs, with checks of rendered spacing; the [package guide](packages/ui/README.md#content-typography) records integration. This foundation is delivered alongside Stage 5 without adding a component-registry contract or changing the component waves.
 
 Work:
 
