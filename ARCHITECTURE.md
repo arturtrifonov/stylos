@@ -52,6 +52,10 @@ The relationship stays **one-directional**: the repository never writes to Figma
 
 **Amended 2026-10-05 — component standard revised with the owner's approval.** The [component standard](docs/components/STANDARD.md) carries a Confirmed status and scope under the ordinary rule grammar. Contract completeness uses shared required-data checks in the site and validator, while readiness additionally requires Figma verification evidence. Publication conventions require the current published components to pass Figma checks without errors, without prescribing manual runs before publication; a successful later check needs no corrective action.
 
+**Amended 2026-10-09 — content typography added at the owner's request.** FND-TYPOGRAPHY-10 defines complete style selection for ordinary content and direct font-token use in component implementations. `@stylos/ui/prose.css` applies the recorded body and heading styles to content HTML, sharing the declaration projection with `text.css`. It is a framework-independent foundation, outside the component registry, with medium body text by default and complete body-style selection through `data-text-style`; it requires neither text wrappers nor a Markdown parser. The package guide records its element mappings and integration boundary.
+
+**Amended 2026-10-09 — document spacing approved and implemented at the owner's request.** FND-TYPOGRAPHY-11, FND-TYPOGRAPHY-12 and FND-TYPOGRAPHY-13 record the approved option B from the Figma typography study. The [Figma guide](figma/typography.md#document-spacing-reference) links its retained reference. The content stylesheet generator implements this contract with logical block margins, normal-flow margin collapse and direct-child boundary resets. Heading spacing uses semantic gap tokens and paragraph spacing comes from the selected body style. Storybook checks the rendered distances, including adjacent headings and wrapping content.
+
 ## 2. The three flows
 
 ### 2.1 Tokens
@@ -133,6 +137,7 @@ This is the only closed loop in the system, and the only automated step anywhere
 | `packages/ui/dist/fonts.css`, `dist/assets/fonts/` — the font export: the `@font-face` rules and woff2 subsets behind the families `tokens.css` names | `assets/fonts/`, `FONT_FACES` in `tools/lib/theme.mjs` | `tools/build-ui-fonts.mjs` | no — derived, rebuilt on demand |
 | `figma/text-styles.yaml` — the record of the Figma text styles, aliases into `tokens/`, never raw values | a Plugin API read of the Styles file (Figma has no export for Styles) | `tools/import-styles.mjs` | yes — generated, never hand-edited |
 | `packages/ui/dist/text.css` — the text-style export: one class per recorded style, every value a `var()` into `tokens.css` | `figma/text-styles.yaml` | `tools/build-text-css.mjs` | no — derived, rebuilt on demand |
+| `packages/ui/dist/prose.css` — recorded body/heading styles and approved document spacing | `figma/text-styles.yaml` and the document-spacing contract in `docs/foundations/typography.md` | `tools/build-prose-css.mjs`, sharing the text-style projection | no — derived, rebuilt on demand |
 
 The registry importer ran once, on 2026-08-20. It deletes and rewrites every file rather than merging, so it is kept as the record of how the registry came to exist and refuses to run without `--overwrite-hand-edits`.
 

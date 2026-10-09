@@ -44,6 +44,23 @@ const DECLARATIONS = [
   ["letter spacing", "letter-spacing"],
 ];
 
+/** Shared projection for text classes and content selectors. */
+export function textStyleDeclarations(name, entry) {
+  if (entry.has("unresolved")) throw new Error(`Text style ${name} has unresolved bindings`);
+  const lines = [];
+  for (const [key, cssProperty] of DECLARATIONS) {
+    if (entry.has(key)) lines.push(`  ${cssProperty}: ${varRef(entry.get(key))};`);
+  }
+  if (entry.get("text case") === "uppercase") lines.push("  text-transform: uppercase;");
+  if (!name.startsWith("heading/") && entry.has("width")) {
+    lines.push(`  font-stretch: ${entry.get("width")}%;`);
+  }
+  if (entry.has("paragraph spacing")) {
+    lines.push(`  --stylos-paragraph-spacing: ${varRef(entry.get("paragraph spacing"))};`);
+  }
+  return lines.join("\n");
+}
+
 /** Renders the stylesheet from the parsed record. */
 export function renderTextCss(record) {
   const styles = record.get("styles");
@@ -55,18 +72,7 @@ export function renderTextCss(record) {
       skipped.push(name);
       continue;
     }
-    const lines = [];
-    for (const [key, cssProperty] of DECLARATIONS) {
-      if (entry.has(key)) lines.push(`  ${cssProperty}: ${varRef(entry.get(key))};`);
-    }
-    if (entry.get("text case") === "uppercase") lines.push("  text-transform: uppercase;");
-    if (!name.startsWith("heading/") && entry.has("width")) {
-      lines.push(`  font-stretch: ${entry.get("width")}%;`);
-    }
-    if (entry.has("paragraph spacing")) {
-      lines.push(`  --stylos-paragraph-spacing: ${varRef(entry.get("paragraph spacing"))};`);
-    }
-    rules.push(`.stylos-${slug(name)} {\n${lines.join("\n")}\n}`);
+    rules.push(`.stylos-${slug(name)} {\n${textStyleDeclarations(name, entry)}\n}`);
   }
 
   const header =

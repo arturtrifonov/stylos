@@ -4,6 +4,12 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-10-09 (content typography)
+
+- Add `@stylos/ui/prose.css` to apply complete recorded body and heading text styles to HTML and Markdown output. Body text defaults to medium and supports the ten base/emphasis styles across five sizes. The export shares the `text.css` projection and rejects missing or unresolved required styles.
+- Add workshop examples of the recorded text styles, headings and paragraphs. Document complete style selection under FND-TYPOGRAPHY-10, with direct font-token use limited to component implementation.
+- Record the owner's approved document-spacing profile B under FND-TYPOGRAPHY-11, FND-TYPOGRAPHY-12 and FND-TYPOGRAPHY-13, with a retained Figma reference and a paragraph-spacing exception in FND-SPACING-02. Implement its logical heading/paragraph margins and document boundary resets in the content CSS generator, with Storybook checks of collapsed gaps, body sizes and wrapping headings.
+
 ### Added — 2026-10-07 (Checkbox family)
 
 - Add Checkbox Label and Checkbox Text as native labelled compositions of Checkbox Input, medium by default. Label hugs a single line; Text fills the consumer column and aligns the box to its first line. Text supports optional phrasing content, including links whose activation does not toggle the checkbox. Both forward binding, form identity, required validity, disabled and reset behaviour. All 120 composition variants are verified against Figma typography, gaps and alignment.

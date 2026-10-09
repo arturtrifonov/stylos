@@ -28,7 +28,7 @@
     "tokens:css": "node tools/build-css.mjs",
     "tokens:report": "node tools/tokens-report.mjs",
     "icons:import": "node tools/build-icons.mjs",
-    "ui:generate": "node tools/build-css.mjs && node tools/build-ui-icons.mjs && node tools/build-ui-types.mjs && node tools/build-ui-stories.mjs && node tools/build-ui-css.mjs && node tools/build-ui-fonts.mjs && node tools/build-text-css.mjs",
+    "ui:generate": "node tools/build-css.mjs && node tools/build-ui-icons.mjs && node tools/build-ui-types.mjs && node tools/build-ui-stories.mjs && node tools/build-ui-css.mjs && node tools/build-ui-fonts.mjs && node tools/build-text-css.mjs && node tools/build-prose-css.mjs",
     "ui:build": "npm run build -w @stylos/ui",
     "ui:check": "npm run ui:generate && npm run check -w @stylos/ui",
     "lint:css": "stylelint \"packages/ui/src/**/*.{css,svelte}\"",

@@ -31,6 +31,8 @@ This rule governs spacing that is explicitly set. Free space distributed by a co
 
 Exception: **Documented optical correction.** A local correction permitted by PRN-01 may depart from a gap token when its purpose and the affected spacing are named where the correction is made; it does not add a shared scale step or permit unrelated raw spacing.
 
+Exception: **Document paragraph spacing.** Paragraph gaps under FND-TYPOGRAPHY-13 use the selected text style's `font/paragraph spacing` token; other explicitly set document spacing continues to use semantic gap tokens.
+
 Serves: PRN-01, PRN-04.
 
 ### FND-SPACING-03 — Spacing roles alias matching primitives
