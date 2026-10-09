@@ -835,3 +835,12 @@ test("Checkbox compositions preview nested Input surface and only visible label 
     assert.doesNotMatch(html, /Short name|consent|yes|<input/);
   }
 });
+
+test("Button Base preview retains native semantics and escapes copy and form attributes", () => {
+  const entry = loadRegistry(repoRoot).find(entry => entry.id === "Button Base");
+  const html = sampleHtml(entry, {...defaultAssignment(entry), type:"submit",name:'intent"',value:'<publish>',state:"disabled","label text":"<Save>"});
+  assert.match(html, /<button type="submit"/);
+  assert.match(html, /name="intent&quot;" value="&lt;publish&gt;"/);
+  assert.match(html, / disabled><span>&lt;Save&gt;<\/span>/);
+  assert.throws(() => sampleHtml(entry,{onclick:()=>{}}), /cannot render an event callback/);
+});

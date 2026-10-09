@@ -383,6 +383,7 @@ const KIND_GLYPHS = {
   text: "T",
   string: "S",
   instance: "▣",
+  event: "↗",
 };
 
 // What a rendered sample takes where the contract cannot say: a property that

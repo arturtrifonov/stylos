@@ -87,3 +87,9 @@ test("renderProps renders a contract with no properties as a type that rejects e
   assert.match(rendered, /export type LoaderProps = Record<string, never>;/);
   assert.match(rendered, /The contract has no properties\./);
 });
+
+test("native onclick is typed as a callback and unsupported event names fail", () => {
+  const rendered = renderProps({id:"Button Base",api:[{name:"onclick",kind:"event"}]});
+  assert.match(rendered, /onclick\?: \(event: MouseEvent\) => void;/);
+  assert.throws(() => fieldFor({name:"onunknown",kind:"event"}), /unsupported native event/);
+});

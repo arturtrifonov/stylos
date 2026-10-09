@@ -4,6 +4,16 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-09 (workshop)
+
+- Replace separate property-value stories with one Default playground per component, preserving registry-derived Controls and independent static-site examples. Place Button Base’s Icons playground immediately after Default.
+- Remove extra visual matrices, interaction-test pages and form demonstrations for Checkbox Input, the Checkbox family and Tooltip. Keep their Default playgrounds and Controls, including Tooltip’s live trigger.
+
+### Added — 2026-10-09 (Button Base)
+
+- Apply the shared local-state Motion profile to Button Base surface-colour transitions using duration/micro and easing/linear, with immediate changes under reduced motion.
+- Add Button Base with five sizes and tones, native interaction and form behaviour, optional component/snippet icons, independent CSS and static previews. Preserve Figma typography, focus, shadows and optical icon overhang. Provide Default and an icon playground with selections from the active icon set.
+
 ### Added — 2026-10-09 (content typography)
 
 - Add `@stylos/ui/prose.css` to apply complete recorded body and heading text styles to HTML and Markdown output. Body text defaults to medium and supports the ten base/emphasis styles across five sizes. The export shares the `text.css` projection and rejects missing or unresolved required styles.

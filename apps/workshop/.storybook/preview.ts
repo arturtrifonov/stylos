@@ -5,3 +5,14 @@ import "@stylos/ui/tokens.css";
 import "@stylos/ui/fonts.css";
 // The recorded text styles as classes (figma/text-styles.yaml).
 import "@stylos/ui/text.css";
+
+export default {
+  parameters: {
+    options: {
+      storySort: {
+        includeNames: true,
+        order: ["Components", ["Button Base", ["Docs", "default", "Icons playground"], "*"], "Foundations"],
+      },
+    },
+  },
+};

@@ -150,7 +150,7 @@ A **sequence**, because property order is part of the public API (FND-NAMING-18,
 api:
   -
     name: "size"
-    kind: "variant"          # variant | text | string | boolean | instance | slot
+    kind: "variant"          # variant | text | string | boolean | instance | slot | event
     default: "extra small"
     description: "What the property means and what it governs."
     a11y:                     # optional, property-level finding
@@ -178,6 +178,8 @@ api:
 **`slot` and `instance` are different things.** An `instance` property holds one instance of one type — swapping it changes which component sits in that place. A `slot` holds however many instances the consumer puts in it, of several types, sometimes drawn from a constrained set and sometimes from none. Table Row Body is the case: a row holds as many cells as the table has columns, and a name, a date, a set of tags and a row of actions are four different components in one slot. A slot has no `default` and no `values`; what a slot will accept is recorded where every other allowed composition is, in `children`.
 
 **`text` and `string` use the same storage type but carry different things.** `text` supplies textual content: a label, heading, message, placeholder or input value. Its name follows FND-NAMING-12. `string` supplies an identifier or other non-text string value: `Icon.name` selects a mark rather than displaying the name as copy. A string property is named for its role and does not acquire the `text` suffix just because its value is stored as a string. Both kinds have string defaults and string example values, and both generate TypeScript `string` props.
+
+**`event` supplies a native callback.** It has no default or values. The current supported event is `onclick`, generated as a function receiving a `MouseEvent`; keyboard activation of a native button also dispatches click. Event handlers are web integration properties and do not become Figma controls. The generator rejects an unsupported event name.
 
 **`controls` is what a "controlled group" is.** FND-NAMING-19 requires that when a boolean governs an element's presence, that element's properties follow it immediately. Recording which properties it governs makes the adjacency checkable instead of conventional.
 

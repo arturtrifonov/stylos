@@ -103,9 +103,7 @@ colours use the browser's native appearance. Surface colours and borders use
 Motion micro/linear, with immediate changes under reduced motion. The 16 and 20 px sizes require
 the target-area conditions recorded in the contract.
 
-The `Interaction` Storybook story checks keyboard, label activation, mixed
-selection, binding, disabled fieldsets, form data, required validity and
-reset. `Visual states` checks dimensions of all 60 Figma combinations.
+The workshop renders a single named checkbox in its Default playground, with Controls for its supported properties.
 The exact Figma glyphs are internal masks, retaining their original sizes;
 the independent CSS export embeds their SVG bytes and needs no asset folder.
 The assistive-technology matrix below remains open.
@@ -141,12 +139,7 @@ receive keyboard focus: provide its explanation in persistent text too.
 
 Migration from the earlier surface-only implementation: supply the described
 control as Tooltip's child. Without a trigger the component renders nothing.
-The `Appearance` story and independent CSS retain static visual samples;
-generated stories use a fixture with a real trigger and working controls.
-
-The Storybook interaction story verifies hover, keyboard focus, Escape,
-hover retention and the association in a browser. The screen-reader matrix
-below remains open; these checks do not establish full-page conformance.
+The independent CSS supports static tooltip surfaces; the workshop’s Default uses a live trigger.
 
 The shared target and the boundary between component evidence and full-interface conformance are defined in [Accessibility](../../docs/foundations/accessibility.md). Implementation follows the ARIA semantics in FND-ACCESSIBILITY-02 and fulfils the registry obligations it controls; integration examples make consumer obligations visible.
 
@@ -180,3 +173,20 @@ Both compose `CheckboxInput`, default to medium and expose the same form, select
 Label hugs its single line and uses emphasis weight with string line height. Text fills the parent width, wraps using text line height and centres the box on its first line; choose the column width in the surrounding layout. Text's optional `children` snippet replaces `labelText`. Supply phrasing content such as text, emphasis and anchors, with no nested labels or additional controls. Native anchor activation follows the link without toggling selection, including inside a disabled option; a disabled checkbox does not disable an independent link. Supplementary copy belongs outside the label and is connected through `descriptionIds`; required validity does not add an error appearance.
 
 Hover and pressing across the full label update the input's existing Motion surface transitions. Native disabled fieldsets also disable the input and copy. The CSS exports for Label/Text include the shared layout and Checkbox Input styles; link tokens and fonts separately as usual.
+
+### Button Base
+
+`ButtonBase` renders a native button. It defaults to primary/medium and supports all five tones and sizes from its registry contract. Set `state="disabled"` for unavailable actions. Hover, pressing and keyboard focus are browser states; a disabled fieldset also disables the control. Labels remain unchanged in the DOM and are uppercased visually. Surface-colour changes use the local-state Motion profile (`duration/micro` and `easing/linear`); reduced motion makes them immediate.
+
+```svelte
+<ButtonBase labelText="Save changes" onclick={saveChanges} />
+<ButtonBase labelText="Delete" tone="danger" size="small" state="disabled" />
+```
+
+Supply optional marks through `leadingIcon` and `trailingIcon`, with their presence booleans enabled. Either input accepts a component or a snippet. An unassigned mark renders nothing. Button sizing preserves the recorded optical overhang; icons are decorative and do not add to the accessible name.
+
+`type` defaults to `button`. Use `submit` or `reset` for native form actions; `name`, `value` and `form` preserve submitter identity and external association. `onclick` receives the native click event and may cancel its default action. `descriptionIds` links supporting text.
+
+Independent HTML uses `.stylos-button-base` on `<button type="button">`, with `data-tone`, `data-size` and `data-state`. Link tokens, fonts and `@stylos/ui/css/button-base.css`.
+
+The workshop’s Icons playground renders one button. Controls select the leading and trailing icons independently from the active icon set, toggle their presence, and adjust the button’s label, size, tone and disabled state.
