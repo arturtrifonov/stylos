@@ -13,10 +13,8 @@
  * north-east quadrant), painted with `text/primary` — the one colour the
  * contract fixes.
  *
- * The animation is the component. The contract leaves speed and curve to the
- * implementation, and this one decides: one full turn per second, linear —
- * a looping arc reads as constant angular velocity, and any easing on a loop
- * shows up as a stutter.
+ * Rotation uses the shared cycle duration and linear easing under
+ * FND-MOTION-06. The animation is the component, not a consumer setting.
  *
  * Where the person has asked for reduced motion, the rotation is replaced —
  * not merely stopped, because a stopped loader is the one thing this
@@ -41,7 +39,7 @@
   background-color: var(--stylos-color-text-primary);
   mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M10 1 A9 9 0 1 0 19 10" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>');
   mask-size: 100% 100%;
-  animation: stylos-loader-turn 1s linear infinite;
+  animation: stylos-loader-turn var(--stylos-motion-duration-cycle) var(--stylos-motion-easing-linear) infinite;
 }
 
 @keyframes stylos-loader-turn {

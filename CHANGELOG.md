@@ -4,6 +4,14 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-10 (Loader)
+
+- Connect Loader rotation to duration/cycle and easing/linear under FND-MOTION-06.
+
+### Added — 2026-10-10 (Radio family)
+
+- Add Radio Input, Radio Label and Radio Text with five Figma-verified sizes, exact selection SVGs and token-based typography, geometry, colors and Motion. Native grouping, arrows, form submission and required validity work with bindable selection and reset. Label hugs one line; Text wraps at the consumer width and supports phrasing content. Each has a single Default playground and a static documentation preview.
+
 ### Changed — 2026-10-09 (workshop)
 
 - Replace separate property-value stories with one Default playground per component, preserving registry-derived Controls and independent static-site examples. Place Button Base’s Icons playground immediately after Default.

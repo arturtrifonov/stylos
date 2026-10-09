@@ -85,7 +85,7 @@ export function sampleHtml(entry, props = {}) {
       // String properties need their own renderer; they are not text content.
       if (entry.id === "Tooltip" && name === "content width") {
         styles.push(`--_stylos-tooltip-width:${value}`);
-      } else if (["Checkbox Input", "Checkbox Label", "Checkbox Text"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
+      } else if (["Checkbox Input", "Checkbox Label", "Checkbox Text", "Radio Input", "Radio Label", "Radio Text"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
         // Form integration does not change a static visual surface.
       } else if (["Button Base", "Button Outline", "Button Ghost"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
         // Native attributes are written by the button branch below.
@@ -138,15 +138,16 @@ export function sampleHtml(entry, props = {}) {
     return `<button type="${esc(props.type ?? "button")}" class="${cls}"${attr}${native}${description}${disabled}><span>${esc(props["label text"] ?? "Button")}</span></button>`;
   }
 
-  if (entry.id === "Checkbox Input") {
-    return `<span class="${cls}"${attr} aria-hidden="true"><span class="stylos-checkbox-input-surface"></span></span>`;
+  if (["Checkbox Input", "Radio Input"].includes(entry.id)) {
+    return `<span class="${cls}"${attr} aria-hidden="true"><span class="${cls}-surface"></span></span>`;
   }
 
-  if (["Checkbox Label", "Checkbox Text"].includes(entry.id)) {
-    const size = esc(props.size ?? "medium");
+  if (["Checkbox Label", "Checkbox Text", "Radio Label", "Radio Text"].includes(entry.id)) {
+    const family = entry.family.toLowerCase();
+    const size = esc(props.size ?? (family === "radio" ? "extra small" : "medium"));
     const state = esc(props.state ?? "default");
     const selection = esc(props["is checked"] ?? "false");
-    return `<span class="${cls}"${attr}><span class="stylos-checkbox-input" data-size="${size}" data-state="${state}" data-is-checked="${selection}" aria-hidden="true"><span class="stylos-checkbox-input-surface"></span></span><span class="stylos-checkbox-copy">${esc(props["label text"] ?? "Checkbox")}</span></span>`;
+    return `<span class="${cls}"${attr}><span class="stylos-${family}-input" data-size="${size}" data-state="${state}" data-is-checked="${selection}" aria-hidden="true"><span class="stylos-${family}-input-surface"></span></span><span class="stylos-${family}-copy">${esc(props["label text"] ?? entry.family)}</span></span>`;
   }
 
   return `<span class="${cls}"${attr}>${esc(content)}</span>`;

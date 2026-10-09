@@ -192,3 +192,42 @@ Supply optional marks through `leadingIcon` and `trailingIcon`, with their prese
 Independent HTML uses `.stylos-button-base`, `.stylos-button-outline` or `.stylos-button-ghost` on `<button type="button">`, with `data-tone`, `data-size` and `data-state`. Link tokens, fonts and the corresponding `@stylos/ui/css/button-*.css`. Outline draws its border inside the shared geometry; Ghost has no surface at rest, border or shadow.
 
 The workshop’s Icons playground renders one button. Controls select the leading and trailing icons independently from the active icon set, toggle their presence, and adjust the button’s label, size, tone and disabled state.
+
+### Radio Input, Radio Label and Radio Text
+
+All three use native radios, five sizes and an extra-small default. Label hugs
+one line with base weight; Text fills its parent and wraps, with the circle at
+the top of the first line. Input needs an accessible name or an external label.
+
+```svelte
+<script lang="ts">
+  import { RadioLabel } from "@stylos/ui";
+  let daily = $state<"false" | "true">("true");
+  let weekly = $state<"false" | "true">("false");
+</script>
+
+<fieldset>
+  <legend>Delivery frequency</legend>
+  <RadioLabel size="medium" name="frequency" value="daily"
+    labelText="Daily" bind:isChecked={daily} isRequired />
+  <RadioLabel size="medium" name="frequency" value="weekly"
+    labelText="Weekly" bind:isChecked={weekly} isRequired />
+</fieldset>
+```
+
+Use the same nonempty `name` for options with the same form owner. Give each a
+distinct `value`. The browser handles arrows, Tab, validity and form data;
+`bind:isChecked` follows deselection too, including selection of a plain native
+radio in the same group. Reset restores the initial group defaults and respects
+cancellation. `form`, `id`, `accessibleName` and `descriptionIds` work as on Checkbox.
+Focus can appear on an unchecked option in an empty group without selecting it.
+
+Radio Text's optional `children` replaces `labelText` with phrasing content such
+as emphasis or anchors. Anchor activation follows the link without selecting
+the option. No nested labels or additional form controls. Supplementary copy
+and errors stay outside the label, associated through `descriptionIds`.
+
+Hover and pressing across the label use the recorded surface roles and
+`duration/micro` with `easing/linear`. Reduced motion disables transitions;
+forced colors displays the native input. Storybook provides one Default with
+Controls per component; static documentation uses the same exported CSS.

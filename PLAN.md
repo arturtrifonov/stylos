@@ -103,6 +103,8 @@ The `0.1` milestone's checklist, and the membership record for every entry the w
 
 *Amended 2026-10-09:* the owner selected **Button Base** as the next implementation: five sizes, five tones and native interaction states. It is built ahead of the remaining wave-1 work. The owner then selected **Button Outline and Button Ghost** with the same native API and local-state Motion. The remaining Button treatments stay in wave 5.
 
+*Amended 2026-10-10:* the owner selected the complete **Radio Input / Label / Text** family after the three text-button treatments. It retains the wave-1 native-selection boundary and the single-Default workshop convention.
+
 The same six waves order the package's work in §4.2 — a component is implemented in the wave that wrote its contract, so the dependency order is already cut.
 
 ### 4.2 Stage 5 — `@stylos/ui`

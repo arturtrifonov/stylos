@@ -102,7 +102,7 @@ a11y:
     note: "Moving content that starts automatically and runs past five seconds must be pausable unless the movement is essential to the activity. A loader reporting a real wait is essential and exempt. Left spinning over a view that has finished or stalled it is no longer reporting anything, the exemption falls away, and it is moving decoration that cannot be stopped."
 motion:
   loop: true
-  intent: "The animation is the component: the mark turns continuously, and a loader at rest is a stopped loader, which is the one thing this component must never be. How fast it turns and on what curve are not settled here: Figma carries one timing as a prototype, and that is an implementation of the idea rather than a decision the system has made."
+  intent: "The animation is the component. Amended 2026-10-10: rotation follows FND-MOTION-06 and its lifetime follows FND-MOTION-12. The web implementation references the shared Motion tokens rather than copying prototype timing."
 sizing_model:
   horizontal: "fixed"
   vertical: "fixed"
@@ -118,7 +118,7 @@ limitations:
   - "No properties. There is no size and no tone, and the animation is not a setting."
   - "The colour is fixed to `text/primary`. A loader cannot sit on a filled primary surface — inside a primary button the mark would be indigo on indigo — and there is no tone value to move it."
   - "The mark's own dimension is a raw 20 with no token binding. It holds its proportion by a scale constraint, not by a value the system can change."
-  - "Rotation speed and easing are unspecified. The contract says the mark turns continuously and loops; how quickly is an open question, and an implementation is not bound by whatever Figma happens to be running."
+  - "Rotation timing follows FND-MOTION-06 and is not exposed as a component property."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "855-143591"
