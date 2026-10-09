@@ -21,3 +21,5 @@ export { default as CheckboxLabel } from "./components/checkbox-label/CheckboxLa
 export type { CheckboxLabelProps } from "./components/checkbox-label/props.ts";
 export { default as CheckboxText } from "./components/checkbox-text/CheckboxText.svelte";
 export type { CheckboxTextProps } from "./components/checkbox-text/props.ts";
+export { default as ButtonBase } from "./components/button-base/ButtonBase.svelte";
+export type { ButtonBaseProps } from "./components/button-base/props.ts";

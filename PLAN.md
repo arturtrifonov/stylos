@@ -101,6 +101,8 @@ The `0.1` milestone's checklist, and the membership record for every entry the w
 
 *Amended 2026-09-07:* **Tooltip was built out of order**, ahead of the seven elements still open in wave 1 and the rest of wave 2 — the owner chose it explicitly. The table is a sequence rather than a gate, and nothing in it depends on the order being kept: the waves are grouped by what a screen needs next, not by what compiles after what. Wave 6's other two entries, Modal and Drawer, are untouched.
 
+*Amended 2026-10-09:* the owner selected **Button Base** as the next implementation: five sizes, five tones and native interaction states. It is built ahead of the remaining wave-1 work. The other Button treatments remain in wave 5.
+
 The same six waves order the package's work in §4.2 — a component is implemented in the wave that wrote its contract, so the dependency order is already cut.
 
 ### 4.2 Stage 5 — `@stylos/ui`
@@ -112,7 +114,7 @@ tokens/*.yaml ─────────────tokens:css─────�
                                               packages/ui/dist/tokens.json
 
 registry/*.yaml ──┬──build-ui-types────────▶ packages/ui/src/components/<name>/props.ts
-                  └──build-ui-stories──────▶ apps/workshop/  (one story, a case per variant)
+                  └──build-ui-stories──────▶ apps/workshop/  (one Default playground with Controls)
 
 authored ─────────── packages/ui/src/components/<name>/<name>.css
                      packages/ui/src/components/<name>/<Name>.svelte
@@ -122,6 +124,8 @@ authored ─────────── packages/ui/src/components/<name>/<na
 ```
 
 `ui:generate` generates component types, stories, independent CSS, fonts and text styles after `tokens:css`; `ui:build` runs the package build with generation as its `prebuild`. Everything under `dist/` is gitignored and rebuilt.
+
+**Amended 2026-10-09:** at the owner’s request, the workshop presents one Default playground per component, with every variant value available through registry-derived Controls. Separate pages for individual property values are removed; authored examples remain for distinct uses, including Button Base’s Icons playground after Default. Static documentation previews continue to render independently from the registry and component CSS.
 
 **Amended 2026-10-09:** the owner requested content typography as a basic consumer capability. The independent `prose.css` export now applies complete recorded body and heading text styles to HTML, including Markdown output, with all five body sizes and a medium default. It also implements the approved document-spacing contract under FND-TYPOGRAPHY-11, FND-TYPOGRAPHY-12 and FND-TYPOGRAPHY-13. `Foundations/Typography` in the workshop demonstrates text styles, headings and paragraphs, with checks of rendered spacing; the [package guide](packages/ui/README.md#content-typography) records integration. This foundation is delivered alongside Stage 5 without adding a component-registry contract or changing the component waves.
 

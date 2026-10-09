@@ -1,3 +1,7 @@
+# Amended 2026-10-09: implement the requested working Button Base with native
+# onclick/type/form integration and local-state Motion profile. Pointer and focus drawing controls move to
+# figma_notes; the registry and generated web props remain 1:1.
+#
 # Contract written 2026-09-03 from the live component set. The children/parents
 # lists and the import block are carried over from the CSV import of 2026-08-20.
 # See docs/components/registry/README.md for the schema.
@@ -152,7 +156,7 @@ api:
     values:
       -
         value: "extra small"
-        note: "For a dense row — a table, a toolbar. At 24 tall the button is well under the 44 by 44 pointer target WCAG 2.2 asks for; the system has not chosen an accessibility target, so this is recorded as a measurement rather than judged."
+        note: "For a dense row — a table, a toolbar. The 24-unit height meets the minimum target height in WCAG 2.2 SC 2.5.8 (https://www.w3.org/TR/WCAG22/#target-size-minimum); the consumer keeps the complete target at least 24 by 24."
       -
         value: "small"
       -
@@ -167,40 +171,46 @@ api:
     name: "state"
     kind: "variant"
     default: "default"
-    description: "The pointer condition. Each step darkens the tone rather than changing it, so the button stays the colour it started as while it is pressed. disabled drops the shadow as well as the colour, because an inert control should not appear to sit above the surface. Focus is not a value here — it is a separate boolean, because a button can be focused and hovered at once and a variant axis cannot say so."
+    description: "Availability of the native control. The browser derives hover, pressing and keyboard focus; disabled prevents activation and focus. A disabled fieldset has the same effect."
     values:
       -
         value: "default"
       -
-        value: "hover"
-      -
-        value: "active"
-      -
         value: "disabled"
-        note: "Every tone resolves into the same neutral surface, which is deliberate — a disabled control is structurally inert regardless of what it would have meant enabled; see color.md. The label sits at 1.44:1 against it, low enough to read as unavailable."
+        note: "All tones use the same neutral surface and disabled text role, without a shadow."
+  -
+    name: "type"
+    kind: "variant"
+    default: "button"
+    description: "Native form behaviour. button performs only the supplied action; submit submits its associated form; reset restores that form's default values."
+    values:
+      -
+        value: "button"
+      -
+        value: "submit"
+      -
+        value: "reset"
   -
     name: "has leading icon"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Shows a mark before the label. Off by default: the label names the action, and a mark in front is for the cases where the action has a symbol the reader already knows."
     controls:
       - "leading icon"
   -
     name: "leading icon"
     kind: "instance"
-    default: "Placeholder"
     description: "The mark shown before the label. It qualifies the action rather than naming it, so a button whose meaning rests on the mark alone is a button with the wrong label."
   -
     name: "has trailing icon"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Shows a mark after the label. This is the side for a mark that points outward — that the action opens something, continues somewhere, or reveals more."
     controls:
       - "trailing icon"
   -
     name: "trailing icon"
     kind: "instance"
-    default: "Placeholder"
     description: "The mark shown after the label, on the same terms as the leading one."
   -
     name: "label text"
@@ -208,25 +218,48 @@ api:
     default: "Button"
     description: "What the action does, as a verb or a verb phrase, in two or three words. The label neither wraps nor truncates, so a longer phrase widens the button until it breaks the layout around it — which is the signal to shorten the phrase, not to constrain the button."
   -
-    name: "is focused"
-    kind: "boolean"
-    default: "false"
-    description: "Shows the focus ring — a two-pixel outline in the primary role, sitting outside the button and clearing its corner exactly. A boolean rather than a state value because focus coincides with the pointer conditions instead of replacing them: a button under the pointer and under the keyboard is both at once. It does nothing while state is disabled, where the ring does not exist."
+    name: "id"
+    kind: "string"
+    description: "Native button id; the consumer keeps it unique."
+  -
+    name: "name"
+    kind: "string"
+    default: ""
+    description: "The submitter name included when this button submits its form."
+  -
+    name: "value"
+    kind: "string"
+    default: ""
+    description: "The submitter value paired with name."
+  -
+    name: "form"
+    kind: "string"
+    default: ""
+    description: "Id of an associated form, including a form outside the button's ancestors."
+  -
+    name: "description ids"
+    kind: "string"
+    default: ""
+    description: "Space-separated supporting element ids for aria-describedby."
+  -
+    name: "onclick"
+    kind: "event"
+    description: "Native click callback for pointer and keyboard activation. It receives a MouseEvent; preventDefault cancels the native submit/reset action. Disabled controls do not activate."
 limitations:
-  - "The focus ring is absent from every disabled variant, so is focused has no effect there. That is the intended reading — a disabled control is not in the tab order — rather than a property that silently fails."
+  - "The focus ring is absent from every disabled variant, and disabled controls do not receive keyboard focus. A disabled control is outside the tab order."
   - "The base tone measures 4.55:1 against its own label in light mode, clearing 4.5:1 by less than rounding. Any move of surface/bold/base/default or text/inverted is a contrast change, not a colour change."
   - "The label cannot wrap. There is no two-line button and no truncating one; the component is one line by construction."
   - "The focus ring does not scale with size. A 24-tall button and a 56-tall one take the same two-pixel ring at the same offset — deliberate, because the ring belongs to the keyboard rather than to the size run."
 figma_notes:
-  - "Both icon containers are hidden by their booleans in every one of the 100 variants, so only their bindings could be read; their geometry when shown is unverified."
-  - "The icon containers bind their width to the local icon size collection rather than to the dimension collection, so the value is not resolvable by npm run tokens:report. That collection exists for optical compensation of the icon's overhang and is a deliberate per-component setting."
-  - "The focus ring is an instance of a shared Focus component that has no registry entry of its own. Its stroke weight is the single unbound value on this component — a raw 2 where everything else resolves to a token."
-  - "The api block above is ordered for readability, per naming.md §8 and §10. Figma's API returns properties in a key order that does not match the panel, so the order the designer sees could not be read and is not asserted here."
+  - "Verified on 2026-10-09 on Button page 0:1, component set 4479:13507. All 100 size/tone/state variants use the corresponding surface/bold token. Figma hover/active states and is focused are drawing controls; the web API exposes default/disabled and derives interaction from the browser. Native type, form identity and onclick are web integration properties, without Figma controls."
+  - "The icon containers use the local icon container width collection: widths 14/18/22/25/29 around 16/20/24/28/32-unit icons. Leading marks overhang outward to the left by 2/2/2/3/3; trailing marks overhang to the right. The implementation preserves that optical correction using existing gap tokens. Figma uses Placeholder for unassigned icon swaps; the public icon inputs have no default and render nothing until assigned, as in the Icon contract."
+  - "The shared Focus instance has a 2-unit outward offset, an outside stroke bound to width/thick, radius large and border/primary. Focus is absent from disabled variants."
+  - "The api block is ordered by the registry contract; Figma's property-key order does not establish panel order."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4479-13507"
-  last_verified: "2026-09-05"
-notes: "The accessibility target is not chosen yet — PLAN.md Stage 5 — so contrast and target-size measurements are recorded as facts rather than judged against a criterion the system has not adopted."
+  last_verified: "2026-10-09"
+notes: "Assessed against FND-ACCESSIBILITY-01. Contrast measurements describe the recorded light palette; a consuming interface or replacement theme requires its own assessment. Surface-colour changes on hover, press and return use duration/micro with easing/linear under FND-MOTION-06: a local control state needs a direct, continuous response. CSS transitions reverse from the current colour when interrupted, with no movement or visual delay. Focus feedback and native availability remain immediate. Reduced motion replaces the colour transition with an immediate change under FND-MOTION-13."
 import:
   batch: 1
   ready: true

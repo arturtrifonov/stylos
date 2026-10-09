@@ -87,9 +87,13 @@ export function sampleHtml(entry, props = {}) {
         styles.push(`--_stylos-tooltip-width:${value}`);
       } else if (["Checkbox Input", "Checkbox Label", "Checkbox Text"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
         // Form integration does not change a static visual surface.
+      } else if (entry.id === "Button Base" && ["id", "name", "value", "form", "description ids"].includes(name)) {
+        // Native attributes are written by the button branch below.
       } else if (entry.id !== "Icon" || name !== "name") {
         throw new Error(`preview: "${entry.id}" has no renderer for string property "${name}"`);
       }
+    } else if (property.kind === "event") {
+      throw new Error(`preview: "${entry.id}" cannot render an event callback`);
     } else {
       // text and slot render as content, not as attributes.
       content += String(value);
@@ -124,6 +128,14 @@ export function sampleHtml(entry, props = {}) {
     const showsAdditional = (props.validation && props.validation !== "off") || props["has additional text"];
     const additional = showsAdditional ? `<span>${esc(props["additional text"] ?? "Additional text")}</span>` : "";
     return `<label class="${cls}"${attr}>${esc(props["label text"] ?? "Label")}${marker}${additional}</label>`;
+  }
+
+  if (entry.id === "Button Base") {
+    const disabled = props.state === "disabled" ? " disabled" : "";
+    const native = ["id", "name", "value", "form"].filter(name => props[name])
+      .map(name => ` ${name}="${esc(props[name])}"`).join("");
+    const description = props["description ids"] ? ` aria-describedby="${esc(props["description ids"])}"` : "";
+    return `<button type="${esc(props.type ?? "button")}" class="${cls}"${attr}${native}${description}${disabled}><span>${esc(props["label text"] ?? "Button")}</span></button>`;
   }
 
   if (entry.id === "Checkbox Input") {

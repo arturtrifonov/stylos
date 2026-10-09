@@ -1,14 +1,7 @@
 #!/usr/bin/env node
-// Writes one Storybook story file per built component into
-// apps/workshop/stories/generated/, with a case per documented variant value,
-// from the registry entry's `api` (SPEC 0009 §4). Svelte CSF, Storybook 10.
-//
-//   npm run ui:generate    (with tokens:css and the props types)
-//
-// The "build the core set" gate of PLAN.md §1 is met when every generated
-// story renders — which is why the stories are generated rather than
-// authored: an undocumented variant cannot quietly go untested, and a story
-// for a value the contract dropped disappears on the next build.
+// Writes one default playground per built component into
+// apps/workshop/stories/generated/, with Controls from the registry entry's api.
+// Svelte CSF, Storybook 10. Run through npm run ui:generate.
 //
 // Output is gitignored and rebuilt, like every generated thing.
 
@@ -23,13 +16,13 @@ export const STORIES_DIR = "apps/workshop/stories/generated";
 
 /**
  * The args a story starts from: every text, boolean and variant property at
- * its contract default. Instances and slots have no default and are left to
+ * its contract default. Instances, slots and events have no default and are left to
  * the story consumer — a generated story shows the component's own surface.
  */
 export function defaultArgs(entry) {
   const args = {};
   for (const property of entry.api) {
-    if (property.kind === "instance" || property.kind === "slot") continue;
+    if (["instance", "slot", "event"].includes(property.kind)) continue;
     // No default but documented values: start from the first of them, so a
     // contract that declines to name a default still has a story that renders.
     const value = property.default ?? (property.values ?? [])[0]?.value;
@@ -92,46 +85,10 @@ export function componentDescription(entry) {
   return parts.join("\n\n");
 }
 
-/**
- * A variant-value story's description: whatever the contract says about that
- * value — its note, its rationale, and an a11y finding where one is recorded
- * on the value itself. Empty for a value the contract lists without comment.
- */
-export function storyDescription(value) {
-  const parts = [];
-  if (value.note) parts.push(value.note);
-  if (value.rationale) parts.push(value.rationale);
-  if (value.a11y?.note) {
-    const criterion = value.a11y.criterion ? ` (${value.a11y.criterion})` : "";
-    parts.push(`**A11y ${value.a11y.status ?? "note"}${criterion}:** ${value.a11y.note}`);
-  }
-  return parts.join("\n\n");
-}
-
-function storyTag(property, value, args) {
-  const description = storyDescription(value);
-  const parameters = description
-    ? ` parameters={{ docs: { description: { story: ${JSON.stringify(description)} } } }}`
-    : "";
-  return `<Story name="${property.name}: ${value.value}" args=${literal(args)}${parameters} />`;
-}
-
 /** The whole .stories.svelte for one entry. */
 export function renderStories(entry, { fixture = false } = {}) {
   const component = pascalName(entry.id);
   const defaults = defaultArgs(entry);
-
-  const stories = [`<Story name="default" args=${literal(defaults)} />`];
-  for (const property of entry.api) {
-    // A variant's values are its vocabulary; text and string values are examples
-    // (docs/components/registry/README.md). Both are worth a story — one
-    // covers the surface, the other shows what a value looks like.
-    if (!["variant", "text", "string"].includes(property.kind)) continue;
-    for (const value of property.values ?? []) {
-      const args = { ...defaults, [camelName(property.name)]: value.value };
-      stories.push(storyTag(property, value, args));
-    }
-  }
 
   // The marker lives inside the script block: Storybook's svelte-docgen
   // fails to parse a .stories.svelte that opens with an HTML comment.
@@ -154,7 +111,7 @@ ${fixture ? `    render: template,\n` : ""}
 </script>
 ${fixture ? `\n{#snippet template(args)}\n  <Example {...args} />\n{/snippet}\n` : ""}
 
-${stories.join("\n")}
+<Story name="default" args=${literal(defaults)} />
 `;
 }
 

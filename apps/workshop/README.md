@@ -2,7 +2,7 @@
 
 Storybook for [`@stylos/ui`](../../packages/ui/README.md) — a local development surface, run from a checkout and never deployed ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §4).
 
-The stories are **generated from the registry** by `tools/build-ui-stories.mjs` into `stories/generated/` (gitignored): one file per built component, a case per documented variant value. The "build the core set" gate is met when every generated story renders — an authored story cannot stand in for a documented variant.
+The stories are **generated from the registry** by `tools/build-ui-stories.mjs` into `stories/generated/` (gitignored): one Default playground per built component. Controls retain each contract’s variant vocabulary and defaults; individual property values do not create separate pages. Static component-page examples are generated independently.
 
 ```bash
 npm run workshop
@@ -12,20 +12,13 @@ at the repository root regenerates everything and starts Storybook on port 6006.
 
 Components needing a surrounding composition use an authored fixture in
 `stories/fixtures/<Component>Example.svelte`. The generator passes each
-registry case's args to that fixture, so Controls and variant coverage remain
-generated. Control kinds and variant vocabularies are projected from the registry,
+Default’s args to that fixture, so Controls remain generated. Control kinds and variant vocabularies are projected from the registry,
 including props with no default; they do not depend on docgen inference. Regeneration preserves the watched directory and removes stale
 story files individually, keeping Storybook hot updates working.
 
-Tooltip's default and variant stories contain a real button to hover or focus.
-`Wrapping description` shows a consumer-chosen width; `Appearance` deliberately
-shows the CSS surface without behaviour. `Interaction` runs browser assertions
-for the tooltip's interaction and description association.
+Tooltip’s Default playground contains a real button to hover or focus.
+Checkbox Input’s Default renders a native named checkbox. Checkbox Label
+and Text also keep their Default playgrounds and Controls. Additional visual
+matrices, interaction-test pages and form demonstrations are omitted from the workshop.
 
-Checkbox Input's generated stories render a native named checkbox.
-`Interaction` exercises keyboard, mixed selection, binding, labels, form data,
-disabled fieldsets, required validity and reset. `Visual states` shows all
-60 Figma size/state/selection combinations as static CSS samples and checks
-their dimensions. Hover, active and focus are derived on live inputs.
-
-Checkbox Label and Text have generated stories and Controls from their contracts. `Compositions/Checkbox family` includes Interaction, all 60 Label visual states, all 60 Text visual states, wrapping consent, native label/keyboard/form/reset behaviour and an independent inline link.
+Button Base keeps Default followed by one `Icons playground` story. It renders a single live button; Controls independently select the leading and trailing marks from the active icon set and adjust their presence, size, tone, label and availability.

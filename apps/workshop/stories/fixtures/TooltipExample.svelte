@@ -5,12 +5,11 @@
   let { ...args }: TooltipProps = $props();
   const id = $props.id();
   const helpId = `tooltip-help-${id}`;
-  let activations = $state(0);
 </script>
 
 <div class="example">
   <Tooltip {...args}>
-    <button type="button" aria-describedby={helpId} data-activations={activations} onclick={() => activations += 1}>Hover or focus me</button>
+    <button type="button" aria-describedby={helpId}>Hover or focus me</button>
   </Tooltip>
   <span id={helpId} class="help">A short description is available on hover or keyboard focus.</span>
 </div>
