@@ -174,12 +174,14 @@ Label hugs its single line and uses emphasis weight with string line height. Tex
 
 Hover and pressing across the full label update the input's existing Motion surface transitions. Native disabled fieldsets also disable the input and copy. The CSS exports for Label/Text include the shared layout and Checkbox Input styles; link tokens and fonts separately as usual.
 
-### Button Base
+### Button Base, Outline and Ghost
 
-`ButtonBase` renders a native button. It defaults to primary/medium and supports all five tones and sizes from its registry contract. Set `state="disabled"` for unavailable actions. Hover, pressing and keyboard focus are browser states; a disabled fieldset also disables the control. Labels remain unchanged in the DOM and are uppercased visually. Surface-colour changes use the local-state Motion profile (`duration/micro` and `easing/linear`); reduced motion makes them immediate.
+`ButtonBase`, `ButtonOutline` and `ButtonGhost` render native buttons with the same API. Each defaults to primary/medium and supports all five tones and sizes from its registry contract. Set `state="disabled"` for unavailable actions. Hover, pressing and keyboard focus are browser states; a disabled fieldset also disables the control. Labels remain unchanged in the DOM and are uppercased visually. Surface-colour changes use the local-state Motion profile (`duration/micro` and `easing/linear`); reduced motion makes them immediate.
 
 ```svelte
 <ButtonBase labelText="Save changes" onclick={saveChanges} />
+<ButtonOutline labelText="Cancel" onclick={cancel} />
+<ButtonGhost labelText="Details" onclick={showDetails} />
 <ButtonBase labelText="Delete" tone="danger" size="small" state="disabled" />
 ```
 
@@ -187,6 +189,6 @@ Supply optional marks through `leadingIcon` and `trailingIcon`, with their prese
 
 `type` defaults to `button`. Use `submit` or `reset` for native form actions; `name`, `value` and `form` preserve submitter identity and external association. `onclick` receives the native click event and may cancel its default action. `descriptionIds` links supporting text.
 
-Independent HTML uses `.stylos-button-base` on `<button type="button">`, with `data-tone`, `data-size` and `data-state`. Link tokens, fonts and `@stylos/ui/css/button-base.css`.
+Independent HTML uses `.stylos-button-base`, `.stylos-button-outline` or `.stylos-button-ghost` on `<button type="button">`, with `data-tone`, `data-size` and `data-state`. Link tokens, fonts and the corresponding `@stylos/ui/css/button-*.css`. Outline draws its border inside the shared geometry; Ghost has no surface at rest, border or shadow.
 
 The workshop’s Icons playground renders one button. Controls select the leading and trailing icons independently from the active icon set, toggle their presence, and adjust the button’s label, size, tone and disabled state.

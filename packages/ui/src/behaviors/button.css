@@ -1,0 +1,145 @@
+@import "../components/icon/icon.css";
+
+/* Shared Button Base/Outline/Ghost geometry from their Figma component sets.
+ * The local icon-width collection compensates outward overhang by 2 units
+ * for xs/s/m and 3 for l/xl; these corrections use the matching gap tokens.
+ */
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost) {
+  --_stylos-button-surface: var(--_stylos-button-default);
+  --_stylos-button-optical: var(--stylos-dimension-gap-g-0_250);
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-self: flex-start;
+  justify-self: start;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: var(--_stylos-button-height);
+  padding-block: var(--stylos-dimension-gap-g-0_000);
+  padding-inline: var(--_stylos-button-padding);
+  gap: var(--_stylos-button-gap);
+  margin: var(--stylos-dimension-gap-g-0_000);
+  border: 0;
+  border-radius: var(--stylos-radius-medium);
+  background-color: var(--_stylos-button-surface);
+  color: var(--_stylos-button-foreground);
+  box-shadow: var(--_stylos-button-shadow);
+  font-family: var(--stylos-font-family-normal);
+  font-weight: var(--stylos-font-weight-emphasis);
+  font-size: var(--_stylos-button-font-size);
+  line-height: var(--_stylos-button-line-height);
+  font-stretch: normal;
+  letter-spacing: var(--stylos-font-letter-spacing-style-uppercase);
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  appearance: none;
+  transition: background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+}
+
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost)[data-state="hover"],
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost):enabled:hover {
+  --_stylos-button-surface: var(--_stylos-button-hover);
+}
+
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost)[data-state="active"],
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost):enabled:active {
+  --_stylos-button-surface: var(--_stylos-button-active);
+}
+
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost)[data-state="disabled"],
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost):disabled {
+  --_stylos-button-surface: var(--_stylos-button-disabled);
+  color: var(--stylos-color-text-disabled);
+  box-shadow: none;
+  cursor: default;
+}
+
+/* Focus's rectangle is inset -2 with an OUTSIDE 2-unit stroke in Figma.
+ * The outline follows that rectangle's 8-unit corner with a 2-unit offset.
+ */
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost)[data-is-focused="true"]:enabled,
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost):enabled:focus-visible {
+  outline: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary);
+  outline-offset: var(--stylos-dimension-gap-g-0_250);
+}
+
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost):focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* FND-MOTION-13: local-state colour changes become immediate. */
+@media (prefers-reduced-motion: reduce) {
+  :is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost) {
+    transition: none;
+  }
+}
+
+:is(.stylos-button-base-icon, .stylos-button-outline-icon, .stylos-button-ghost-icon) {
+  --stylos-icon-footprint: var(--_stylos-button-icon-size);
+  position: relative;
+  flex: none;
+  width: calc(var(--_stylos-button-icon-size) - var(--_stylos-button-optical));
+  height: var(--_stylos-button-icon-size);
+}
+
+:is(.stylos-button-base-icon, .stylos-button-outline-icon, .stylos-button-ghost-icon) > * {
+  position: absolute;
+  top: 0;
+  width: var(--_stylos-button-icon-size);
+  height: var(--_stylos-button-icon-size);
+}
+
+:is(.stylos-button-base-icon, .stylos-button-outline-icon, .stylos-button-ghost-icon)[data-position="leading"] > * { right: 0; }
+:is(.stylos-button-base-icon, .stylos-button-outline-icon, .stylos-button-ghost-icon)[data-position="trailing"] > * { left: 0; }
+
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost)[data-size="extra small"] {
+  --_stylos-button-height: var(--stylos-dimension-size-s-3_000);
+  --_stylos-button-padding: var(--stylos-dimension-gap-g-1_500);
+  --_stylos-button-gap: var(--stylos-dimension-gap-g-0_500);
+  --_stylos-button-font-size: var(--stylos-font-size-0_750);
+  --_stylos-button-line-height: var(--stylos-font-line-height-string-0_750);
+  --_stylos-button-icon-size: var(--stylos-dimension-size-s-2_000);
+}
+
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost)[data-size="small"] {
+  --_stylos-button-height: var(--stylos-dimension-size-s-4_000);
+  --_stylos-button-padding: var(--stylos-dimension-gap-g-2_000);
+  --_stylos-button-gap: var(--stylos-dimension-gap-g-0_625);
+  --_stylos-button-font-size: var(--stylos-font-size-0_875);
+  --_stylos-button-line-height: var(--stylos-font-line-height-string-0_875);
+  --_stylos-button-icon-size: var(--stylos-dimension-size-s-2_500);
+}
+
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost)[data-size="medium"] {
+  --_stylos-button-height: var(--stylos-dimension-size-s-5_000);
+  --_stylos-button-padding: var(--stylos-dimension-gap-g-2_500);
+  --_stylos-button-gap: var(--stylos-dimension-gap-g-0_750);
+  --_stylos-button-font-size: var(--stylos-font-size-1_125);
+  --_stylos-button-line-height: var(--stylos-font-line-height-string-1_125);
+  --_stylos-button-icon-size: var(--stylos-dimension-size-s-3_000);
+}
+
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost)[data-size="large"] {
+  --_stylos-button-height: var(--stylos-dimension-size-s-6_000);
+  --_stylos-button-padding: var(--stylos-dimension-gap-g-3_000);
+  --_stylos-button-gap: var(--stylos-dimension-gap-g-0_875);
+  --_stylos-button-font-size: var(--stylos-font-size-1_375);
+  --_stylos-button-line-height: var(--stylos-font-line-height-string-1_375);
+  --_stylos-button-icon-size: var(--stylos-dimension-size-s-3_500);
+  --_stylos-button-optical: var(--stylos-dimension-gap-g-0_375);
+}
+
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost)[data-size="extra large"] {
+  --_stylos-button-height: var(--stylos-dimension-size-s-7_000);
+  --_stylos-button-padding: var(--stylos-dimension-gap-g-3_500);
+  --_stylos-button-gap: var(--stylos-dimension-gap-g-1_000);
+  --_stylos-button-font-size: var(--stylos-font-size-1_625);
+  --_stylos-button-line-height: var(--stylos-font-line-height-string-1_625);
+  --_stylos-button-icon-size: var(--stylos-dimension-size-s-4_000);
+  --_stylos-button-optical: var(--stylos-dimension-gap-g-0_375);
+}
+
