@@ -23,3 +23,7 @@ export { default as CheckboxText } from "./components/checkbox-text/CheckboxText
 export type { CheckboxTextProps } from "./components/checkbox-text/props.ts";
 export { default as ButtonBase } from "./components/button-base/ButtonBase.svelte";
 export type { ButtonBaseProps } from "./components/button-base/props.ts";
+export { default as ButtonOutline } from "./components/button-outline/ButtonOutline.svelte";
+export type { ButtonOutlineProps } from "./components/button-outline/props.ts";
+export { default as ButtonGhost } from "./components/button-ghost/ButtonGhost.svelte";
+export type { ButtonGhostProps } from "./components/button-ghost/props.ts";

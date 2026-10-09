@@ -87,7 +87,7 @@ export function sampleHtml(entry, props = {}) {
         styles.push(`--_stylos-tooltip-width:${value}`);
       } else if (["Checkbox Input", "Checkbox Label", "Checkbox Text"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
         // Form integration does not change a static visual surface.
-      } else if (entry.id === "Button Base" && ["id", "name", "value", "form", "description ids"].includes(name)) {
+      } else if (["Button Base", "Button Outline", "Button Ghost"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
         // Native attributes are written by the button branch below.
       } else if (entry.id !== "Icon" || name !== "name") {
         throw new Error(`preview: "${entry.id}" has no renderer for string property "${name}"`);
@@ -130,7 +130,7 @@ export function sampleHtml(entry, props = {}) {
     return `<label class="${cls}"${attr}>${esc(props["label text"] ?? "Label")}${marker}${additional}</label>`;
   }
 
-  if (entry.id === "Button Base") {
+  if (["Button Base", "Button Outline", "Button Ghost"].includes(entry.id)) {
     const disabled = props.state === "disabled" ? " disabled" : "";
     const native = ["id", "name", "value", "form"].filter(name => props[name])
       .map(name => ` ${name}="${esc(props[name])}"`).join("");

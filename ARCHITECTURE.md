@@ -56,7 +56,7 @@ The relationship stays **one-directional**: the repository never writes to Figma
 
 **Amended 2026-10-09 — document spacing approved and implemented at the owner's request.** FND-TYPOGRAPHY-11, FND-TYPOGRAPHY-12 and FND-TYPOGRAPHY-13 record the approved option B from the Figma typography study. The [Figma guide](figma/typography.md#document-spacing-reference) links its retained reference. The content stylesheet generator implements this contract with logical block margins, normal-flow margin collapse and direct-child boundary resets. Heading spacing uses semantic gap tokens and paragraph spacing comes from the selected body style. Storybook checks the rendered distances, including adjacent headings and wrapping content.
 
-**Amended 2026-10-09 — workshop navigation simplified at the owner’s request.** The story generator emits one Default playground per built component, with registry-derived Controls for its property values. Individual variant values no longer create navigation entries. Button Base’s Icons playground follows Default. Static component-page previews continue to read the registry and shipped CSS independently of Storybook.
+**Amended 2026-10-09 — workshop navigation simplified at the owner’s request.** The story generator emits one Default playground per built component, with registry-derived Controls for its property values. Individual variant values no longer create navigation entries. Each implemented text button’s Icons playground follows Default. Static component-page previews continue to read the registry and shipped CSS independently of Storybook.
 
 ## 2. The three flows
 
@@ -80,7 +80,7 @@ The code package separates DOM behaviour in `packages/ui/src/behaviors/` from
 Svelte wrappers and component CSS. Tooltip uses Zag.js's vanilla adapter for
 hover, focus, dismissal and floating placement; its wrapper supplies the trigger
 and lifecycle, while CSS uses shared Motion tokens for visibility transitions.
-Button Base uses the native button for activation, keyboard focus, disabled and form behaviour. Its registry records web integration properties; the event property kind generates the onclick callback alongside the other props. The package guide records the integration contract and verification limits.
+Button Base, Outline and Ghost use native buttons for activation, keyboard focus, disabled and form behaviour. They share geometry and local-state Motion in `behaviors/button.css`; each treatment supplies its Figma colour roles, border and shadow. Their registries record web integration properties; the event property kind generates the onclick callback alongside the other props. The package guide records the integration contract and verification limits.
 
 ```
 docs/components/registry/*.yaml  ──▶ figma.node_id ──▶  the component in Figma

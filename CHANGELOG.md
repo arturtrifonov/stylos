@@ -9,6 +9,10 @@ All notable changes to the Stylos Design System project (foundations, components
 - Replace separate property-value stories with one Default playground per component, preserving registry-derived Controls and independent static-site examples. Place Button Base’s Icons playground immediately after Default.
 - Remove extra visual matrices, interaction-test pages and form demonstrations for Checkbox Input, the Checkbox family and Tooltip. Keep their Default playgrounds and Controls, including Tooltip’s live trigger.
 
+### Added — 2026-10-09 (Button Outline and Ghost)
+
+- Add Outline and Ghost from their verified Figma variants, sharing Base geometry, native behaviour, icon slots and local-state Motion. Include independent CSS, static previews, Default and compact icon playgrounds.
+
 ### Added — 2026-10-09 (Button Base)
 
 - Apply the shared local-state Motion profile to Button Base surface-colour transitions using duration/micro and easing/linear, with immediate changes under reduced motion.

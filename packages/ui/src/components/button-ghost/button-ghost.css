@@ -1,0 +1,37 @@
+@import "../../behaviors/button.css";
+
+.stylos-button-ghost {
+  --_stylos-button-default: transparent;
+  --_stylos-button-disabled: transparent;
+  --_stylos-button-shadow: none;
+}
+
+.stylos-button-ghost[data-tone="base"] {
+  --_stylos-button-foreground: var(--stylos-color-text-base);
+  --_stylos-button-hover: var(--stylos-color-surface-subtle-base-hover);
+  --_stylos-button-active: var(--stylos-color-surface-subtle-base-active);
+}
+
+.stylos-button-ghost[data-tone="primary"] {
+  --_stylos-button-foreground: var(--stylos-color-text-primary);
+  --_stylos-button-hover: var(--stylos-color-surface-subtle-primary-hover);
+  --_stylos-button-active: var(--stylos-color-surface-subtle-primary-active);
+}
+
+.stylos-button-ghost[data-tone="warning"] {
+  --_stylos-button-foreground: var(--stylos-color-text-warning);
+  --_stylos-button-hover: var(--stylos-color-surface-subtle-warning-hover);
+  --_stylos-button-active: var(--stylos-color-surface-subtle-warning-active);
+}
+
+.stylos-button-ghost[data-tone="danger"] {
+  --_stylos-button-foreground: var(--stylos-color-text-danger);
+  --_stylos-button-hover: var(--stylos-color-surface-subtle-danger-hover);
+  --_stylos-button-active: var(--stylos-color-surface-subtle-danger-active);
+}
+
+.stylos-button-ghost[data-tone="success"] {
+  --_stylos-button-foreground: var(--stylos-color-text-success);
+  --_stylos-button-hover: var(--stylos-color-surface-subtle-success-hover);
+  --_stylos-button-active: var(--stylos-color-surface-subtle-success-active);
+}
