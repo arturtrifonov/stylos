@@ -1,3 +1,4 @@
+# Amended 2026-10-10: native web API and verified Figma geometry.
 # Hand-written 2026-08-28. Replaces part of radio.yaml, whose id "Radio"
 # matches no component in Figma. Carries the full component contract; there is
 # no companion Markdown document — the readable page is generated from here.
@@ -24,11 +25,6 @@ do_not_use_when:
   -
     text: "More than one of the options may be chosen at once."
     instead: "Checkbox Text"
-children:
-  - "Label"
-  - "Icon"
-  - "Badge"
-  - "Loader"
 parents:
   - "Accordion"
   - "Asset"
@@ -125,14 +121,10 @@ api:
     name: "state"
     kind: "variant"
     default: "default"
-    description: "Pointer interaction and availability. The visual change happens in the circle; the copy follows only on disabled, and selection does not change the copy at all."
+    description: "Availability of the native radio. Hover, pressing and keyboard focus are derived by the browser. Disabled inputs and disabled fieldsets prevent selection, focus and submission."
     values:
       -
         value: "default"
-      -
-        value: "hover"
-      -
-        value: "active"
       -
         value: "disabled"
         note: "The copy takes the disabled text role along with the circle. Removes the control from tab order."
@@ -140,7 +132,7 @@ api:
     name: "is checked"
     kind: "variant"
     default: "false"
-    description: "Selection. Does not affect the copy."
+    description: "Selection, bindable through bind:isChecked. Native activation selects this option and unchecks peers with the same nonempty name, form owner and tree. Bindings follow selection of managed and native peers. Form reset restores the initial group defaults."
     values:
       -
         value: "false"
@@ -162,26 +154,60 @@ api:
         props:
           "label text": "Weekly"
   -
-    name: "is focused"
+    name: "id"
+    kind: "string"
+    description: "Native input id. Generated per instance when omitted; consumer-supplied ids must be unique."
+  -
+    name: "name"
+    kind: "string"
+    default: ""
+    description: "Shared nonempty name defines the mutually exclusive options within one form owner and tree. Empty names do not group or submit. Use fieldset and legend to name the group."
+  -
+    name: "value"
+    kind: "string"
+    default: "on"
+    description: "Value submitted when checked and enabled. Supply a distinct value for each option in a named group."
+  -
+    name: "form"
+    kind: "string"
+    default: ""
+    description: "Optional form id for an input outside its form. Otherwise the enclosing form owns the input."
+  -
+    name: "accessible name"
+    kind: "text"
+    default: ""
+    description: "Accessible name mapped to aria-label. Leave empty for the visible label to supply the name."
+  -
+    name: "description ids"
+    kind: "string"
+    default: ""
+    description: "Space-separated ids of explanatory or error copy, mapped to aria-describedby."
+  -
+    name: "is required"
     kind: "boolean"
-    default: "false"
-    description: "Whether this option carries the group's focus ring. Focus belongs to the group, not to one option: the ring sits on a single member, and moving it with the arrow keys moves the selection with it — so a focused radio is a checked radio. It is a boolean rather than a value of state because it coexists with hover and active instead of replacing them."
+    default: false
+    description: "Native validity requires a selection in this group. No inline error appearance is supplied."
+  -
+    name: "content"
+    kind: "slot"
+    description: "Optional phrasing content rendered as children instead of label text. Use text, emphasis and anchors; no nested labels or additional form controls. Clicking an anchor follows the link without selecting the radio."
 limitations:
-  - "No validation property, which hurts most here: a required group of substantial options is the canonical case for an inline error."
+  - "Native required validity is supported; there is no inline error appearance. Associate consumer-supplied error copy through description ids."
   - "No supporting-text slot. One text role only, so an option and its explanation share a paragraph or the explanation goes outside the control."
   - "The circle is always leading and always aligned to the first line. No property changes either."
   - "No text style on the copy — every typographic property is bound to a variable directly."
   - "No mixed value, correctly: partial selection has no meaning in a mutually exclusive set."
-  - "The component is one option, not the group. Nothing here carries the group's label, its required state, its error, or the fact that the options are alternatives at all."
+  - "The component is one option, not the group. The consumer supplies the group label and error copy; name and native required semantics express mutual exclusion and validity."
 figma_notes:
-  - "The ring is drawn only on the checked variants, because a focused radio is a checked radio. Turning is focused on does not also set is checked — making it do so would double the variant count, and that trade has not been taken."
+  - "Verified on 2026-10-10: all 40 size/state/selection variants. Web API exposes default and disabled; hover, active and focus are native. Form properties add no Figma variants. Label uses base weight and string line height; Text uses base weight and text line height, with the circle at the top of the first line."
+  - "Figma draws the focus toggle only on checked variants. Web focus follows :focus-visible on any enabled option, including an unchecked member of an empty group; focusing does not itself force selection."
   - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
   - "is focused exists here as well as on the Radio Input this component contains. Every other condition passes down — this component's state variant drives the nested input's — but focus is drawn as an appearance toggle rather than a variant, so that it does not multiply the variant count, and it is set on both independently. This is how the Figma file is built. It is not a requirement on the component: an implementation propagates focus by ordinary means and needs no equivalent of this duplication."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4333-26184"
-  last_verified: "2026-09-05"
-notes: "children and parents are carried unchanged from the pre-split entry and have not yet been divided between the three family members — that division is a judgement, not a transcription."
+  last_verified: "2026-10-10"
+notes: "Native Radio Text implementation. Historical parents are retained; legacy Label/Icon/Badge/Loader children are removed because they are not content children of this control. Motion uses duration/micro and easing/linear, with reduced-motion and forced-colors support."
 import:
   batch: 1
   ready: true

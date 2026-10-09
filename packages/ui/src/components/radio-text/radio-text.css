@@ -1,0 +1,19 @@
+@import "../radio-input/radio-input.css";
+@import "../../behaviors/radio-option.css";
+
+.stylos-radio-text {
+  display: flex;
+  align-items: flex-start;
+  /* Intrinsic hug/fill sizing, not an authored dimension. */
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
+  width: 100%;
+  font-weight: var(--stylos-font-weight-base);
+  line-height: var(--_stylos-radio-text-line);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.stylos-radio-text > .stylos-radio-copy {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

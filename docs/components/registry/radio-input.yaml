@@ -1,3 +1,4 @@
+# Amended 2026-10-10: native web API and verified Figma geometry.
 # Hand-written 2026-08-28. Replaces part of radio.yaml, whose id "Radio"
 # matches no component in Figma. Carries the full component contract; there is
 # no companion Markdown document — the readable page is generated from here.
@@ -24,11 +25,6 @@ do_not_use_when:
   -
     text: "More than one of the options may be chosen at once. Mutual exclusion is the whole meaning of this control, and a radio that does not exclude anything is a checkbox drawn wrongly."
     instead: "Checkbox Input"
-children:
-  - "Label"
-  - "Icon"
-  - "Badge"
-  - "Loader"
 parents:
   - "Accordion"
   - "Asset"
@@ -56,7 +52,7 @@ sizing_model:
   adjustable:
     horizontal: false
     vertical: false
-  intent: "Circular at every size, and the run is authored rather than derived from anything. Both axes are intrinsic — sizing.md names radio indicators among the dimensions never adjusted by hand — so only the width is bound and the height follows by locked proportion. The centre is a fixed fraction of the circle rather than a second run: it advances with the box at every step, unlike Indicator where the mark deliberately does not follow. The 1px inside stroke does not scale with the box. Sizes are recorded as token names, never as numbers: run npm run tokens:report dimension to resolve them."
+  intent: "Circular at every size, and the run is authored rather than derived from anything. Both axes are intrinsic — sizing.md names radio indicators among the dimensions never adjusted by hand — so only the width is bound and the height follows by locked proportion. The centre has its own authored run: exact Figma SVGs of 10/12/14/16/18 sit centred in the 16/20/24/28/32 boxes, with insets of 3/4/5/6/7. It is not a fixed fraction of the box. The 1px inside stroke does not scale with the box. Sizes are recorded as token names, never as numbers: run npm run tokens:report dimension to resolve them."
   sizes:
     -
       size: "extra small"
@@ -104,14 +100,10 @@ api:
     name: "state"
     kind: "variant"
     default: "default"
-    description: "Pointer interaction and availability. Hover and active change the surface only — the unchecked circle moves through the subtle base roles and the checked circle through the bold primary ones; disabled changes the surface and drops the border to the default role."
+    description: "Availability of the native radio. Hover, pressing and keyboard focus are derived by the browser. Disabled inputs and disabled fieldsets prevent selection, focus and submission."
     values:
       -
         value: "default"
-      -
-        value: "hover"
-      -
-        value: "active"
       -
         value: "disabled"
         note: "Not the same as read-only, which the component does not have: read-only means shown but not editable, disabled means not applicable now."
@@ -119,33 +111,63 @@ api:
     name: "is checked"
     kind: "variant"
     default: "false"
-    description: "Selection. The unchecked circle is a surface and a border; the checked circle is a filled surface with no border and a light centre, which reads as a ring."
+    description: "Selection, bindable through bind:isChecked. Native activation selects this option and unchecks peers with the same nonempty name, form owner and tree. Bindings follow selection of managed and native peers. Form reset restores the initial group defaults."
     values:
       -
         value: "false"
-        note: "The component has no children at all in this value — there is no hidden mark layer."
+        note: "No selection mark is drawn. The decorative surface remains mounted."
       -
         value: "true"
         note: "The circle takes the bold primary surface and drops its border, and a smaller circle in the inverted text role sits inside it."
   -
-    name: "is focused"
+    name: "id"
+    kind: "string"
+    description: "Native input id. Supply one for external label association."
+  -
+    name: "name"
+    kind: "string"
+    default: ""
+    description: "Shared nonempty name defines the mutually exclusive options within one form owner and tree. Empty names do not group or submit. Use fieldset and legend to name the group."
+  -
+    name: "value"
+    kind: "string"
+    default: "on"
+    description: "Value submitted when checked and enabled. Supply a distinct value for each option in a named group."
+  -
+    name: "form"
+    kind: "string"
+    default: ""
+    description: "Optional form id for an input outside its form. Otherwise the enclosing form owns the input."
+  -
+    name: "accessible name"
+    kind: "text"
+    default: ""
+    description: "Accessible name mapped to aria-label. Supply this or associate an external label."
+  -
+    name: "description ids"
+    kind: "string"
+    default: ""
+    description: "Space-separated ids of explanatory or error copy, mapped to aria-describedby."
+  -
+    name: "is required"
     kind: "boolean"
-    default: "false"
-    description: "Whether this option carries the group's focus ring. Focus belongs to the group, not to one option: the ring sits on a single member, and moving it with the arrow keys moves the selection with it — so a focused radio is a checked radio. It is a boolean rather than a value of state because it coexists with hover and active instead of replacing them."
+    default: false
+    description: "Native validity requires a selection in this group. No inline error appearance is supplied."
 limitations:
   - "No mixed value, correctly: a radio is chosen or it is not, and partial selection has no meaning in a mutually exclusive set. This is the one place the Radio family and the Checkbox family diverge in their properties."
   - "The inner circle is an opaque fill in the inverted text role, not a hole, so it does not take the colour of whatever the component is placed on. There is no property to change it."
-  - "No validation property: a required group with nothing chosen cannot show an error on the control."
+  - "Native required validity is supported; there is no inline error appearance. Associate consumer-supplied error copy through description ids."
   - "No read-only value. Disabled is the only unavailable state, and it is the wrong tool for a choice that is settled but still worth reading."
 figma_notes:
+  - "Verified on 2026-10-10: all 40 size/state/selection variants. Web API exposes default and disabled; hover, active and focus are native. Form properties add no Figma variants. The checked mark retains text/inverted, including disabled. Five exact Check SVGs are preserved locally."
   - "Focus is a boolean toggling a Focus ring instance rather than a value of state, which keeps the set at 40 variants instead of 50."
-  - "The ring is drawn only on the checked variants, because a focused radio is a checked radio. Turning is focused on does not also set is checked — making it do so would double the variant count, and that trade has not been taken. In an implementation the two move together without either being a property of the other."
+  - "Figma draws the focus toggle only on checked variants. Web focus follows :focus-visible on any enabled option, including an unchecked member of an empty group; focusing does not itself force selection."
   - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4344-431"
-  last_verified: "2026-09-05"
-notes: "children and parents are carried unchanged from the pre-split entry and have not yet been divided between the three family members — that division is a judgement, not a transcription. uses is absent because this component contains no instances."
+  last_verified: "2026-10-10"
+notes: "Native Radio Input implementation. Historical parents are retained; legacy Label/Icon/Badge/Loader children are removed because they are not content children of this control. Motion uses duration/micro and easing/linear, with reduced-motion and forced-colors support."
 import:
   batch: 1
   ready: true

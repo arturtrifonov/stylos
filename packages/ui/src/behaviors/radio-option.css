@@ -1,0 +1,60 @@
+/* Shared option layout; Radio Input retains selection and interaction. */
+:is(.stylos-radio-label, .stylos-radio-text) {
+  gap: var(--_stylos-radio-gap);
+  font-family: var(--stylos-font-family-normal);
+  font-size: var(--_stylos-radio-font);
+  font-stretch: normal;
+  letter-spacing: var(--stylos-font-letter-spacing-style-normal);
+  color: var(--stylos-color-text-base);
+  cursor: pointer;
+}
+
+:is(.stylos-radio-label, .stylos-radio-text):has(input:enabled):hover > .stylos-radio-input {
+  --_stylos-radio-empty: var(--stylos-color-surface-subtle-base-hover);
+  --_stylos-radio-selected: var(--stylos-color-surface-bold-primary-hover);
+}
+
+:is(.stylos-radio-label, .stylos-radio-text):has(input:enabled):active > .stylos-radio-input {
+  --_stylos-radio-empty: var(--stylos-color-surface-subtle-base-active);
+  --_stylos-radio-selected: var(--stylos-color-surface-bold-primary-active);
+}
+
+:is(.stylos-radio-label, .stylos-radio-text):is([data-state="disabled"], :has(input:disabled)) {
+  color: var(--stylos-color-text-disabled);
+  cursor: default;
+}
+
+:is(.stylos-radio-label, .stylos-radio-text)[data-size="extra small"] {
+  --_stylos-radio-gap: var(--stylos-dimension-gap-g-0_500);
+  --_stylos-radio-font: var(--stylos-font-size-0_750);
+  --_stylos-radio-string-line: var(--stylos-font-line-height-string-0_750);
+  --_stylos-radio-text-line: var(--stylos-font-line-height-text-0_750);
+}
+
+:is(.stylos-radio-label, .stylos-radio-text)[data-size="small"] {
+  --_stylos-radio-gap: var(--stylos-dimension-gap-g-0_625);
+  --_stylos-radio-font: var(--stylos-font-size-0_875);
+  --_stylos-radio-string-line: var(--stylos-font-line-height-string-0_875);
+  --_stylos-radio-text-line: var(--stylos-font-line-height-text-0_875);
+}
+
+:is(.stylos-radio-label, .stylos-radio-text)[data-size="medium"] {
+  --_stylos-radio-gap: var(--stylos-dimension-gap-g-0_750);
+  --_stylos-radio-font: var(--stylos-font-size-1_000);
+  --_stylos-radio-string-line: var(--stylos-font-line-height-string-1_000);
+  --_stylos-radio-text-line: var(--stylos-font-line-height-text-1_000);
+}
+
+:is(.stylos-radio-label, .stylos-radio-text)[data-size="large"] {
+  --_stylos-radio-gap: var(--stylos-dimension-gap-g-0_875);
+  --_stylos-radio-font: var(--stylos-font-size-1_250);
+  --_stylos-radio-string-line: var(--stylos-font-line-height-string-1_250);
+  --_stylos-radio-text-line: var(--stylos-font-line-height-text-1_250);
+}
+
+:is(.stylos-radio-label, .stylos-radio-text)[data-size="extra large"] {
+  --_stylos-radio-gap: var(--stylos-dimension-gap-g-1_000);
+  --_stylos-radio-font: var(--stylos-font-size-1_500);
+  --_stylos-radio-string-line: var(--stylos-font-line-height-string-1_500);
+  --_stylos-radio-text-line: var(--stylos-font-line-height-text-1_500);
+}

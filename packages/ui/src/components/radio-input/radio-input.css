@@ -1,0 +1,123 @@
+/* Native input supplies interaction; the same surface supports static samples.
+ * Stroke stays inside the fixed circle. Marks retain Figma's exact SVG bounds.
+ */
+.stylos-radio-input {
+  --_stylos-radio-empty: var(--stylos-color-surface-subtle-base-default);
+  --_stylos-radio-selected: var(--stylos-color-surface-bold-primary-default);
+  --_stylos-radio-border: var(--stylos-color-border-primary);
+  --_stylos-radio-mark: var(--stylos-color-text-inverted);
+  position: relative;
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+  width: var(--_stylos-radio-size);
+  height: var(--_stylos-radio-size);
+  cursor: pointer;
+}
+
+.stylos-radio-input > input {
+  position: absolute;
+  inset: 0;
+  width: var(--_stylos-radio-size);
+  height: var(--_stylos-radio-size);
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.stylos-radio-input-surface {
+  display: block;
+  width: var(--_stylos-radio-size);
+  height: var(--_stylos-radio-size);
+  border-radius: var(--stylos-radius-round);
+  background-color: var(--_stylos-radio-empty);
+  box-shadow: inset 0 0 0 var(--stylos-border-width-normal) var(--_stylos-radio-border);
+  pointer-events: none;
+  transition:
+    background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear),
+    box-shadow var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+}
+
+.stylos-radio-input[data-is-checked="true"]:not(:has(> input)),
+.stylos-radio-input:has(> input:checked) {
+  & > .stylos-radio-input-surface {
+    background-color: var(--_stylos-radio-selected);
+    box-shadow: none;
+  }
+  & > .stylos-radio-input-surface::after {
+    content: "";
+    display: block;
+    width: var(--_stylos-radio-size);
+    height: var(--_stylos-radio-size);
+    background-color: var(--_stylos-radio-mark);
+    mask-image: var(--_stylos-radio-check);
+    mask-position: center;
+    mask-repeat: no-repeat;
+    transition: background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+  }
+}
+
+.stylos-radio-input:has(> input:enabled):hover {
+  --_stylos-radio-empty: var(--stylos-color-surface-subtle-base-hover);
+  --_stylos-radio-selected: var(--stylos-color-surface-bold-primary-hover);
+}
+
+.stylos-radio-input:has(> input:enabled:active) {
+  --_stylos-radio-empty: var(--stylos-color-surface-subtle-base-active);
+  --_stylos-radio-selected: var(--stylos-color-surface-bold-primary-active);
+}
+
+.stylos-radio-input[data-state="disabled"],
+.stylos-radio-input:has(> input:disabled) {
+  --_stylos-radio-empty: var(--stylos-color-surface-subtle-base-disabled);
+  --_stylos-radio-selected: var(--stylos-color-surface-bold-primary-disabled);
+  --_stylos-radio-border: var(--stylos-color-border-default);
+  cursor: default;
+}
+
+.stylos-radio-input > input:focus-visible + .stylos-radio-input-surface {
+  outline: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary);
+  outline-offset: var(--stylos-dimension-gap-g-0_250);
+}
+
+@media (forced-colors: active) {
+  .stylos-radio-input > input {
+    opacity: 1;
+    appearance: auto;
+  }
+  .stylos-radio-input > .stylos-radio-input-surface {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stylos-radio-input-surface,
+  .stylos-radio-input-surface::after {
+    transition: none;
+  }
+}
+
+.stylos-radio-input[data-size="extra small"] {
+  --_stylos-radio-size: var(--stylos-dimension-size-s-2_000);
+  --_stylos-radio-check: url("./assets/check-extra-small.svg");
+}
+
+.stylos-radio-input[data-size="small"] {
+  --_stylos-radio-size: var(--stylos-dimension-size-s-2_500);
+  --_stylos-radio-check: url("./assets/check-small.svg");
+}
+
+.stylos-radio-input[data-size="medium"] {
+  --_stylos-radio-size: var(--stylos-dimension-size-s-3_000);
+  --_stylos-radio-check: url("./assets/check-medium.svg");
+}
+
+.stylos-radio-input[data-size="large"] {
+  --_stylos-radio-size: var(--stylos-dimension-size-s-3_500);
+  --_stylos-radio-check: url("./assets/check-large.svg");
+}
+
+.stylos-radio-input[data-size="extra large"] {
+  --_stylos-radio-size: var(--stylos-dimension-size-s-4_000);
+  --_stylos-radio-check: url("./assets/check-extra-large.svg");
+}
