@@ -24,3 +24,5 @@ matrices, interaction-test pages and form demonstrations are omitted from the wo
 Button Base keeps Default followed by one `Icons playground` story. It renders a single live button; Controls independently select the leading and trailing marks from the active icon set and adjust their presence, size, tone, label and availability.
 
 Link also keeps Default followed by Icons playground, with native navigation and independently configurable leading and trailing icons.
+
+Button Inner follows the same Default and Icons playground convention, with one icon selected from the active set and an explicit action name. It has no size or tone controls.

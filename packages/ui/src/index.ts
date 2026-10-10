@@ -42,3 +42,6 @@ export type { ToggleTextProps } from "./components/toggle-text/props.ts";
 
 export { default as Link } from "./components/link/Link.svelte";
 export type { LinkProps } from "./components/link/props.ts";
+
+export { default as ButtonInner } from "./components/button-inner/ButtonInner.svelte";
+export type { ButtonInnerProps } from "./components/button-inner/props.ts";

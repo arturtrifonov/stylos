@@ -111,6 +111,8 @@ The same six waves order the package's work in §4.2 — a component is implemen
 
 *Amended 2026-10-10:* the owner returned to **Link** before the remaining wave-1 components. It uses native navigation and the Default plus Icons playground workshop convention.
 
+*Amended 2026-10-10:* the owner selected **Button Inner** after Link, completing the remaining local-action trigger in wave 1. It retains one scalable footprint and Default followed by Icons playground.
+
 ### 4.2 Stage 5 — `@stylos/ui`
 
 The work order is SPEC 0009; the stack and the layering are ADR 0002. What assembles into what:
