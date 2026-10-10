@@ -46,6 +46,8 @@ export type { ButtonInnerProps } from "./components/button-inner/props.ts";
 
 export { default as Button } from "./components/button/Button.svelte";
 export type { ButtonProps } from "./components/button/props.ts";
+export { default as ButtonIcon } from "./components/button-icon/ButtonIcon.svelte";
+export type { ButtonIconProps } from "./components/button-icon/props.ts";
 export { default as Tag } from "./components/tag/Tag.svelte";
 export type { TagProps } from "./components/tag/props.ts";
 export { default as TagInteractive } from "./components/tag-interactive/TagInteractive.svelte";
