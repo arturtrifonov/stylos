@@ -28,6 +28,7 @@ import { fileURLToPath } from "node:url";
 
 import {
   loadRegistry,
+  figmaSources,
   contractGaps,
   registryPathFor,
   insteadIds,
@@ -109,8 +110,8 @@ export function checkRegistry(
       }
     }
 
-    const figma = entry.figma;
-    if (figma) {
+    for (const source of figmaSources(entry.figma)) {
+      const figma = source ?? {};
       if (figma.node_id && !figma.file_key) {
         errors.push(
           `${entry.file}: figma.node_id without figma.file_key — a node id is only addressable ` +
@@ -270,14 +271,42 @@ function checkContract(entry, byId, errors, resolveToken, systemVersion) {
     if (gaps.length > 0) {
       errors.push(`${file}: status is "ready" but required contract data is missing: ${gaps.join(", ")}`);
     }
-    if (!entry.figma?.file_key || !entry.figma?.node_id) {
+    const sources = figmaSources(entry.figma);
+    if (sources.length === 0 || sources.some(source => !source?.file_key || !source?.node_id)) {
       errors.push(`${file}: status is "ready" but figma.file_key or figma.node_id is missing`);
     }
-    const date = entry.figma?.last_verified;
-    const parsed = typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date)
-      ? new Date(`${date}T00:00:00Z`) : null;
-    if (!parsed || Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date) {
-      errors.push(`${file}: status is "ready" but figma.last_verified is missing or is not a valid YYYY-MM-DD date`);
+    for (const source of sources.length ? sources : [{}]) {
+      const date = source?.last_verified;
+      const parsed = typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date)
+        ? new Date(`${date}T00:00:00Z`) : null;
+      if (!parsed || Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date) {
+        errors.push(`${file}: status is "ready" but figma.last_verified is missing or is not a valid YYYY-MM-DD date${source?.name ? ` (${source.name})` : ""}`);
+      }
+    }
+  }
+
+  if (entry.figma && ("sources" in entry.figma || "variant_property" in entry.figma)) {
+    const { sources, variant_property: propertyName } = entry.figma;
+    const property = api.find(property => property.name === propertyName && property.kind === "variant");
+    const values = property?.values?.map(row => row.value) ?? [];
+    if (!property || !Array.isArray(sources) || !sources.length ||
+        sources.length !== values.length || sources.some((source, index) => source?.value !== values[index])) {
+      errors.push(`${file}: figma.sources must map every value of figma.variant_property in API order`);
+    }
+    if (entry.figma.file_key || entry.figma.node_id || entry.figma.last_verified) {
+      errors.push(`${file}: figma.sources replaces the single-node address; do not record both`);
+    }
+    const addresses = new Set();
+    const names = new Set();
+    for (const source of Array.isArray(sources) ? sources : []) {
+      if (!source?.name || typeof source.name !== "string" || !source.file_key ||
+          !/^\d+[:-]\d+$/.test(source.node_id ?? "")) {
+        errors.push(`${file}: each figma.sources row needs a Figma name, file_key and node_id`);
+      }
+      const address = `${source?.file_key}/${source?.node_id}`;
+      if (addresses.has(address) || names.has(source?.name)) errors.push(`${file}: duplicate figma.sources representation`);
+      addresses.add(address);
+      names.add(source?.name);
     }
   }
 
@@ -626,12 +655,12 @@ function reportContract(entry, entries, reports, today) {
     reports.push(`"${entry.id}" has a motion block with no intent`);
   }
 
-  if (entry.status === "ready" && entry.figma?.last_verified) {
-    const age = daysSince(entry.figma.last_verified, today);
+  for (const source of entry.status === "ready" ? figmaSources(entry.figma) : []) {
+    const age = daysSince(source?.last_verified, today);
     if (age !== null && age > CONTRACT_STALE_DAYS) {
       reports.push(
         `"${entry.id}" is ready and was last verified against Figma ${age} days ago ` +
-          `(${entry.figma.last_verified})`
+          `(${source.last_verified}${source.name ? `, ${source.name}` : ""})`
       );
     }
   }

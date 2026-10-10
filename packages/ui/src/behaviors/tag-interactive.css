@@ -1,0 +1,43 @@
+@import "./tag.css";
+
+:is(.stylos-tag-interactive-fill, .stylos-tag-interactive-outline) {
+  --_stylos-tag-surface: var(--_stylos-tag-default);
+  align-self: flex-start;
+  justify-self: start;
+  margin: var(--stylos-dimension-gap-g-0_000);
+  border: 0;
+  background-color: var(--_stylos-tag-surface);
+  color: var(--_stylos-tag-foreground);
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  transition: background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+}
+
+:is(.stylos-tag-interactive-fill, .stylos-tag-interactive-outline):enabled:hover {
+  --_stylos-tag-surface: var(--_stylos-tag-hover);
+}
+
+:is(.stylos-tag-interactive-fill, .stylos-tag-interactive-outline):enabled:active {
+  --_stylos-tag-surface: var(--_stylos-tag-active);
+}
+
+:is(.stylos-tag-interactive-fill, .stylos-tag-interactive-outline):disabled {
+  --_stylos-tag-surface: var(--_stylos-tag-disabled);
+  color: var(--stylos-color-text-disabled);
+  cursor: default;
+}
+
+/* The Focus frame starts two units outside the radius/small band.
+ * Its radius/medium inner edge and outside thick stroke follow that offset.
+ */
+:is(.stylos-tag-interactive-fill, .stylos-tag-interactive-outline):enabled:focus-visible {
+  outline: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary);
+  outline-offset: var(--stylos-dimension-gap-g-0_250);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.stylos-tag-interactive-fill, .stylos-tag-interactive-outline) {
+    transition: none;
+  }
+}

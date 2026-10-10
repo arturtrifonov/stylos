@@ -29,9 +29,7 @@ do_not_use_when:
   -
     text: "The action's symbol is not already known to the reader. With no box and no label this member is the least forgiving of an unfamiliar icon of anything in the family."
     instead:
-      - "Button Base"
-      - "Button Outline"
-      - "Button Ghost"
+      - "Button"
   -
     text: "The control is a local action on the component it sits in — clear a field, remove a tag, dismiss a toast. That one is an element sized to the icon and borrows its space from the content beside it; this one still holds a full button box."
     instead: "Button Inner"
@@ -44,8 +42,7 @@ children:
   - "Icon"
   - "Indicator Status"
   - "Indicator Special"
-  - "Tag Fill"
-  - "Tag Outline"
+  - "Tag"
   - "Loader"
 parents:
   - "Accordion"

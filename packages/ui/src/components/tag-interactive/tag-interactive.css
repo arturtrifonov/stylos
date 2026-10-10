@@ -1,0 +1,94 @@
+@import "../../behaviors/tag-interactive.css";
+
+.stylos-tag-interactive-fill[data-tone="base"] {
+  --_stylos-tag-default: var(--stylos-color-surface-bold-base-default);
+  --_stylos-tag-hover: var(--stylos-color-surface-bold-base-hover);
+  --_stylos-tag-active: var(--stylos-color-surface-bold-base-active);
+  --_stylos-tag-disabled: var(--stylos-color-surface-bold-base-disabled);
+  --_stylos-tag-foreground: var(--stylos-color-text-inverted);
+}
+
+.stylos-tag-interactive-fill[data-tone="primary"] {
+  --_stylos-tag-default: var(--stylos-color-surface-bold-primary-default);
+  --_stylos-tag-hover: var(--stylos-color-surface-bold-primary-hover);
+  --_stylos-tag-active: var(--stylos-color-surface-bold-primary-active);
+  --_stylos-tag-disabled: var(--stylos-color-surface-bold-primary-disabled);
+  --_stylos-tag-foreground: var(--stylos-color-text-inverted);
+}
+
+.stylos-tag-interactive-fill[data-tone="warning"] {
+  --_stylos-tag-default: var(--stylos-color-surface-bold-warning-default);
+  --_stylos-tag-hover: var(--stylos-color-surface-bold-warning-hover);
+  --_stylos-tag-active: var(--stylos-color-surface-bold-warning-active);
+  --_stylos-tag-disabled: var(--stylos-color-surface-bold-warning-disabled);
+  --_stylos-tag-foreground: var(--stylos-color-text-inverted);
+}
+
+.stylos-tag-interactive-fill[data-tone="danger"] {
+  --_stylos-tag-default: var(--stylos-color-surface-bold-danger-default);
+  --_stylos-tag-hover: var(--stylos-color-surface-bold-danger-hover);
+  --_stylos-tag-active: var(--stylos-color-surface-bold-danger-active);
+  --_stylos-tag-disabled: var(--stylos-color-surface-bold-danger-disabled);
+  --_stylos-tag-foreground: var(--stylos-color-text-inverted);
+}
+
+.stylos-tag-interactive-fill[data-tone="success"] {
+  --_stylos-tag-default: var(--stylos-color-surface-bold-success-default);
+  --_stylos-tag-hover: var(--stylos-color-surface-bold-success-hover);
+  --_stylos-tag-active: var(--stylos-color-surface-bold-success-active);
+  --_stylos-tag-disabled: var(--stylos-color-surface-bold-success-disabled);
+  --_stylos-tag-foreground: var(--stylos-color-text-inverted);
+}
+
+.stylos-tag-interactive-outline {
+  box-shadow: inset 0 0 0 var(--stylos-border-width-normal) var(--_stylos-tag-border);
+}
+
+.stylos-tag-interactive-outline[data-tone="base"] {
+  --_stylos-tag-default: var(--stylos-color-surface-subtle-base-default);
+  --_stylos-tag-hover: var(--stylos-color-surface-subtle-base-hover);
+  --_stylos-tag-active: var(--stylos-color-surface-subtle-base-active);
+  --_stylos-tag-disabled: var(--stylos-color-surface-subtle-base-disabled);
+  --_stylos-tag-foreground: var(--stylos-color-text-base);
+  --_stylos-tag-border: var(--stylos-color-border-default);
+}
+
+.stylos-tag-interactive-outline[data-tone="primary"] {
+  --_stylos-tag-default: var(--stylos-color-surface-subtle-primary-default);
+  --_stylos-tag-hover: var(--stylos-color-surface-subtle-primary-hover);
+  --_stylos-tag-active: var(--stylos-color-surface-subtle-primary-active);
+  --_stylos-tag-disabled: var(--stylos-color-surface-subtle-primary-disabled);
+  --_stylos-tag-foreground: var(--stylos-color-text-primary);
+  --_stylos-tag-border: var(--stylos-color-border-primary);
+}
+
+.stylos-tag-interactive-outline[data-tone="warning"] {
+  --_stylos-tag-default: var(--stylos-color-surface-subtle-warning-default);
+  --_stylos-tag-hover: var(--stylos-color-surface-subtle-warning-hover);
+  --_stylos-tag-active: var(--stylos-color-surface-subtle-warning-active);
+  --_stylos-tag-disabled: var(--stylos-color-surface-subtle-warning-disabled);
+  --_stylos-tag-foreground: var(--stylos-color-text-warning);
+  --_stylos-tag-border: var(--stylos-color-border-warning);
+}
+
+.stylos-tag-interactive-outline[data-tone="danger"] {
+  --_stylos-tag-default: var(--stylos-color-surface-subtle-danger-default);
+  --_stylos-tag-hover: var(--stylos-color-surface-subtle-danger-hover);
+  --_stylos-tag-active: var(--stylos-color-surface-subtle-danger-active);
+  --_stylos-tag-disabled: var(--stylos-color-surface-subtle-danger-disabled);
+  --_stylos-tag-foreground: var(--stylos-color-text-danger);
+  --_stylos-tag-border: var(--stylos-color-border-danger);
+}
+
+.stylos-tag-interactive-outline[data-tone="success"] {
+  --_stylos-tag-default: var(--stylos-color-surface-subtle-success-default);
+  --_stylos-tag-hover: var(--stylos-color-surface-subtle-success-hover);
+  --_stylos-tag-active: var(--stylos-color-surface-subtle-success-active);
+  --_stylos-tag-disabled: var(--stylos-color-surface-subtle-success-disabled);
+  --_stylos-tag-foreground: var(--stylos-color-text-success);
+  --_stylos-tag-border: var(--stylos-color-border-success);
+}
+
+.stylos-tag-interactive-outline:disabled {
+  --_stylos-tag-border: var(--stylos-color-border-secondary);
+}

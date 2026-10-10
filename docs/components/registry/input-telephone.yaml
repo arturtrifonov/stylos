@@ -18,8 +18,7 @@ children:
   - "Indicator Special"
   - "Label"
   - "Link"
-  - "Tag Fill"
-  - "Tag Outline"
+  - "Tag"
   - "Loader"
 parents:
   - "Accordion"

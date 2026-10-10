@@ -21,9 +21,7 @@ do_not_use_when:
   -
     text: "The action's symbol is not already known to the reader. An icon nobody recognises is a button nobody presses, and a tooltip is not a fix — it arrives after the hesitation it was meant to prevent."
     instead:
-      - "Button Base"
-      - "Button Outline"
-      - "Button Ghost"
+      - "Button"
   -
     text: "The action supports another one rather than being the main thing on its surface. A filled square is as loud as a filled button."
     instead:
@@ -46,8 +44,7 @@ children:
   - "Icon"
   - "Indicator Status"
   - "Indicator Special"
-  - "Tag Fill"
-  - "Tag Outline"
+  - "Tag"
   - "Loader"
 parents:
   - "Accordion"

@@ -230,24 +230,33 @@ Label hugs its single line and uses emphasis weight with string line height. Tex
 
 Hover and pressing across the full label update the input's existing Motion surface transitions. Native disabled fieldsets also disable the input and copy. The CSS exports for Label/Text include the shared layout and Checkbox Input styles; link tokens and fonts separately as usual.
 
-### Button Base, Outline and Ghost
+### Button
 
-`ButtonBase`, `ButtonOutline` and `ButtonGhost` render native buttons with the same API. Each defaults to primary/medium and supports all five tones and sizes from its registry contract. Set `state="disabled"` for unavailable actions. Hover, pressing and keyboard focus are browser states; a disabled fieldset also disables the control. Labels remain unchanged in the DOM and are uppercased visually. Surface-colour changes use the local-state Motion profile (`duration/micro` and `easing/linear`); reduced motion makes them immediate.
+`Button` renders a native button with `variant="base" | "outline" | "ghost"`.
+The default is base/primary/medium; all three treatments support the same five
+sizes, five tones, decorative icon snippets and native form properties.
 
 ```svelte
-<ButtonBase labelText="Save changes" onclick={saveChanges} />
-<ButtonOutline labelText="Cancel" onclick={cancel} />
-<ButtonGhost labelText="Details" onclick={showDetails} />
-<ButtonBase labelText="Delete" tone="danger" size="small" state="disabled" />
+<Button labelText="Save changes" onclick={saveChanges} />
+<Button variant="outline" labelText="Cancel" onclick={cancel} />
+<Button variant="ghost" labelText="Details" onclick={showDetails} />
+<Button labelText="Delete" tone="danger" size="small" state="disabled" />
 ```
 
-Supply optional marks through `leadingIcon` and `trailingIcon`, with their presence booleans enabled. Either input accepts a component or a snippet. An unassigned mark renders nothing. Button sizing preserves the recorded optical overhang; icons are decorative and do not add to the accessible name.
+The browser derives hover, press and keyboard focus; `state="disabled"` and a
+disabled fieldset prevent activation and focus. Labels are uppercased in CSS.
+Surface transitions use micro/linear Motion and become immediate with reduced
+motion. Optional `leadingIcon` and `trailingIcon` require their presence booleans;
+unassigned icons render no slot. Marks are decorative and retain Figma's optical
+alignment. `type="button"` is the default; submit/reset, `name`, `value` and `form`
+retain native form behaviour. `onclick` receives the native event and can cancel
+its default action. `descriptionIds` links supporting text.
 
-`type` defaults to `button`. Use `submit` or `reset` for native form actions; `name`, `value` and `form` preserve submitter identity and external association. `onclick` receives the native click event and may cancel its default action. `descriptionIds` links supporting text.
-
-Independent HTML uses `.stylos-button-base`, `.stylos-button-outline` or `.stylos-button-ghost` on `<button type="button">`, with `data-tone`, `data-size` and `data-state`. Link tokens, fonts and the corresponding `@stylos/ui/css/button-*.css`. Outline draws its border inside the shared geometry; Ghost has no surface at rest, border or shadow.
-
-The workshop’s Icons playground renders one button. Controls select the leading and trailing icons independently from the active icon set, toggle their presence, and adjust the button’s label, size, tone and disabled state.
+Independent HTML uses `.stylos-button` plus `.stylos-button-base`,
+`.stylos-button-outline` or `.stylos-button-ghost`, with `data-variant`, `data-tone`,
+`data-size` and `data-state`. Link tokens, fonts and `@stylos/ui/css/button.css`.
+The inside Outline border and Ghost's transparent resting surface are preserved.
+Default and Icons playground each control variant without extra variant pages.
 
 ### Radio Input, Radio Label and Radio Text
 
@@ -344,16 +353,17 @@ and becomes immediate under reduced motion. Connect supporting content with
 `descriptionIds`; an optional surrounding Tooltip repeats the action name.
 
 
-### Tag Fill and Tag Outline
+### Tag
 
-`TagFill` and `TagOutline` render non-interactive `span` labels. They share five
+`Tag` renders a non-interactive `span` with `variant="fill" | "outline"` (fill by
+default). Both treatments share five
 sizes (medium by default), five tones and `textCase="uppercase" | "original"`.
 Pass `labelText` in its original case; CSS transforms only its appearance.
 
 ```svelte
 {#snippet mark()}<Icon name="check" />{/snippet}
-<TagFill labelText="Complete" tone="success" hasLeadingIcon leadingIcon={mark} />
-<TagOutline labelText="Category" textCase="original" />
+<Tag labelText="Complete" tone="success" hasLeadingIcon leadingIcon={mark} />
+<Tag variant="outline" labelText="Category" textCase="original" />
 ```
 
 Optional leading/trailing snippets are decorative; the label carries the meaning.
@@ -365,6 +375,54 @@ tokens. Both text cases use `text-box-trim: trim-both` and
 `text-box-edge: cap alphabetic` to centre Figma’s cap-height box without manual
 offsets. An `@supports` guard retains normal line-box centring in older browsers.
 
-Neither component exposes state, dismissal or activation. Use them to classify
-content; interactive tag contracts remain planned. Each has Default followed by
+Tag exposes no state, dismissal or activation. Use it to classify
+content. It has Default followed by
 Icons playground in Storybook and the same independent CSS for static HTML.
+
+
+### Tag Interactive
+
+`TagInteractive` uses `variant="fill" | "outline"` (fill by default), with the
+same sizes, tones, text cases and decorative icon snippets as Tag. It renders a native button;
+`onclick` receives pointer and keyboard activation. `type="button"` is the default;
+`submit` and `reset`, with `name`, `value` and `form`, retain native form behaviour.
+
+```svelte
+<TagInteractive labelText="Apply" tone="primary" onclick={applyFilters} />
+<TagInteractive variant="outline" labelText="Edit" textCase="original" onclick={editItem} />
+```
+
+`state="disabled"` and a disabled ancestor fieldset prevent activation and focus.
+The browser derives hover, press and keyboard focus. Colours, the outside focus
+ring and micro/linear surface transitions use tokens; reduced motion makes the
+transitions immediate. Icons remain decorative, with no separate remove action.
+No persistent selection or navigation is exposed. Extra small and small preserve
+Figma’s 16/20-unit heights; consumers must account for target spacing in their
+layouts. It has Default followed by Icons playground and the independent
+`@stylos/ui/css/tag-interactive.css` export. Static Tag uses `@stylos/ui/css/tag.css`.
+
+
+### Migration from separate visual-treatment exports
+
+Replace the component import and supply the corresponding `variant`; other props
+keep their names, values and defaults. Figma sets remain separate and are mapped
+in each registry entry's `figma.sources`.
+
+Button icon slots now take snippets, matching Link and Tag. Wrap an icon component
+in a snippet and pass it as `leadingIcon` or `trailingIcon` with its presence boolean.
+
+| Previous export | Replacement |
+| --- | --- |
+| `ButtonBase` | `Button` (default base) |
+| `ButtonOutline` | `Button variant="outline"` |
+| `ButtonGhost` | `Button variant="ghost"` |
+| `TagFill` | `Tag` (default fill) |
+| `TagOutline` | `Tag variant="outline"` |
+| `TagInteractiveFill` | `TagInteractive` (default fill) |
+| `TagInteractiveOutline` | `TagInteractive variant="outline"` |
+
+Independent CSS imports move from `button-base.css`, `button-outline.css` and
+`button-ghost.css` to `button.css`, from `tag-fill.css`/`tag-outline.css` to
+`tag.css`, and from the interactive treatment files to `tag-interactive.css`.
+Checkbox, Radio and Toggle retain Input/Label/Text: Label hugs one line, while
+Text wraps within its parent and uses a distinct text layout.

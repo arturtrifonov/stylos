@@ -27,9 +27,7 @@ do_not_use_when:
   -
     text: "The action's symbol is not already known to the reader. An icon nobody recognises is a button nobody presses, and a tooltip is not a fix — it arrives after the hesitation it was meant to prevent."
     instead:
-      - "Button Base"
-      - "Button Outline"
-      - "Button Ghost"
+      - "Button"
   -
     text: "The control is a local action on the component it sits in — clear a field, remove a tag, dismiss a toast. That one is an element sized to the icon and borrows its space from the content beside it; this one is an object with a box of its own."
     instead: "Button Inner"
@@ -42,8 +40,7 @@ children:
   - "Icon"
   - "Indicator Status"
   - "Indicator Special"
-  - "Tag Fill"
-  - "Tag Outline"
+  - "Tag"
   - "Loader"
 parents:
   - "Accordion"

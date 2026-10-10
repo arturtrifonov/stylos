@@ -1,33 +1,26 @@
-# Hand-written 2026-08-30. Replaces part of tag.yaml, whose id "Tag" matches
-# no component in Figma. See docs/components/registry/README.md, section
-# "When a component is split".
-
-id: "Tag Fill"
-name: "Tag Fill"
+# Unified frontend contract, approved 2026-10-10.
+# Separate authored Figma sets are mapped explicitly in figma.sources.
+id: "Tag"
+name: "Tag"
 family: "Tag"
 level: "element"
 role: "content"
 html: "span"
 status: "ready"
 version: "0.1.0"
-summary: "A short label on a filled band, in one of five tones."
-purpose: "A tag says what kind of thing something is, in one or two words, without the reader having to parse a sentence. This is the loud half of the pair: the tone fills the band and the label is knocked out of it, so the tag holds its place on a busy or coloured surface and is found by scanning rather than by reading."
+summary: "A short non-interactive label with fill and outline treatments."
+purpose: "Classify content with a short label. fill gives it a solid band; outline uses a subtle surface with an inside border. Both treatments share sizing, text case and decorative icon slots."
 use_when:
   - "A short word or two classifies the thing it sits on — a status, a category, an owner — and the reader takes it in without reading it as a sentence."
 do_not_use_when:
+  -
+    text: "The label performs an action when activated."
+    instead: "Tag Interactive"
   -
     text: "The mark is a count, or a dot that says only that something is there. A tag carries a word; those carry a quantity or a presence and are sized for the corner of something else."
     instead:
       - "Badge"
       - "Indicator Status"
-  -
-    text: "The person can choose it, remove it, or filter by it. Nothing here responds to a pointer or a key — the same shape with behaviour is a different component."
-    instead:
-      - "Chips"
-  -
-    text: "The surrounding surface is already busy and a filled block of colour would outweigh what it labels."
-    instead:
-      - "Tag Outline"
 children:
   - "Icon"
   - "Button Inner"
@@ -39,9 +32,7 @@ parents:
   - "Accordion"
   - "Accordion Header"
   - "Asset"
-  - "Button Base"
-  - "Button Outline"
-  - "Button Ghost"
+  - "Button"
   - "Button Dropdown"
   - "Button Group"
   - "Button Icon Base"
@@ -134,7 +125,7 @@ api:
     name: "tone"
     kind: "variant"
     default: "base"
-    description: "Which meaning the tag carries. The tone fills the band and the label is knocked out of it in the inverted text role, so every tone reads at the same weight and none of them recedes."
+    description: "Semantic colour role. fill uses inverted text on a bold band; outline uses the corresponding text and border roles on a subtle band."
     values:
       -
         value: "base"
@@ -176,6 +167,18 @@ api:
         value: "original"
         note: "For labels whose case carries meaning — a proper noun, a product name, an identifier that would be wrong in capitals."
   -
+    name: "variant"
+    kind: "variant"
+    default: "fill"
+    description: "Visual treatment mapped to an existing Figma component set. It preserves the shared behaviour and geometry."
+    values:
+      -
+        value: "fill"
+        note: "A short label on a filled band, in one of five tones."
+      -
+        value: "outline"
+        note: "A short label on a tinted band with a border, in one of five tones."
+  -
     name: "has leading icon"
     kind: "boolean"
     default: false
@@ -211,7 +214,7 @@ api:
           "label text": "Category"
           "has leading icon": true
           "leading icon": "check"
-    description: "One or two words. A tag that needs a phrase is labelling something too broad to be a category, and at these measures it will out-run the content it sits beside."
+    description: "Short classification label supplied in its original case."
 limitations:
   - "No state. Nothing here responds to a pointer or a key, which is the whole difference from the interactive members of the family."
   - "The base tone measures 4.55:1 against its own label in light mode, which clears the 4.5:1 the label needs by less than rounding. Any move of surface/bold/base/default or text/inverted is a contrast change, not a colour change."
@@ -220,10 +223,22 @@ figma_notes:
   - "Label typography uses family/normal, weight/emphasis and the recorded size/string-line-height runs. Uppercase and original use the matching letter-spacing/style token. Vertical trim checked on 2026-10-10: leadingTrim=CAP_HEIGHT on all 50 label layers, including both text cases. Native text-box-trim:trim-both and text-box-edge:cap alphabetic match that component setting. The tag-specific rule is guarded by @supports; unsupported browsers retain centred normal line boxes. No manual label offset is applied."
   - "Verified 2026-10-10 on Tag page 25:1620: five sizes, five tones and uppercase/original. Figma defaults to medium/base/uppercase; icon containers are hidden by default, have widths 10/12/14/16/18 and hold icons 12/14/16/18/20. Leading icons overhang outward by 2; trailing icons start at the slot origin. CSS uses gap/g-0_250 for this optical correction."
   - "The local icon container width collection is not exported. CSS derives the same widths from the icon dimension token minus gap/g-0_250. Icon snippets are configured by the consumer, with no Placeholder default; registry icon examples select active-set names for static previews."
+  - "The owner approved one frontend component for these separate Figma sets on 2026-10-10. variant is a web integration property; Figma names and nodes stay unchanged. Each visual treatment preserves its original tokens, geometry, states and text trimming."
 figma:
-  file_key: "WUc07ZBtjRvypXtsOlbVut"
-  node_id: "4592-18607"
-  last_verified: "2026-10-10"
+  variant_property: "variant"
+  sources:
+    -
+      value: "fill"
+      name: "Tag Fill"
+      file_key: "WUc07ZBtjRvypXtsOlbVut"
+      node_id: "4592-18607"
+      last_verified: "2026-10-10"
+    -
+      value: "outline"
+      name: "Tag Outline"
+      file_key: "WUc07ZBtjRvypXtsOlbVut"
+      node_id: "4820-20677"
+      last_verified: "2026-10-10"
 notes: "children and parents are inherited in full from the entry this component was split out of, as the split rule requires; narrowing either is a later judgement."
 import:
   batch: 1

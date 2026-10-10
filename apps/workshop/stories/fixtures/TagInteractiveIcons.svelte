@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { TagOutline, Icon } from "@stylos/ui";
-  import type { TagOutlineProps } from "@stylos/ui";
+  import { TagInteractive, Icon } from "@stylos/ui";
+  import type { TagInteractiveProps } from "@stylos/ui";
 
-  type Props = Omit<TagOutlineProps, "leadingIcon" | "trailingIcon"> & {
+  type Props = Omit<TagInteractiveProps, "leadingIcon" | "trailingIcon"> & {
     leadingIconName?: string;
     trailingIconName?: string;
   };
@@ -11,4 +11,4 @@
 
 {#snippet leading()}<Icon name={leadingIconName} />{/snippet}
 {#snippet trailing()}<Icon name={trailingIconName} />{/snippet}
-<TagOutline {...args} leadingIcon={leading} trailingIcon={trailing} />
+<TagInteractive {...args} leadingIcon={leading} trailingIcon={trailing} />

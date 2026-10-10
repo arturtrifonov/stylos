@@ -24,7 +24,7 @@ npm run import:registry     # regenerate docs/components/registry/*.yaml from th
 npm run validate:registry   # check the registry and every contract in it against itself
 ```
 
-Contract completeness follows STD-04 through the same required-data check used by the site. A `ready` entry additionally needs a Figma address and valid verification date under STD-05. Live existence, freshness and the state of published components are reviewed, not inferred from a local validation pass.
+Contract completeness follows STD-04 through the same required-data check used by the site. A `ready` entry additionally needs a Figma address and valid verification date under STD-05. A unified contract maps every visual variant to an authored set through `figma.sources`; validation checks coverage, order, unique representations and verification for each source. Component pages link all sources. Live existence, freshness and the state of published components are reviewed, not inferred from a local validation pass.
 
 Supported `size` choices are recorded in the public API; per-axis adjustment flags describe external dimension overrides. A fixed axis can support preset choices, a consumer-chosen value, or both. The sizing vocabulary and required fields are defined in [Sizing](../docs/foundations/sizing.md). Component pages display width and height adjustment permissions separately.
 

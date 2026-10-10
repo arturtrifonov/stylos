@@ -78,8 +78,8 @@ const KNOWN_FIELDS = new Set([
 /**
  * `Table Cell Text` → `table-cell-text`, and `Foo / Bar` → `foo/bar`. The same
  * rule the 2026-08-20 import used. No entry carries a `/` since 2026-09-02 —
- * the split survives because the path has to follow whatever Figma's name is,
- * not because a nested path is wanted (figma/naming.md).
+ * the split remains supported for contract ids, even when multiple Figma
+ * sets map to a single frontend contract through explicit figma.sources.
  */
 export function slugPath(id) {
   return id
@@ -117,8 +117,15 @@ export function pagePathFor(id) {
  * stored: it is derivable, and a stored URL rots in a way the parts do not.
  */
 export function figmaUrl(figma) {
+  if (Array.isArray(figma?.sources)) return figmaUrl(figma.sources[0]);
   if (!figma?.file_key || !figma?.node_id) return null;
   return `https://www.figma.com/design/${figma.file_key}/?node-id=${figma.node_id}`;
+}
+
+/** Every authored representation of a contract, including separate treatments. */
+export function figmaSources(figma) {
+  if (!figma) return [];
+  return Array.isArray(figma.sources) ? figma.sources : [figma];
 }
 
 /** Rank in the composition order primitive → layout, or -1 for an unknown level. */
@@ -292,7 +299,8 @@ export function derive(entry) {
     documented: Boolean(hasText(entry.summary) && hasText(entry.purpose) &&
       Array.isArray(entry.useWhen) && entry.useWhen.length > 0 && entry.useWhen.every(hasText) &&
       properties.every((property) => hasText(property?.description))),
-    linked: Boolean(entry.figma?.file_key && entry.figma?.node_id),
+    linked: figmaSources(entry.figma).length > 0 &&
+      figmaSources(entry.figma).every(source => Boolean(source?.file_key && source?.node_id)),
   };
 }
 

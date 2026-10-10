@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -63,6 +63,19 @@ test("buildUiCss exports only built components", () => {
   const out = readFileSync(path.join(root, OUT_DIR, AGGREGATE), "utf8");
   assert.match(out, /1 component: Badge\./);
   assert.ok(!out.includes("Loader"));
+});
+
+test("rebuilding removes stale component CSS without removing other output files", () => {
+  const root = scratchRoot([{ id: "Button", slug: "button", css: ".stylos-button {}\n" }]);
+  buildUiCss(root);
+  const stale = path.join(root, OUT_DIR, "button-base.css");
+  const other = path.join(root, OUT_DIR, "keep.txt");
+  writeFileSync(stale, ".stylos-button-base {}\n");
+  writeFileSync(other, "other output");
+  buildUiCss(root);
+  assert.equal(existsSync(stale), false);
+  assert.equal(readFileSync(other, "utf8"), "other output");
+  assert.equal(readFileSync(path.join(root, OUT_DIR, "button.css"), "utf8"), ".stylos-button {}\n");
 });
 
 test("buildUiCss fails on a component directory with no authored CSS", () => {

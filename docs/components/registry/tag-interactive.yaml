@@ -1,0 +1,256 @@
+# Unified frontend contract, approved 2026-10-10.
+# Separate authored Figma sets are mapped explicitly in figma.sources.
+id: "Tag Interactive"
+name: "Tag Interactive"
+family: "Tag"
+level: "element"
+role: "trigger"
+html: "<button type=\"button\">"
+status: "ready"
+version: "0.1.0"
+summary: "A compact actionable tag with fill and outline treatments."
+purpose: "Perform the supplied action in the existing Tag footprint. Both treatments share native button behaviour, sizing, text case and decorative icon slots; Figma assigns no destination or business action."
+use_when:
+  - "A short labelled action belongs beside compact content."
+do_not_use_when:
+  -
+    text: "The label only classifies content."
+    instead: "Tag"
+  -
+    text: "The control navigates to a destination."
+    instead: "Link"
+  -
+    text: "A separate remove control or persistent selection is required."
+    instead: "Chips"
+children:
+  - "Icon"
+uses:
+  - "Icon"
+flow_behavior:
+  - "hug"
+a11y:
+  -
+    status: "requires"
+    note: "The native button supplies keyboard activation and disabled semantics. The label names the action; icons are decorative. Case changes happen in CSS."
+  -
+    status: "requires"
+    note: "Extra small and small are 16 and 20 units tall. The consumer must provide sufficient target spacing or an applicable target-size exception under FND-ACCESSIBILITY-01; the component preserves the authored footprint."
+sizing_model:
+  horizontal: "hug"
+  vertical: "fixed"
+  adjustable:
+    horizontal: false
+    vertical: false
+  intent: "Fixed Tag band height and content-sized width. Sizes, type, padding, gaps and optical icon slots match the static Tag treatments; the outline stays inside this footprint."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-2_000"
+      padding_inline: "gap/g-0_875"
+      gap: "gap/g-0_500"
+      font_size: "size/0_625"
+      line_height: "line height/string/0_625"
+      icon: "size/s-1_500"
+    -
+      size: "small"
+      box: "size/s-2_500"
+      padding_inline: "gap/g-1_000"
+      gap: "gap/g-0_625"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+      icon: "size/s-1_750"
+    -
+      size: "medium"
+      box: "size/s-3_000"
+      padding_inline: "gap/g-1_250"
+      gap: "gap/g-0_750"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+      icon: "size/s-2_000"
+    -
+      size: "large"
+      box: "size/s-3_500"
+      padding_inline: "gap/g-1_500"
+      gap: "gap/g-0_875"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+      icon: "size/s-2_250"
+    -
+      size: "extra large"
+      box: "size/s-4_000"
+      padding_inline: "gap/g-2_000"
+      gap: "gap/g-1_000"
+      font_size: "size/1_125"
+      line_height: "line height/string/1_125"
+      icon: "size/s-2_500"
+api:
+  -
+    name: "tone"
+    kind: "variant"
+    default: "base"
+    description: "Semantic colour role; it does not assign a business action."
+    values:
+      -
+        value: "base"
+      -
+        value: "primary"
+      -
+        value: "warning"
+      -
+        value: "danger"
+      -
+        value: "success"
+  -
+    name: "size"
+    kind: "variant"
+    default: "medium"
+    description: "Fixed band height with matching type, padding, gaps and icon slots."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "text case"
+    kind: "variant"
+    default: "uppercase"
+    description: "CSS uppercase and wider tracking, or the label exactly as written."
+    values:
+      -
+        value: "uppercase"
+      -
+        value: "original"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "Native availability. The browser derives hover, press and keyboard focus; disabled also applies through a disabled fieldset."
+    values:
+      -
+        value: "default"
+      -
+        value: "disabled"
+  -
+    name: "type"
+    kind: "variant"
+    default: "button"
+    description: "Native button form behaviour; button does not submit by default."
+    values:
+      -
+        value: "button"
+      -
+        value: "submit"
+      -
+        value: "reset"
+  -
+    name: "variant"
+    kind: "variant"
+    default: "fill"
+    description: "Visual treatment mapped to an existing Figma component set. It preserves the shared behaviour and geometry."
+    values:
+      -
+        value: "fill"
+        note: "A compact actionable tag with a filled band."
+      -
+        value: "outline"
+        note: "A compact actionable tag with a subtle outlined band."
+  -
+    name: "has leading icon"
+    kind: "boolean"
+    default: false
+    description: "Show the configured decorative mark before the label."
+    controls:
+      - "leading icon"
+  -
+    name: "leading icon"
+    kind: "instance"
+    svelte_type: "snippet"
+    description: "Decorative icon snippet. An unassigned snippet renders no slot."
+  -
+    name: "has trailing icon"
+    kind: "boolean"
+    default: false
+    description: "Show the configured decorative mark after the label."
+    controls:
+      - "trailing icon"
+  -
+    name: "trailing icon"
+    kind: "instance"
+    svelte_type: "snippet"
+    description: "Decorative icon snippet, not a separate remove control."
+  -
+    name: "label text"
+    kind: "text"
+    default: "Tag"
+    description: "Short label naming the action, supplied in its original case."
+    examples:
+      -
+        verdict: "do"
+        caption: "A compact action with a decorative mark."
+        props:
+          "label text": "Apply"
+          "has leading icon": true
+          "leading icon": "check"
+  -
+    name: "id"
+    kind: "string"
+    description: "Unique native button id."
+  -
+    name: "name"
+    kind: "string"
+    default: ""
+    description: "Submitter name included on form submission."
+  -
+    name: "value"
+    kind: "string"
+    default: ""
+    description: "Submitter value paired with name."
+  -
+    name: "form"
+    kind: "string"
+    default: ""
+    description: "Id of the associated form, including one outside the ancestors."
+  -
+    name: "description ids"
+    kind: "string"
+    default: ""
+    description: "Space-separated supporting element ids for aria-describedby."
+  -
+    name: "onclick"
+    kind: "event"
+    description: "Native click callback for pointer, Enter and Space activation. Disabled controls do not activate; preventDefault cancels native form behaviour."
+limitations:
+  - "The label stays on one line and widens the band; it does not wrap or truncate."
+  - "No selected state, navigation or separate icon action is designed or exposed."
+  - "Disabled controls cannot activate or receive keyboard focus."
+figma_notes:
+  - "Verified 2026-10-10 on Tag page 25:1620, set 5427:988: 200 variants cover five sizes, five tones, two text cases and four drawing states. Web state exposes default/disabled; hover, active and is focused are browser-derived. type, form attributes and onclick are web integration properties."
+  - "All 200 label layers use leadingTrim=CAP_HEIGHT. The shared Tag label rule uses text-box-trim:trim-both and text-box-edge:cap alphabetic with an @supports fallback; no manual offsets or case-specific compensation."
+  - "Icons use heights 12/14/16/18/20 and slot widths 10/12/14/16/18. Existing gap/g-0_250 preserves the two-unit outward overhang. Both icon slots are hidden by default and require configured snippets."
+  - "Focus is independent of pointer state: a rectangle offset outward by gap/g-0_250, radius/medium, with an OUTSIDE width/thick border/primary stroke. Native focus-visible outlines reproduce it around the radius/small band. Disabled variants have no focus ring."
+  - "Each tone uses surface/bold/{tone}/{state}; enabled text is text/inverted and disabled text is text/disabled. No border or elevation."
+  - "Verified 2026-10-10 on Tag page 25:1620, set 5427:1339: 200 variants cover five sizes, five tones, two text cases and four drawing states. Web state exposes default/disabled; hover, active and is focused are browser-derived. type, form attributes and onclick are web integration properties."
+  - "Each tone uses surface/subtle/{tone}/{state}; enabled text is text/base or text/{tone}. The inside width/normal stroke is border/default for base, border/{tone} otherwise, and border/secondary when disabled."
+  - "The owner approved one frontend component for these separate Figma sets on 2026-10-10. variant is a web integration property; Figma names and nodes stay unchanged. Each visual treatment preserves its original tokens, geometry, states and text trimming."
+figma:
+  variant_property: "variant"
+  sources:
+    -
+      value: "fill"
+      name: "Tag Interactive Fill"
+      file_key: "WUc07ZBtjRvypXtsOlbVut"
+      node_id: "5427-988"
+      last_verified: "2026-10-10"
+    -
+      value: "outline"
+      name: "Tag Interactive Outline"
+      file_key: "WUc07ZBtjRvypXtsOlbVut"
+      node_id: "5427-1339"
+      last_verified: "2026-10-10"
+notes: "Figma prototypes specify motion/duration/micro and linear easing for hover and press. Surface changes use the matching CSS Motion tokens, reverse from the current colour when interrupted and become immediate with reduced motion. Focus and availability are immediate."

@@ -14,8 +14,7 @@ children:
   - "Icon"
   - "Indicator Status"
   - "Indicator Special"
-  - "Tag Fill"
-  - "Tag Outline"
+  - "Tag"
   - "Loader"
 parents:
   - "Accordion"

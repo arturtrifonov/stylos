@@ -96,7 +96,7 @@ export function sampleHtml(entry, props = {}) {
         // Native label association is rendered below.
       } else if (["Checkbox Input", "Checkbox Label", "Checkbox Text", "Radio Input", "Radio Label", "Radio Text", "Toggle Input", "Toggle Label", "Toggle Text"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
         // Form integration does not change a static visual surface.
-      } else if (["Button Base", "Button Outline", "Button Ghost"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
+      } else if (["Button", "Tag Interactive"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
         // Native attributes are written by the button branch below.
       } else if (entry.id === "Button Inner" && ["id", "description ids"].includes(name)) {
         // Native attributes are written by the local-action button below.
@@ -113,7 +113,10 @@ export function sampleHtml(entry, props = {}) {
     }
   }
 
-  const cls = `stylos-${slugPath(entry.id).replace(/\//g, "-")}`;
+  const baseClass = `stylos-${slugPath(entry.id).replace(/\//g, "-")}`;
+  const treatment = ["Button", "Tag", "Tag Interactive"].includes(entry.id)
+    ? props.variant ?? entry.api.find(property => property.name === "variant")?.default : null;
+  const cls = treatment ? `${baseClass} ${baseClass}-${treatment}` : baseClass;
   if (styles.length) attrs.push(`style="${esc(styles.join(";"))}"`);
   const attr = attrs.length ? ` ${attrs.join(" ")}` : "";
 
@@ -190,13 +193,21 @@ export function sampleHtml(entry, props = {}) {
     return `<div class="${cls}"${attr} data-is-filled="${!!props.value}">${label}<div class="stylos-input-text-field"><input type="text" id="${esc(id)}" value="${esc(props.value ?? "")}"${native}${semantics}${placeholder}><div class="stylos-input-text-adornments"><span class="stylos-input-text-leading">${icon("leading")}</span><span class="stylos-input-text-trailing">${suffix}${validation}${icon("trailing")}</span></div></div></div>`;
   }
 
-  if (["Tag Fill", "Tag Outline"].includes(entry.id)) {
+  if (["Tag", "Tag Interactive"].includes(entry.id)) {
     const icon = position => {
       const name = props[`${position} icon`];
       return props[`has ${position} icon`] && typeof name === "string" && iconDrawings().has(name)
         ? `<span class="stylos-tag-icon" data-position="${position}" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name })}</span>` : "";
     };
-    return `<span class="${cls}"${attr}>${icon("leading")}<span class="stylos-tag-label">${esc(props["label text"] ?? "Tag")}</span>${icon("trailing")}</span>`;
+    const content = `${icon("leading")}<span class="stylos-tag-label">${esc(props["label text"] ?? "Tag")}</span>${icon("trailing")}`;
+    if (entry.id === "Tag Interactive") {
+      const native = ["id", "name", "value", "form"].filter(name => props[name])
+        .map(name => ` ${name}="${esc(props[name])}"`).join("");
+      const description = props["description ids"] ? ` aria-describedby="${esc(props["description ids"])}"` : "";
+      const disabled = props.state === "disabled" ? " disabled" : "";
+      return `<button type="${esc(props.type ?? "button")}" class="${cls}"${attr}${native}${description}${disabled}>${content}</button>`;
+    }
+    return `<span class="${cls}"${attr}>${content}</span>`;
   }
 
   if (entry.id === "Button Inner") {
@@ -216,7 +227,7 @@ export function sampleHtml(entry, props = {}) {
     return `<a class="${cls}"${attr}${href}${semantics}><span class="stylos-link-label">${esc(props["label text"] ?? "Link")}</span></a>`;
   }
 
-  if (["Button Base", "Button Outline", "Button Ghost"].includes(entry.id)) {
+  if (entry.id === "Button") {
     const disabled = props.state === "disabled" ? " disabled" : "";
     const native = ["id", "name", "value", "form"].filter(name => props[name])
       .map(name => ` ${name}="${esc(props[name])}"`).join("");

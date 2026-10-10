@@ -37,6 +37,7 @@ import {
   derive,
   pagePathFor,
   figmaUrl,
+  figmaSources,
   slugPath,
   insteadIds,
   LEVELS,
@@ -902,17 +903,15 @@ function renderRelations(entry, context) {
 }
 
 function renderRecord(entry, context) {
-  const url = figmaUrl(entry.figma);
+  const representations = figmaSources(entry.figma).filter(source => figmaUrl(source));
   const facts = [
     [
       "Figma",
-      url
-        ? `<a href="${esc(url)}" rel="noreferrer">node ${esc(entry.figma.node_id)}</a>${
-            entry.figma.last_verified
-              ? ` <span class="faint">· last verified ${esc(entry.figma.last_verified)}</span>`
-              : ""
-          }`
-        : null,
+      representations.length ? representations.map(source =>
+        `<a href="${esc(figmaUrl(source))}" rel="noreferrer">${esc(source.name ?? `node ${source.node_id}`)}</a>` +
+        (source.value ? ` <span class="mono">${esc(source.value)}</span>` : "") +
+        (source.last_verified ? ` <span class="faint">· last verified ${esc(source.last_verified)}</span>` : "")
+      ).join("<br>") : null,
     ],
     ["Id", entry.id && `<span class="mono">${esc(entry.id)}</span>`],
     ["Role", entry.role && `<span class="mono">${esc(entry.role)}</span>`],

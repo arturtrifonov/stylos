@@ -284,6 +284,29 @@ const realEntries = loadRegistry(fileURLToPath(new URL("../", import.meta.url)))
 const realIcon = realEntries.find((item) => item.id === "Icon");
 const checkIcon = (changed) => checkRegistry(realEntries.map((item) => item.id === "Icon" ? changed : item));
 
+test("mapped representations cover every variant and validate each source independently", () => {
+  const original = realEntries.find(item => item.id === "Button");
+  const check = figma => checkRegistry(realEntries.map(item => item.id === original.id ? { ...original, figma } : item));
+  assert.equal(check(original.figma).ok, true);
+  const mutate = callback => {
+    const figma = structuredClone(original.figma);
+    callback(figma);
+    return check(figma).errors.join("\n");
+  };
+  for (const change of [
+    figma => figma.sources.pop(),
+    figma => figma.sources.reverse(),
+    figma => { figma.variant_property = "missing"; },
+  ]) assert.match(mutate(change), /must map every value/);
+  assert.match(mutate(figma => { figma.sources[1].node_id = "invalid"; }), /each figma.sources row/);
+  assert.match(mutate(figma => { figma.sources[1].name = ""; }), /each figma.sources row/);
+  assert.match(mutate(figma => { figma.sources[1].file_key = "2OJYDoTE9EAdQKaJAJK9Kt"; }), /file_key/);
+  assert.match(mutate(figma => { figma.sources[1].last_verified = "2026-02-30"; }), /last_verified.*Button Outline/);
+  assert.match(mutate(figma => { figma.sources[1].node_id = figma.sources[0].node_id; }), /duplicate figma.sources/);
+  assert.match(mutate(figma => { figma.sources[1].name = figma.sources[0].name; }), /duplicate figma.sources/);
+  assert.match(mutate(figma => { figma.node_id = "1-2"; }), /do not record both/);
+});
+
 test("ready rejects missing required data that prose coverage used to conceal", () => {
   for (const [field, replacement, expected] of [
     ["doNotUseWhen", [], "do_not_use_when"],
