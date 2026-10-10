@@ -4,6 +4,14 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-10-10 (Toggle family)
+
+- Add Toggle Input, Label and Text with five Figma-verified sizes, exact thumb SVGs and token-based geometry, typography, colors and Motion. The native switch API is binary false/true; mixed stays in Figma. Bindable selection, Space, labels, disabled fieldsets, required validity and form reset work through the native input. Each component has one Default playground and a static documentation preview.
+
+### Fixed — 2026-10-10 (native reset)
+
+- Wait until reset dispatch completes before updating Checkbox and Toggle bindings, so form listeners can cancel reset after a browser microtask checkpoint.
+
 ### Changed — 2026-10-10 (Loader)
 
 - Connect Loader rotation to duration/cycle and easing/linear under FND-MOTION-06.

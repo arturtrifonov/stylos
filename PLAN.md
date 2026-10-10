@@ -105,6 +105,8 @@ The `0.1` milestone's checklist, and the membership record for every entry the w
 
 *Amended 2026-10-10:* the owner selected the complete **Radio Input / Label / Text** family after the three text-button treatments. It retains the wave-1 native-selection boundary and the single-Default workshop convention.
 
+*Amended 2026-10-10:* the owner selected **Toggle Input / Label / Text** next, from wave 2. The web API is binary false/true; mixed remains in Figma. The family retains one Default playground per component.
+
 The same six waves order the package's work in §4.2 — a component is implemented in the wave that wrote its contract, so the dependency order is already cut.
 
 ### 4.2 Stage 5 — `@stylos/ui`

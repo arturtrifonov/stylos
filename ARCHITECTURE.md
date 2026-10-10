@@ -91,6 +91,13 @@ The adapter also reads the result of native reset after dispatch, respecting
 cancellation and disposal. It supplies no replacement group widget or keyboard
 model. Drawing-only hover, active and focus stay outside the public API.
 
+**Amended 2026-10-10 — binary native Toggle.** Toggle Input uses a native
+checkbox with the switch role and reuses the framework-free checkbox adapter
+for binding and reset. The public selection contract is false/true; Figma mixed
+remains drawing-only by the owner’s decision. Label and Text compose Input,
+using the recorded track/thumb geometry and the local-state Motion profile
+for surface changes and thumb travel. Text centres the track on its first line.
+
 ```
 docs/components/registry/*.yaml  ──▶ figma.node_id ──▶  the component in Figma
                 │
@@ -168,7 +175,7 @@ Stated explicitly so it is never assumed.
 Ordered by cost of leaving them.
 
 1. **The token record is stale by default.** The import mechanism exists; the habit does not. Neither a script nor a person can rely on `tokens/` reflecting the live Figma file.
-2. **Most contracts are still not exercised by a real build.** *Narrowed 2026-09-06 — the line used to read "nothing is validated by a real build", and that stopped being true when `@stylos/ui` landed:* `npm run ui:check` now generates the token CSS, the props types and the stories from the record and type-checks the built components against them, so the tokens and the implemented contracts are exercised on every run. What remains of the break is coverage — sixteen entries of 114 are implemented (2026-10-10: the three Radio components join the five wave-1 primitives, Icon, Tooltip, three Checkbox components and three text-button treatments), and every contract outside them is still words no build has ever read.
+2. **Most contracts are still not exercised by a real build.** *Narrowed 2026-09-06 — the line used to read "nothing is validated by a real build", and that stopped being true when `@stylos/ui` landed:* `npm run ui:check` now generates the token CSS, the props types and the stories from the record and type-checks the built components against them, so the tokens and the implemented contracts are exercised on every run. What remains of the break is coverage — nineteen entries of 114 are implemented (2026-10-10: the Radio and Toggle families join the five wave-1 primitives, Icon, Tooltip, three Checkbox components and three text-button treatments), and every contract outside them is still words no build has ever read.
 
 3. **The retired specs and decision records left content with nothing carrying it.** `docs/specs/` and `docs/decisions/` were deleted on 2026-09-10 — sixteen work orders and two decision records, four of the specs still open at the time. Most citations of them were provenance ("built by SPEC 0008") and read as well without the link. Some were not. `PLAN.md`'s `0.2.0` gate cites SPEC 0009 §3 for the props ↔ `api` mapping; `tools/README.md` cites SPEC 0010 §2.2 for the independent CSS export, SPEC 0012 for the emitted icon shape and SPEC 0001 for the token pipeline's reasoning; `PLAN.md`'s risk table leans on ADR 0002's revisit clause for Zag.js. Those sections are in git history and nowhere in the tree, so a reader who needs one has to know it was deleted before they can find it.
 

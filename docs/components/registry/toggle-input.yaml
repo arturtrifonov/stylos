@@ -1,3 +1,4 @@
+# Amended 2026-10-10: binary native switch API and verified Figma geometry.
 # Hand-written 2026-08-30. Replaces part of toggle.yaml, whose id "Toggle"
 # matches no component in Figma. See docs/components/registry/README.md,
 # section "When a component is split".
@@ -24,11 +25,6 @@ do_not_use_when:
   -
     text: "The choice is made now and applied later, when the form is submitted. A switch that waits for a Save button has promised something it does not do."
     instead: "Checkbox Input"
-children:
-  - "Label"
-  - "Icon"
-  - "Badge"
-  - "Loader"
 parents:
   - "Dropdown Item Toggle"
   - "Accordion"
@@ -59,7 +55,7 @@ sizing_model:
   adjustable:
     horizontal: false
     vertical: false
-  intent: "The track is the authored dimension and the only one bound: its height takes a step of the Element run and its width follows at three halves by locked proportion, which is what makes a switch read as a switch rather than a wide box. The thumb has its own run, two steps below the track at every size, so the gap around it stays constant as both grow. Neither axis accepts a consumer override; the size property controls the authored run. Resolve token values with npm run tokens:report."
+  intent: "The track is the authored dimension and the only one bound: its height takes a step of the Element run and its width follows at three halves by locked proportion, which is what makes a switch read as a switch rather than a wide box. The thumb follows its own size run. Its centred inset grows from 2 to 6 across the five sizes and maps to semantic gap tokens. Neither axis accepts a consumer override; the size property controls the authored run. Resolve token values with npm run tokens:report."
   sizes:
     -
       size: "extra small"
@@ -102,53 +98,70 @@ api:
     name: "state"
     kind: "variant"
     default: "default"
-    description: "Pointer interaction and availability. Hover and active change the track surface only; disabled changes the track, drops the border to the default role and dims the thumb. Focus is a separate boolean."
+    description: "Availability of the native switch. Hover, pressing and keyboard focus come from the browser. Disabled inputs and disabled fieldsets prevent switching, focus and submission."
     values:
       -
         value: "default"
       -
-        value: "hover"
-      -
-        value: "active"
-      -
         value: "disabled"
-        note: "Not the same as read-only, which the component does not have: read-only means shown but not editable, disabled means not applicable now."
   -
     name: "is checked"
     kind: "variant"
     default: "false"
-    description: "Which way the switch is set. The thumb sits left when off and right when on, and the track carries the state as colour: neutral when off, primary when on."
+    description: "Binary on/off setting, bindable through bind:isChecked. Native activation updates it immediately; form reset restores the initial value and respects cancellation. Mixed is not part of the web API."
     values:
       -
         value: "false"
       -
         value: "true"
-      -
-        value: "mixed"
-        note: "The thumb sits centred on a neutral track. Not a third setting a person can choose — it is what the switch shows when it cannot honestly show either of the other two."
-        rationale: "It is a corner case the system chooses to handle rather than the main path: one switch may govern several things whose settings disagree, or the current setting may not be known yet. Leaving it out would force a consumer to show a lie in both situations."
-        a11y:
-          status: "requires"
-          criterion: "WAI-ARIA 1.2, switch role"
-          note: "The switch role does not accept a mixed value for aria-checked — only true or false. An implementation that reaches this value has to convey it some other way, and the obvious substitutes each cost something: falling back to the checkbox role loses the switch semantics, and conveying it only in the surrounding text leaves the control itself claiming one of the two settings it does not have."
   -
-    name: "is focused"
+    name: "id"
+    kind: "string"
+    description: "Native input id. Supply one for external label association."
+  -
+    name: "name"
+    kind: "string"
+    default: ""
+    description: "Native form field name. Only enabled, checked switches with a nonempty name submit."
+  -
+    name: "value"
+    kind: "string"
+    default: "on"
+    description: "Value submitted when checked and enabled."
+  -
+    name: "form"
+    kind: "string"
+    default: ""
+    description: "Optional form id for an input outside its form. Otherwise the enclosing form owns the input."
+  -
+    name: "accessible name"
+    kind: "text"
+    default: ""
+    description: "Accessible name mapped to aria-label. Supply this or associate an external label."
+  -
+    name: "description ids"
+    kind: "string"
+    default: ""
+    description: "Space-separated ids of explanatory or error copy, mapped to aria-describedby."
+  -
+    name: "is required"
     kind: "boolean"
-    default: "false"
-    description: "Whether the control holds keyboard focus. A ring is drawn outside the track and nothing else changes. It is a boolean rather than a value of state because focus coexists with hover, active and the setting instead of replacing them."
+    default: false
+    description: "Native validity requires this switch to be on. No inline error appearance is supplied."
 limitations:
-  - "No validation property: a switch that must be on before a form can be submitted cannot show an error on the control."
+  - "Native required validity is supported; no inline error appearance is supplied. Associate consumer error copy through description ids."
   - "No read-only value. Disabled is the only unavailable state, and it is the wrong tool for a setting that is fixed but still worth reading."
-  - "No tone. The track takes the primary role when on and a neutral one when mixed, and there is no property to move either."
+  - "No tone. The track takes the primary role when on and the neutral role when off."
 figma_notes:
+  - "Verified on 2026-10-10: five sizes and all binary state appearances. Web API exposes default and disabled; hover, active and focus are native. The owner selected false/true only for the web API: mixed remains a Figma drawing variant and is not implemented as a switch value. Form properties add no Figma variants."
   - "Focus is a boolean toggling a Focus ring instance rather than a value of state, which keeps the set at 60 variants instead of 75. The ring is present on every enabled variant and on none of the disabled ones."
   - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
   - "Five variants — state=default, is checked=false, at all five sizes — carry a padding binding that changes nothing: the track is not an auto-layout frame, so padding moves no child. It cannot be cleared from the file, because Figma does not expose padding controls on a frame without a layout, and it has no effect either way."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4341-31485"
-  last_verified: "2026-09-05"
-notes: "children and parents are inherited in full from the entry this component was split out of, as the split rule requires; narrowing either is a later judgement. uses is absent because the component contains no instances."
+  last_verified: "2026-10-10"
+notes: "Native Toggle Input implementation. Historical parents are retained; legacy Label/Icon/Badge/Loader children are removed because they are not content children of this control. Motion uses duration/micro and easing/linear, with reduced-motion and forced-colors support."
 import:
   batch: 1
   ready: true

@@ -33,3 +33,9 @@ export { default as RadioLabel } from "./components/radio-label/RadioLabel.svelt
 export type { RadioLabelProps } from "./components/radio-label/props.ts";
 export { default as RadioText } from "./components/radio-text/RadioText.svelte";
 export type { RadioTextProps } from "./components/radio-text/props.ts";
+export { default as ToggleInput } from "./components/toggle-input/ToggleInput.svelte";
+export type { ToggleInputProps } from "./components/toggle-input/props.ts";
+export { default as ToggleLabel } from "./components/toggle-label/ToggleLabel.svelte";
+export type { ToggleLabelProps } from "./components/toggle-label/props.ts";
+export { default as ToggleText } from "./components/toggle-text/ToggleText.svelte";
+export type { ToggleTextProps } from "./components/toggle-text/props.ts";
