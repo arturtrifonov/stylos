@@ -7,7 +7,7 @@ name: "Tag Fill"
 family: "Tag"
 level: "element"
 role: "content"
-html: "no semantic html"
+html: "span"
 status: "ready"
 version: "0.1.0"
 summary: "A short label on a filled band, in one of five tones."
@@ -150,7 +150,7 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
+    default: "medium"
     description: "The band height, and with it the label measure, the padding, the gap and the icon slots. A tag is sized to sit beside the content it labels rather than to be read on its own, which is why the run starts smaller than anything else at this level."
     values:
       -
@@ -178,43 +178,52 @@ api:
   -
     name: "has leading icon"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Shows a mark before the label. Off by default: a tag is its word, and a mark in front is for the cases where the category has a symbol a reader already knows."
     controls:
       - "leading icon"
   -
     name: "leading icon"
     kind: "instance"
-    default: "Placeholder"
+    svelte_type: "snippet"
     description: "The mark shown before the label. It qualifies the word rather than replacing it, so a tag whose meaning rests on the mark alone is a tag with the wrong label."
   -
     name: "has trailing icon"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Shows a mark after the label. This is the side for a mark that points outward — that the tag links somewhere, or that more follows."
     controls:
       - "trailing icon"
   -
     name: "trailing icon"
     kind: "instance"
-    default: "Placeholder"
+    svelte_type: "snippet"
     description: "The mark shown after the label, on the same terms as the leading one. It is not a remove control: nothing here is interactive."
   -
     name: "label text"
     kind: "text"
     default: "Tag"
+    examples:
+      -
+        verdict: "do"
+        caption: "A category with a supporting decorative icon."
+        props:
+          "label text": "Category"
+          "has leading icon": true
+          "leading icon": "check"
     description: "One or two words. A tag that needs a phrase is labelling something too broad to be a category, and at these measures it will out-run the content it sits beside."
 limitations:
   - "No state. Nothing here responds to a pointer or a key, which is the whole difference from the interactive members of the family."
   - "The base tone measures 4.55:1 against its own label in light mode, which clears the 4.5:1 the label needs by less than rounding. Any move of surface/bold/base/default or text/inverted is a contrast change, not a colour change."
   - "The trailing icon is a mark, not a control. A tag that needs to be dismissed is a different component."
 figma_notes:
-  - "Both icon containers are hidden by their booleans in every one of the 50 variants, so only their bindings could be read; their geometry when shown is unverified."
-  - "The icon containers bind their width to the local icon size collection rather than to the dimension collection, so the value is not resolvable by npm run tokens:report. That collection exists for optical compensation, which component-integrity-check already treats as a case of its own."
+  - "Label typography uses family/normal, weight/emphasis and the recorded size/string-line-height runs. Uppercase and original use the matching letter-spacing/style token. Vertical trim checked on 2026-10-10: leadingTrim=CAP_HEIGHT on all 50 label layers, including both text cases. Native text-box-trim:trim-both and text-box-edge:cap alphabetic match that component setting. The tag-specific rule is guarded by @supports; unsupported browsers retain centred normal line boxes. No manual label offset is applied."
+  - "Verified 2026-10-10 on Tag page 25:1620: five sizes, five tones and uppercase/original. Figma defaults to medium/base/uppercase; icon containers are hidden by default, have widths 10/12/14/16/18 and hold icons 12/14/16/18/20. Leading icons overhang outward by 2; trailing icons start at the slot origin. CSS uses gap/g-0_250 for this optical correction."
+  - "The local icon container width collection is not exported. CSS derives the same widths from the icon dimension token minus gap/g-0_250. Icon snippets are configured by the consumer, with no Placeholder default; registry icon examples select active-set names for static previews."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4592-18607"
-  last_verified: "2026-09-05"
+  last_verified: "2026-10-10"
 notes: "children and parents are inherited in full from the entry this component was split out of, as the split rule requires; narrowing either is a later judgement."
 import:
   batch: 1

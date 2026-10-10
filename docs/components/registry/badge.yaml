@@ -229,6 +229,8 @@ limitations:
   - "No state property. Badge is not interactive and has no hover, active or focus; `tone = disabled` is the only acknowledgement of unavailability, and it is a colour rather than a state."
   - "No countless form. A notification dot with no number is not a Badge — there is no empty or dot variant, and Indicator is the component for a status with no count."
   - "No truncation and no overflow cap. Length is the consumer's problem."
+figma_notes:
+  - "Vertical trim checked on 2026-10-10: leadingTrim=NONE on all 55 text layers across 55 variants. Preserve the normal text boxes; this component does not use text-box trimming."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "287-51411"

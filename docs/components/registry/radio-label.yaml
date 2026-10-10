@@ -190,6 +190,7 @@ limitations:
   - "No mixed value, correctly: partial selection has no meaning in a mutually exclusive set."
   - "The component is one option, not the group. The consumer supplies the group label and error copy; name and native required semantics express mutual exclusion and validity."
 figma_notes:
+  - "Vertical trim checked on 2026-10-10: leadingTrim=NONE on all 40 text layers across 40 variants. Preserve the normal text boxes; this component does not use text-box trimming."
   - "Verified on 2026-10-10: all 40 size/state/selection variants. Web API exposes default and disabled; hover, active and focus are native. Form properties add no Figma variants. Label uses base weight and string line height; Text uses base weight and text line height, with the circle at the top of the first line."
   - "Figma draws the focus toggle only on checked variants. Web focus follows :focus-visible on any enabled option, including an unchecked member of an empty group; focusing does not itself force selection."
   - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."

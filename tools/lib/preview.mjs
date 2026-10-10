@@ -134,6 +134,15 @@ export function sampleHtml(entry, props = {}) {
     return `<label class="${cls}"${attr}>${esc(props["label text"] ?? "Label")}${marker}${additional}</label>`;
   }
 
+  if (["Tag Fill", "Tag Outline"].includes(entry.id)) {
+    const icon = position => {
+      const name = props[`${position} icon`];
+      return props[`has ${position} icon`] && typeof name === "string" && iconDrawings().has(name)
+        ? `<span class="stylos-tag-icon" data-position="${position}" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name })}</span>` : "";
+    };
+    return `<span class="${cls}"${attr}>${icon("leading")}<span class="stylos-tag-label">${esc(props["label text"] ?? "Tag")}</span>${icon("trailing")}</span>`;
+  }
+
   if (entry.id === "Button Inner") {
     const disabled = props.state === "disabled" ? " disabled" : "";
     const id = props.id ? ` id="${esc(props.id)}"` : "";
