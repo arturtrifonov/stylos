@@ -39,3 +39,6 @@ export { default as ToggleLabel } from "./components/toggle-label/ToggleLabel.sv
 export type { ToggleLabelProps } from "./components/toggle-label/props.ts";
 export { default as ToggleText } from "./components/toggle-text/ToggleText.svelte";
 export type { ToggleTextProps } from "./components/toggle-text/props.ts";
+
+export { default as Link } from "./components/link/Link.svelte";
+export type { LinkProps } from "./components/link/props.ts";

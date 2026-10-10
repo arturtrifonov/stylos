@@ -93,3 +93,11 @@ test("native onclick is typed as a callback and unsupported event names fail", (
   assert.match(rendered, /onclick\?: \(event: MouseEvent\) => void;/);
   assert.throws(() => fieldFor({name:"onunknown",kind:"event"}), /unsupported native event/);
 });
+
+
+test("a snippet-only instance retains its name and rejects unsupported renderer types", () => {
+  const property = { name: "leading icon", kind: "instance", svelte_type: "snippet" };
+  assert.deepEqual(fieldFor(property), { propName: "leadingIcon", type: "Snippet" });
+  assert.match(renderProps({ id: "Link", api: [property] }), /leadingIcon\?: Snippet;/);
+  assert.throws(() => fieldFor({ ...property, svelte_type: "unknown" }), /unsupported svelte_type/);
+});

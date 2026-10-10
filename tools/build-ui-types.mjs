@@ -77,7 +77,11 @@ export function fieldFor(property, { soleSlot = false } = {}) {
     text: () => "string",
     string: () => "string",
     boolean: () => "boolean",
-    instance: () => "Component | Snippet",
+    instance: () => {
+      if (property.svelte_type === undefined) return "Component | Snippet";
+      if (property.svelte_type === "snippet") return "Snippet";
+      throw new Error(`instance property "${property.name}" has unsupported svelte_type "${property.svelte_type}"`);
+    },
     slot: () => "Snippet",
     event: () => {
       if (property.name !== "onclick") throw new Error(`unsupported native event "${property.name}"`);

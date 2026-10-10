@@ -1,6 +1,7 @@
 # Contract written 2026-08-28 from the live component set. The children/parents
 # lists and the import block are carried over from the CSV import of 2026-08-20.
 # See docs/components/registry/README.md for the schema.
+# Web API amended 2026-10-10 for native navigation and browser states.
 
 id: "Link"
 name: "Link"
@@ -128,7 +129,7 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
+    default: "medium"
     description: "The box, and with it the label measure, the gap and the icon slots. The Element run and the Element type profile, with no component-specific mapping — a link is sized to match the text it sits beside, so the value is usually chosen by the surrounding content rather than by the link."
     values:
       -
@@ -155,42 +156,38 @@ api:
     name: "state"
     kind: "variant"
     default: "default"
-    description: "The interaction condition. Hover and active add a surface behind the label and change nothing else; disabled changes the label colour and adds no surface. Focus is a separate boolean."
+    description: "Availability of the destination. Pointer hover, pressing and keyboard focus are derived by the browser. Disabled changes the label colour, removes the destination and leaves the link out of the tab order."
     values:
       -
         value: "default"
         note: "No surface. The link is a label and an underline."
-      -
-        value: "hover"
-        note: "A rounded surface appears behind the label, wider and taller than the box and drawn outside it."
-      -
-        value: "active"
-        note: "The same surface, one step darker. The label is unchanged from hover."
       -
         value: "disabled"
         note: "The label drops to the disabled text role and both tones render identically; no surface appears. The link keeps its place in the line and stops being a destination."
   -
     name: "has leading icon"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Shows an icon before the label. Off by default: a link is its words, and a mark in front of them is for the cases where the destination has a recognisable symbol — an external target, a file type, a service."
     controls:
       - "leading icon"
   -
     name: "leading icon"
     kind: "instance"
+    svelte_type: "snippet"
     default: "Placeholder"
     description: "The mark shown before the label. It is decoration for the label rather than a name of its own, so it must not be the only thing saying where the link goes."
   -
     name: "has trailing icon"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Shows an icon after the label. This is the usual side for a mark that qualifies the destination rather than identifying it — that the link leaves the application, opens in a new place, or expands."
     controls:
       - "trailing icon"
   -
     name: "trailing icon"
     kind: "instance"
+    svelte_type: "snippet"
     default: "Placeholder"
     description: "The mark shown after the label, on the same terms as the leading one."
   -
@@ -199,23 +196,26 @@ api:
     default: "Link"
     description: "The words of the link, and its accessible name. They have to name the destination on their own, because nothing else in the component does."
   -
-    name: "is focused"
-    kind: "boolean"
-    default: "false"
-    description: "Whether the control holds keyboard focus. A ring is drawn outside it and nothing else changes. It is a boolean rather than a value of state because focus coexists with hover, active and disabled instead of replacing them."
+    name: "href"
+    kind: "string"
+    default: "#"
+    description: "The destination written to the native anchor. Disabled removes href rather than intercepting navigation after activation."
 limitations:
-  - "The hover and active surface is drawn outside the component's bounds and its insets are raw numbers with no variable binding. That is deliberate: the spacing scale governs room inside an element, and a surface that exists only under the pointer is not that. The cost is that nothing in the system moves it, and no parent layout reserves room for it — links on adjacent lines can have overlapping surfaces at a tight line height."
+  - "The hover and active surface extends outside the layout box. Figma leaves these insets unbound; CSS maps the measured insets to semantic gap tokens. Parent layout reserves no room for them, so adjacent lines can have overlapping surfaces at a tight line height."
   - "Hover and active are the surface and nothing else. The label keeps its colour, its weight and its underline through both, so the component has no second channel for either state."
   - "No visited state. The one distinction a browser gives a link for free is not modelled, and there is no property to carry it."
   - "The label is a single line. The text layer resizes on both axes and the box height is derived from one line box, so a link that wraps is outside what this component describes."
 figma_notes:
+  - "Underline rechecked on 2026-10-10 across both tones and all five sizes: solid, 20% font-size offset, 8% thickness and skip-ink. CSS uses 0.2em and 0.08em; these are recorded component text-decoration values, not new shared tokens."
+  - "Web Motion follows duration/micro and easing/linear, with immediate changes under reduced motion. Icon instances are configured through Svelte snippets and are decorative. Components are placed inside those snippets."
+  - "Verified on 2026-10-07 against all 40 tone/size/state combinations. Web defaults to medium; Figma's hover, active and focus controls are drawing states derived from the native anchor in code. href is a web integration property with no visual variant."
   - "Focus is a boolean toggling a Focus ring instance rather than a value of state, which keeps the variant count where it is instead of multiplying it."
   - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4333-27795"
-  last_verified: "2026-09-05"
-notes: "The api order follows naming.md §8 and §10 and is authored, not transcribed: componentPropertyDefinitions returns a key order that does not match the properties panel, so the panel order could not be verified from here."
+  last_verified: "2026-10-07"
+notes: "The api order follows naming.md §8 and §10 and is authored, not transcribed: componentPropertyDefinitions returns a key order that does not match the properties panel, so the panel order could not be verified from here. The web component renders a native anchor, uses the existing Icon component through instance props, and derives interaction states without public drawing controls."
 import:
   batch: 1
   ready: true
