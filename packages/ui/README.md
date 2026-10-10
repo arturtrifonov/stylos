@@ -304,3 +304,29 @@ button, an optional `.stylos-button-inner-icon` child and the exported CSS.
 Hover, pressing and keyboard focus are browser states. Motion uses micro/linear
 and becomes immediate under reduced motion. Connect supporting content with
 `descriptionIds`; an optional surrounding Tooltip repeats the action name.
+
+
+### Tag Fill and Tag Outline
+
+`TagFill` and `TagOutline` render non-interactive `span` labels. They share five
+sizes (medium by default), five tones and `textCase="uppercase" | "original"`.
+Pass `labelText` in its original case; CSS transforms only its appearance.
+
+```svelte
+{#snippet mark()}<Icon name="check" />{/snippet}
+<TagFill labelText="Complete" tone="success" hasLeadingIcon leadingIcon={mark} />
+<TagOutline labelText="Category" textCase="original" />
+```
+
+Optional leading/trailing snippets are decorative; the label carries the meaning.
+Their booleans control visibility, and an unassigned snippet renders no slot.
+Each icon slot is two units narrower than its icon, preserving Figma’s outward
+optical alignment. Outline is painted inside the same footprint, so switching
+treatments does not change layout. Size, spacing, radius, type and colors use
+tokens. Both text cases use `text-box-trim: trim-both` and
+`text-box-edge: cap alphabetic` to centre Figma’s cap-height box without manual
+offsets. An `@supports` guard retains normal line-box centring in older browsers.
+
+Neither component exposes state, dismissal or activation. Use them to classify
+content; interactive tag contracts remain planned. Each has Default followed by
+Icons playground in Storybook and the same independent CSS for static HTML.

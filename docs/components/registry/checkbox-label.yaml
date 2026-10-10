@@ -194,6 +194,7 @@ limitations:
   - "No label-position property. The label is always trailing."
   - "No text style on the label — every typographic property is bound to a variable directly, so a consumer cannot restyle it by swapping a style."
 figma_notes:
+  - "Vertical trim checked on 2026-10-10: leadingTrim=NONE on all 60 text layers across 60 variants. Preserve the normal text boxes; this component does not use text-box trimming."
   - "Verified on 2026-10-07: all 60 size/state/selection variants, gaps, typography, first-line alignment and Checkbox Input instance references. Web defaults use medium; drawing-only hover/active/focus are derived natively. Form integration properties have no extra Figma variants."
   - "Focus is a boolean toggling a Focus ring instance rather than a value of state, which keeps the variant count where it is instead of multiplying it."
   - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."

@@ -11,7 +11,7 @@ export default {
     options: {
       storySort: {
         includeNames: true,
-        order: ["Components", ["Button Base", ["Docs", "default", "Icons playground"], "Button Outline", ["Docs", "default", "Icons playground"], "Button Ghost", ["Docs", "default", "Icons playground"], "Link", ["Docs", "default", "Icons playground"], "Button Inner", ["Docs", "default", "Icons playground"], "*"], "Foundations"],
+        order: ["Components", ["Button Base", ["Docs", "default", "Icons playground"], "Button Outline", ["Docs", "default", "Icons playground"], "Button Ghost", ["Docs", "default", "Icons playground"], "Link", ["Docs", "default", "Icons playground"], "Button Inner", ["Docs", "default", "Icons playground"], "Tag Fill", ["Docs", "default", "Icons playground"], "Tag Outline", ["Docs", "default", "Icons playground"], "*"], "Foundations"],
       },
     },
   },

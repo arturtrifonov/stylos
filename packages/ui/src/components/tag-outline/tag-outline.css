@@ -1,0 +1,35 @@
+@import "../../behaviors/tag.css";
+
+.stylos-tag-outline {
+  box-shadow: inset 0 0 0 var(--stylos-border-width-normal) var(--_stylos-tag-border);
+}
+
+.stylos-tag-outline[data-tone="base"] {
+  background-color: var(--stylos-color-surface-subtle-base-default);
+  color: var(--stylos-color-text-base);
+  --_stylos-tag-border: var(--stylos-color-border-default);
+}
+
+.stylos-tag-outline[data-tone="primary"] {
+  background-color: var(--stylos-color-surface-subtle-primary-default);
+  color: var(--stylos-color-text-primary);
+  --_stylos-tag-border: var(--stylos-color-border-primary);
+}
+
+.stylos-tag-outline[data-tone="warning"] {
+  background-color: var(--stylos-color-surface-subtle-warning-default);
+  color: var(--stylos-color-text-warning);
+  --_stylos-tag-border: var(--stylos-color-border-warning);
+}
+
+.stylos-tag-outline[data-tone="danger"] {
+  background-color: var(--stylos-color-surface-subtle-danger-default);
+  color: var(--stylos-color-text-danger);
+  --_stylos-tag-border: var(--stylos-color-border-danger);
+}
+
+.stylos-tag-outline[data-tone="success"] {
+  background-color: var(--stylos-color-surface-subtle-success-default);
+  color: var(--stylos-color-text-success);
+  --_stylos-tag-border: var(--stylos-color-border-success);
+}

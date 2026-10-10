@@ -199,6 +199,8 @@ limitations:
   - "The required marker is not drawn while state is disabled. The layer is absent from those variants rather than hidden, so a required field that is currently unavailable loses the one mark saying it must be filled — and gets it back when the field becomes available again."
   - "No outcome while disabled. state and validation do not combine: a label above an unavailable control has nothing to report, which is the same rule the fields it names follow."
   - "state has two values and no more. There is no read-only treatment, so a label above a read-only field is drawn exactly as one above an editable field."
+figma_notes:
+  - "Vertical trim checked on 2026-10-10: leadingTrim=NONE on all 70 text layers across 25 variants. Preserve the normal text boxes; this component does not use text-box trimming."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4373-7431"

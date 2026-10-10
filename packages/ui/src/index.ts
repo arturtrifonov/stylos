@@ -45,3 +45,8 @@ export type { LinkProps } from "./components/link/props.ts";
 
 export { default as ButtonInner } from "./components/button-inner/ButtonInner.svelte";
 export type { ButtonInnerProps } from "./components/button-inner/props.ts";
+
+export { default as TagFill } from "./components/tag-fill/TagFill.svelte";
+export type { TagFillProps } from "./components/tag-fill/props.ts";
+export { default as TagOutline } from "./components/tag-outline/TagOutline.svelte";
+export type { TagOutlineProps } from "./components/tag-outline/props.ts";

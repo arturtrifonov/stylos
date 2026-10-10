@@ -4,6 +4,12 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-10-10 (Tags)
+
+- Add non-interactive Tag Fill and Tag Outline with five sizes, five tones, two text cases and configured decorative icon snippets. Match Figma’s medium default, fixed band heights, optical icon slots, native cap-height text trimming with a normal-line-box fallback and inside outline; include independent CSS, static icon examples and compact Default and Icons playground stories.
+
+- Record Vertical trim in component Figma notes: enabled for Tag Fill/Outline, disabled for Button Base/Outline/Ghost, Link, Badge, Label, Tooltip and Checkbox/Radio/Toggle Label.
+
 ### Added — 2026-10-10 (Button Inner)
 
 - Add native Button Inner with a scalable icon footprint, the exact Figma halo, outward focus ring, semantic color/size tokens and micro/linear Motion. Support configured icon snippets, action names, click callbacks, native keyboard and disabled-fieldset behaviour. Include independent CSS, a static icon example and compact Default and Icons playground stories.

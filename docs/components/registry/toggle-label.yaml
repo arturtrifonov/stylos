@@ -170,6 +170,7 @@ limitations:
   - "No supporting-text slot. One text role only."
   - "No tone."
 figma_notes:
+  - "Vertical trim checked on 2026-10-10: leadingTrim=NONE on all 60 text layers across 60 variants. Preserve the normal text boxes; this component does not use text-box trimming."
   - "Verified on 2026-10-10: five sizes and all binary state appearances. Web API exposes default and disabled; hover, active and focus are native. The owner selected false/true only for the web API: mixed remains a Figma drawing variant and is not implemented as a switch value. Form properties add no Figma variants."
   - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
   - "is focused exists here as well as on the Toggle Input this component contains. Every other condition passes down — this component's state variant drives the nested input's — but focus is drawn as an appearance toggle rather than a variant, so it is set on both independently. This is how the Figma file is built and it is not a requirement on the component: an implementation propagates focus by ordinary means."
