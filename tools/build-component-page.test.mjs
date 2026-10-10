@@ -846,3 +846,16 @@ test(`${id} preview retains native semantics and escapes copy and form attribute
   assert.throws(() => sampleHtml(entry,{onclick:()=>{}}), /cannot render an event callback/);
 });
 }
+
+test("the real Link contract previews a medium native destination and removes it when disabled", () => {
+  const entry = loadRegistry(repoRoot).find(entry => entry.id === "Link");
+  const html = sampleHtml(entry, {...defaultAssignment(entry), href:"/destination", "label text":"Read <more>"});
+  assert.match(html, /^<a class="stylos-link"/);
+  assert.match(html, /data-size="medium"/);
+  assert.match(html, /href="\/destination"/);
+  assert.match(html, /stylos-link-label">Read &lt;more&gt;<\/span>/);
+
+  const disabled = sampleHtml(entry, {...defaultAssignment(entry), state:"disabled", href:"/destination"});
+  assert.doesNotMatch(disabled, /href=/);
+  assert.match(disabled, /aria-disabled="true" tabindex="-1"/);
+});

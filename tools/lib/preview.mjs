@@ -89,6 +89,8 @@ export function sampleHtml(entry, props = {}) {
         // Form integration does not change a static visual surface.
       } else if (["Button Base", "Button Outline", "Button Ghost"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
         // Native attributes are written by the button branch below.
+      } else if (entry.id === "Link" && name === "href") {
+        // The native destination is written by the Link branch below.
       } else if (entry.id !== "Icon" || name !== "name") {
         throw new Error(`preview: "${entry.id}" has no renderer for string property "${name}"`);
       }
@@ -128,6 +130,13 @@ export function sampleHtml(entry, props = {}) {
     const showsAdditional = (props.validation && props.validation !== "off") || props["has additional text"];
     const additional = showsAdditional ? `<span>${esc(props["additional text"] ?? "Additional text")}</span>` : "";
     return `<label class="${cls}"${attr}>${esc(props["label text"] ?? "Label")}${marker}${additional}</label>`;
+  }
+
+  if (entry.id === "Link") {
+    const disabled = props.state === "disabled";
+    const href = disabled ? "" : ` href="${esc(props.href ?? "#")}"`;
+    const semantics = disabled ? ' role="link" aria-disabled="true" tabindex="-1"' : "";
+    return `<a class="${cls}"${attr}${href}${semantics}><span class="stylos-link-label">${esc(props["label text"] ?? "Link")}</span></a>`;
   }
 
   if (["Button Base", "Button Outline", "Button Ghost"].includes(entry.id)) {

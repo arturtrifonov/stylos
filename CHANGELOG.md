@@ -4,6 +4,11 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-10-10 (Link)
+
+- Add native Link with two tones, five sizes, a medium default and optional snippet icons. Browser interaction supplies hover, active and keyboard focus; disabled removes the destination and tab stop. CSS follows Figma’s 20% underline offset and 8% thickness, semantic spacing and micro/linear Motion, including reduced motion.
+- Add static documentation previews and compact Default and Icons playground stories, with icon selection from the active set.
+
 ### Added — 2026-10-10 (Toggle family)
 
 - Add Toggle Input, Label and Text with five Figma-verified sizes, exact thumb SVGs and token-based geometry, typography, colors and Motion. The native switch API is binary false/true; mixed stays in Figma. Bindable selection, Space, labels, disabled fieldsets, required validity and form reset work through the native input. Each component has one Default playground and a static documentation preview.

@@ -74,6 +74,24 @@ Per SPEC 0009 §5, contract first: the entry's `api` is corrected to describe th
 
 ## Accessibility implementation and verification
 
+### Link
+
+`Link` renders a native anchor in two tones and five sizes, defaulting to medium.
+Supply the destination through `href`; hover, active and keyboard focus are browser states.
+
+```svelte
+<Link href="/account" labelText="Open account" />
+
+{#snippet arrow()}<Icon name="arrow_forward" />{/snippet}
+<Link href="/account" labelText="Open account" hasTrailingIcon trailingIcon={arrow} />
+```
+
+`state="disabled"` removes the destination and tab stop while retaining disabled link semantics.
+Optional `leadingIcon` and `trailingIcon` accept snippets containing configured components and are decorative;
+show them with `hasLeadingIcon` and `hasTrailingIcon`. Their footprint follows the Link size.
+Hover and focus surfaces extend outside the layout box as in Figma. Motion uses the
+shared micro/linear profile and changes immediately under reduced motion.
+
 ### Checkbox Input
 
 `CheckboxInput` renders a native checkbox with a decorative surface. Supply
