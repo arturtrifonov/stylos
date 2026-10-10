@@ -16,6 +16,7 @@ import { fileURLToPath } from "node:url";
 import { stringify, parse, deepEqualOrdered } from "./lib/yaml.mjs";
 import { loadCanonical, listCanonical } from "./lib/tokens.mjs";
 import { verifyCanonical } from "./lib/verify.mjs";
+import { loadEffectStyles, validateEffectStyles } from "./lib/effect-styles.mjs";
 
 export function readNaming(root) {
   const file = path.join(root, "tokens/_naming.yaml");
@@ -131,6 +132,11 @@ export function runCheck({ root, strict = false }) {
   );
 
   checkLibraryVersion(root, problems);
+  try {
+    problems.errors.push(...validateEffectStyles(loadEffectStyles(root), collections));
+  } catch (error) {
+    problems.errors.push(error.message);
+  }
 
   // Every canonical file must survive a YAML round-trip. This is what keeps
   // the writer and reader in tools/lib/yaml.mjs a matched pair.

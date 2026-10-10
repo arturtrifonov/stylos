@@ -71,7 +71,7 @@ a11y:
     note: "The placeholder is not the label. It disappears as soon as someone types, and it sits at text/tertiary, one step quieter than the value. With has label off, the field still needs a name and it is set on the component rather than left to the placeholder."
   -
     status: "requires"
-    note: "validation is drawn as the border colour and the mark in the field, and on error and warning as the message above the label — and none of them is programmatic. The implementation has to say the field is invalid and tie the message to it, or a person not looking at the colour learns nothing. SC 1.4.1 and SC 3.3.1."
+    note: "validation is drawn as the border colour and the mark in the field, and on error and warning as the supporting message below the name and above the field — and none of them is programmatic. The implementation has to say the field is invalid and tie the message to it, or a person not looking at the colour learns nothing. SC 1.4.1 and SC 3.3.1."
   -
     status: "requires"
     note: "read only and disabled have to be exposed as the different things they are. A read-only field stays reachable, stays selectable and is announced as read-only; a disabled one leaves the tab order and is announced as unavailable. The text role is what separates them on screen, and nothing about the semantics follows from that automatically."
@@ -167,8 +167,8 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
-    description: "Field density. Drives the field height, its padding and gap, the type in it and both icon runs. It does not set the width."
+    default: "medium"
+    description: "Field height, padding, text and icon sizes. Width belongs to the consumer."
     values:
       -
         value: "extra small"
@@ -184,137 +184,165 @@ api:
     name: "state"
     kind: "variant"
     default: "default"
-    description: "Where the field is in the interaction, and — for two of the values — whether it can be edited at all. The values are not all the same kind of thing, and that is deliberate: see the note on each."
+    description: "Editing mode. Hover and focus follow the native input; they are not simulated props."
     values:
       -
         value: "default"
       -
-        value: "hover"
-        note: "The border takes the primary role."
-      -
-        value: "active / focus"
-        note: "One value, not two. On a text field pressing is focusing, so a separate active treatment would only fire while text is being selected inside the field — restyling the field mid-drag. This is the case where focus does not need mixing with anything else, which is why the selection controls answer the same question the other way: there focus coexists with checked and with hover, here it does not."
-      -
         value: "read only"
-        note: "The value is shown and cannot be edited. It carries no validation outcome, because there is nothing to check in a value that cannot be changed."
       -
         value: "disabled"
-        note: "Not applicable now, against read only, which is applicable and settled. The label and the value both take the disabled text role, and the field leaves the tab order."
   -
     name: "validation"
     kind: "variant"
     default: "off"
-    description: "What checking the value said. It colours the border and puts a mark in the field. On error and warning it also switches the message above the label; on success it does not — see that value. The message is above the field rather than below it because suggestion lists, dropdowns and pickers open below the field and would cover it. Only default, hover and active / focus carry validation — see limitations."
+    description: "Consumer-supplied checking result. Error and warning show supporting text; success shows only a mark. Read-only and disabled suppress the outcome. Only error sets aria-invalid; a warning is advisory."
     values:
       -
         value: "off"
-        note: "Nothing has been checked, or nothing was wrong. Not the same as success."
       -
         value: "error"
-        note: "Carries the message with it, because a person who has to fix something needs to be told what."
       -
         value: "warning"
-        note: "Carries the message with it."
       -
         value: "success"
-        note: "The mark in the field and nothing else. The label stays in its default treatment and no message appears, because a field that is simply correct rarely has anything to say beyond being correct — and success is rare enough that the mark carries it. Where there is something to say, the supporting line is switched on deliberately."
   -
-    name: "is filled"
-    kind: "variant"
-    default: "false"
-    description: "Whether the field holds a value. It swaps the placeholder for the value and takes the text from tertiary to base; it changes nothing else."
-    values:
-      -
-        value: "false"
-      -
-        value: "true"
-  -
-    name: "has leading icon"
-    kind: "boolean"
-    default: "false"
-    description: "Whether a mark sits before the value — the kind of thing the field wants, a currency, a protocol."
-    controls:
-      - "leading icon"
-  -
-    name: "leading icon"
-    kind: "instance"
-    default: "Placeholder"
-    description: "Which mark leads. Named for the meaning the set carries, not for a drawing."
-  -
-    name: "has trailing icon"
-    kind: "boolean"
-    default: "false"
-    description: "Whether a mark sits after the value. The component draws it and gives it no behaviour: anything pressable there is the consumer's to supply."
-    controls:
-      - "trailing icon"
-  -
-    name: "trailing icon"
-    kind: "instance"
-    default: "Placeholder"
-    description: "Which mark trails."
+    name: "value"
+    kind: "text"
+    default: ""
+    description: "Native text value, bindable in Svelte. The Figma input text property maps here; is filled follows whether this value is empty."
   -
     name: "has label"
     kind: "boolean"
-    default: "true"
-    description: "Whether the name of the field is shown above it. On by default, because a field without a visible name is the exception. Three routes give the field its name: the label is passed to the component, which associates it; a label is authored outside the component and associated with the field; or the context makes the field obvious and the name is supplied without being shown. Turning this off rules out the first and leaves the other two — it does not remove the need for a name."
+    default: true
+    description: "Shows the associated Label above the field. When hidden, supply an external label or accessible name."
+  -
+    name: "label text"
+    kind: "text"
+    default: "Label"
+    description: "Passed to the nested Label and used as the visible field's accessible name."
+  -
+    name: "has additional text"
+    kind: "boolean"
+    default: false
+    description: "Shows the Label's supporting line outside error and warning, which require the line."
+    controls:
+      - "additional text"
+  -
+    name: "additional text"
+    kind: "text"
+    default: "Additional text"
+    description: "Hint or validation message, associated with the field through aria-describedby."
   -
     name: "has placeholder"
     kind: "boolean"
-    default: "false"
-    description: "Whether the empty field shows a placeholder. Off by default. The recommendation is to put the hint in the label's additional text instead, because a placeholder clears at the first keystroke and takes the hint with it. Reach for it rarely — somewhere between the field that needs no hint and the field that is unusable without one."
+    default: false
+    description: "Enables the native placeholder. A hint in the supporting line remains visible while typing."
     controls:
       - "placeholder text"
   -
     name: "placeholder text"
     kind: "text"
     default: "Placeholder text"
-    description: "What stands in the empty field when has placeholder is on. An example of the format, not a repeat of the label and not an instruction. It cannot be strengthened past text/tertiary without reading as a value already entered, so it is either faint or ambiguous — the other half of the argument for keeping the hint in the additional text. One line, truncated with an ellipsis."
-    examples:
-      -
-        verdict: "do"
-        props:
-          "placeholder text": "INV-2026-0184"
-      -
-        verdict: "dont"
-        caption: "The label's job, done in the place that empties itself."
-        props:
-          "placeholder text": "Invoice number"
+    description: "Example format for the empty field; does not provide its accessible name."
   -
-    name: "input text"
-    kind: "text"
-    default: "Input text"
-    description: "The value, shown when is filled is true. One line, truncated with an ellipsis rather than wrapped or scrolled."
+    name: "has leading icon"
+    kind: "boolean"
+    default: false
+    description: "Shows the supplied leading decorative mark. No placeholder drawing is substituted."
+    controls:
+      - "leading icon"
+  -
+    name: "leading icon"
+    kind: "instance"
+    svelte_type: "snippet"
+    description: "Decorative snippet before the value, normally Icon."
+  -
+    name: "has trailing icon"
+    kind: "boolean"
+    default: false
+    description: "Shows the supplied trailing decorative mark."
+    controls:
+      - "trailing icon"
+  -
+    name: "trailing icon"
+    kind: "instance"
+    svelte_type: "snippet"
+    description: "Decorative snippet after validation. Not an action slot."
   -
     name: "has suffix text"
     kind: "boolean"
-    default: "false"
-    description: "Whether a short quiet string sits at the end of the field, inside it."
+    default: false
+    description: "Shows a unit or qualifier after the value; it is not part of the submitted value."
     controls:
       - "suffix text"
   -
     name: "suffix text"
     kind: "text"
     default: "Suffix"
-    description: "The unit or qualifier the value is in — a currency, kg, per month. It sits in the secondary text role at the message's measure, inside the field and after the value, and it is not part of what the person typed."
+    description: "Unit or qualifier, included in the field's accessible description."
+  -
+    name: "is required"
+    kind: "boolean"
+    default: false
+    description: "Native required constraint and the nested Label's required marker."
+  -
+    name: "id"
+    kind: "string"
+    description: "Native control ID. A stable instance ID is generated when omitted."
+  -
+    name: "name"
+    kind: "string"
+    description: "Native form-data key."
+  -
+    name: "form"
+    kind: "string"
+    description: "ID of an external form, when the field is outside it."
+  -
+    name: "autocomplete"
+    kind: "string"
+    description: "Native autocomplete hint."
+  -
+    name: "accessible name"
+    kind: "text"
+    description: "Nonvisual accessible name when has label is false."
+  -
+    name: "label ids"
+    kind: "string"
+    description: "Space-separated external label IDs for aria-labelledby when has label is false."
+  -
+    name: "description ids"
+    kind: "string"
+    description: "Additional description IDs, combined with the component's supporting text and suffix."
+  -
+    name: "oninput"
+    kind: "event"
+    description: "Native input event; value binding is already updated when the callback runs."
+  -
+    name: "onchange"
+    kind: "event"
+    description: "Native change event when the edited value is committed."
 limitations:
-  - "One line, always. Both the placeholder and the value truncate with an ellipsis; there is no wrapping and no scrolling within the field."
+  - "One line, always. The native input stays on one line. Long values scroll while editing and selection; unfocused text uses an ellipsis where the browser supports it."
   - "validation exists only on default, hover and active / focus. A read-only or disabled field carries no outcome, so a form re-rendered read-only after a failed submit has nowhere to keep the error."
-  - "Marking a field required belongs to the label, not to the field: the component passes it on and the label carries the marker, so there is no is required here. A required field with has label off has nowhere to show it, and that shape is not supported."
-  - "No character count, no clear control and no behaviour on the trailing icon. Each is drawn if the consumer supplies it and none is modelled."
+  - "is required sets the native constraint and passes the marker to Label. With has label off, the consumer supplies the visible required indication with its external label."
+  - "No character count or clear control. Leading and trailing slots are decorative; they do not support focusable actions."
   - "The placeholder measures 4.76:1 in light mode against a required 4.5:1. It passes, and it cannot be strengthened: a darker placeholder reads as a value already entered. Faint or ambiguous is the whole choice available."
   - "The disabled value measures 2.05:1 in light mode. SC 1.4.3 exempts disabled controls, so this fails nothing, and it is the system-wide disabled contrast already known to need lifting."
   - "The label's own size run diverges from the field's at large and extra large — the field goes to 1_250 and 1_500 where the label goes to 1_125 and 1_250. That belongs to Label and is recorded here only as measured."
 figma_notes:
+  - "Vertical trim checked on 2026-10-10: leadingTrim=NONE on all 480 text layers across 140 variants. No text-box trimming is applied."
+  - "Web mapping: hover/focus follow the native input; value replaces input text and determines is filled. Nested Label properties are forwarded through the field API."
   - "read only is modelled as a value of state because a separate property would need none of hover, focus or validation and would have to exclude every state but default. It is a mode, and state is where Figma can hold it cheaply."
   - "The label's words and the message's words are properties of the nested Label instance rather than of this component, because Figma cannot push a value deeper without a variable for the whole file. Figma surfaces them on the instance instead. In @stylos/ui the label is set on Input Text and passed down."
   - "state and validation both drive the nested Label by swapping its variant. On success the Label is left on validation off, which is how the rule that success carries no message is expressed."
   - "The placeholder sits in a wrapper so the field row keeps its width when the placeholder is switched off."
-  - "Focus is a third drop shadow on top of the two the resting field already carries, rather than a change of border weight."
+  - "Focus uses the existing focus/base style through --stylos-focus-base: a four-unit primary halo plus two shadow layers (0/2/3/0 primary and 0/4/4/0 base), replacing resting elevation-1. The style is recorded separately in tokens/_styles.yaml because Figma variable exports omit effect styles. It applies on pointer and keyboard focus in every validation state; read-only and disabled modes keep their own surfaces. Border colour transitions on hover, focus and return with duration/micro and easing/linear. Resting and focus effects crossfade through opacity with the same tokens, preserving their full geometry without growth or visual delay. Interrupted transitions continue from their current presentation; reduced motion makes the change immediate."
   - "The leading, trailing and validation icon containers bind their width to a local collection named icon size, outside tokens/, while their heights bind to the dimension scale. The icon footprints recorded in sizes above are the tokens."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4392:6011"
-  last_verified: "2026-09-05"
+  last_verified: "2026-10-10"
 notes: "The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed. The variant properties themselves are ordered size, state, validation, is filled, which is section 8's order."
 import:
   batch: 1

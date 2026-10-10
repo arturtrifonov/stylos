@@ -23,6 +23,10 @@
     "./css/*.css": "./dist/css/*.css",
     "./registry.json": "./dist/registry.json",
     "./registry/*.json": "./dist/registry/*.json",
+    "./behaviors/input-text": {
+      "types": "./dist/package/behaviors/input-text.d.ts",
+      "default": "./dist/package/behaviors/input-text.js"
+    },
     "./stylelint": "./stylelint.config.js",
     "./skill": "./skill/SKILL.md",
     "./package.json": "./package.json"

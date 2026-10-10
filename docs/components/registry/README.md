@@ -181,7 +181,7 @@ An `instance` may specify `svelte_type: "snippet"` when its web implementation r
 
 **`text` and `string` use the same storage type but carry different things.** `text` supplies textual content: a label, heading, message, placeholder or input value. Its name follows FND-NAMING-12. `string` supplies an identifier or other non-text string value: `Icon.name` selects a mark rather than displaying the name as copy. A string property is named for its role and does not acquire the `text` suffix just because its value is stored as a string. Both kinds have string defaults and string example values, and both generate TypeScript `string` props.
 
-**`event` supplies a native callback.** It has no default or values. The current supported event is `onclick`, generated as a function receiving a `MouseEvent`; keyboard activation of a native button also dispatches click. Event handlers are web integration properties and do not become Figma controls. The generator rejects an unsupported event name.
+**`event` supplies a native callback.** It has no default or values. `onclick` receives a `MouseEvent`; keyboard activation of a native button also dispatches click. `oninput` and `onchange` receive an `Event` from a native form control. Event handlers are web integration properties and do not become Figma controls. The generator rejects an unsupported event name.
 
 **`controls` is what a "controlled group" is.** FND-NAMING-19 requires that when a boolean governs an element's presence, that element's properties follow it immediately. Recording which properties it governs makes the adjacency checkable instead of conventional.
 

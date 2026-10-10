@@ -6,15 +6,24 @@ Figma is the source of truth; this is the repository's record of it. Nothing sit
 
 How it works and why it is shaped this way: SPEC 0001.
 
-## Two kinds of file
+## Files
 
 | | |
 | --- | --- |
 | `_naming.yaml` | **authored.** Which Figma collection and mode each canonical one comes from, and which roles may legitimately differ per mode. |
+| `_styles.yaml` | **recorded from Figma styles.** Effect styles omitted by variable exports, with source IDs, ordered layers and theme colours. Maintained separately from collection imports. |
 | `_history.yaml` | **generated.** A line per import: when, which collection, how many tokens, what it did. |
 | everything else | **generated.** Overwritten by `npm run tokens:import`. Never hand-edit — your change is gone at the next import, and the file says so at the top. |
 
-The `_` prefix marks the files the pipeline treats specially, not the authored ones: `_naming.yaml` is authored and `_history.yaml` is generated. Everything without the prefix is a canonical collection, and every one of those is generated.
+The `_` prefix marks the files the pipeline treats specially, not the authored ones: `_naming.yaml` is authored, `_styles.yaml` records styles, and `_history.yaml` is generated. Everything without the prefix is a canonical collection, and every one of those is generated.
+
+`focus/base` is emitted from `_styles.yaml` as the composite token
+`--stylos-focus-base`. Its halo preserves the original `Focus/Primary` values
+and 16% alpha in both themes. The two other layers reference the canonical
+`color/shadow/primary` and `color/shadow/base` roles. Style geometry is recorded
+directly; no replacement dimensions or palette bindings are inferred. Update
+this record from the Figma style when it changes. `tokens:check` validates both
+themes and colour references; `tokens:css` includes style provenance in its manifest.
 
 ## The nine canonical collections
 

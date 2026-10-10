@@ -26,6 +26,7 @@ Every domain has exactly one authoritative source. When two places disagree, the
 | System structure, and the architectural decisions behind it | this document | `ARCHITECTURE.md` | by hand |
 | The queue — what is worked when | Markdown | `PLAN.md` §4 and §9 | by hand, read by `tools/lib/plan.mjs`, never copied — see §8 |
 | Canonical tokens | *derived* | `tokens/` | `tools/import-tokens.mjs`, from a Figma export plus `tokens/_naming.yaml` |
+| Effect styles omitted by variable exports | Figma style record | `tokens/_styles.yaml` | recorded from Figma with style and variable IDs; checked by `tokens:check` |
 | Figma-to-Stylos collection and mode naming | YAML | `tokens/_naming.yaml` | by hand, validated by `npm run tokens:check` |
 | Compiled skill document | *derived* | `skills/dist/` | `tools/build-skills.mjs` |
 | Published documentation | *derived* | `build/` | `tools/build-site.mjs`; uploaded by hand — see §4 |
@@ -74,6 +75,12 @@ Variables are authored in Figma. An export is made by hand and handed to `npm ru
 
 **Break:** the export is still manual and has no cadence. Nothing detects that Figma has moved on, so `tokens/` is only as current as the last person to import. What `npm run tokens:check` does catch is drift *within* the record — an alias that no longer agrees with the value beside it, or a mode dependence that is not declared.
 
+Effect styles omitted by variable exports are recorded separately in
+`tokens/_styles.yaml`. The CSS projection emits `focus/base` as
+`--stylos-focus-base`, preserving its ordered shadow geometry and both halo
+colours while referencing the canonical shadow-colour roles. Collection imports
+leave this record intact; style updates require a fresh Figma read.
+
 ### 2.2 Components
 
 The code package separates DOM behaviour in `packages/ui/src/behaviors/` from
@@ -97,6 +104,15 @@ for binding and reset. The public selection contract is false/true; Figma mixed
 remains drawing-only by the owner’s decision. Label and Text compose Input,
 using the recorded track/thumb geometry and the local-state Motion profile
 for surface changes and thumb travel. Text centres the track on its first line.
+
+**Amended 2026-10-10 — native Input Text.** The single-line native input covers
+the entire field; decorative icons and suffix overlay it without intercepting
+pointer events. A framework-free adapter measures their widths to reserve text
+padding. The existing Label supplies native association and described supporting
+text. Value binding and browser interaction replace drawing-only filled, hover
+and focus properties; read-only and disabled remain distinct native modes.
+Focus crossfades complete effect layers through opacity using micro/linear
+Motion, preserving their geometry; reduced motion makes the change immediate.
 
 ```
 docs/components/registry/*.yaml  ──▶ figma.node_id ──▶  the component in Figma
@@ -144,7 +160,8 @@ This is the only closed loop in the system, and the only automated step anywhere
 | `build/registry.html` | `docs/components/registry/*.yaml` | `tools/build-registry-view.mjs` | no — derived, rebuilt on demand |
 | `build/guidelines.html`, `build/guidelines/**` — the guideline set, one index and a page per document | `docs/foundations/`, `docs/behavior/`, `docs/patterns/`, `docs/content/`, `docs/principles.md`, `docs/RULES.md`, `docs/components/STANDARD.md` | `tools/build-guidelines-view.mjs` | no — derived, rebuilt on demand |
 | `docs/components/registry/import-source/*.csv` | Airtable | manual export | yes — immutable snapshot |
-| `tokens/*.yaml` | a Figma export and `tokens/_naming.yaml` | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
+| `tokens/<collection>.yaml` | a Figma export and `tokens/_naming.yaml` | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
+| `tokens/_styles.yaml` | Figma effect styles omitted from variable exports | recorded from Plugin API reads with source IDs | yes — maintained separately from collection imports |
 | `tokens/_history.yaml` | each import run | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
 | `figma/library.yaml` | a Figma export of the `meta` collection | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
 | `packages/ui/dist/tokens.css`, `tokens.json` | `tokens/*.yaml` | `tools/build-css.mjs` | no — derived, rebuilt on demand |

@@ -74,6 +74,44 @@ Per SPEC 0009 §5, contract first: the entry's `api` is corrected to describe th
 
 ## Accessibility implementation and verification
 
+### Input Text
+
+`InputText` uses a native, single-line text input and the existing `Label`.
+The consumer sets its width through the surrounding layout.
+The native input covers the complete field, including the areas under its
+decorative icons and suffix. Those elements use `pointer-events: none`.
+The framework-free `inputTextBehavior` measures the decorative groups and
+reserves their actual widths in the input's text padding; the Svelte wrapper
+attaches it automatically. Consumers of the independent HTML/CSS export
+import it from `@stylos/ui/behaviors/input-text`, attach it to
+`.stylos-input-text-field` and call its `destroy` method on removal.
+
+```svelte
+<script>
+  let reference = $state("");
+</script>
+
+<InputText name="reference" labelText="Reference" bind:value={reference}
+  hasAdditionalText additionalText="Use the invoice reference" isRequired />
+```
+
+`value` determines filledness. `state` accepts `default`, `read only` and
+`disabled`; hover and focus are browser states. Validation is supplied by the
+consumer: error sets `aria-invalid`, error and warning show the associated
+supporting line, and success shows the mark. Read-only and disabled suppress
+validation. With `hasLabel={false}`, provide an external associated label,
+`labelIds`, or `accessibleName`. Supporting text and the optional suffix are
+combined with `descriptionIds` in the input's accessible description.
+
+Pointer and keyboard focus use `--stylos-focus-base`, the composite Figma
+effect-style token. Its halo replaces the resting shadow on the entire native input.
+
+The icon snippets are decorative; no placeholder icon is substituted and
+they are not action slots. Storybook offers Default followed by Icons
+playground with the complete active icon set. Vertical trim stays off,
+matching all 140 Figma variants. `Label.htmlFor` and `additionalTextId`
+provide native associations without changing Label's CSS.
+
 ### Link
 
 `Link` renders a native anchor in two tones and five sizes, defaulting to medium.

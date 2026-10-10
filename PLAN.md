@@ -115,6 +115,12 @@ The same six waves order the package's work in §4.2 — a component is implemen
 
 *Amended 2026-10-10:* the owner selected **Tag Fill / Outline** next from wave 2. They remain non-interactive classification labels, with five sizes, five tones, two text cases and Default followed by Icons playground.
 
+*Amended 2026-10-10:* the owner selected **Input Text** from wave 4 before the
+remaining Tag treatments. It uses a full-field native input, decorative icons
+and suffix, five sizes, validation and distinct read-only/disabled modes. The
+workshop retains Default followed by Icons playground. Tag Interactive waits
+for approved designs.
+
 ### 4.2 Stage 5 — `@stylos/ui`
 
 The work order is SPEC 0009; the stack and the layering are ADR 0002. What assembles into what:

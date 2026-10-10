@@ -11,6 +11,10 @@ export { default as IndicatorStatus } from "./components/indicator-status/Indica
 export type { IndicatorStatusProps } from "./components/indicator-status/props.ts";
 export { default as Label } from "./components/label/Label.svelte";
 export type { LabelProps } from "./components/label/props.ts";
+
+export { default as InputText } from "./components/input-text/InputText.svelte";
+export type { InputTextProps } from "./components/input-text/props.ts";
+export { inputTextBehavior } from "./behaviors/input-text.ts";
 export { default as Loader } from "./components/loader/Loader.svelte";
 export type { LoaderProps } from "./components/loader/props.ts";
 export { default as Tooltip } from "./components/tooltip/Tooltip.svelte";

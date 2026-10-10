@@ -8,7 +8,7 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 const entries = loadRegistry(root);
 
 test("Vertical trim matches the component-specific Figma setting", () => {
-  for (const id of ["Button Base", "Button Outline", "Button Ghost", "Link", "Badge", "Label", "Tooltip", "Checkbox Label", "Radio Label", "Toggle Label"]) {
+  for (const id of ["Button Base", "Button Outline", "Button Ghost", "Link", "Badge", "Label", "Tooltip", "Checkbox Label", "Radio Label", "Toggle Label", "Input Text"]) {
     const entry = entries.find(entry => entry.id === id);
     assert.ok(entry.figmaNotes.some(note => note.includes("leadingTrim=NONE")), id);
     assert.doesNotMatch(componentCss(root, slugPath(id)), /text-box-(trim|edge)/, `${id}: Figma disables Vertical trim`);

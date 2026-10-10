@@ -195,6 +195,14 @@ api:
       -
         value: "success"
         note: "`text/success`. Carries the line with it."
+  -
+    name: "html for"
+    kind: "string"
+    description: "Native for attribute identifying the labelled control. Web integration; no visual effect."
+  -
+    name: "additional text id"
+    kind: "string"
+    description: "ID of the supporting line, for the control's aria-describedby. Web integration; no visual effect."
 limitations:
   - "The required marker is not drawn while state is disabled. The layer is absent from those variants rather than hidden, so a required field that is currently unavailable loses the one mark saying it must be filled — and gets it back when the field becomes available again."
   - "No outcome while disabled. state and validation do not combine: a label above an unavailable control has nothing to report, which is the same rule the fields it names follow."

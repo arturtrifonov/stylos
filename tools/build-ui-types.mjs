@@ -12,7 +12,7 @@
 //   boolean  → a boolean prop
 //   instance → a prop taking a component or snippet
 //   slot     → a snippet, named `children` where the entry has exactly one
-//   event    → a native event callback (currently onclick → MouseEvent)
+//   event    → a native event callback (onclick → MouseEvent; input/change → Event)
 //
 // This is the condition under which TypeScript was accepted (ADR 0002): the
 // types are generated from the contract, never hand-written, so a wrong value
@@ -84,8 +84,9 @@ export function fieldFor(property, { soleSlot = false } = {}) {
     },
     slot: () => "Snippet",
     event: () => {
-      if (property.name !== "onclick") throw new Error(`unsupported native event "${property.name}"`);
-      return "(event: MouseEvent) => void";
+      const type = { onclick: "MouseEvent", oninput: "Event", onchange: "Event" }[property.name];
+      if (!type) throw new Error(`unsupported native event "${property.name}"`);
+      return `(event: ${type}) => void`;
     },
   }[property.kind];
   if (!type) {

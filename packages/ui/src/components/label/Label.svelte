@@ -23,6 +23,8 @@
     size = "medium",
     state = "default",
     validation = "off",
+    htmlFor,
+    additionalTextId,
   }: LabelProps = $props();
 
   const showsAdditional = $derived(validation !== "off" || hasAdditionalText);
@@ -33,10 +35,11 @@
   at it, and the entry's first `requires` finding says a label placed without
   that association is decoration. -->
 <label
+  for={htmlFor}
   class="stylos-label"
   data-size={size}
   data-state={state}
   data-validation={validation}
   data-is-required={isRequired}
   data-has-additional-text={hasAdditionalText}
->{labelText}{#if isRequired}<span aria-hidden="true">{" "}*</span>{/if}{#if showsAdditional}<span>{additionalText}</span>{/if}</label>
+>{labelText}{#if isRequired}<span aria-hidden="true">{" "}*</span>{/if}{#if showsAdditional}<span id={additionalTextId}>{additionalText}</span>{/if}</label>
