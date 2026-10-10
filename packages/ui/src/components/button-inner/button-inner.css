@@ -1,0 +1,94 @@
+@import "../icon/icon.css";
+
+/* The icon owns the layout box; the exact Figma halo owns the larger target.
+ * Proportions follow the component's scale constraints, independently of tokens.
+ */
+.stylos-button-inner {
+  --_stylos-button-inner-size: var(--stylos-button-inner-footprint, var(--stylos-dimension-size-s-5_000));
+  --_stylos-button-inner-surface: transparent;
+  --_stylos-button-inner-foreground: var(--stylos-button-inner-color, var(--stylos-color-text-base));
+  position: relative;
+  z-index: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  vertical-align: middle;
+  box-sizing: border-box;
+  width: var(--_stylos-button-inner-size);
+  height: var(--_stylos-button-inner-size);
+  padding: 0;
+  border: 0;
+  border-radius: var(--stylos-radius-round);
+  background-color: transparent;
+  color: var(--_stylos-button-inner-foreground);
+  cursor: pointer;
+  appearance: none;
+  transition: color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+}
+
+.stylos-button-inner::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -20%;
+  border-radius: var(--stylos-radius-round);
+  background-color: var(--_stylos-button-inner-surface);
+  mask-image: url("./assets/halo.svg");
+  mask-position: center;
+  mask-size: calc(var(--_stylos-button-inner-size) * 1.4);
+  mask-repeat: no-repeat;
+  transition: background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+}
+
+.stylos-button-inner:is(:hover, [data-state="hover"]):not(:disabled) {
+  --_stylos-button-inner-surface: var(--stylos-color-surface-subtle-base-hover);
+}
+
+.stylos-button-inner:is(:active, [data-state="active"]):not(:disabled) {
+  --_stylos-button-inner-surface: var(--stylos-color-surface-subtle-base-active);
+}
+
+.stylos-button-inner:is(:disabled, [data-state="disabled"]) {
+  --_stylos-button-inner-foreground: var(--stylos-color-text-disabled);
+  --_stylos-button-inner-surface: transparent;
+  cursor: default;
+}
+
+.stylos-button-inner:focus-visible {
+  outline: none;
+}
+
+.stylos-button-inner:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: -5%;
+  border-radius: var(--stylos-radius-round);
+  outline: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary);
+  pointer-events: none;
+}
+
+.stylos-button-inner-icon {
+  --stylos-icon-footprint: var(--_stylos-button-inner-size);
+  display: inline-flex;
+  width: var(--_stylos-button-inner-size);
+  height: var(--_stylos-button-inner-size);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stylos-button-inner,
+  .stylos-button-inner::before {
+    transition: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .stylos-button-inner {
+    --_stylos-button-inner-foreground: ButtonText;
+  }
+
+  .stylos-button-inner:disabled {
+    --_stylos-button-inner-foreground: GrayText;
+  }
+}

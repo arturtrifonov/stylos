@@ -1,6 +1,7 @@
 # Contract written 2026-08-28 from the live component set. The children/parents
 # lists and the import block are carried over from the CSV import of 2026-08-20.
 # See docs/components/registry/README.md for the schema.
+# Web API amended 2026-10-10 for native interaction and configured icon snippets.
 
 id: "Button Inner"
 name: "Button Inner"
@@ -96,48 +97,65 @@ sizing_model:
     vertical: true
   intent: "One footprint bound to one token, with proportions locked so the second axis follows the first. There is no size run and no size property: a consumer that needs another dimension sets the number outright, and everything inside follows by scale constraint. The footprint is the icon's rather than the control's — the component is laid out as if it were the icon it contains, which is why a parent gives it exactly an icon's room. The pressable area is not that footprint. It is the halo, deliberately larger and drawn outside the bounds, so it behaves as an effect that appears under the pointer rather than as a box in the flow. That separation is the component: the icon holds the space, the halo holds the target."
   footprint: "size/s-5_000"
-  halo: "larger than the footprint and outside it, by a raw dimension rather than a token — see limitations"
+  halo: "140% of the footprint, centred outside it; 56 at the default footprint"
 api:
   -
     name: "icon"
     kind: "instance"
-    default: "Placeholder"
-    description: "The mark that names the action. It is the whole content of the component and it fills the footprint exactly, so there is no visible label to fall back on and the icon has to carry the meaning on screen by itself. It is also what the accessible name has to describe."
+    svelte_type: "snippet"
+    description: "The configured Icon or Loader snippet that names the action on screen. It fills the footprint and is decorative for assistive technology; accessible name supplies the action's words. An unassigned icon renders nothing."
+    examples:
+      -
+        verdict: "do"
+        caption: "Give the local action a name matching its icon."
+        props:
+          icon: "close"
+          "accessible name": "Clear field"
   -
     name: "state"
     kind: "variant"
     default: "default"
-    description: "The interaction condition. Only the surface behind the icon responds to it: the icon itself is unchanged across default, hover and active, and changes only when the control is disabled. Focus is a separate boolean."
+    description: "Whether the local action is available. The browser derives hover, pressing and keyboard focus; disabled also suppresses activation and removes the tab stop."
     values:
       -
         value: "default"
-        note: "No halo. The component is the icon and nothing else, which is the state it is in nearly all of the time."
-      -
-        value: "hover"
-        note: "The halo appears behind the icon. It is the only difference from default, and it is drawn outside the component's bounds."
-      -
-        value: "active"
-        note: "The halo darkens by one step. The icon is unchanged from hover."
+        note: "No halo at rest. Pointer interaction changes only the surface behind the icon."
       -
         value: "disabled"
-        note: "No halo, and the icon drops to the disabled text role. The component keeps its place in the layout and stops being a target."
+        note: "No halo, and the icon takes text/disabled. Native disabled fieldsets have the same effect."
   -
-    name: "is focused"
-    kind: "boolean"
-    default: "false"
-    description: "Whether the control holds keyboard focus. A ring is drawn outside it and nothing else changes. It is a boolean rather than a value of state because focus coexists with hover, active and disabled instead of replacing them."
+    name: "accessible name"
+    kind: "text"
+    default: ""
+    description: "Required consumer-supplied action name for aria-label, such as Clear field or Remove tag. The icon's name is not an action label; an optional surrounding Tooltip usually repeats these words."
+  -
+    name: "id"
+    kind: "string"
+    description: "Native button id; the consumer keeps it unique."
+  -
+    name: "description ids"
+    kind: "string"
+    default: ""
+    description: "Space-separated supporting element ids for aria-describedby."
+  -
+    name: "onclick"
+    kind: "event"
+    description: "Native click callback for pointer, Enter and Space activation. This local-action button always uses type=button and does not submit its surrounding form. Disabled controls do not activate."
 limitations:
-  - "No size property: the footprint takes one token and a consumer that needs another sets the number. The icon's colour is a different case — it is bound to a text role deliberately, so an instance can be repainted to any role in that family, which is how the control follows the text it sits beside."
-  - "The halo is a raw 56 with no variable binding, so it cannot follow the scale when the scale moves. Resizing an instance carries it by scale constraint, which keeps the proportion but does not make it a token."
-  - "The halo sits outside the component's bounds and no parent layout reserves room for it. That is the design, and it has a cost: in an auto-layout row whose gap is under 16 the halo of one instance overlaps its neighbour."
+  - "No size run or tone property. CSS --stylos-button-inner-footprint defaults to size/s-5_000; a parent can set it to another size token. --stylos-button-inner-color defaults to text/base and can inherit a parent-supplied text-role token. Disabled always uses text/disabled."
+  - "Figma leaves the 56-unit halo unbound. Its SCALE constraint makes it 140% of the footprint; CSS preserves that proportion and the exact exported halo SVG. The target extends beyond the layout box even at rest."
+  - "The halo sits outside the component's bounds and no parent layout reserves room for it. That is the design, and it has a cost: at the default 40-unit footprint, neighbours whose gap is under 16 have overlapping halos. The necessary separation scales with the footprint."
 figma_notes:
+  - "Verified on 2026-10-10 on Button Inner page 4015:7774, component set 330:59475: all four drawing states share a 40-unit Icon footprint; hover and active have a 56-unit centred ellipse at (-8,-8), using surface/subtle/base/hover and active. The icon uses text/base or text/disabled."
+  - "Figma hover, active and is focused are drawing controls; the web API exposes default/disabled and native browser interaction. Icon instances are configured through snippets rendered with Svelte @render. Placeholder has no web default. Registry examples select active-set icon names for static previews; Svelte consumers pass configured snippets."
+  - "Focus uses a 44-unit frame at (-2,-2), radius/round and a width/thick stroke aligned OUTSIDE in border/primary. CSS preserves the 110% frame and outward stroke; focus is absent from native disabled controls."
   - "Focus is a boolean toggling a Focus ring instance rather than a value of state, which keeps the variant count where it is instead of multiplying it."
-  - "The ring's dimensions and offset are positioned by hand for every size and are deliberately not bound to variables. A browser draws focus around an element for free and it flows with the element; Figma has no equivalent. component-integrity-check exempts focus-ring geometry for this reason."
+  - "The focus frame's dimensions and position are unbound and follow SCALE constraints. Its round radius, stroke width and stroke color are token-bound."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "330-59475"
-  last_verified: "2026-09-05"
-notes: "The api order is authored for reading, not transcribed: componentPropertyDefinitions returns a key order that does not match the properties panel, so no ordering claim can be made from it."
+  last_verified: "2026-10-10"
+notes: "The api order is authored for reading, not transcribed. Local surface and icon-colour changes use duration/micro and easing/linear under FND-MOTION-06, reverse from the current colour on interruption and change immediately under reduced motion. Native activation, accessible naming and contextual target separation require verification in the consuming interface."
 import:
   batch: 1
   ready: true

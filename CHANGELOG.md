@@ -4,6 +4,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-10-10 (Button Inner)
+
+- Add native Button Inner with a scalable icon footprint, the exact Figma halo, outward focus ring, semantic color/size tokens and micro/linear Motion. Support configured icon snippets, action names, click callbacks, native keyboard and disabled-fieldset behaviour. Include independent CSS, a static icon example and compact Default and Icons playground stories.
+
 ### Added — 2026-10-10 (Link)
 
 - Add native Link with two tones, five sizes, a medium default and optional snippet icons. Browser interaction supplies hover, active and keyboard focus; disabled removes the destination and tab stop. CSS follows Figma’s 20% underline offset and 8% thickness, semantic spacing and micro/linear Motion, including reduced motion.

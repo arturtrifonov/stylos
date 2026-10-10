@@ -89,6 +89,8 @@ export function sampleHtml(entry, props = {}) {
         // Form integration does not change a static visual surface.
       } else if (["Button Base", "Button Outline", "Button Ghost"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
         // Native attributes are written by the button branch below.
+      } else if (entry.id === "Button Inner" && ["id", "description ids"].includes(name)) {
+        // Native attributes are written by the local-action button below.
       } else if (entry.id === "Link" && name === "href") {
         // The native destination is written by the Link branch below.
       } else if (entry.id !== "Icon" || name !== "name") {
@@ -130,6 +132,16 @@ export function sampleHtml(entry, props = {}) {
     const showsAdditional = (props.validation && props.validation !== "off") || props["has additional text"];
     const additional = showsAdditional ? `<span>${esc(props["additional text"] ?? "Additional text")}</span>` : "";
     return `<label class="${cls}"${attr}>${esc(props["label text"] ?? "Label")}${marker}${additional}</label>`;
+  }
+
+  if (entry.id === "Button Inner") {
+    const disabled = props.state === "disabled" ? " disabled" : "";
+    const id = props.id ? ` id="${esc(props.id)}"` : "";
+    const name = props["accessible name"] ? ` aria-label="${esc(props["accessible name"])}"` : "";
+    const description = props["description ids"] ? ` aria-describedby="${esc(props["description ids"])}"` : "";
+    const icon = typeof props.icon === "string" && iconDrawings().has(props.icon)
+      ? `<span class="stylos-button-inner-icon" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: props.icon })}</span>` : "";
+    return `<button type="button" class="${cls}"${attr}${id}${name}${description}${disabled}>${icon}</button>`;
   }
 
   if (entry.id === "Link") {

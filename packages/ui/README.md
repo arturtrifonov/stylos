@@ -281,3 +281,26 @@ Surface colors and thumb travel use `duration/micro` and `easing/linear`
 (FND-MOTION-06). Reduced motion removes transitions; forced colors displays
 the native input. Storybook has one Default with Controls per component;
 static documentation uses the same exported CSS.
+
+
+### Button Inner
+
+`ButtonInner` is a native `type="button"` local action with no size run or tone.
+Supply an icon snippet, an `accessibleName` describing the action and `onclick`.
+
+```svelte
+{#snippet clearIcon()}<Icon name="close" />{/snippet}
+<ButtonInner icon={clearIcon} accessibleName="Clear field" onclick={clearField} />
+```
+
+The icon owns the 40-unit layout footprint; the circular target and hover surface
+extend to 140% of it (56 units by default). A parent can set
+`--stylos-button-inner-footprint` to a size token and `--stylos-button-inner-color`
+to a text-role token. The halo and focus frame follow the footprint's proportions;
+leave enough room around adjacent controls. Independent HTML uses the same native
+button, an optional `.stylos-button-inner-icon` child and the exported CSS.
+
+`state="disabled"` and native disabled fieldsets suppress activation and focus.
+Hover, pressing and keyboard focus are browser states. Motion uses micro/linear
+and becomes immediate under reduced motion. Connect supporting content with
+`descriptionIds`; an optional surrounding Tooltip repeats the action name.
