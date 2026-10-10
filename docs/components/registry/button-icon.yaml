@@ -1,0 +1,259 @@
+# Unified frontend contract from the three authored Button Icon sets.
+id: "Button Icon"
+name: "Button Icon"
+family: "Button Icon"
+level: "object"
+role: "trigger"
+html: "<button type=\"button\">"
+status: "ready"
+version: "0.1.0"
+summary: "An icon-only action button with base, outline and ghost treatments."
+purpose: "Perform a recognised icon action in a fixed square target. The three treatments share sizing, native button behaviour and a configured decorative icon; variant controls visual prominence. The consumer supplies the action name."
+use_when:
+  - "A recognised icon action belongs in a toolbar, table header or panel and there is no room for a visible text label."
+  - "Several recognised icon actions share a compact strip of controls."
+do_not_use_when:
+  -
+    text: "The icon is unfamiliar or the action needs visible words."
+    instead: "Button"
+  -
+    text: "The action belongs inside another component and occupies its icon footprint."
+    instead: "Button Inner"
+  -
+    text: "The control navigates to a destination."
+    instead: "Link"
+  -
+    text: "Activation persists a selection or toggled state."
+    instead:
+      - "Toggle Label"
+      - "Checkbox Label"
+children:
+  - "Badge"
+  - "Avatar"
+  - "Icon"
+  - "Indicator Status"
+  - "Indicator Special"
+  - "Tag"
+  - "Loader"
+parents:
+  - "Accordion"
+  - "Alert"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Drawer"
+  - "Side Panel Menu"
+uses:
+  - "Icon"
+flow_behavior:
+  - "fixed"
+a11y:
+  -
+    status: "requires"
+    note: "Supply a non-empty accessible name describing the action through aria-label; the decorative icon contributes no name."
+  -
+    status: "requires"
+    note: "Make the action name available to sighted readers too, normally through a surrounding Tooltip that appears on hover and focus. The consumer composes that Tooltip separately."
+  -
+    status: "requires"
+    note: "Ghost has no surface at rest. The consumer verifies the icon contrast against the surrounding background."
+  -
+    status: "requires"
+    criterion: "WCAG 2.2 SC 2.5.8"
+    note: "The smallest target is 24 by 24. The consumer preserves the full target and verifies its spacing and interaction in the surrounding layout."
+sizing_model:
+  horizontal: "fixed"
+  vertical: "fixed"
+  adjustable:
+    horizontal: false
+    vertical: false
+  intent: "Both axes follow the fixed square Object run, matching Button heights. A centred Element-run icon occupies 16/20/24/28/32 units inside targets of 24/32/40/48/56 units. There is no label, optical overhang or consumer dimension override. The inside outline costs no layout space; radius/medium and the outside focus ring stay constant across sizes."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-3_000"
+      icon: "size/s-2_000"
+    -
+      size: "small"
+      box: "size/s-4_000"
+      icon: "size/s-2_500"
+    -
+      size: "medium"
+      box: "size/s-5_000"
+      icon: "size/s-3_000"
+    -
+      size: "large"
+      box: "size/s-6_000"
+      icon: "size/s-3_500"
+    -
+      size: "extra large"
+      box: "size/s-7_000"
+      icon: "size/s-4_000"
+api:
+  -
+    name: "variant"
+    kind: "variant"
+    default: "base"
+    description: "Visual treatment mapped to an existing Figma component set. It preserves the shared behaviour and geometry."
+    values:
+      -
+        value: "base"
+        note: "Filled surface with inverted icon and elevation."
+      -
+        value: "outline"
+        note: "Subtle surface with a tone-coloured icon, inside border and elevation."
+      -
+        value: "ghost"
+        note: "Transparent at rest; a subtle surface appears under the pointer."
+  -
+    name: "tone"
+    kind: "variant"
+    default: "primary"
+    description: "Semantic colour role, shared by all three treatments. The icon inherits the corresponding Button foreground."
+    values:
+      -
+        value: "base"
+        note: "No meaning of its own. The filled button for an action that is the main one on its surface without being brand or consequence."
+      -
+        value: "primary"
+        note: "The default, and the brand. One per surface — a second one is two main actions, which is none."
+      -
+        value: "warning"
+        note: "The action has a consequence the reader should weigh first, and can undo afterwards."
+      -
+        value: "danger"
+        note: "The action destroys something, or cannot be undone. Not an error — the button is working exactly as intended."
+      -
+        value: "success"
+        note: "Rare on a trigger. For a button that completes something rather than starting it."
+  -
+    name: "size"
+    kind: "variant"
+    default: "medium"
+    description: "The fixed square target and its centred icon, using the recorded Object and Element size runs."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "Availability of the native control. The browser derives hover, pressing and keyboard focus; disabled prevents activation and focus. A disabled fieldset has the same effect."
+    values:
+      -
+        value: "default"
+      -
+        value: "disabled"
+        note: "Native activation and focus are disabled. Each treatment retains its recorded disabled surface and text roles, without elevation."
+  -
+    name: "type"
+    kind: "variant"
+    default: "button"
+    description: "Native form behaviour. button performs only the supplied action; submit submits its associated form; reset restores that form's default values."
+    values:
+      -
+        value: "button"
+      -
+        value: "submit"
+      -
+        value: "reset"
+  -
+    name: "icon"
+    kind: "instance"
+    svelte_type: "snippet"
+    description: "Configured decorative Icon snippet. No icon is supplied by the component; the sample selects add."
+    values:
+      -
+        value: "add"
+        note: "Sample icon, not a component default or a closed list."
+    examples:
+      -
+        verdict: "do"
+        caption: "Name the action represented by the icon."
+        props:
+          icon: "add"
+          "accessible name": "Add item"
+  -
+    name: "accessible name"
+    kind: "text"
+    description: "Required consumer-supplied action name for aria-label, such as Add item or Open filters. It describes the action rather than the glyph."
+    values:
+      -
+        value: "Add item"
+        note: "Example action name for the add icon; consumers supply their own."
+  -
+    name: "id"
+    kind: "string"
+    description: "Native button id; the consumer keeps it unique."
+  -
+    name: "name"
+    kind: "string"
+    default: ""
+    description: "The submitter name included when this button submits its form."
+  -
+    name: "value"
+    kind: "string"
+    default: ""
+    description: "The submitter value paired with name."
+  -
+    name: "form"
+    kind: "string"
+    default: ""
+    description: "Id of an associated form, including a form outside the button's ancestors."
+  -
+    name: "description ids"
+    kind: "string"
+    default: ""
+    description: "Space-separated supporting element ids for aria-describedby."
+  -
+    name: "onclick"
+    kind: "event"
+    description: "Native click callback for pointer and keyboard activation. It receives a MouseEvent; preventDefault cancels the native submit/reset action. Disabled controls do not activate."
+limitations:
+  - "No visible label or persistent selection. Supply both the configured icon and a non-empty action name."
+  - "The component uses fixed presets on both axes; external width or height overrides are not part of its contract."
+  - "An unassigned icon renders no slot. The underlying native button and its configured action name remain."
+  - "Tooltip integration and contrast against the surrounding surface require verification by the consumer."
+figma_notes:
+  - "Verified 2026-10-10 on Button page 0:1: all three authored sets contain 100 size/tone/state variants each. Their fills, strokes, effects and corner radii match the corresponding Button sets in all 300 variants."
+  - "Five square targets use size/s-3_000 through size/s-7_000. Icons use size/s-2_000, size/s-2_500, size/s-3_000, size/s-3_500 and size/s-4_000, centred without the labelled Button optical overhang."
+  - "Focus frames are offset outward by gap/g-0_250 with radius/large, width/thick OUTSIDE strokes in border/primary. They are absent when disabled. Button CSS supplies the corresponding native focus-visible outline."
+  - "Figma hover, active and is focused are drawing controls; web state exposes default/disabled and derives interaction from the browser. Native type, form properties, accessible name and onclick are web integration properties."
+  - "icon is an instance swap. The Figma Placeholder has no web default; consumers provide snippets and documentation samples select active-set icons."
+  - "The owner approved one ButtonIcon API with variant=base/outline/ghost. Separate Figma component sets remain explicitly mapped in figma.sources."
+figma:
+  variant_property: "variant"
+  sources:
+    -
+      value: "base"
+      name: "Button Icon Base"
+      file_key: "WUc07ZBtjRvypXtsOlbVut"
+      node_id: "4390-2375"
+      last_verified: "2026-10-10"
+    -
+      value: "outline"
+      name: "Button Icon Outline"
+      file_key: "WUc07ZBtjRvypXtsOlbVut"
+      node_id: "4710-27501"
+      last_verified: "2026-10-10"
+    -
+      value: "ghost"
+      name: "Button Icon Ghost"
+      file_key: "WUc07ZBtjRvypXtsOlbVut"
+      node_id: "4710-27803"
+      last_verified: "2026-10-10"
+notes: "Reuse Button treatment CSS, native focus and disabled semantics, and duration/micro with easing/linear under FND-MOTION-06. Surface changes reverse from their current colour when interrupted and become immediate with reduced motion. Native button activation, names, form behaviour and contextual Tooltip composition require consumer verification."
+import:
+  batch: 1
+  ready: true

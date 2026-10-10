@@ -112,6 +112,38 @@ playground with the complete active icon set. Vertical trim stays off,
 matching all 140 Figma variants. `Label.htmlFor` and `additionalTextId`
 provide native associations without changing Label's CSS.
 
+### Button Icon
+
+`ButtonIcon` renders an icon-only native button with `variant="base" | "outline" | "ghost"`.
+It defaults to base/primary/medium and supports the same five tones and target
+heights as Button. Targets are square: 24/32/40/48/56 units with centred
+16/20/24/28/32-unit icons. The icon has no optical overhang.
+
+```svelte
+{#snippet addIcon()}<Icon name="add" />{/snippet}
+<ButtonIcon icon={addIcon} accessibleName="Add item" onclick={addItem} />
+<ButtonIcon variant="outline" icon={addIcon} accessibleName="Add item" />
+<ButtonIcon variant="ghost" icon={addIcon} accessibleName="Add item" state="disabled" />
+```
+
+Supply a configured icon snippet and a non-empty `accessibleName` describing the
+action. The component supplies no default icon or action name. The icon is
+hidden from assistive technology; compose a surrounding Tooltip when the action
+needs a visible explanation. Default and Icons playground use add/Add item as
+sample content, and the playground can select any icon in the active set.
+
+Native hover, press, keyboard focus, disabled fieldsets and form properties work
+as in Button. `type="button"` is the default; submit/reset, `id`, `name`, `value`,
+`form`, `descriptionIds` and `onclick` retain their native meanings. Button CSS
+supplies surfaces, inside borders, shadows, focus and micro/linear Motion, with
+immediate changes under reduced motion. The footprint supports the recorded size
+presets; external dimension overrides are not part of this contract.
+
+Independent HTML uses `.stylos-button-icon` plus `.stylos-button-base`,
+`.stylos-button-outline` or `.stylos-button-ghost`, with the same data attributes
+as Button and a decorative `.stylos-button-icon-mark` child. Link tokens, fonts
+and `@stylos/ui/css/button-icon.css`; this export includes its Button dependency.
+
 ### Link
 
 `Link` renders a native anchor in two tones and five sizes, defaulting to medium.

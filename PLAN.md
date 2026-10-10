@@ -96,7 +96,7 @@ The `0.1` milestone's checklist, and the membership record for every entry the w
 | 2 | The remaining small elements | Icon, Tag, Toggle Input / Label / Text | a filter row | 1 wk |
 | 3 | The table | Table Cell Heading, Table Cell Text, Table Row Head, Table Row Body | a dense table carrying real data | 1–2 wk |
 | 4 | Input | Input Text, Select, Dropdown Item Default / Parent / Checkbox / Toggle, Dropdown | a toolbar and filters above that table | 1 wk |
-| 5 | The Button family | Button, Button Icon Base, Button Icon Outline, Button Icon Ghost | every action on the screen | 2 wk |
+| 5 | The Button family | Button, Button Icon | every action on the screen | 2 wk |
 | 6 | The shell | Modal, Drawer, Tooltip | the Stage 6 proof screen, composed | 1 wk |
 
 *Amended 2026-09-07:* **Tooltip was built out of order**, ahead of the seven elements still open in wave 1 and the rest of wave 2 — the owner chose it explicitly. The table is a sequence rather than a gate, and nothing in it depends on the order being kept: the waves are grouped by what a screen needs next, not by what compiles after what. Wave 6's other two entries, Modal and Drawer, are untouched.
@@ -131,6 +131,8 @@ treatments: **Button** (base/outline/ghost), **Tag** (fill/outline) and **Tag
 Interactive** (fill/outline). The registry maps each treatment to its separate
 Figma set. Label/Text forms of Checkbox, Radio and Toggle retain their distinct
 single-line and multiline layouts, composing the same Input.
+
+*Amended 2026-10-10:* the owner selected **Button Icon** next, with base/outline/ghost variants in one frontend contract. It reuses Button treatment CSS and local-state Motion while preserving its square target and centred Element-run icon.
 
 ### 4.2 Stage 5 — `@stylos/ui`
 

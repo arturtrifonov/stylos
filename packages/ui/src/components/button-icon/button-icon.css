@@ -1,0 +1,26 @@
+@import "../button/button.css";
+
+/* Figma Button Icon reuses Button's treatments, target height and states.
+ * Its square target contains a centred Element-run icon, without overhang.
+ */
+.stylos-button-icon {
+  width: var(--_stylos-button-height);
+  padding-inline: var(--stylos-dimension-gap-g-0_000);
+  gap: var(--stylos-dimension-gap-g-0_000);
+}
+
+.stylos-button-icon-mark {
+  --stylos-icon-footprint: var(--_stylos-button-icon-mark-size);
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--_stylos-button-icon-mark-size);
+  height: var(--_stylos-button-icon-mark-size);
+}
+
+.stylos-button-icon[data-size="extra small"] { --_stylos-button-icon-mark-size: var(--stylos-dimension-size-s-2_000); }
+.stylos-button-icon[data-size="small"] { --_stylos-button-icon-mark-size: var(--stylos-dimension-size-s-2_500); }
+.stylos-button-icon[data-size="medium"] { --_stylos-button-icon-mark-size: var(--stylos-dimension-size-s-3_000); }
+.stylos-button-icon[data-size="large"] { --_stylos-button-icon-mark-size: var(--stylos-dimension-size-s-3_500); }
+.stylos-button-icon[data-size="extra large"] { --_stylos-button-icon-mark-size: var(--stylos-dimension-size-s-4_000); }

@@ -4,6 +4,11 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-10-10 (Button Icon)
+
+- Add native `ButtonIcon` with base/outline/ghost variants, five sizes and five tones, configured icon snippets, accessible action names and form integration. Reuse Button treatment CSS, focus, disabled behaviour and micro/linear Motion; retain Figma's square targets and centred Element-run icons. Include independent CSS, static previews and Default followed by Icons playground.
+- Consolidate the three Button Icon registry entries into one contract with explicit Figma source mappings and update composition references and the plan. Figma sets remain unchanged.
+
 ### Changed — 2026-10-10 (Unified visual treatments)
 
 - **Breaking:** replace ButtonBase/Outline/Ghost with `Button variant="base|outline|ghost"`, TagFill/Outline with `Tag variant="fill|outline"`, and TagInteractiveFill/Outline with `TagInteractive variant="fill|outline"`. Default treatments and other props retain their values; native semantics, token roles, geometry and Motion are preserved. Independent CSS imports and Storybook sections follow the unified names; the package guide records migration.

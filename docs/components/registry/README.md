@@ -142,7 +142,7 @@ These are two different questions and both are worth answering. The Airtable-der
 
 #### Separate Figma treatments, one frontend contract
 
-Button, Tag and Tag Interactive expose one frontend component each. Their
+Button, Button Icon, Tag and Tag Interactive expose one frontend component each. Their
 `variant` values map to existing Figma sets, whose names and nodes remain intact.
 The contract retains one API and sizing model; implementations use one shared
 markup definition and the original treatment CSS. A family grouping alone does

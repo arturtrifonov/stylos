@@ -96,7 +96,7 @@ export function sampleHtml(entry, props = {}) {
         // Native label association is rendered below.
       } else if (["Checkbox Input", "Checkbox Label", "Checkbox Text", "Radio Input", "Radio Label", "Radio Text", "Toggle Input", "Toggle Label", "Toggle Text"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
         // Form integration does not change a static visual surface.
-      } else if (["Button", "Tag Interactive"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
+      } else if (["Button", "Button Icon", "Tag Interactive"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
         // Native attributes are written by the button branch below.
       } else if (entry.id === "Button Inner" && ["id", "description ids"].includes(name)) {
         // Native attributes are written by the local-action button below.
@@ -114,9 +114,10 @@ export function sampleHtml(entry, props = {}) {
   }
 
   const baseClass = `stylos-${slugPath(entry.id).replace(/\//g, "-")}`;
-  const treatment = ["Button", "Tag", "Tag Interactive"].includes(entry.id)
+  const treatment = ["Button", "Button Icon", "Tag", "Tag Interactive"].includes(entry.id)
     ? props.variant ?? entry.api.find(property => property.name === "variant")?.default : null;
-  const cls = treatment ? `${baseClass} ${baseClass}-${treatment}` : baseClass;
+  const treatmentClass = entry.id === "Button Icon" ? "stylos-button" : baseClass;
+  const cls = treatment ? `${baseClass} ${treatmentClass}-${treatment}` : baseClass;
   if (styles.length) attrs.push(`style="${esc(styles.join(";"))}"`);
   const attr = attrs.length ? ` ${attrs.join(" ")}` : "";
 
@@ -208,6 +209,17 @@ export function sampleHtml(entry, props = {}) {
       return `<button type="${esc(props.type ?? "button")}" class="${cls}"${attr}${native}${description}${disabled}>${content}</button>`;
     }
     return `<span class="${cls}"${attr}>${content}</span>`;
+  }
+
+  if (entry.id === "Button Icon") {
+    const native = ["id", "name", "value", "form"].filter(name => props[name])
+      .map(name => ` ${name}="${esc(props[name])}"`).join("");
+    const name = props["accessible name"] ? ` aria-label="${esc(props["accessible name"])}"` : "";
+    const description = props["description ids"] ? ` aria-describedby="${esc(props["description ids"])}"` : "";
+    const disabled = props.state === "disabled" ? " disabled" : "";
+    const icon = typeof props.icon === "string" && iconDrawings().has(props.icon)
+      ? `<span class="stylos-button-icon-mark" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: props.icon })}</span>` : "";
+    return `<button type="${esc(props.type ?? "button")}" class="${cls}"${attr}${native}${name}${description}${disabled}>${icon}</button>`;
   }
 
   if (entry.id === "Button Inner") {
