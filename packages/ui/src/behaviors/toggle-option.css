@@ -1,0 +1,60 @@
+/* Shared option layout; Toggle Input retains selection and interaction. */
+:is(.stylos-toggle-label, .stylos-toggle-text) {
+  gap: var(--_stylos-toggle-gap);
+  font-family: var(--stylos-font-family-normal);
+  font-size: var(--_stylos-toggle-font);
+  font-stretch: normal;
+  letter-spacing: var(--stylos-font-letter-spacing-style-normal);
+  color: var(--stylos-color-text-base);
+  cursor: pointer;
+}
+
+:is(.stylos-toggle-label, .stylos-toggle-text):has(input:enabled):hover > .stylos-toggle-input {
+  --_stylos-toggle-empty: var(--stylos-color-surface-subtle-base-hover);
+  --_stylos-toggle-selected: var(--stylos-color-surface-bold-primary-hover);
+}
+
+:is(.stylos-toggle-label, .stylos-toggle-text):has(input:enabled):active > .stylos-toggle-input {
+  --_stylos-toggle-empty: var(--stylos-color-surface-subtle-base-active);
+  --_stylos-toggle-selected: var(--stylos-color-surface-bold-primary-active);
+}
+
+:is(.stylos-toggle-label, .stylos-toggle-text):is([data-state="disabled"], :has(input:disabled)) {
+  color: var(--stylos-color-text-disabled);
+  cursor: default;
+}
+
+:is(.stylos-toggle-label, .stylos-toggle-text)[data-size="extra small"] {
+  --_stylos-toggle-gap: var(--stylos-dimension-gap-g-0_500);
+  --_stylos-toggle-font: var(--stylos-font-size-0_750);
+  --_stylos-toggle-string-line: var(--stylos-font-line-height-string-0_750);
+  --_stylos-toggle-text-line: var(--stylos-font-line-height-text-0_750);
+}
+
+:is(.stylos-toggle-label, .stylos-toggle-text)[data-size="small"] {
+  --_stylos-toggle-gap: var(--stylos-dimension-gap-g-0_625);
+  --_stylos-toggle-font: var(--stylos-font-size-0_875);
+  --_stylos-toggle-string-line: var(--stylos-font-line-height-string-0_875);
+  --_stylos-toggle-text-line: var(--stylos-font-line-height-text-0_875);
+}
+
+:is(.stylos-toggle-label, .stylos-toggle-text)[data-size="medium"] {
+  --_stylos-toggle-gap: var(--stylos-dimension-gap-g-0_750);
+  --_stylos-toggle-font: var(--stylos-font-size-1_000);
+  --_stylos-toggle-string-line: var(--stylos-font-line-height-string-1_000);
+  --_stylos-toggle-text-line: var(--stylos-font-line-height-text-1_000);
+}
+
+:is(.stylos-toggle-label, .stylos-toggle-text)[data-size="large"] {
+  --_stylos-toggle-gap: var(--stylos-dimension-gap-g-0_875);
+  --_stylos-toggle-font: var(--stylos-font-size-1_250);
+  --_stylos-toggle-string-line: var(--stylos-font-line-height-string-1_250);
+  --_stylos-toggle-text-line: var(--stylos-font-line-height-text-1_250);
+}
+
+:is(.stylos-toggle-label, .stylos-toggle-text)[data-size="extra large"] {
+  --_stylos-toggle-gap: var(--stylos-dimension-gap-g-1_000);
+  --_stylos-toggle-font: var(--stylos-font-size-1_500);
+  --_stylos-toggle-string-line: var(--stylos-font-line-height-string-1_500);
+  --_stylos-toggle-text-line: var(--stylos-font-line-height-text-1_500);
+}

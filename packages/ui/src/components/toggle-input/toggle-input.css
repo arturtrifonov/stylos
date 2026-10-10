@@ -1,0 +1,149 @@
+/* Track proportions and thumb bounds follow Figma. Native input owns state. */
+.stylos-toggle-input {
+  --_stylos-toggle-empty: var(--stylos-color-surface-subtle-base-default);
+  --_stylos-toggle-selected: var(--stylos-color-surface-bold-primary-default);
+  --_stylos-toggle-border: var(--stylos-color-border-primary);
+  --_stylos-toggle-off-thumb: var(--stylos-color-text-primary);
+  --_stylos-toggle-on-thumb: var(--stylos-color-surface-subtle-base-default);
+  --_stylos-toggle-width: calc(var(--_stylos-toggle-height) * 3 / 2);
+  position: relative;
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+  width: var(--_stylos-toggle-width);
+  height: var(--_stylos-toggle-height);
+  cursor: pointer;
+}
+
+.stylos-toggle-input > input {
+  position: absolute;
+  inset: 0;
+  width: var(--_stylos-toggle-width);
+  height: var(--_stylos-toggle-height);
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.stylos-toggle-input-surface {
+  display: block;
+  width: var(--_stylos-toggle-width);
+  height: var(--_stylos-toggle-height);
+  border-radius: var(--stylos-radius-round);
+  background-color: var(--_stylos-toggle-empty);
+  box-shadow: inset 0 0 0 var(--stylos-border-width-normal) var(--_stylos-toggle-border);
+  pointer-events: none;
+  transition:
+    background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear),
+    box-shadow var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+}
+
+.stylos-toggle-input-surface::after {
+  content: "";
+  position: absolute;
+  inset-block-start: var(--_stylos-toggle-inset);
+  inset-inline-start: var(--_stylos-toggle-inset);
+  width: var(--_stylos-toggle-thumb);
+  height: var(--_stylos-toggle-thumb);
+  background-color: var(--_stylos-toggle-off-thumb);
+  mask-image: var(--_stylos-toggle-thumb-image);
+  mask-position: center;
+  mask-repeat: no-repeat;
+  transform: translateX(0);
+  transition:
+    background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear),
+    transform var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+}
+
+.stylos-toggle-input[data-is-checked="true"]:not(:has(> input)),
+.stylos-toggle-input:has(> input:checked) {
+  & > .stylos-toggle-input-surface {
+    background-color: var(--_stylos-toggle-selected);
+    box-shadow: none;
+  }
+  & > .stylos-toggle-input-surface::after {
+    background-color: var(--_stylos-toggle-on-thumb);
+    transform: translateX(calc(var(--_stylos-toggle-height) / 2));
+  }
+}
+
+.stylos-toggle-input:dir(rtl):is([data-is-checked="true"]:not(:has(> input)), :has(> input:checked)) > .stylos-toggle-input-surface::after {
+  transform: translateX(calc(var(--_stylos-toggle-height) / -2));
+}
+
+.stylos-toggle-input:has(> input:enabled):hover {
+  --_stylos-toggle-empty: var(--stylos-color-surface-subtle-base-hover);
+  --_stylos-toggle-selected: var(--stylos-color-surface-bold-primary-hover);
+}
+
+.stylos-toggle-input:has(> input:enabled:active) {
+  --_stylos-toggle-empty: var(--stylos-color-surface-subtle-base-active);
+  --_stylos-toggle-selected: var(--stylos-color-surface-bold-primary-active);
+}
+
+.stylos-toggle-input[data-state="disabled"],
+.stylos-toggle-input:has(> input:disabled) {
+  --_stylos-toggle-empty: var(--stylos-color-surface-subtle-base-disabled);
+  --_stylos-toggle-selected: var(--stylos-color-surface-bold-base-disabled);
+  --_stylos-toggle-border: var(--stylos-color-border-default);
+  --_stylos-toggle-off-thumb: var(--stylos-color-text-disabled);
+  --_stylos-toggle-on-thumb: var(--stylos-color-text-inverted);
+  cursor: default;
+}
+
+.stylos-toggle-input > input:focus-visible + .stylos-toggle-input-surface {
+  outline: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary);
+  outline-offset: var(--stylos-dimension-gap-g-0_250);
+}
+
+@media (forced-colors: active) {
+  .stylos-toggle-input > input {
+    opacity: 1;
+    appearance: auto;
+  }
+  .stylos-toggle-input > .stylos-toggle-input-surface {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stylos-toggle-input-surface,
+  .stylos-toggle-input-surface::after {
+    transition: none;
+  }
+}
+
+.stylos-toggle-input[data-size="extra small"] {
+  --_stylos-toggle-height: var(--stylos-dimension-size-s-2_000);
+  --_stylos-toggle-thumb: var(--stylos-dimension-size-s-1_500);
+  --_stylos-toggle-inset: var(--stylos-dimension-gap-g-0_250);
+  --_stylos-toggle-thumb-image: url("./assets/thumb-extra-small.svg");
+}
+
+.stylos-toggle-input[data-size="small"] {
+  --_stylos-toggle-height: var(--stylos-dimension-size-s-2_500);
+  --_stylos-toggle-thumb: var(--stylos-dimension-size-s-1_750);
+  --_stylos-toggle-inset: var(--stylos-dimension-gap-g-0_375);
+  --_stylos-toggle-thumb-image: url("./assets/thumb-small.svg");
+}
+
+.stylos-toggle-input[data-size="medium"] {
+  --_stylos-toggle-height: var(--stylos-dimension-size-s-3_000);
+  --_stylos-toggle-thumb: var(--stylos-dimension-size-s-2_000);
+  --_stylos-toggle-inset: var(--stylos-dimension-gap-g-0_500);
+  --_stylos-toggle-thumb-image: url("./assets/thumb-medium.svg");
+}
+
+.stylos-toggle-input[data-size="large"] {
+  --_stylos-toggle-height: var(--stylos-dimension-size-s-3_500);
+  --_stylos-toggle-thumb: var(--stylos-dimension-size-s-2_250);
+  --_stylos-toggle-inset: var(--stylos-dimension-gap-g-0_625);
+  --_stylos-toggle-thumb-image: url("./assets/thumb-large.svg");
+}
+
+.stylos-toggle-input[data-size="extra large"] {
+  --_stylos-toggle-height: var(--stylos-dimension-size-s-4_000);
+  --_stylos-toggle-thumb: var(--stylos-dimension-size-s-2_500);
+  --_stylos-toggle-inset: var(--stylos-dimension-gap-g-0_750);
+  --_stylos-toggle-thumb-image: url("./assets/thumb-extra-large.svg");
+}

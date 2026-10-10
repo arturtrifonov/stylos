@@ -1,0 +1,23 @@
+@import "../toggle-input/toggle-input.css";
+@import "../../behaviors/toggle-option.css";
+
+.stylos-toggle-text {
+  display: flex;
+  align-items: flex-start;
+  /* Intrinsic hug/fill sizing, not an authored dimension. */
+  /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
+  width: 100%;
+  font-weight: var(--stylos-font-weight-base);
+  line-height: var(--_stylos-toggle-text-line);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.stylos-toggle-text > .stylos-toggle-input {
+  margin-block-start: calc((var(--_stylos-toggle-text-line) - var(--_stylos-toggle-height)) / 2);
+}
+
+.stylos-toggle-text > .stylos-toggle-copy {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

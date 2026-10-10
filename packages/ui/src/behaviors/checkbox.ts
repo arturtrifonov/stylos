@@ -20,12 +20,13 @@ export function checkboxBehavior(input: HTMLInputElement, initial: CheckboxOptio
   }
   function reset(event: Event) {
     if (event.target !== input.form) return;
-    // Native reset runs after dispatch; respect cancellation and dispose.
-    queueMicrotask(() => {
+    // Trusted event dispatch can checkpoint microtasks between listeners.
+    // Wait for the next task so later form listeners can cancel native reset.
+    setTimeout(() => {
       if (destroyed || event.defaultPrevented) return;
       apply(defaultSelection);
       options.onChange(defaultSelection);
-    });
+    }, 0);
   }
   input.defaultChecked = defaultSelection === "true";
   apply(initial.isChecked);

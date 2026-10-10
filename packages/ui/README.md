@@ -231,3 +231,35 @@ Hover and pressing across the label use the recorded surface roles and
 `duration/micro` with `easing/linear`. Reduced motion disables transitions;
 forced colors displays the native input. Storybook provides one Default with
 Controls per component; static documentation uses the same exported CSS.
+
+### Toggle Input, Toggle Label and Toggle Text
+
+All three render a native checkbox with the switch role, five sizes and an
+extra-small default. `isChecked` accepts only `"false"` or `"true"`; the Figma
+`mixed` variant has no web API equivalent. Apply the setting as it changes.
+
+```svelte
+<script lang="ts">
+  import { ToggleLabel } from "@stylos/ui";
+  let notifications = $state<"false" | "true">("false");
+</script>
+
+<ToggleLabel size="medium" labelText="Notifications"
+  bind:isChecked={notifications} />
+```
+
+Input needs `accessibleName` or an external label. Label hugs one line; Text
+fills the consumer width and centres the track on the first line of wrapping
+copy. Its optional `children` replaces `labelText` with phrasing content;
+anchors retain their own activation. Keep nested labels and additional form
+controls outside the copy. The setting’s label stays the same when switched.
+
+Space and label clicks update the binding. Native `name`, `value`, `form`,
+`isRequired`, `descriptionIds` and disabled fieldsets work as on Checkbox;
+reset restores the initial selection and respects cancellation. Only checked,
+enabled named controls submit. Native validity has no inline error appearance.
+
+Surface colors and thumb travel use `duration/micro` and `easing/linear`
+(FND-MOTION-06). Reduced motion removes transitions; forced colors displays
+the native input. Storybook has one Default with Controls per component;
+static documentation uses the same exported CSS.
