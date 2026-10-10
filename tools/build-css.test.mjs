@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import { loadCanonical } from "./lib/tokens.mjs";
 import { readNaming } from "./check-tokens.mjs";
+import { loadEffectStyles } from "./lib/effect-styles.mjs";
 import {
   buildCss,
   slug,
@@ -24,7 +25,8 @@ import {
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const collections = loadCanonical(root);
 const naming = readNaming(root);
-const built = buildCss({ collections, naming });
+const effectStyles = loadEffectStyles(root);
+const built = buildCss({ collections, naming, effectStyles });
 
 const declarations = (css) =>
   new Map([...css.matchAll(/^\s*(--stylos-[a-z0-9_-]+):\s*([\s\S]*?);$/gm)].map((m) => [m[1], m[2].trim()]));
@@ -38,6 +40,34 @@ function scope(css, selector) {
 
 test("the canonical set projects without a complaint", () => {
   assert.deepEqual(built.errors, []);
+});
+
+test("focus/base preserves the Figma halo, layer order and bound shadow roles in both themes", () => {
+  const light = declarations(scope(built.css, ":root {\n  color-scheme: light;"));
+  const dark = declarations(scope(built.css, ':root[data-theme="dark"] {'));
+  for (const [theme, declarations, rgb] of [
+    ["light", light, "55 48 163"], ["dark", dark, "199 210 254"],
+  ]) {
+    assert.equal(declarations.get("--stylos-focus-base"), [
+      `0px 0px 0px 4px rgb(${rgb} / 0.16)`,
+      "0px 2px 3px 0px var(--stylos-color-shadow-primary)",
+      "0px 4px 4px 0px var(--stylos-color-shadow-base)",
+    ].join(",\n    "), theme);
+  }
+  assert.equal(built.manifest.properties["--stylos-focus-base"].figma_style,
+    "S:bd3946b8f509bb82baa5a47ab5afe8b77c1d6fac,");
+});
+
+test("a style with a missing theme or dangling colour binding fails the build", () => {
+  const style = effectStyles.get("focus/base");
+  const layers = style.layers.map(layer => ({ ...layer, color: { ...layer.color } }));
+  layers[0].color.values = new Map([["light", "#3730a3"]]);
+  layers[1].color.ref = "color/shadow/missing";
+  const broken = new Map([["focus/base", { ...style, layers }]]);
+  const result = buildCss({ collections, naming, effectStyles: broken });
+  assert.equal(result.css, "");
+  assert.match(result.errors.join("\n"), /both themes/);
+  assert.match(result.errors.join("\n"), /color\/shadow\/missing/);
 });
 
 // --- §2, the name rule -----------------------------------------------------

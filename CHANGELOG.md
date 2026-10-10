@@ -4,6 +4,11 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-10-10 (Input Text)
+
+- Add native Input Text with five sizes, bindable value, validation, read-only and disabled modes, associated Label and supporting text, decorative icon snippets and suffix. The input covers the complete field; a framework-free adapter reserves measured adornment widths. Include independent CSS, static previews and compact Default and Icons playground stories.
+- Record Figma `focus/base` separately from variable exports and emit it as a composite theme-aware token. Input Text crossfades resting and focus effects through opacity with micro/linear Motion, preserving the halo size; reduced motion makes changes immediate.
+
 ### Added — 2026-10-10 (Tags)
 
 - Add non-interactive Tag Fill and Tag Outline with five sizes, five tones, two text cases and configured decorative icon snippets. Match Figma’s medium default, fixed band heights, optical icon slots, native cap-height text trimming with a normal-line-box fallback and inside outline; include independent CSS, static icon examples and compact Default and Icons playground stories.

@@ -21,6 +21,7 @@ import { readIcons } from "../build-ui-icons.mjs";
 import path from "node:path";
 
 import { loadCanonical } from "./tokens.mjs";
+import { loadEffectStyles } from "./effect-styles.mjs";
 import { slugPath } from "./registry.mjs";
 import { readNaming } from "../check-tokens.mjs";
 import { buildCss } from "../build-css.mjs";
@@ -46,6 +47,7 @@ const kebab = (name) => name.trim().replace(/\s+/g, "-");
  * buy nothing here, where the only reader is this repository's own tooling.
  */
 let iconCache = null;
+let inputPreviewCounter = 0;
 function iconDrawings() {
   if (iconCache === null) {
     const root = fileURLToPath(new URL("../..", import.meta.url));
@@ -55,6 +57,9 @@ function iconDrawings() {
 }
 
 export function sampleHtml(entry, props = {}) {
+  if (entry.id === "Input Text" && props.state && props.state !== "default") {
+    props = { ...props, validation: "off" };
+  }
   const api = new Map((entry.api ?? []).map((property) => [property.name, property]));
   const attrs = [];
   const styles = [];
@@ -85,6 +90,10 @@ export function sampleHtml(entry, props = {}) {
       // String properties need their own renderer; they are not text content.
       if (entry.id === "Tooltip" && name === "content width") {
         styles.push(`--_stylos-tooltip-width:${value}`);
+      } else if (entry.id === "Input Text" && ["id", "name", "form", "autocomplete", "label ids", "description ids"].includes(name)) {
+        // Native text-field attributes are rendered below.
+      } else if (entry.id === "Label" && ["html for", "additional text id"].includes(name)) {
+        // Native label association is rendered below.
       } else if (["Checkbox Input", "Checkbox Label", "Checkbox Text", "Radio Input", "Radio Label", "Radio Text", "Toggle Input", "Toggle Label", "Toggle Text"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
         // Form integration does not change a static visual surface.
       } else if (["Button Base", "Button Outline", "Button Ghost"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
@@ -130,8 +139,55 @@ export function sampleHtml(entry, props = {}) {
   if (entry.id === "Label") {
     const marker = props["is required"] ? '<span aria-hidden="true"> *</span>' : "";
     const showsAdditional = (props.validation && props.validation !== "off") || props["has additional text"];
-    const additional = showsAdditional ? `<span>${esc(props["additional text"] ?? "Additional text")}</span>` : "";
-    return `<label class="${cls}"${attr}>${esc(props["label text"] ?? "Label")}${marker}${additional}</label>`;
+    const additionalId = props["additional text id"] ? ` id="${esc(props["additional text id"])}"` : "";
+    const additional = showsAdditional ? `<span${additionalId}>${esc(props["additional text"] ?? "Additional text")}</span>` : "";
+    const htmlFor = props["html for"] ? ` for="${esc(props["html for"])}"` : "";
+    return `<label class="${cls}"${attr}${htmlFor}>${esc(props["label text"] ?? "Label")}${marker}${additional}</label>`;
+  }
+
+  if (entry.id === "Input Text") {
+    const id = props.id ?? `input-text-preview-${++inputPreviewCounter}`;
+    const size = props.size ?? "medium";
+    const state = props.state ?? "default";
+    const outcome = state === "default" ? props.validation ?? "off" : "off";
+    const labelOutcome = ["error", "warning"].includes(outcome) ? outcome : "off";
+    const hasLabel = props["has label"] ?? true;
+    const showsMessage = labelOutcome !== "off" || props["has additional text"];
+    const messageId = `${id}-message`;
+    const suffixId = `${id}-suffix`;
+    const message = props["additional text"] ?? "Additional text";
+    const labelProps = {
+      size, state: state === "disabled" ? "disabled" : "default", validation: labelOutcome,
+      "label text": props["label text"] ?? "Label", "is required": props["is required"] ?? false,
+      "has additional text": props["has additional text"] ?? false, "additional text": message,
+      "html for": id, "additional text id": messageId,
+    };
+    const label = hasLabel ? sampleHtml({ id: "Label", api: [...Object.keys(labelProps).map(name => ({
+      name, kind: ["size", "state", "validation"].includes(name) ? "variant"
+        : ["is required", "has additional text"].includes(name) ? "boolean"
+        : ["html for", "additional text id"].includes(name) ? "string" : "text",
+      values: [{ value: labelProps[name] }],
+    }))] }, labelProps) : showsMessage ? `<span id="${esc(messageId)}" hidden>${esc(message)}</span>` : "";
+    const descriptions = [props["description ids"], showsMessage ? messageId : "",
+      props["has suffix text"] && props["suffix text"] ? suffixId : ""].filter(Boolean).join(" ");
+    const native = ["name", "form", "autocomplete"].filter(name => props[name])
+      .map(name => ` ${name}="${esc(props[name])}"`).join("");
+    const accessibleName = hasLabel ? props["label text"] ?? "Label" : props["accessible name"];
+    const semantics = (accessibleName ? ` aria-label="${esc(accessibleName)}"` : "")
+      + (!hasLabel && props["label ids"] ? ` aria-labelledby="${esc(props["label ids"])}"` : "")
+      + (descriptions ? ` aria-describedby="${esc(descriptions)}"` : "")
+      + (outcome === "error" ? ' aria-invalid="true"' : "")
+      + (state === "disabled" ? " disabled" : state === "read only" ? " readonly" : "")
+      + (props["is required"] ? " required" : "");
+    const icon = position => {
+      const name = props[`${position} icon`];
+      return props[`has ${position} icon`] && typeof name === "string" && iconDrawings().has(name)
+        ? `<span class="stylos-input-text-icon" data-position="${position}" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name })}</span>` : "";
+    };
+    const validation = outcome !== "off" ? `<span class="stylos-input-text-validation" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: { error: "error", warning: "warning", success: "check_circle" }[outcome] })}</span>` : "";
+    const suffix = props["has suffix text"] ? `<span class="stylos-input-text-suffix" id="${esc(suffixId)}">${esc(props["suffix text"] ?? "Suffix")}</span>` : "";
+    const placeholder = props["has placeholder"] ? ` placeholder="${esc(props["placeholder text"] ?? "Placeholder text")}"` : "";
+    return `<div class="${cls}"${attr} data-is-filled="${!!props.value}">${label}<div class="stylos-input-text-field"><input type="text" id="${esc(id)}" value="${esc(props.value ?? "")}"${native}${semantics}${placeholder}><div class="stylos-input-text-adornments"><span class="stylos-input-text-leading">${icon("leading")}</span><span class="stylos-input-text-trailing">${suffix}${validation}${icon("trailing")}</span></div></div></div>`;
   }
 
   if (["Tag Fill", "Tag Outline"].includes(entry.id)) {
@@ -216,6 +272,7 @@ export function buildPreviewAssets(root, entries) {
   const { css: tokensCss, errors } = buildCss({
     collections: loadCanonical(root),
     naming: readNaming(root),
+    effectStyles: loadEffectStyles(root),
   });
   if (errors.length > 0) {
     throw new Error(`preview: the token sheet did not build:\n${errors.join("\n")}`);

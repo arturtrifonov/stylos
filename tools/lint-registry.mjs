@@ -316,7 +316,7 @@ function checkContract(entry, byId, errors, resolveToken, systemVersion) {
     const values = valuesOf(property);
 
     if (property.kind === "event") {
-      if (property.name !== "onclick") errors.push(`${file}: ${where} is an unsupported native event`);
+      if (!["onclick", "oninput", "onchange"].includes(property.name)) errors.push(`${file}: ${where} is an unsupported native event`);
       if (property.default !== undefined || property.values !== undefined) {
         errors.push(`${file}: ${where} is an event callback and has no default or values`);
       }

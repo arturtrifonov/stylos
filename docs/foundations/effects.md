@@ -75,3 +75,11 @@ Why: a shadow is not picked by how strong it looks. Its job is to tell a person 
 Serves: PRN-06.
 
 Border *colour* roles live in the semantic `color` collection, not here — see [color.md](color.md).
+
+## Focus
+
+The Figma effect style `focus/base` is available as `--stylos-focus-base`.
+It combines a 4px primary halo with the style's two shadow layers. Input Text
+uses it on focus instead of its resting elevation. Because variable exports
+omit effect styles, its source record lives in `tokens/_styles.yaml`, separately
+from generated collections; see [tokens/README.md](../../tokens/README.md).

@@ -24,6 +24,7 @@ import { fileURLToPath } from "node:url";
 import { loadCanonical } from "./lib/tokens.mjs";
 import { cssDuration, cssEasing } from "./lib/motion.mjs";
 import { readNaming, runCheck } from "./check-tokens.mjs";
+import { loadEffectStyles, validateEffectStyles } from "./lib/effect-styles.mjs";
 
 export const PREFIX = "--stylos-";
 
@@ -173,8 +174,9 @@ export function specialFamilyErrors({ color, palette, paletteName }) {
  * @param {Map} input.naming  tokens/_naming.yaml, parsed
  * @returns {{css: string, manifest: object, errors: string[]}}
  */
-export function buildCss({ collections, naming }) {
-  const errors = [];
+export function buildCss({ collections, naming, effectStyles = new Map() }) {
+  const errors = validateEffectStyles(effectStyles, collections);
+  if (errors.length) return { css: "", manifest: {}, errors };
   const byName = new Map(collections.map((c) => [c.name, c]));
 
   // `draws_from` says which primitive collection a semantic one resolves
@@ -392,6 +394,24 @@ export function buildCss({ collections, naming }) {
       }
     }
 
+    if (effectStyles.size) {
+      lines.push(``, `  /* Figma effect styles — tokens/_styles.yaml */`);
+      for (const [styleName, style] of effectStyles) {
+        const name = property(styleName);
+        names.push(name);
+        if (record) declare(name, {
+          style: styleName, figma_style: style.id, source: style.source, scoped: true,
+        }, `style/${styleName}`);
+        const layers = style.layers.map(layer => {
+          const color = layer.color.ref
+            ? `var(${refProperty(layer.color.ref, mode, `style/${styleName}`)})`
+            : cssColor(layer.color.values.get(mode), layer.color.alpha);
+          return `${layer.x}px ${layer.y}px ${layer.blur}px ${layer.spread}px ${color}`;
+        });
+        lines.push(`  ${name}:`, layers.map(layer => `    ${layer}`).join(",\n") + `;`);
+      }
+    }
+
     return { lines, names };
   };
 
@@ -582,6 +602,7 @@ export function main(root, argv) {
   const { css, manifest, errors } = buildCss({
     collections: loadCanonical(root),
     naming: readNaming(root),
+    effectStyles: loadEffectStyles(root),
   });
 
   if (errors.length) {

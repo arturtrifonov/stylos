@@ -354,6 +354,9 @@ test("boolean defaults are booleans while string defaults need not be listed exa
 
 test("native callbacks reject unimplemented events and serialized defaults", () => {
   assert.deepEqual(checkRegistry([entry("Button Base",{api:[{name:"onclick",kind:"event"}]})]).errors, []);
+  for (const name of ["oninput", "onchange"]) {
+    assert.deepEqual(checkRegistry([entry("Input Text", { api: [{ name, kind: "event" }] })]).errors, []);
+  }
   for (const property of [{name:"onunknown",kind:"event"},{name:"onclick",kind:"event",default:"handler"}]) {
     assert.ok(checkRegistry([entry("Button Base",{api:[property]})]).errors.some(error => /native event|event callback/.test(error)));
   }

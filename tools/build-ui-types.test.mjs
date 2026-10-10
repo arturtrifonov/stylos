@@ -94,6 +94,12 @@ test("native onclick is typed as a callback and unsupported event names fail", (
   assert.throws(() => fieldFor({name:"onunknown",kind:"event"}), /unsupported native event/);
 });
 
+test("native text-field events keep their browser Event type", () => {
+  for (const name of ["oninput", "onchange"]) {
+    assert.equal(fieldFor({ name, kind: "event" }).type, "(event: Event) => void");
+  }
+});
+
 
 test("a snippet-only instance retains its name and rejects unsupported renderer types", () => {
   const property = { name: "leading icon", kind: "instance", svelte_type: "snippet" };

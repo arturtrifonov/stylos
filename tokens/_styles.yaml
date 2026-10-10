@@ -1,0 +1,38 @@
+# RECORDED FROM FIGMA STYLES — maintained separately from variable exports.
+# focus/base inspected 2026-10-10. Layer order and geometry are Figma's.
+# Bound shadow colours use canonical roles, not the style's cached RGBA.
+source:
+  figma_file: "Stylos / Styles"
+  figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
+  inspected: "2026-10-10"
+styles:
+  "focus/base":
+    type: "shadow"
+    id: "S:bd3946b8f509bb82baa5a47ab5afe8b77c1d6fac,"
+    layers:
+      halo:
+        x: 0
+        y: 0
+        blur: 0
+        spread: 4
+        color:
+          variable: "Focus/Primary"
+          id: "VariableID:2234:4225"
+          values:
+            light: "#3730a3"
+            dark: "#c7d2fe"
+          alpha: 0.16
+      primary:
+        x: 0
+        y: 2
+        blur: 3
+        spread: 0
+        color:
+          ref: "color/shadow/primary"
+      base:
+        x: 0
+        y: 4
+        blur: 4
+        spread: 0
+        color:
+          ref: "color/shadow/base"
