@@ -1,5 +1,29 @@
 @import "../../behaviors/tag.css";
 
+.stylos-tag-fill {
+  color: var(--stylos-color-text-inverted);
+}
+
+.stylos-tag-fill[data-tone="base"] {
+  background-color: var(--stylos-color-surface-bold-base-default);
+}
+
+.stylos-tag-fill[data-tone="primary"] {
+  background-color: var(--stylos-color-surface-bold-primary-default);
+}
+
+.stylos-tag-fill[data-tone="warning"] {
+  background-color: var(--stylos-color-surface-bold-warning-default);
+}
+
+.stylos-tag-fill[data-tone="danger"] {
+  background-color: var(--stylos-color-surface-bold-danger-default);
+}
+
+.stylos-tag-fill[data-tone="success"] {
+  background-color: var(--stylos-color-surface-bold-success-default);
+}
+
 .stylos-tag-outline {
   box-shadow: inset 0 0 0 var(--stylos-border-width-normal) var(--_stylos-tag-border);
 }

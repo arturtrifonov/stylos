@@ -93,10 +93,10 @@ The `0.1` milestone's checklist, and the membership record for every entry the w
 | # | Wave | Entries | Ends with | Est. |
 | --- | --- | --- | --- | ---: |
 | 1 | Primitives and selection controls | Badge, Label, Loader, Indicator Status, Indicator Special, Button Inner, Link, Checkbox Input / Label / Text, Radio Input / Label / Text | a form column that renders from the library alone | 1 wk |
-| 2 | The remaining small elements | Icon, Tag Fill / Outline, Toggle Input / Label / Text | a filter row | 1 wk |
+| 2 | The remaining small elements | Icon, Tag, Toggle Input / Label / Text | a filter row | 1 wk |
 | 3 | The table | Table Cell Heading, Table Cell Text, Table Row Head, Table Row Body | a dense table carrying real data | 1–2 wk |
 | 4 | Input | Input Text, Select, Dropdown Item Default / Parent / Checkbox / Toggle, Dropdown | a toolbar and filters above that table | 1 wk |
-| 5 | The Button family | Button Base, Button Outline, Button Ghost, Button Icon Base, Button Icon Outline, Button Icon Ghost | every action on the screen | 2 wk |
+| 5 | The Button family | Button, Button Icon Base, Button Icon Outline, Button Icon Ghost | every action on the screen | 2 wk |
 | 6 | The shell | Modal, Drawer, Tooltip | the Stage 6 proof screen, composed | 1 wk |
 
 *Amended 2026-09-07:* **Tooltip was built out of order**, ahead of the seven elements still open in wave 1 and the rest of wave 2 — the owner chose it explicitly. The table is a sequence rather than a gate, and nothing in it depends on the order being kept: the waves are grouped by what a screen needs next, not by what compiles after what. Wave 6's other two entries, Modal and Drawer, are untouched.
@@ -120,6 +120,17 @@ remaining Tag treatments. It uses a full-field native input, decorative icons
 and suffix, five sizes, validation and distinct read-only/disabled modes. The
 workshop retains Default followed by Icons playground. Tag Interactive waits
 for approved designs.
+
+*Amended 2026-10-10:* the owner supplied **Tag Interactive Fill / Outline**
+designs in Figma, unblocking their implementation ahead of the beta queue. They
+reuse Tag geometry with native button activation, browser-derived pointer and
+keyboard states, disabled mode and Default followed by Icons playground.
+
+*Amended 2026-10-10:* the owner approved a single frontend API for visual
+treatments: **Button** (base/outline/ghost), **Tag** (fill/outline) and **Tag
+Interactive** (fill/outline). The registry maps each treatment to its separate
+Figma set. Label/Text forms of Checkbox, Radio and Toggle retain their distinct
+single-line and multiline layouts, composing the same Input.
 
 ### 4.2 Stage 5 — `@stylos/ui`
 
@@ -256,7 +267,7 @@ The vocabulary — what a milestone is, how it differs from a release and from a
 | Milestone | The decision it opens | Entries |
 | --- | --- | --- |
 | alpha | the decision that the library is ready for **internal distribution** — someone other than the author builds on it | Input Color, Input Date, Input Datetime, Input Email, Input Number, Input Password, Input Search, Input Telephone, Input Time, Input URL, Text Area, Multiselect, Select Cascade, Date Picker, Slider, Chips, Uploader, Queryfield, Progress, Avatar, Image, Table Cell Actions, Table Cell Boolean, Table Cell Checkbox, Table Cell Expand, Table Cell Image, Table Cell Link, Table Cell Person, Table Cell Tags, Table Cell Heading Checkbox, Table Toolbar, Pagination, Button Group, Button Dropdown, Breadcrumbs, Tabs Horizontal, Tab Item, Tabs Vertical, Switcher, Scrollbar, Accordion, Accordion Header |
-| beta | the decision that it is ready **outside** — a product that is not ours, with the states a real screen has and an API that will not move under it | Toast, Alert, Popover, Skeleton Loader, Data Info, Metric, Card, List, Tree, Person, Event, Asset, Logo, Feature List, Hero, Code Snippet, Charts, Header, Side Panel Menu, Steps, Flex Layout, Tag Interactive Fill, Tag Interactive Outline, Table Cell Multiline |
+| beta | the decision that it is ready **outside** — a product that is not ours, with the states a real screen has and an API that will not move under it | Toast, Alert, Popover, Skeleton Loader, Data Info, Metric, Card, List, Tree, Person, Event, Asset, Logo, Feature List, Hero, Code Snippet, Charts, Header, Side Panel Menu, Steps, Flex Layout, Tag Interactive, Table Cell Multiline |
 | 1.0 | the decision that the library is **complete and its API is a commitment** | Code Editor, Code Editor Text Area, Code Editor Toolbar, Edit Mode, Audio Player, Video Player, Carousel |
 | Parked | no decision waits on these — mobile, which this plan excludes (§8) | Bottom Sheet, Pull to Refresh |
 

@@ -52,7 +52,7 @@ Checked by: `npm run validate:registry` rejects missing required data on `ready`
 
 Why: a written contract does not prove that its implementations follow it.
 
-Readiness requires a Figma representation: `figma.file_key` and `figma.node_id` identify it, and `figma.last_verified` records a real check after its latest relevant change. A code-only component cannot be ready. Authoring and publication checks live in [Figma component conventions](../../figma/components.md); frontend checks live in the [package guide](../../packages/ui/README.md#accessibility-implementation-and-verification).
+Readiness requires a Figma representation: `figma.file_key` and `figma.node_id` identify a single set, or `figma.sources` maps every visual treatment. Each address records `last_verified` after its latest relevant change. A code-only component cannot be ready. Authoring and publication checks live in [Figma component conventions](../../figma/components.md); frontend checks live in the [package guide](../../packages/ui/README.md#accessibility-implementation-and-verification).
 
 Review covers supported combinations, shared-token use, accessibility conditions and an understood migration path for breaking API changes. Verification of an implementation is separate from contract completeness.
 

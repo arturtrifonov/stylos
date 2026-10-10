@@ -20,8 +20,7 @@ do_not_use_when:
   -
     text: "The content is a word rather than a number — a label, category, or piece of descriptive metadata."
     instead:
-      - "Tag Fill"
-      - "Tag Outline"
+      - "Tag"
   -
     text: "The thing being shown is a status with no count, such as an online dot or a state marker."
     instead: "Indicator Status"
@@ -40,16 +39,13 @@ parents:
   - "Radio Input"
   - "Radio Label"
   - "Radio Text"
-  - "Tag Fill"
-  - "Tag Outline"
+  - "Tag"
   - "Toggle Input"
   - "Toggle Label"
   - "Toggle Text"
   - "Tooltip"
   - "Asset"
-  - "Button Base"
-  - "Button Outline"
-  - "Button Ghost"
+  - "Button"
   - "Button Dropdown"
   - "Button Group"
   - "Button Icon Base"

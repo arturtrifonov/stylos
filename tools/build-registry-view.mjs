@@ -708,7 +708,10 @@ function renderDetail() {
   derived.appendChild(
     el("dd", {}, [
       entry.figma_url
-        ? el("a", { href: entry.figma_url, target: "_blank", rel: "noreferrer", text: "open node " + entry.figma.node_id })
+        ? el("span", {}, (entry.figma.sources ?? [entry.figma]).map(source => el("a", {
+            href: "https://www.figma.com/design/" + source.file_key + "/?node-id=" + source.node_id,
+            target: "_blank", rel: "noreferrer", text: (source.name ?? "open node " + source.node_id) + " ",
+          })))
         : el("span", { class: "empty", text: "not linked" }),
     ])
   );

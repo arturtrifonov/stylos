@@ -10,7 +10,7 @@
 Compiled skill document for manual import into Figma Agent. Contains:
 
 - `stylos-component-integrity-check` v0.7
-- `stylos-description-sync` v0.2
+- `stylos-description-sync` v0.3
 - `stylos-naming-cleanup` v0.17
 - `stylos-reference-reconstruction` v0.4
 
@@ -467,11 +467,11 @@ Before finishing, confirm that:
 
 ---
 name: stylos-description-sync
-description: "Fill the Figma description of the selected components from their registry entries in the Stylos repository. For each selected component or component set, derive the registry path from the component's name, read that YAML file over the GitHub connector, compose the description from summary, use_when and do_not_use_when — both lists in full — and write it to descriptionMarkdown. Supports several selected components at once. Never authors a description: when no registry entry exists, or a required field is missing, stop for that component and report it."
+description: "Fill the Figma description of the selected components from their registry entries in the Stylos repository. For each selected component or component set, resolve the exact registry identity or an explicit figma.sources mapping, read that YAML file over the GitHub connector, compose the description from summary, use_when and do_not_use_when — both lists in full — and write it to descriptionMarkdown. Supports several selected components at once. Never authors a description: when no registry entry exists, or a required field is missing, stop for that component and report it."
 metadata:
   owner: Artur Trifonov
   system: Stylos Design System
-  version: 0.2
+  version: 0.3
 ---
 
 # Stylos Description Sync
@@ -531,15 +531,22 @@ From the component's Figma name:
 
 Fetch the derived path.
 
-**If it is not there,** you may do exactly one more thing: list `docs/components/registry/` and look for a file whose `id` equals the component's Figma name exactly. If one exists, use it, and report the path mismatch as a finding — a component's path must follow from its `id`, so this is a defect in the repository worth naming.
-
-If neither the derived path nor a matching `id` exists, **stop for this component.** Do not look for a similarly named file. Do not read another component's entry. Do not write anything.
-
-Report it as: no entry matches this Figma name. **Add one sentence when the name contains ` / ` or otherwise looks like a pre-rename name:** the entry probably exists under a compound `id` and the component is still awaiting its rename in Figma (`PLAN.md` §4). Renaming the component is the fix. **Do not create an entry, do not guess the compound name, and do not write a description from a file whose `id` you had to reason your way to.**
+**If it is not there,** list `docs/components/registry/` and find an exact
+identity: either the entry's `id` equals the Figma name, or a `figma.sources`
+row records that name and the selected node's file key and node id. The latter
+maps separate visual treatments to one frontend contract (for example Button
+Base/Outline/Ghost map to Button). Read the matching entry; do not infer a
+mapping from similar names or family membership. No match or multiple matches
+means skip this component and report the ambiguity.
 
 ### 3. Verify identity
 
-The file's `id` must equal the component's Figma name exactly — same case, same spacing, same slashes. If it does not, **stop for this component** and report both strings side by side. A near match is a mismatch.
+For a single-representation entry, `id` must equal the Figma name exactly.
+For a unified entry, a `figma.sources` row must match the Figma name, file key
+and node id exactly; its `value` belongs to the contract's `variant_property`.
+An explicitly mapped treatment does not need a Figma rename. If verification
+fails, skip the component and report the mismatch. Preserve the selected write
+target and the existing overwrite-confirmation policy.
 
 ### 4. Check the required fields
 
@@ -617,7 +624,7 @@ One row per selected object, in selection order:
 
 Results: `written`, `unchanged`, `awaiting confirmation`, `skipped — no entry for this name`, `skipped — id mismatch`, `skipped — missing <field>`, `skipped — instance`, `skipped — not a component`.
 
-Add any findings about the repository below the table: a path that did not follow from an `id`, a field whose text reads badly, an entry whose `id` no longer matches Figma. Keep a component still awaiting its Figma rename separate from a repository defect — the first is scheduled work, the second is a bug.
+Add any findings about the repository below the table: a path that did not follow from an `id`, a field whose text reads badly, an entry whose identity or explicit source mapping no longer matches Figma. Keep a component still awaiting its Figma rename separate from a repository defect — the first is scheduled work, the second is a bug.
 
 **Do not report success while any row is a skip.** State how many were written and how many were not, and why.
 
@@ -625,7 +632,7 @@ Add any findings about the repository below the table: a path that did not follo
 
 - Author a description, in whole or in part, from anything other than the three required fields.
 - Write a partial description when a required field is missing.
-- Substitute a different registry entry for a missing one, or infer a compound `id` from a stale Figma name.
+- Substitute a different registry entry without an exact id or explicit source mapping, or infer a compound `id` from a stale Figma name.
 - Write `description`.
 - Create, edit or commit anything in the repository. It reads.
 - Modify anything outside the selection.

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { ButtonGhost, Icon } from "@stylos/ui";
-  import type { ButtonGhostProps } from "@stylos/ui";
+  import { Button, Icon } from "@stylos/ui";
+  import type { ButtonProps } from "@stylos/ui";
 
-  type Props = Omit<ButtonGhostProps, "leadingIcon" | "trailingIcon"> & {
+  type Props = Omit<ButtonProps, "leadingIcon" | "trailingIcon"> & {
     leadingIconName?: string;
     trailingIconName?: string;
   };
@@ -12,4 +12,4 @@
 
 {#snippet leading()}<Icon name={leadingIconName} />{/snippet}
 {#snippet trailing()}<Icon name={trailingIconName} />{/snippet}
-<ButtonGhost {...args} leadingIcon={leading} trailingIcon={trailing} />
+<Button {...args} leadingIcon={leading} trailingIcon={trailing} />

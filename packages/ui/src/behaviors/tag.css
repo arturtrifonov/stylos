@@ -3,7 +3,7 @@
 /* Figma Tag geometry. Each icon slot is two units narrower than its icon;
  * the matching gap token carries the outward optical compensation.
  */
-:is(.stylos-tag-fill, .stylos-tag-outline) {
+:is(.stylos-tag-fill, .stylos-tag-outline, .stylos-tag-interactive-fill, .stylos-tag-interactive-outline) {
   display: inline-flex;
   flex: none;
   align-items: center;
@@ -26,12 +26,12 @@
   vertical-align: middle;
 }
 
-:is(.stylos-tag-fill, .stylos-tag-outline)[data-text-case="original"] {
+:is(.stylos-tag-fill, .stylos-tag-outline, .stylos-tag-interactive-fill, .stylos-tag-interactive-outline)[data-text-case="original"] {
   letter-spacing: var(--stylos-font-letter-spacing-style-normal);
   text-transform: none;
 }
 
-/* Figma Tag Fill/Outline: Vertical trim = CAP_HEIGHT in every variant.
+/* Figma static and interactive Tags: Vertical trim = CAP_HEIGHT in every variant.
  * This newly available feature is below the Widely available floor;
  * unsupported browsers retain the centred normal line box above.
  */
@@ -58,7 +58,7 @@
 .stylos-tag-icon[data-position="leading"] > * { right: 0; }
 .stylos-tag-icon[data-position="trailing"] > * { left: 0; }
 
-:is(.stylos-tag-fill, .stylos-tag-outline)[data-size="extra small"] {
+:is(.stylos-tag-fill, .stylos-tag-outline, .stylos-tag-interactive-fill, .stylos-tag-interactive-outline)[data-size="extra small"] {
   --_stylos-tag-height: var(--stylos-dimension-size-s-2_000);
   --_stylos-tag-padding: var(--stylos-dimension-gap-g-0_875);
   --_stylos-tag-gap: var(--stylos-dimension-gap-g-0_500);
@@ -67,7 +67,7 @@
   --_stylos-tag-icon-size: var(--stylos-dimension-size-s-1_500);
 }
 
-:is(.stylos-tag-fill, .stylos-tag-outline)[data-size="small"] {
+:is(.stylos-tag-fill, .stylos-tag-outline, .stylos-tag-interactive-fill, .stylos-tag-interactive-outline)[data-size="small"] {
   --_stylos-tag-height: var(--stylos-dimension-size-s-2_500);
   --_stylos-tag-padding: var(--stylos-dimension-gap-g-1_000);
   --_stylos-tag-gap: var(--stylos-dimension-gap-g-0_625);
@@ -76,7 +76,7 @@
   --_stylos-tag-icon-size: var(--stylos-dimension-size-s-1_750);
 }
 
-:is(.stylos-tag-fill, .stylos-tag-outline)[data-size="medium"] {
+:is(.stylos-tag-fill, .stylos-tag-outline, .stylos-tag-interactive-fill, .stylos-tag-interactive-outline)[data-size="medium"] {
   --_stylos-tag-height: var(--stylos-dimension-size-s-3_000);
   --_stylos-tag-padding: var(--stylos-dimension-gap-g-1_250);
   --_stylos-tag-gap: var(--stylos-dimension-gap-g-0_750);
@@ -85,7 +85,7 @@
   --_stylos-tag-icon-size: var(--stylos-dimension-size-s-2_000);
 }
 
-:is(.stylos-tag-fill, .stylos-tag-outline)[data-size="large"] {
+:is(.stylos-tag-fill, .stylos-tag-outline, .stylos-tag-interactive-fill, .stylos-tag-interactive-outline)[data-size="large"] {
   --_stylos-tag-height: var(--stylos-dimension-size-s-3_500);
   --_stylos-tag-padding: var(--stylos-dimension-gap-g-1_500);
   --_stylos-tag-gap: var(--stylos-dimension-gap-g-0_875);
@@ -94,7 +94,7 @@
   --_stylos-tag-icon-size: var(--stylos-dimension-size-s-2_250);
 }
 
-:is(.stylos-tag-fill, .stylos-tag-outline)[data-size="extra large"] {
+:is(.stylos-tag-fill, .stylos-tag-outline, .stylos-tag-interactive-fill, .stylos-tag-interactive-outline)[data-size="extra large"] {
   --_stylos-tag-height: var(--stylos-dimension-size-s-4_000);
   --_stylos-tag-padding: var(--stylos-dimension-gap-g-2_000);
   --_stylos-tag-gap: var(--stylos-dimension-gap-g-1_000);

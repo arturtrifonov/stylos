@@ -32,8 +32,7 @@ do_not_use_when:
     text: "The text is a permanent classification of the thing beside it — a status, a category, a count."
     instead:
       - "Badge"
-      - "Tag Fill"
-      - "Tag Outline"
+      - "Tag"
 children:
   - "Icon"
   - "Indicator Status"

@@ -577,6 +577,21 @@ test("renders html, motion and figma_notes, each where it is read", () => {
   assert.match(html, /has scrollbar draws the bar/);
 });
 
+test("unified component records link every authored Figma treatment", () => {
+  const entries = loadRegistry(repoRoot);
+  const context = pageContext(entries, { root: repoRoot });
+  for (const id of ["Button", "Tag", "Tag Interactive"]) {
+    const entry = entries.find(item => item.id === id);
+    const html = renderComponentPage(entry, context);
+    for (const source of entry.figma.sources) {
+      assert.ok(html.includes(`https://www.figma.com/design/${source.file_key}/?node-id=${source.node_id}`), source.name);
+      assert.ok(html.includes(source.name), source.name);
+      assert.ok(html.includes(source.last_verified), source.name);
+    }
+    assert.ok(!html.includes("node-id=undefined"));
+  }
+});
+
 test("resolves every token name and prints the value with the name", () => {
   const entry = contract();
   const html = renderComponentPage(entry, pageContext([entry, alternative], { resolveToken }));
@@ -836,10 +851,11 @@ test("Checkbox compositions preview nested Input surface and only visible label 
   }
 });
 
-for (const id of ["Button Base", "Button Outline", "Button Ghost"]) {
-test(`${id} preview retains native semantics and escapes copy and form attributes`, () => {
+for (const variant of ["base", "outline", "ghost"]) {
+const id = "Button";
+test(`${id} ${variant} preview retains native semantics and escapes copy and form attributes`, () => {
   const entry = loadRegistry(repoRoot).find(entry => entry.id === id);
-  const html = sampleHtml(entry, {...defaultAssignment(entry), type:"submit",name:'intent"',value:'<publish>',state:"disabled","label text":"<Save>"});
+  const html = sampleHtml(entry, {...defaultAssignment(entry), variant, type:"submit",name:'intent"',value:'<publish>',state:"disabled","label text":"<Save>"});
   assert.match(html, /<button type="submit"/);
   assert.match(html, /name="intent&quot;" value="&lt;publish&gt;"/);
   assert.match(html, / disabled><span>&lt;Save&gt;<\/span>/);

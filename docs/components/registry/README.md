@@ -8,9 +8,9 @@ The readable page for a component is **generated** from its entry. Nothing here 
 
 ## Files and paths
 
-One file per component, at the path the `id` implies: `Table Cell Text` → `table-cell-text.yaml`. A component's `id` must match its Figma name exactly.
+One file per component, at the path the `id` implies: `Table Cell Text` → `table-cell-text.yaml`. A component's `id` names its public contract. It matches its Figma name for a single representation; separate Figma visual treatments can instead map explicitly to a unified frontend contract through `figma.sources`.
 
-An `id` carrying a `/` puts its file in a directory — `Foo / Bar` → `foo/bar.yaml` — because the path mirrors Figma's `/` hierarchy naming. No entry does this. The twenty-one that did were the 2026-08-20 import's shape and were renamed to compound names on 2026-09-02; see *Families* below for why a slash group is not how this registry groups anything. The machinery stays because the rule about matching Figma's name is unconditional, not because the shape is wanted.
+An `id` carrying a `/` puts its file in a directory — `Foo / Bar` → `foo/bar.yaml` — because the path mirrors Figma's `/` hierarchy naming. No entry does this. The twenty-one that did were the 2026-08-20 import's shape and were renamed to compound names on 2026-09-02; see *Families* below for why a slash group is not how this registry groups anything. The machinery stays because the path follows the canonical contract id, not because the shape is wanted.
 
 Files are read and written by the restricted YAML subset in [`tools/lib/yaml.mjs`](../../../tools/lib/yaml.mjs). Two consequences that shape the schema:
 
@@ -23,7 +23,7 @@ Files are read and written by the restricted YAML subset in [`tools/lib/yaml.mjs
 
 | Field | |
 | --- | --- |
-| `id` | canonical identifier — must match the component's Figma name exactly |
+| `id` | canonical contract identifier — matches a single Figma representation or explicitly maps several visual treatments |
 | `name` | display name, currently always equal to `id` |
 | `family` | flat grouping label, e.g. `"Checkbox"`. Not a component and not a slash group — see *Families* |
 | `level` | `primitive` \| `element` \| `object` \| `widget` \| `layout` |
@@ -44,7 +44,7 @@ The two are independent: a component can be finished in Figma with a thin entry,
 
 It stays authored rather than computed because readiness turns on judgements a tool cannot make: whether existing instances have an understood migration path, whether the supported states are the right ones.
 
-A Figma representation is mandatory for `ready`: `figma.node_id` links it, and `last_verified` records its verification. A component implemented only in code cannot pass the readiness gates. The Figma authoring checks are documented in [figma/components.md](../../../figma/components.md).
+A Figma representation is mandatory for `ready`: a single `figma.node_id` links it, or `figma.sources` links every supported visual treatment. Each representation carries its own `last_verified`. A component implemented only in code cannot pass the readiness gates. The Figma authoring checks are documented in [figma/components.md](../../../figma/components.md).
 
 **The value is `ready`, not `published`, and the reason is not taste.** Figma publishes a *file*: everything in it goes out at once, and there is no per-component publish state to mirror. A `published` value would have been a fact maintained by hand about something the tool does not have, and it would have gone stale the first time the file was published without it being updated. Which release a component's API shipped in is answered by `version`; what moved in the library at that release is answered by `CHANGELOG.md`. `status` answers the one question neither of those does — can this be built against.
 
@@ -130,7 +130,7 @@ These are two different questions and both are worth answering. The Airtable-der
 
 **Decomposition is expected, not exceptional.** A component that has grown complicated gets divided into two or more, and an existing entry becoming several is a normal event in the life of this registry rather than a correction of a mistake. It has happened six times so far — Checkbox, Indicator, Radio, Toggle, Tag and Button Icon — and the early ones left damage the validator only found weeks later. These steps are fixed so that the next one does not.
 
-1. **Each member is its own entry**, at the path its `id` implies, with `family` set to the shared label. No entry is created for the family itself, and no slash group is introduced — see *Families* above.
+1. **Each member is its own entry**, at the path its `id` implies, with `family` set to the shared label. No empty entry is created merely for the family label, and no slash group is introduced — see *Families* above. A unified frontend contract with a real API can map several authored visual treatments as described below.
 2. **Every member inherits the old entry's `children` and `parents` in full.** The allowed axis states what the system permits; until someone judges otherwise it permits, for each member, what it permitted for the whole. Narrowing it is a later per-member judgement recorded with its reason, not a blank the split leaves behind.
 3. **`uses` is not inherited.** It records an implemented instance, and an instance points at exactly one member. Read it again from Figma; never distribute it across the members.
 4. **Every reference to the old `id` becomes the ids of all the members** — in `children`, `parents` and `do_not_use_when.instead`, and in [`PLAN.md`](../../../PLAN.md)'s component tables. Sweep the whole registry, because those references live in files nobody has open at the time. Sweep the plan for a second reason: `milestone` and `wave` are read from it on every build and are never stored on an entry, so a member the plan places nowhere has no milestone at all. That is how a finished split disappears — the entries exist, the viewer files them under nothing, and deleting the old file takes its row in the plan with it.
@@ -139,6 +139,40 @@ These are two different questions and both are worth answering. The Airtable-der
 7. **The old file is deleted last**, after step 4 and never before. Deleting it first turns every reference into a failure — which is what happened to `Radio`: fifteen entries left pointing at an id that no longer resolved.
 
 `npm run validate:registry` exits 0 before the split is finished. A split that leaves it failing is not done.
+
+#### Separate Figma treatments, one frontend contract
+
+Button, Tag and Tag Interactive expose one frontend component each. Their
+`variant` values map to existing Figma sets, whose names and nodes remain intact.
+The contract retains one API and sizing model; implementations use one shared
+markup definition and the original treatment CSS. A family grouping alone does
+not justify merging different semantics or layouts.
+
+```yaml
+figma:
+  variant_property: "variant"
+  sources:
+    -
+      value: "base"
+      name: "Button Base"
+      file_key: "WUc07ZBtjRvypXtsOlbVut"
+      node_id: "4479-13507"
+      last_verified: "2026-10-10"
+    -
+      value: "outline"
+      name: "Button Outline"
+      file_key: "WUc07ZBtjRvypXtsOlbVut"
+      node_id: "4829-7643"
+      last_verified: "2026-10-10"
+```
+
+This is a shape example; the actual Button contract lists all three treatments.
+`variant_property` identifies a variant property in `api`. Its values and source
+rows match in order, with one named, addressed and verified Figma set per value.
+The sources block replaces the single-node address; the two forms cannot coexist.
+Links and readiness evidence resolve all source rows, and description-sync matches
+them by exact Figma name and address. The first source supplies the index link;
+component pages expose every source. No synthetic Figma set is created.
 
 ### `api`
 

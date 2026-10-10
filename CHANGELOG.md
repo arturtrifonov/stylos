@@ -4,6 +4,16 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-10 (Unified visual treatments)
+
+- **Breaking:** replace ButtonBase/Outline/Ghost with `Button variant="base|outline|ghost"`, TagFill/Outline with `Tag variant="fill|outline"`, and TagInteractiveFill/Outline with `TagInteractive variant="fill|outline"`. Default treatments and other props retain their values; native semantics, token roles, geometry and Motion are preserved. Independent CSS imports and Storybook sections follow the unified names; the package guide records migration.
+- Map separate Figma sets in each contract's `figma.sources`, validate complete variant coverage and verification evidence, expose every source link and adapt description-sync to exact source identity. Keep Input/Label/Text compositions separate for their distinct layouts. Remove obsolete generated styles on rebuild.
+- Standardize Button icon slots on snippets, matching Link and Tag, and fix their rendering in the icon playground. Consumers passing an icon component directly must wrap it in a snippet.
+
+### Added — 2026-10-10 (Interactive Tags)
+
+- Add Tag Interactive Fill and Outline from the new Figma sets: five sizes, five tones, two text cases, decorative icon snippets and native button activation/form integration. Reuse Tag geometry and vertical trim, with token-based pointer states, keyboard focus, disabled semantics and micro/linear Motion. Include independent CSS, static previews and compact Default and Icons playground stories.
+
 ### Added — 2026-10-10 (Input Text)
 
 - Add native Input Text with five sizes, bindable value, validation, read-only and disabled modes, associated Label and supporting text, decorative icon snippets and suffix. The input covers the complete field; a framework-free adapter reserves measured adornment widths. Include independent CSS, static previews and compact Default and Icons playground stories.

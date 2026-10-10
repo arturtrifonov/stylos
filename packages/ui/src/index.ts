@@ -25,12 +25,6 @@ export { default as CheckboxLabel } from "./components/checkbox-label/CheckboxLa
 export type { CheckboxLabelProps } from "./components/checkbox-label/props.ts";
 export { default as CheckboxText } from "./components/checkbox-text/CheckboxText.svelte";
 export type { CheckboxTextProps } from "./components/checkbox-text/props.ts";
-export { default as ButtonBase } from "./components/button-base/ButtonBase.svelte";
-export type { ButtonBaseProps } from "./components/button-base/props.ts";
-export { default as ButtonOutline } from "./components/button-outline/ButtonOutline.svelte";
-export type { ButtonOutlineProps } from "./components/button-outline/props.ts";
-export { default as ButtonGhost } from "./components/button-ghost/ButtonGhost.svelte";
-export type { ButtonGhostProps } from "./components/button-ghost/props.ts";
 export { default as RadioInput } from "./components/radio-input/RadioInput.svelte";
 export type { RadioInputProps } from "./components/radio-input/props.ts";
 export { default as RadioLabel } from "./components/radio-label/RadioLabel.svelte";
@@ -50,7 +44,9 @@ export type { LinkProps } from "./components/link/props.ts";
 export { default as ButtonInner } from "./components/button-inner/ButtonInner.svelte";
 export type { ButtonInnerProps } from "./components/button-inner/props.ts";
 
-export { default as TagFill } from "./components/tag-fill/TagFill.svelte";
-export type { TagFillProps } from "./components/tag-fill/props.ts";
-export { default as TagOutline } from "./components/tag-outline/TagOutline.svelte";
-export type { TagOutlineProps } from "./components/tag-outline/props.ts";
+export { default as Button } from "./components/button/Button.svelte";
+export type { ButtonProps } from "./components/button/props.ts";
+export { default as Tag } from "./components/tag/Tag.svelte";
+export type { TagProps } from "./components/tag/props.ts";
+export { default as TagInteractive } from "./components/tag-interactive/TagInteractive.svelte";
+export type { TagInteractiveProps } from "./components/tag-interactive/props.ts";

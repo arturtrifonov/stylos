@@ -12,6 +12,7 @@ import {
   registryPathFor,
   pagePathFor,
   figmaUrl,
+  figmaSources,
   levelRank,
   composeFigmaDescription,
 } from "./registry.mjs";
@@ -95,6 +96,21 @@ test("builds no URL from half a record", () => {
   assert.equal(figmaUrl({ file_key: "WUc07ZBtjRvypXtsOlbVut" }), null);
   assert.equal(figmaUrl({ node_id: "4479-13507" }), null);
   assert.equal(figmaUrl(null), null);
+});
+
+test("mapped Figma sets link to their first source and require every address", () => {
+  const sources = [
+    { value: "fill", name: "Tag Fill", file_key: "WUc07ZBtjRvypXtsOlbVut", node_id: "4592-18607" },
+    { value: "outline", name: "Tag Outline", file_key: "WUc07ZBtjRvypXtsOlbVut", node_id: "4820-20677" },
+  ];
+  const figma = { variant_property: "variant", sources };
+  assert.deepEqual(figmaSources(figma), sources);
+  assert.equal(figmaUrl(figma), figmaUrl(sources[0]));
+  assert.equal(derive({ api: [], figma }).linked, true);
+  assert.equal(derive({ api: [], figma: { ...figma, sources: [sources[0], { name: "Tag Outline" }] } }).linked, false);
+  assert.equal(derive({ api: [], figma: { ...figma, sources: [] } }).linked, false);
+  assert.deepEqual(figmaSources(null), []);
+  assert.deepEqual(figmaSources(sources[0]), [sources[0]]);
 });
 
 test("ranks levels in composition order", () => {

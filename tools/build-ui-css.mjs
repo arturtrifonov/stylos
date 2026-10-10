@@ -18,7 +18,7 @@
 // quietly one component short. Local SVG mask URLs are embedded byte-for-byte
 // so the stylesheet is self-contained without modifying their geometry.
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -80,6 +80,10 @@ export function buildUiCss(root) {
   );
   writeFileSync(path.join(outDir, AGGREGATE), renderAggregate(version, parts));
   written.push(`${OUT_DIR}/${AGGREGATE}`);
+  const current = new Set(written.map(file => path.basename(file)));
+  for (const file of readdirSync(outDir)) {
+    if (file.endsWith(".css") && !current.has(file)) rmSync(path.join(outDir, file));
+  }
   return written;
 }
 
