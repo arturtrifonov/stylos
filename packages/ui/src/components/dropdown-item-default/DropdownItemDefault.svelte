@@ -11,7 +11,7 @@
   const resolvedSize = $derived(panelSize?.() ?? size ?? "medium");
 </script>
 
-<li class="stylos-dropdown-item-default" role="option" data-size={resolvedSize}
+<li class="stylos-dropdown-item stylos-dropdown-item-default" role="option" data-size={resolvedSize}
   data-state={state} data-value={value} data-label={labelText}
   data-is-selected={isSelected} data-disabled={state === "disabled" ? "" : undefined}
   aria-selected={isSelected === "true"} aria-disabled={state === "disabled" ? "true" : undefined}>

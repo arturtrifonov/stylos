@@ -58,3 +58,10 @@ export { default as Tag } from "./components/tag/Tag.svelte";
 export type { TagProps } from "./components/tag/props.ts";
 export { default as TagInteractive } from "./components/tag-interactive/TagInteractive.svelte";
 export type { TagInteractiveProps } from "./components/tag-interactive/props.ts";
+
+export { default as DropdownItemCheckbox } from "./components/dropdown-item-checkbox/DropdownItemCheckbox.svelte";
+export type { DropdownItemCheckboxProps } from "./components/dropdown-item-checkbox/props.ts";
+export { default as DropdownItemToggle } from "./components/dropdown-item-toggle/DropdownItemToggle.svelte";
+export type { DropdownItemToggleProps } from "./components/dropdown-item-toggle/props.ts";
+export { dropdownControlsBehavior } from "./behaviors/dropdown-controls.ts";
+export type { DropdownControlsBehaviorOptions } from "./behaviors/dropdown-controls.ts";

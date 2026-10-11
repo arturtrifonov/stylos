@@ -6,7 +6,7 @@ name: "Dropdown Item Checkbox"
 family: "Dropdown Item"
 level: "object"
 role: "input"
-html: "<li role=\"option\"><input type=\"checkbox\">"
+html: "<li role=\"presentation\"><label><input type=\"checkbox\">"
 status: "ready"
 version: "0.1.0"
 summary: "An option that can be switched on without leaving the list."
@@ -32,10 +32,7 @@ flow_behavior:
 a11y:
   -
     status: "requires"
-    note: "is focused draws the ring and says nothing about what has it. The implementation has to move the ring with the keys and tell assistive technology which option it is on, because in a list the ring is the only thing saying where a person is."
-  -
-    status: "requires"
-    note: "A row is an option in a list, not a thing on its own. The list has to be exposed as one, with each row named and its chosen state carried programmatically — the checkbox is drawn, and drawing is not state. SC 4.1.2."
+    note: "The web row uses one native labelled control. Its full label is clickable, focus surrounds the row, and checked/disabled state is exposed by the input. The qualifier is an associated description. The owner supplies a named group rather than a listbox for control rows (SC 4.1.2)."
   -
     status: "fail"
     note: "The label of a chosen option measures 4.39:1 in light and 4.41:1 in dark on a hovered row, and 3.74:1 and 3.63:1 on a pressed one, against the 4.5:1 SC 1.4.3 asks. At rest it passes at 4.75:1 and 6.50:1 — putting the pointer on the option is what drops it under."
@@ -109,7 +106,7 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
+    default: "medium"
     description: "Row density, and every option in one list is set to the same one. Drives the padding, the gap, the type and the control, and the control is driven in step so it is never a size out from its row."
     values:
       -
@@ -131,23 +128,13 @@ api:
       -
         value: "default"
       -
-        value: "hover"
-      -
-        value: "active"
-        note: "The row under a press. Not the row the keyboard is on — that is is focused, and the two are independent."
-      -
         value: "disabled"
         note: "Cannot be chosen. No surface, both lines drop to the disabled text role, and the row carries no focus ring at all because there is nothing to reach."
-  -
-    name: "is focused"
-    kind: "boolean"
-    default: "false"
-    description: "Whether the keyboard is on this row. A ring outside the row, independent of state and of whether the option is chosen: in a list, moving is not choosing, so where the keys are and what is selected are two different facts and both have to be visible at once."
   -
     name: "is selected"
     kind: "variant"
     default: "false"
-    description: "Whether this option is on. It ticks the checkbox, tints the row and takes the label to the primary text role."
+    description: "Bindable binary value. Whether this option is on. It ticks the checkbox, tints the row and takes the label to the primary text role."
     values:
       -
         value: "false"
@@ -170,6 +157,29 @@ api:
     kind: "text"
     default: "Additional"
     description: "The qualifier — what the option costs, what it does, why it is not available. Secondary text role at a smaller measure, truncated on the same terms."
+  -
+    name: "id"
+    kind: "string"
+    description: "Optional native control identifier; an instance ID is generated otherwise."
+  -
+    name: "name"
+    kind: "string"
+    default: ""
+    description: "Native form field name."
+  -
+    name: "value"
+    kind: "string"
+    default: "on"
+    description: "Native form value submitted when selected."
+  -
+    name: "form"
+    kind: "string"
+    default: ""
+    description: "Associated form ID, including when the popup is portalled."
+  -
+    name: "onchange"
+    kind: "event"
+    description: "Native change event after the control changes; isSelected also supports binding."
 limitations:
   - "No mixed value. A checkbox in a list can stand for a group that is partly on, and this row cannot say so, although the control it holds can."
   - "The checkbox is always leading. Nothing moves it to the other end."
@@ -177,11 +187,12 @@ limitations:
   - "One line for the option and one for its qualifier, both truncated."
   - "No group heading, no separator and no select-all row. A list that needs them gets them from whatever draws it."
 figma_notes:
+  - "Web pointer and focus states follow native interaction rather than drawing-only props. All five live sizes were verified on 2026-10-11: nested control sizes match the row; text Vertical trim is NONE. Native labelled controls preserve the drawing with group semantics."
   - "The focus ring is an absolutely positioned rectangle larger than the row, with a thick stroke and a larger radius than the row itself, so it reads as around the option rather than as part of it. It is absent from the disabled variants rather than hidden."
   - "The row's own stroke weight is bound on all four sides but no stroke colour is set, so nothing is painted."
   - "The row drives the nested Checkbox Input's own size, state and is checked in step with its own, so the control never disagrees with the row it is in."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4858:5264"
-  last_verified: "2026-09-05"
+  last_verified: "2026-10-11"
 notes: "The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."

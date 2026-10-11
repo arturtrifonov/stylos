@@ -18,7 +18,7 @@ export function dropdownBehavior(root: HTMLElement, options: DropdownBehaviorOpt
   const trigger = root.querySelector<HTMLButtonElement>("[data-dropdown-trigger] button, button[data-dropdown-trigger]");
   const positioner = root.querySelector<HTMLElement>("[data-dropdown-positioner]");
   const content = positioner?.querySelector<HTMLElement>(".stylos-dropdown-options");
-  if (!trigger || !positioner || !content || positioner.querySelector(".stylos-dropdown-back, .stylos-dropdown-search, .stylos-dropdown-actions")) {
+  if (!trigger || !positioner || !content || content.getAttribute("role") !== "listbox" || content.querySelector("input, button") || positioner.querySelector(".stylos-dropdown-back, .stylos-dropdown-search, .stylos-dropdown-actions")) {
     throw new Error("dropdownBehavior needs a button trigger and a plain single-choice Dropdown panel.");
   }
   const doc = root.ownerDocument;

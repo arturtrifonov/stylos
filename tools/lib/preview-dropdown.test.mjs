@@ -34,3 +34,28 @@ test("Dropdown previews keep optional bands outside the option list", () => {
   assert.throws(() => sampleHtml(item, { state: "hover" }), /no value/);
   assert.throws(() => sampleHtml(item, { "is focused": true }), /no api property/);
 });
+
+for (const kind of ["Checkbox", "Toggle"]) {
+  test(`Dropdown Item ${kind} uses one labelled native control with a description and form association`, () => {
+    const controlRow = entries.find(entry => entry.id === `Dropdown Item ${kind}`);
+    const html = sampleHtml(controlRow, { ...defaultAssignment(controlRow), id: 'control"',
+      name: "workspace", value: 'team"&', form: "preferences", "is selected": "true", state: "disabled",
+      "label text": "<Design>", "has additional text": true, "additional text": "<Private>" });
+    assert.equal((html.match(/<input /g) ?? []).length, 1);
+    assert.match(html, /<li role="presentation"><label class="stylos-dropdown-item /);
+    assert.match(html, /for="control&quot;"/);
+    assert.match(html, /type="checkbox"/);
+    assert.match(html, /id="control&quot;" name="workspace" value="team&quot;&amp;" form="preferences" checked disabled/);
+    assert.match(html, /aria-describedby="control&quot;-description"/);
+    assert.match(html, /id="control&quot;-description">&lt;Private&gt;/);
+    assert.match(html, /&lt;Design&gt;/);
+    assert.doesNotMatch(html, /role="option"|aria-selected|<Design>/);
+    if (kind === "Toggle") assert.match(html, /role="switch"/);
+    else assert.doesNotMatch(html, /role="switch"/);
+    const group = sampleHtml(panel, { "content role": "group", "content slot": html, "accessible name": "Preferences" });
+    assert.match(group, /<ul[^>]*role="group"[^>]*aria-label="Preferences"/);
+    assert.doesNotMatch(group, /role="listbox"/);
+    assert.throws(() => sampleHtml(controlRow, { state: "hover" }), /no value/);
+    assert.throws(() => sampleHtml(controlRow, { "is focused": true }), /no api property/);
+  });
+}
