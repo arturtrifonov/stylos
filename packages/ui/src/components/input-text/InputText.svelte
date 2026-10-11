@@ -52,7 +52,7 @@
   {:else if showsMessage}
     <span id={messageId} hidden>{additionalText}</span>
   {/if}
-  <div class="stylos-input-text-field" use:inputTextBehavior>
+  <div class="stylos-input-text-field" data-surface-layer="1" data-surface-attachment="in-layout" use:inputTextBehavior>
     <input
       type="text"
       id={controlId}

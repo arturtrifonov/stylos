@@ -1,3 +1,4 @@
+import { surfaceMotion } from "./surface-motion.js";
 import * as tooltip from "@zag-js/tooltip";
 import { VanillaMachine, normalizeProps, spreadProps } from "@zag-js/vanilla";
 
@@ -21,6 +22,7 @@ export function tooltipBehavior(root: HTMLElement, options: Options) {
 
   // Escape clipping ancestors; return the node before Svelte unmounts it.
   doc.body.append(positioner);
+  const motion = surfaceMotion(content);
   const machineProps = () => ({
     id: options.id,
     ids: { trigger: trigger.id || `stylos-tooltip-trigger-${options.id}`, content: contentId },
@@ -71,6 +73,7 @@ export function tooltipBehavior(root: HTMLElement, options: Options) {
     });
     cleanPositioner = spreadProps(positioner, api.getPositionerProps());
     const contentProps = api.getContentProps();
+    motion.update(api.open);
     cleanContent = spreadProps(content, {
       ...contentProps,
       // Keep the surface mounted so CSS can reverse interrupted fades.
@@ -103,6 +106,7 @@ export function tooltipBehavior(root: HTMLElement, options: Options) {
       if (api.open) api.reposition({ placement: options.placement });
     },
     destroy() {
+      motion.destroy();
       unsubscribe();
       doc.removeEventListener("keydown", dismissClosing, true);
       machine.stop();

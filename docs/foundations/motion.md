@@ -29,7 +29,7 @@ Why: common parameters keep components and implementations consistent.
 
 Values and curve definitions are maintained and tuned in the token record (RUL-09); roles and selection rules belong here.
 
-Travel distances and scale amounts are component decisions. The system can introduce shared spatial parameters when recurring motion needs justify them.
+Shared spatial profiles belong here; FND-MOTION-19 defines surface entry. Other travel distances and scale amounts remain component decisions.
 
 ### FND-MOTION-04 — Duration follows the kind and extent of the change
 
@@ -82,7 +82,7 @@ Why: profiles provide consistent defaults while leaving the component responsibl
 | Region collapsing | The same region contracting | `medium/exit` or `long/exit` | `exit` |
 | Constant-speed rotation | Rotating loading mark | `cycle` | `linear` |
 
-FND-MOTION-04 guides choices within a row. Departures follow FND-MOTION-15.
+FND-MOTION-04 guides choices within a row. Control-attached and free surfaces follow FND-MOTION-19; window-edge panels follow FND-MOTION-18. Departures follow FND-MOTION-15.
 
 ### FND-MOTION-07 — Each exit duration is shorter than its paired entry
 
@@ -105,6 +105,52 @@ Why: the movement explains where the surface belongs.
 Why: complementary changes can explain a surface's arrival or departure together.
 
 Whole-surface scaling also affects its contents. The component records the combination under FND-MOTION-15 and coordinates it under FND-MOTION-11.
+
+### FND-MOTION-16 — Surfaces before Drawer share one entry profile
+
+**RETIRED** 2026-10-11. Tooltip, Dropdown, Popover and Modal previously shared the same spatial entry values.
+
+Why: FND-MOTION-19 selects intensity by Layers level, and FND-MOTION-18 separates edge attachment from depth.
+
+### FND-MOTION-17 — Spatial entry intensity follows the Layers level
+
+**RETIRED** 2026-10-11. Spatial profiles used arithmetic relative to Dropdown and omitted a general profile for level 5.
+
+Why: FND-MOTION-19 selects existing shift tokens for every level; edge attachment independently selects FND-MOTION-18.
+
+### FND-MOTION-18 — Window-edge panels move from their attached edge
+
+**MUST.** Give window-edge panels a translation from their attached edge without scaling their contents.
+
+Why: an edge panel extends the window; shrinking it would break that connection.
+
+Entry uses `long/enter` with `enter`; exit uses `long/exit` with `exit`. Translation follows the attachment side and the panel's own extent. Reduced motion makes the change immediate (FND-MOTION-13). The level does not exclude free surfaces above the panel from FND-MOTION-19.
+
+### FND-MOTION-19 — Surface entry selects a fixed profile by level
+
+**MUST.** Use the level's shared spatial entry profile for control-attached and free surfaces at levels 2 through 6 under FND-LAYERS-01 and FND-LAYERS-02.
+
+Why: surfaces closer to the person have a stronger arrival while retaining one motion character.
+
+Each level has a fixed profile. Its shift references an existing semantic gap token; its scale is recorded explicitly. Profiles are selected by level, without arithmetic based on that level. Level 5 has a general profile like the other elevated levels. Window-edge attachment selects FND-MOTION-18 independently of depth.
+
+| Level | Shift token | Scale parameter |
+| --- | --- | --- |
+| 0 | `dimension/gap/g-0_000` | `motion/surface/layer-0/scale` |
+| 1 | `dimension/gap/g-0_000` | `motion/surface/layer-1/scale` |
+| 2 | `dimension/gap/g-0_625` | `motion/surface/layer-2/scale` |
+| 3 | `dimension/gap/g-1_000` | `motion/surface/layer-3/scale` |
+| 4 | `dimension/gap/g-1_250` | `motion/surface/layer-4/scale` |
+| 5 | `dimension/gap/g-1_750` | `motion/surface/layer-5/scale` |
+| 6 | `dimension/gap/g-2_000` | `motion/surface/layer-6/scale` |
+
+Levels 0 and 1 introduce no spatial entry; in-layout controls retain local state transitions under FND-MOTION-06. Current profile values are available through `npm run tokens:report motion` (RUL-09).
+
+Entry combines opacity from zero to one, upward travel to zero and scale to one. All three start together using `medium/enter` and `enter`, without visual delay. Control-attached surfaces scale around their anchor; free surfaces scale around their centre. Floating placement stays independent of the animated transform.
+
+Exit uses opacity only with `medium/exit` and `exit`. An interrupted entry holds its current position and scale during exit; reopening continues from the current presentation (FND-MOTION-10). Reduced motion makes entry and exit immediate (FND-MOTION-13). Behavioural waits, focus and dismissal remain governed by FND-MOTION-11.
+
+Checked by: `npm run tokens:check`, `npm test`.
 
 ## Continuity and coordination
 
@@ -162,7 +208,7 @@ The system policy follows [reduced-motion guidance](https://www.w3.org/WAI/WCAG2
 
 ### FND-MOTION-14 — The component chooses within the shared language
 
-**MUST.** Choose the component's motion treatment within the system's shared motion language.
+**MUST.** Choose the component's motion treatment within the system's shared motion language, applying a shared spatial profile where one is defined.
 
 Why: Figma and code implement the same component decision.
 

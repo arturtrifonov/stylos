@@ -253,7 +253,7 @@ figma:
       file_key: "WUc07ZBtjRvypXtsOlbVut"
       node_id: "4710-27803"
       last_verified: "2026-10-10"
-notes: "Reuse Button treatment CSS, native focus and disabled semantics, and duration/micro with easing/linear under FND-MOTION-06. Surface changes reverse from their current colour when interrupted and become immediate with reduced motion. Native button activation, names, form behaviour and contextual Tooltip composition require consumer verification."
+notes: "Base and Outline declare level 1; Ghost declares level 0, all with in-layout attachment under FND-LAYERS-01 and FND-LAYERS-02. Button shared CSS consumes the selected elevation. Reuse Button treatment CSS, native focus and disabled semantics, and duration/micro with easing/linear under FND-MOTION-06. Surface changes reverse from their current colour when interrupted and become immediate with reduced motion. Native button activation, names, form behaviour and contextual Tooltip composition require consumer verification."
 import:
   batch: 1
   ready: true

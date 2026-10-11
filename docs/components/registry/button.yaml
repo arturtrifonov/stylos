@@ -289,7 +289,7 @@ figma:
       file_key: "WUc07ZBtjRvypXtsOlbVut"
       node_id: "4829-8344"
       last_verified: "2026-10-09"
-notes: "Assessed against FND-ACCESSIBILITY-01. Contrast measurements describe the recorded light palette; a consuming interface or replacement theme requires its own assessment. Surface-colour changes on hover, press and return use duration/micro with easing/linear under FND-MOTION-06: a local control state needs a direct, continuous response. CSS transitions reverse from the current colour when interrupted, with no movement or visual delay. Focus feedback and native availability remain immediate. Reduced motion replaces the colour transition with an immediate change under FND-MOTION-13."
+notes: "Base and Outline declare level 1; Ghost declares level 0, all with in-layout attachment under FND-LAYERS-01 and FND-LAYERS-02. Shared surface selection supplies elevation; local focus and disabled effects remain intact. Assessed against FND-ACCESSIBILITY-01. Contrast measurements describe the recorded light palette; a consuming interface or replacement theme requires its own assessment. Surface-colour changes on hover, press and return use duration/micro with easing/linear under FND-MOTION-06: a local control state needs a direct, continuous response. CSS transitions reverse from the current colour when interrupted, with no movement or visual delay. Focus feedback and native availability remain immediate. Reduced motion replaces the colour transition with an immediate change under FND-MOTION-13."
 import:
   batch: 1
   ready: true

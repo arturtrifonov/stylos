@@ -342,7 +342,7 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4392:6011"
   last_verified: "2026-10-10"
-notes: "The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed. The variant properties themselves are ordered size, state, validation, is filled, which is section 8's order."
+notes: "The field declares level 1 and in-layout attachment under FND-LAYERS-01 and FND-LAYERS-02. Its resting effect consumes the shared elevation; focus and disabled/read-only effects remain local. The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed. The variant properties themselves are ordered size, state, validation, is filled, which is section 8's order."
 import:
   batch: 1
   ready: true

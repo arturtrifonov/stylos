@@ -91,7 +91,7 @@ npm run guidelines:view            # → build/guidelines.html and build/guideli
 
 The other half of what the site publishes. The registry view renders the inventory — 114 component contracts — and this renders the language those are instances of: one index over the whole guideline set, and a page per document.
 
-**Every file is rendered, `Yet to fill` included.** Fifty of the sixty-one are a scope line and nothing else, and that is the honest picture of the system before alpha: a file with a scope and no rules says a decision belongs there and has not been made. A page showing only the eleven written files would answer "what is decided" and lose "what is left", which is most of what the set currently is. The index leads with the tally — rules, rules with a check, files written, files yet to fill — because readiness is what the page is read for.
+**Every file is rendered, `Yet to fill` included.** A file with a scope and no rules says a decision belongs there and has not been made. A page showing only written files would answer "what is decided" and lose "what is left", which is most of what the set currently is. The index leads with the tally — rules, rules with a check, files written, files yet to fill — because readiness is what the page is read for.
 
 The status sits at the far right of each index row and document header, separate from rule counts, including on narrow screens. Guideline pages use the shared theme's Georama and JetBrains Mono font stacks.
 
@@ -145,13 +145,21 @@ Figma names each file after its **mode**, not its collection, so a full refresh 
 
 **A withdrawal is named, not noticed.** An import that removes a token from a collection already in `tokens/` refuses, lists what disappeared, and prints the `--withdraw <collection/token>` flags to re-run with — one per token, and a `--withdraw` for a token that is *not* disappearing fails too, because a stale acknowledgement would cover the next real one. Each withdrawal is recorded in `tokens/_history.yaml` beside the import that carried it. This lives here rather than in the CSS build because this is where a token actually disappears: `tokens/*.yaml` is committed and is the record, while the CSS is a build result with no baseline to compare a run against (SPEC 0007 §6).
 
-`build-css.mjs` projects the canonical set onto CSS custom properties — 903 of them, into `packages/ui/dist/tokens.css`, with `tokens.json` recording which canonical token each name came from. Built to SPEC 0007. Neither file is committed. It reads `tokens/*.yaml` and nothing else, and it refuses to run at all on a set that fails `tokens:check`.
+`build-css.mjs` projects the canonical set onto CSS custom properties in `packages/ui/dist/tokens.css`, with `tokens.json` recording which canonical token each name came from. Built to SPEC 0007. Neither file is committed. It reads `tokens/*.yaml` and nothing else, and it refuses to run at all on a set that fails `tokens:check`.
 
 Two things in it are authored rather than read: the font fallback stacks and the shadow composition. Shadow styles are not exported from Figma; the build composes the six stacks from the parameters in `effect`, following the [shadow scale](../docs/foundations/effects.md#the-shadow-scale). Figma collection and export conventions are documented in [figma/foundations.md](../figma/foundations.md). One claim is checked rather than authored — a role with a `special` segment names the hue group it must land in, so `surface/special/violet` bound to indigo fails the build naming both (FND-COLOR-08). Every other role is named for what it paints and may be bound to any step, so there is nothing about it to check.
 
 *Until 2026-09-15 this stage also synthesised a layer of `--stylos-slot-*` properties, five names × thirteen steps, and enforced that every non-`special` role reached one of five hue groups. Both are gone: no rule of the design language says a role belongs to one of five groups, nothing consumed the properties, and the check failed a colour decision that broke nothing.*
 
 `tokens-report.mjs` renders `tokens/*.yaml` as Markdown. This is why no foundation document transcribes a token value — a copied value is wrong at the next tweak in Figma.
+
+The authored `tokens/_surface-motion.yaml` supplements the exported collections
+with explicit per-level profiles under FND-MOTION-19. `build-css.mjs` projects
+existing gap-token aliases and recorded scales without level arithmetic;
+`check-tokens.mjs` validates every level from 0 through 6 and its references.
+`tokens-report.mjs` includes the current values
+when reporting Motion. The generated manifest records this authored provenance
+rather than claiming that these properties were imported from Figma.
 
 ## `build-ui-types.mjs` and `build-ui-stories.mjs`
 

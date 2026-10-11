@@ -90,6 +90,10 @@ export function sampleHtml(entry, props = {}) {
       // String properties need their own renderer; they are not text content.
       if (entry.id === "Tooltip" && name === "content width") {
         styles.push(`--_stylos-tooltip-width:${value}`);
+      } else if (entry.id === "Dropdown" && name === "max height") {
+        styles.push(`--_stylos-dropdown-height-limit:${value}`);
+      } else if (["Dropdown", "Dropdown Item Default"].includes(entry.id) && ["id", "value"].includes(name)) {
+        // Listbox and option identifiers are rendered by their branches below.
       } else if (entry.id === "Input Text" && ["id", "name", "form", "autocomplete", "label ids", "description ids"].includes(name)) {
         // Native text-field attributes are rendered below.
       } else if (entry.id === "Label" && ["html for", "additional text id"].includes(name)) {
@@ -118,8 +122,26 @@ export function sampleHtml(entry, props = {}) {
     ? props.variant ?? entry.api.find(property => property.name === "variant")?.default : null;
   const treatmentClass = entry.id === "Button Icon" ? "stylos-button" : baseClass;
   const cls = treatment ? `${baseClass} ${treatmentClass}-${treatment}` : baseClass;
+  if (["Button", "Button Icon"].includes(entry.id)) {
+    attrs.push(`data-surface-layer="${treatment === "ghost" ? 0 : 1}"`, 'data-surface-attachment="in-layout"');
+  } else if (["Dropdown", "Tooltip"].includes(entry.id)) {
+    attrs.push(`data-surface-layer="${entry.id === "Dropdown" ? 3 : 2}"`, 'data-surface-attachment="control"');
+  }
   if (styles.length) attrs.push(`style="${esc(styles.join(";"))}"`);
   const attr = attrs.length ? ` ${attrs.join(" ")}` : "";
+
+  if (entry.id === "Dropdown") {
+    const band = (slot, className) => props[slot] ? `<div class="stylos-dropdown-${className}">${props[slot]}</div>` : "";
+    const name = props["accessible name"] ? ` aria-label="${esc(props["accessible name"])}"` : "";
+    const id = props.id ? ` id="${esc(props.id)}"` : "";
+    return `<div class="${cls}"${attr}>${band("back slot", "back")}${band("search slot", "search")}<ul class="stylos-dropdown-options stylos-scrollbar" data-scrollbar-size="small" data-scrollbar-position="absolute" role="listbox"${id}${name}>${props["content slot"] ?? ""}</ul>${band("actions slot", "actions")}</div>`;
+  }
+  if (entry.id === "Dropdown Item Default") {
+    const icon = props["has icon"] && typeof props.icon === "string" && iconDrawings().has(props.icon)
+      ? `<span class="stylos-dropdown-item-leading" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: props.icon })}</span>` : "";
+    const tick = sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: "check" });
+    return `<li class="${cls}" role="option"${attr} data-value="${esc(props.value)}" aria-selected="${props["is selected"] === "true"}"${props.state === "disabled" ? ' aria-disabled="true"' : ""}>${icon}<span class="stylos-dropdown-item-content"><span class="stylos-dropdown-item-label">${esc(props["label text"] ?? "Option")}</span>${props["has additional text"] ? `<span class="stylos-dropdown-item-additional">${esc(props["additional text"])}</span>` : ""}</span><span class="stylos-dropdown-item-selected" aria-hidden="true">${tick}</span></li>`;
+  }
 
   // Label is the one structural case: the required marker and the supporting
   // line are child spans, per the entry's `html` field. The marker span is
@@ -191,7 +213,7 @@ export function sampleHtml(entry, props = {}) {
     const validation = outcome !== "off" ? `<span class="stylos-input-text-validation" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: { error: "error", warning: "warning", success: "check_circle" }[outcome] })}</span>` : "";
     const suffix = props["has suffix text"] ? `<span class="stylos-input-text-suffix" id="${esc(suffixId)}">${esc(props["suffix text"] ?? "Suffix")}</span>` : "";
     const placeholder = props["has placeholder"] ? ` placeholder="${esc(props["placeholder text"] ?? "Placeholder text")}"` : "";
-    return `<div class="${cls}"${attr} data-is-filled="${!!props.value}">${label}<div class="stylos-input-text-field"><input type="text" id="${esc(id)}" value="${esc(props.value ?? "")}"${native}${semantics}${placeholder}><div class="stylos-input-text-adornments"><span class="stylos-input-text-leading">${icon("leading")}</span><span class="stylos-input-text-trailing">${suffix}${validation}${icon("trailing")}</span></div></div></div>`;
+    return `<div class="${cls}"${attr} data-is-filled="${!!props.value}">${label}<div class="stylos-input-text-field" data-surface-layer="1" data-surface-attachment="in-layout"><input type="text" id="${esc(id)}" value="${esc(props.value ?? "")}"${native}${semantics}${placeholder}><div class="stylos-input-text-adornments"><span class="stylos-input-text-leading">${icon("leading")}</span><span class="stylos-input-text-trailing">${suffix}${validation}${icon("trailing")}</span></div></div></div>`;
   }
 
   if (["Tag", "Tag Interactive"].includes(entry.id)) {

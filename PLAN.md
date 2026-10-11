@@ -134,6 +134,8 @@ single-line and multiline layouts, composing the same Input.
 
 *Amended 2026-10-10:* the owner selected **Button Icon** next, with base/outline/ghost variants in one frontend contract. It reuses Button treatment CSS and local-state Motion while preserving its square target and centred Element-run icon.
 
+*Amended 2026-10-11:* the owner selected native scrollbar CSS with accepted browser differences to complete Dropdown overflow styling. The Figma small/absolute treatment is connected through shared CSS; a custom ScrollArea is outside this slice.
+
 ### 4.2 Stage 5 — `@stylos/ui`
 
 The work order is SPEC 0009; the stack and the layering are ADR 0002. What assembles into what:
@@ -168,6 +170,8 @@ Work:
 
 **Gate:** the `0.2.0` table in §1.
 **Estimate:** 10–12 weeks.
+
+**Amended 2026-10-10:** the owner selected Dropdown next and chose single-value selection first. Deliver the panel, Dropdown Item Default and external-trigger selection behaviour. Search, nested navigation, checkbox/toggle rows and action menus remain later slices. Optional bands retain the Figma layout and accept owner-supplied content; they are outside the current selection adapter.
 
 ### 4.3 Stage 6 — the proof, and the consumer surface
 
@@ -224,7 +228,7 @@ Do **not** pull: the consumer skill or `registry.json` — requirement 2 of the 
 
 | Question | Where |
 | --- | --- |
-| Dropdown's ARIA model — menu or listbox | component backlog, at its slice |
+| Dropdown's ARIA model — menu or listbox | 2026-10-10: owner selected single-value selection first; listbox/option via Zag Select. Action menus remain a separate later slice. |
 | `disabled` contrast against 3:1, system-wide | a colour decision, before the components that carry it |
 | Evidence for WCAG 2.2 AA across complete pages and processes | component evidence in Stage 5; full-interface assessment of the Stage 6 proof, combining automated checks and human evaluation |
 | Component-specific token depth | provisional "none" (SPEC 0007 §9) until a component needs one |

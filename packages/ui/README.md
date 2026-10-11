@@ -144,6 +144,146 @@ Independent HTML uses `.stylos-button-icon` plus `.stylos-button-base`,
 as Button and a decorative `.stylos-button-icon-mark` child. Link tokens, fonts
 and `@stylos/ui/css/button-icon.css`; this export includes its Button dependency.
 
+### Surface profiles
+
+The web implementation represents the level and attachment from FND-LAYERS-01
+and FND-LAYERS-02 with component-owned DOM attributes:
+
+- `data-surface-layer`: `0` through `6`.
+- `data-surface-attachment`: `in-layout`, `control`, `free` or `window-edge`.
+- `data-surface-edge`: `top`, `right`, `bottom` or `left` for edge panels.
+
+Shared `behaviors/surface.css` selects elevation and appearance motion under
+FND-LAYERS-04:
+
+| Surface | Level | Attachment |
+| --- | --- | --- |
+| Button / Button Icon: Base, Outline | 1 | `in-layout` |
+| Button / Button Icon: Ghost | 0 | `in-layout` |
+| Input Text field | 1 | `in-layout` |
+| Tooltip | 2 | `control` |
+| Dropdown | 3 | `control` |
+
+The component uses `--_stylos-surface-shadow` when composing its effects.
+Inside strokes, focus and disabled effects remain component state treatments.
+Each declared surface resets its private profile so nested surfaces do not
+inherit their owner's elevation or motion. `behaviors/surface-motion.ts` reads
+the shared transforms and timing; it preserves interrupted motion and can put
+its visibility marker on a separate floating positioner. `window-edge` profiles require a
+`data-surface-edge` side and translate by the panel extent without scaling.
+A free or control-attached level-5 surface uses its general shift/scale profile;
+edge attachment selects edge travel instead. This supplies shared mechanics for future panels; Modal and Drawer are not
+implemented here. Runtime stacking still needs the owner-aware overlay manager.
+
+Svelte supplies the declarations; framework-free/static markup must carry the
+same `data-surface-layer` and `data-surface-attachment` attributes. Independent
+component styles include the shared sheet. These attributes are internal
+component decisions, not extra consumer props or styling overrides.
+
+### Dropdown: single-value selection
+
+`Dropdown` supplies the panel and `DropdownItemDefault` supplies a plain option.
+The panel has no built-in trigger. `dropdownBehavior` connects an external
+button to a plain single-choice panel using Zag Select; value state stays with
+the owner. This is the first Dropdown slice, chosen before action menus.
+Interaction follows [Zag Select](https://zagjs.com/components/react/select) and
+[APG listbox guidance](https://www.w3.org/WAI/ARIA/apg/patterns/listbox/), with an
+explicit Tab-dismissal adapter for the portaled single-choice composition.
+
+```svelte
+<script lang="ts">
+  import { Button, Dropdown, DropdownItemDefault, dropdownBehavior } from "@stylos/ui";
+  let value = $state("design");
+  const id = $props.id();
+  const options = [
+    { value: "design", label: "Design" },
+    { value: "development", label: "Development" },
+  ];
+  const selectedLabel = $derived(options.find(option => option.value === value)?.label ?? "Choose");
+</script>
+
+<div use:dropdownBehavior={{ id, value, accessibleName: "Workspace",
+  onValueChange: next => { value = next; } }}>
+  <span data-dropdown-trigger><Button labelText={selectedLabel} /></span>
+  <div data-dropdown-positioner hidden>
+    <Dropdown accessibleName="Workspace">
+      {#snippet contentSlot()}
+        {#each options as option (option.value)}
+          <DropdownItemDefault value={option.value} labelText={option.label}
+            isSelected={option.value === value ? "true" : "false"} />
+        {/each}
+      {/snippet}
+    </Dropdown>
+  </div>
+</div>
+```
+
+Supply a non-empty accessible name and unique non-empty option values. Rows
+inherit the panel size; configure the external trigger to match that size. The adapter portals the panel into its
+document, matches the trigger width and places it below by default; `placement`
+also accepts `bottom-end`, `top-start` and `top-end`. `disabled` disables the
+whole trigger; row `state="disabled"` makes that option unavailable. It observes
+changed option labels, values, availability and content. Destroying the adapter
+removes its listeners and observer and returns the panel to its owner.
+
+Arrow keys, Home/End and typeahead move the highlighted option. Enter/Space or
+click selects and closes; Escape closes without selecting and returns focus.
+Tab dismisses and continues through the page. The panel is not a focus trap.
+The popup follows [FND-MOTION-19](../../docs/foundations/motion.md#fnd-motion-19--surface-entry-selects-a-fixed-profile-by-level)
+through the shared surface-motion adapter and stylesheet at Layers level 3. Closing immediately
+sets `inert` and `aria-hidden` on the positioner; focus and selection do not wait
+for the animation.
+
+Selection uses `listbox`/`option` and `aria-selected`; the trigger uses Zag's
+select-only `combobox` semantics. Dropdown itself is not a form field and does
+not submit a value; the future Select owner supplies form integration.
+
+`backSlot`, `searchSlot` and `actionsSlot` retain the Figma bands and accept
+configured content, but their interaction belongs to future nested, searchable
+and staged-selection owners. The current `dropdownBehavior` rejects those
+bands. The normal single-choice example contains only `contentSlot`. A panel's
+default maximum is derived from its six-and-a-half-row profile; `maxHeight`
+accepts an owner-supplied CSS length. Overflow uses the Figma small/absolute treatment on the native scrollbar. Text has no Vertical trim, as in Figma.
+
+Independent CSS exports are `@stylos/ui/css/dropdown.css` and
+`@stylos/ui/css/dropdown-item-default.css`; framework-free behaviour is also
+exported as `@stylos/ui/behaviors/dropdown`. Static previews carry option and
+selection semantics without running behaviour. Storybook has one Default
+selection example and an Icons playground after the row's Default.
+
+Verification covers the five size profiles, pointer and keyboard selection,
+disabled skipping, typeahead, Escape, Tab dismissal, overflow and focus return
+in the workshop's Chromium browser. Screen-reader assessment remains part of
+the package's verification plan. Recorded Figma colour-pairing findings remain
+in the registry; this implementation does not change the palette.
+
+### Native scrollbar styling
+
+`@stylos/ui/scrollbar.css` styles an existing overflow element with the
+`stylos-scrollbar` class. `data-scrollbar-size="small"` selects the 4 px drawing
+instead of the default medium 8 px drawing. `data-scrollbar-position="absolute"`
+selects the transparent track and narrower resting thumb; this describes the
+Figma treatment and does not set CSS positioning. Dropdown uses small/absolute
+at every panel size, matching its Figma instance.
+
+Chromium and WebKit use token-based widths, insets, rounded thumbs and native
+thumb hover/active colours. Horizontal scrolling uses the same rotated geometry.
+Other browsers use standard `scrollbar-width: thin` and token colours. The
+browser still owns overflow, thumb length, wheel, touch, keyboard and dragging;
+no drawing-only `state`, visibility or disabled prop is added. Forced colours
+restore browser styling. This is CSS styling, not a separately rendered Svelte
+Scrollbar or a ScrollArea.
+
+Browser differences are intentional: the native gutter may occupy layout space
+instead of overlaying content, and Firefox chooses the thickness and individual
+thumb states. The Figma illustration's fixed thumb length is not imposed on
+real content. See [Chrome's scrollbar styling guide](https://developer.chrome.com/docs/css-ui/scrollbar-styling)
+for the native CSS limitations. The independent Dropdown stylesheet includes
+these rules; importing the standalone scrollbar stylesheet is only needed for
+other scroll containers. Chromium verification covers the 4 px gutter, 1 px
+resting thumb, native dragging, wheel scrolling, keyboard scrolling and no
+gutter when content fits. The fallback has not been visually tested in Firefox.
+
 ### Link
 
 `Link` renders a native anchor in two tones and five sizes, defaulting to medium.
@@ -217,9 +357,9 @@ flips or shifts at viewport edges. Do not put focusable content in the text.
 
 Hover waits 400 ms and pointer departure has a 150 ms grace period; these
 component defaults await a shared Timing decision. Keyboard focus and Escape
-have no behavioural wait. Motion is an opacity fade using the shared
-`medium/enter` and `medium/exit` durations and their matching easing roles,
-with no extra visual delay. Reduced motion makes visibility immediate.
+have no behavioural wait. Entry and exit use the same shared surface-motion
+adapter as Dropdown, using its own level-2 FND-MOTION-19 profile. The trigger association updates
+immediately.
 
 For wrapping descriptions, set `type="text"` and `contentWidth` to a CSS width;
 the viewport's available width limits it. A disabled native button cannot

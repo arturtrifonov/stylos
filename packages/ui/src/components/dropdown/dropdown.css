@@ -1,0 +1,91 @@
+@import "../../behaviors/dropdown.css";
+@import "../../behaviors/scrollbar.css";
+@import "../../behaviors/surface-motion.css";
+
+.stylos-dropdown {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: calc(100%);
+  min-height: 0;
+  max-height: var(--_stylos-dropdown-height-limit, calc(6.5 * var(--_stylos-dropdown-row-height) + 5 * var(--stylos-dimension-gap-g-0_500) + 2 * var(--_stylos-dropdown-list-padding-block) + 2 * var(--stylos-border-width-normal)));
+  border: var(--stylos-border-width-normal) solid var(--stylos-color-border-default);
+  border-radius: var(--stylos-radius-medium);
+  background-color: var(--stylos-color-background-base);
+  box-shadow: var(--_stylos-surface-shadow);
+  overflow: hidden;
+}
+.stylos-dropdown-options {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding-block: var(--_stylos-dropdown-list-padding-block);
+  padding-inline: var(--stylos-dimension-gap-g-0_500);
+  gap: var(--stylos-dimension-gap-g-0_500);
+  list-style: none;
+  overflow: auto;
+  outline: none;
+}
+.stylos-dropdown-back,
+.stylos-dropdown-search,
+.stylos-dropdown-actions { flex: none; }
+.stylos-dropdown-back,
+.stylos-dropdown-search { border-bottom: var(--stylos-border-width-normal) solid var(--stylos-color-border-secondary); }
+.stylos-dropdown-back {
+  padding-block: var(--_stylos-dropdown-back-padding-block);
+  padding-inline: var(--_stylos-dropdown-back-padding-inline);
+}
+.stylos-dropdown-search { padding: var(--_stylos-dropdown-band-padding); }
+.stylos-dropdown-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: var(--_stylos-dropdown-band-padding);
+  gap: var(--_stylos-dropdown-actions-gap);
+  border-top: var(--stylos-border-width-normal) solid var(--stylos-color-border-secondary);
+}
+[data-dropdown-positioner][hidden] { display: none; }
+[data-dropdown-positioner][data-state] { pointer-events: none; }
+[data-dropdown-positioner][data-state="open"] { pointer-events: auto; }
+
+.stylos-dropdown[data-size="extra small"] {
+  --_stylos-dropdown-list-padding-block: var(--stylos-dimension-gap-g-0_500);
+  --_stylos-dropdown-band-padding: var(--stylos-dimension-gap-g-1_000);
+  --_stylos-dropdown-back-padding-block: var(--stylos-dimension-gap-g-0_750);
+  --_stylos-dropdown-back-padding-inline: var(--stylos-dimension-gap-g-0_250);
+  --_stylos-dropdown-actions-gap: var(--stylos-dimension-gap-g-0_750);
+}
+
+.stylos-dropdown[data-size="small"] {
+  --_stylos-dropdown-list-padding-block: var(--stylos-dimension-gap-g-0_750);
+  --_stylos-dropdown-band-padding: var(--stylos-dimension-gap-g-1_250);
+  --_stylos-dropdown-back-padding-block: var(--stylos-dimension-gap-g-0_875);
+  --_stylos-dropdown-back-padding-inline: var(--stylos-dimension-gap-g-0_375);
+  --_stylos-dropdown-actions-gap: var(--stylos-dimension-gap-g-0_875);
+}
+
+.stylos-dropdown[data-size="medium"] {
+  --_stylos-dropdown-list-padding-block: var(--stylos-dimension-gap-g-1_000);
+  --_stylos-dropdown-band-padding: var(--stylos-dimension-gap-g-1_500);
+  --_stylos-dropdown-back-padding-block: var(--stylos-dimension-gap-g-1_000);
+  --_stylos-dropdown-back-padding-inline: var(--stylos-dimension-gap-g-0_500);
+  --_stylos-dropdown-actions-gap: var(--stylos-dimension-gap-g-0_875);
+}
+
+.stylos-dropdown[data-size="large"] {
+  --_stylos-dropdown-list-padding-block: var(--stylos-dimension-gap-g-1_250);
+  --_stylos-dropdown-band-padding: var(--stylos-dimension-gap-g-1_750);
+  --_stylos-dropdown-back-padding-block: var(--stylos-dimension-gap-g-1_000);
+  --_stylos-dropdown-back-padding-inline: var(--stylos-dimension-gap-g-0_625);
+  --_stylos-dropdown-actions-gap: var(--stylos-dimension-gap-g-0_875);
+}
+
+.stylos-dropdown[data-size="extra large"] {
+  --_stylos-dropdown-list-padding-block: var(--stylos-dimension-gap-g-1_500);
+  --_stylos-dropdown-band-padding: var(--stylos-dimension-gap-g-2_000);
+  --_stylos-dropdown-back-padding-block: var(--stylos-dimension-gap-g-1_250);
+  --_stylos-dropdown-back-padding-inline: var(--stylos-dimension-gap-g-0_750);
+  --_stylos-dropdown-actions-gap: var(--stylos-dimension-gap-g-0_875);
+}

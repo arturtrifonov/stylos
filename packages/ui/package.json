@@ -29,7 +29,12 @@
     },
     "./stylelint": "./stylelint.config.js",
     "./skill": "./skill/SKILL.md",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./behaviors/dropdown": {
+      "types": "./dist/package/behaviors/dropdown.d.ts",
+      "default": "./dist/package/behaviors/dropdown.js"
+    },
+    "./scrollbar.css": "./dist/package/behaviors/scrollbar.css"
   },
   "peerDependencies": {
     "svelte": "^5.0.0"
@@ -44,6 +49,7 @@
   },
   "license": "UNLICENSED",
   "dependencies": {
+    "@zag-js/select": "^1.45.0",
     "@zag-js/tooltip": "^1.45.0",
     "@zag-js/vanilla": "^1.45.0"
   }

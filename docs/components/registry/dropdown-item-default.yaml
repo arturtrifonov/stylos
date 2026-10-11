@@ -1,6 +1,4 @@
-# Contract written 2026-09-02 from the live component set. A new component, so
-# there is no import block. See docs/components/registry/README.md for the schema.
-
+# Verified against the live Figma set on 2026-10-10.
 id: "Dropdown Item Default"
 name: "Dropdown Item Default"
 family: "Dropdown Item"
@@ -111,7 +109,7 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
+    default: "medium"
     description: "Row density, and every option in one list is set to the same one. Drives the padding, the gap, the type and the two marks."
     values:
       -
@@ -128,23 +126,13 @@ api:
     name: "state"
     kind: "variant"
     default: "default"
-    description: "How the row answers a pointer, and whether it can be chosen at all."
+    description: "Whether the option is available. Hover, pressed and keyboard highlighting are produced by real interaction."
     values:
       -
         value: "default"
       -
-        value: "hover"
-      -
-        value: "active"
-        note: "The row under a press. Not the row the keyboard is on — that is is focused, and the two are independent."
-      -
         value: "disabled"
         note: "Cannot be chosen. No surface, both lines drop to the disabled text role, and the row carries no focus ring at all because there is nothing to reach."
-  -
-    name: "is focused"
-    kind: "boolean"
-    default: "false"
-    description: "Whether the keyboard is on this row. A ring outside the row, independent of state and of whether the option is chosen: in a list, moving is not choosing, so where the keys are and what is selected are two different facts and both have to be visible at once."
   -
     name: "is selected"
     kind: "variant"
@@ -165,8 +153,11 @@ api:
   -
     name: "icon"
     kind: "instance"
-    default: "Placeholder"
     description: "Which mark leads. Named for the meaning the set carries, not for a drawing. The tick at the other end is not this property and cannot be swapped."
+    svelte_type: "snippet"
+    values:
+      -
+        value: "home"
   -
     name: "label text"
     kind: "text"
@@ -184,18 +175,27 @@ api:
     kind: "text"
     default: "Additional"
     description: "The qualifier — what the option costs, what it does, why it is not available. Secondary text role at a smaller measure, truncated on the same terms."
+  -
+    name: "value"
+    kind: "string"
+    description: "Stable unique non-empty value identifying this option in its panel."
+    values:
+      -
+        value: "workspace"
 limitations:
   - "One line for the option and one for its qualifier, both truncated. There is no wrapping, so a list of long options becomes a list of identical prefixes."
   - "The tick is fixed. Nothing changes the mark that says an option is chosen, and there is no mark for a partially chosen one."
   - "No tone. An option that is destructive, recommended or unavailable-for-a-reason looks like every other option."
   - "No group heading, no separator and no empty state. A list that needs any of them gets them from whatever draws it."
   - "is selected and is focused are independent and both can be true. That is the point of them, and it means the row can carry a tint, a tick and a ring at once."
+  - "This is an option inside a single-choice Dropdown, not an independently focusable button. Attach dropdownBehavior to the owning composition for selection and keyboard navigation."
 figma_notes:
   - "The focus ring is an absolutely positioned rectangle larger than the row, with a thick stroke and a larger radius than the row itself, so it reads as around the option rather than as part of it. It is absent from the disabled variants rather than hidden."
   - "The row's own stroke weight is bound on all four sides but no stroke colour is set, so nothing is painted."
   - "The tick sits in a container named Selected icon container, which appears only in the chosen variants rather than being hidden in the others."
+  - "The web wrapper exposes only default/disabled. Hover and active use native pointer states; keyboard highlight is managed by the listbox owner. Figma is focused remains a drawing-only property. Label and additional text have Vertical trim NONE; CSS keeps their recorded line heights. Content block padding is gap/g-0_250, gap/g-0_375, then gap/g-0_500 for the remaining sizes."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4854:2723"
-  last_verified: "2026-09-05"
+  last_verified: "2026-10-10"
 notes: "The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."

@@ -1,0 +1,84 @@
+/* Native scrolling with Figma's Scrollbar colours and geometry where supported.
+ * data-scrollbar-position selects the drawing treatment, not CSS positioning.
+ * The browser owns the thumb length, overflow detection and interaction. */
+.stylos-scrollbar {
+  --_stylos-scrollbar-width: var(--stylos-dimension-gap-g-1_000);
+  --_stylos-scrollbar-inset: var(--stylos-dimension-gap-g-0_250);
+  --_stylos-scrollbar-track: var(--stylos-color-background-tertiary);
+  --_stylos-scrollbar-leading-inset: var(--_stylos-scrollbar-inset);
+}
+.stylos-scrollbar[data-scrollbar-size="small"] {
+  --_stylos-scrollbar-width: var(--stylos-dimension-gap-g-0_500);
+  --_stylos-scrollbar-inset: var(--stylos-dimension-gap-g-0_125);
+}
+.stylos-scrollbar[data-scrollbar-position="absolute"] {
+  --_stylos-scrollbar-track: transparent;
+  --_stylos-scrollbar-leading-inset: calc(2 * var(--_stylos-scrollbar-inset));
+}
+/* Standard properties cannot specify pixel widths or individual thumb states.
+ * Keep this fallback separate: non-auto values override WebKit pseudo styles. */
+@supports not selector(::-webkit-scrollbar) {
+  .stylos-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--stylos-color-surface-bold-base-default) var(--_stylos-scrollbar-track);
+  }
+}
+@supports selector(::-webkit-scrollbar) {
+  .stylos-scrollbar {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+  .stylos-scrollbar::-webkit-scrollbar {
+    width: var(--_stylos-scrollbar-width);
+    height: var(--_stylos-scrollbar-width);
+  }
+  .stylos-scrollbar::-webkit-scrollbar-button { display: none; }
+  .stylos-scrollbar::-webkit-scrollbar-track {
+    margin: var(--stylos-dimension-gap-g-0_500);
+    background-color: var(--_stylos-scrollbar-track);
+  }
+  .stylos-scrollbar::-webkit-scrollbar-thumb {
+    border-style: solid;
+    border-color: transparent;
+    border-block-width: 0;
+    border-inline-start-width: var(--_stylos-scrollbar-leading-inset);
+    border-inline-end-width: var(--_stylos-scrollbar-inset);
+    border-radius: var(--stylos-radius-round);
+    background-clip: padding-box;
+    background-color: var(--stylos-color-surface-bold-base-default);
+  }
+  .stylos-scrollbar::-webkit-scrollbar-thumb:horizontal {
+    border-inline-width: 0;
+    border-block-start-width: var(--_stylos-scrollbar-leading-inset);
+    border-block-end-width: var(--_stylos-scrollbar-inset);
+  }
+  .stylos-scrollbar::-webkit-scrollbar-thumb:hover {
+    border-inline-start-width: var(--_stylos-scrollbar-inset);
+    background-color: var(--stylos-color-surface-bold-base-hover);
+  }
+  .stylos-scrollbar::-webkit-scrollbar-thumb:horizontal:hover {
+    border-inline-start-width: 0;
+    border-block-start-width: var(--_stylos-scrollbar-inset);
+  }
+  .stylos-scrollbar::-webkit-scrollbar-thumb:active {
+    border-inline-start-width: var(--_stylos-scrollbar-inset);
+    background-color: var(--stylos-color-surface-bold-base-active);
+  }
+  .stylos-scrollbar::-webkit-scrollbar-thumb:horizontal:active {
+    border-inline-start-width: 0;
+    border-block-start-width: var(--_stylos-scrollbar-inset);
+  }
+  .stylos-scrollbar::-webkit-scrollbar-track:active {
+    background-color: var(--stylos-color-background-tertiary);
+  }
+  .stylos-scrollbar::-webkit-scrollbar-corner { background-color: var(--_stylos-scrollbar-track); }
+}
+/* Leave system contrast colours and scrollbar sizing under browser control. */
+@media (forced-colors: active) {
+  .stylos-scrollbar { scrollbar-width: auto; scrollbar-color: auto; }
+  .stylos-scrollbar::-webkit-scrollbar { width: auto; height: auto; }
+  .stylos-scrollbar::-webkit-scrollbar-button { display: revert; }
+  .stylos-scrollbar::-webkit-scrollbar-track,
+  .stylos-scrollbar::-webkit-scrollbar-thumb,
+  .stylos-scrollbar::-webkit-scrollbar-corner { all: revert !important; }
+}

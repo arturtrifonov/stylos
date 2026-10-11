@@ -9,7 +9,7 @@ role: "output"
 flow_behavior:
   - "fixed"
   - "absolute"
-notes: ""
+notes: "Level 3, control attachment under FND-LAYERS-01 and FND-LAYERS-02; shadow selection follows FND-EFFECTS-05 and surface motion follows FND-MOTION-19. For the future web implementation, behavioural waits, focus and dismissal belong to its owner."
 import:
   batch: 2
   ready: false
