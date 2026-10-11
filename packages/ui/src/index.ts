@@ -65,3 +65,6 @@ export { default as DropdownItemToggle } from "./components/dropdown-item-toggle
 export type { DropdownItemToggleProps } from "./components/dropdown-item-toggle/props.ts";
 export { dropdownControlsBehavior } from "./behaviors/dropdown-controls.ts";
 export type { DropdownControlsBehaviorOptions } from "./behaviors/dropdown-controls.ts";
+
+export { default as Select } from "./components/select/Select.svelte";
+export type { SelectProps } from "./components/select/props.ts";

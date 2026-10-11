@@ -139,12 +139,14 @@ Each level has a fixed profile. Its shift references an existing semantic gap to
 | 0 | `dimension/gap/g-0_000` | `motion/surface/layer-0/scale` |
 | 1 | `dimension/gap/g-0_000` | `motion/surface/layer-1/scale` |
 | 2 | `dimension/gap/g-0_625` | `motion/surface/layer-2/scale` |
-| 3 | `dimension/gap/g-1_000` | `motion/surface/layer-3/scale` |
+| 3 | `dimension/gap/g-2_000` | `motion/surface/layer-3/scale` |
 | 4 | `dimension/gap/g-1_250` | `motion/surface/layer-4/scale` |
 | 5 | `dimension/gap/g-1_750` | `motion/surface/layer-5/scale` |
 | 6 | `dimension/gap/g-2_000` | `motion/surface/layer-6/scale` |
 
 Levels 0 and 1 introduce no spatial entry; in-layout controls retain local state transitions under FND-MOTION-06. Current profile values are available through `npm run tokens:report motion` (RUL-09).
+
+Amended 2026-10-11: layer 3 travel increases from 8 to 16 px at the owner's request, so upward movement remains visible alongside scaling. Its scale and timing retain their values.
 
 Entry combines opacity from zero to one, upward travel to zero and scale to one. All three start together using `medium/enter` and `enter`, without visual delay. Control-attached surfaces scale around their anchor; free surfaces scale around their centre. Floating placement stays independent of the animated transform.
 

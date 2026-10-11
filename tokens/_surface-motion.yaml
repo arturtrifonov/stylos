@@ -1,5 +1,6 @@
 # AUTHORED SYSTEM PROFILES — separate from generated Figma collections.
 # Owner decision 2026-10-11: select existing gap tokens without level arithmetic.
+# Tuned 2026-10-11: increase layer 3 travel so upward entry reads alongside scale.
 # Every level has a profile; edge attachment independently selects edge travel.
 source:
   decided: "2026-10-11"
@@ -15,7 +16,7 @@ layers:
     shift: "dimension/gap/g-0_625"
     scale: 0.9
   "3":
-    shift: "dimension/gap/g-1_000"
+    shift: "dimension/gap/g-2_000"
     scale: 0.85
   "4":
     shift: "dimension/gap/g-1_250"

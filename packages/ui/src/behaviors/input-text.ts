@@ -1,10 +1,10 @@
-// Measure the decorative groups so the native input can cover the entire
+// Measure the decorative groups so the field control can cover the entire
 // field while its text padding leaves room for icons and variable-width units.
 // Geometry and gaps still come from the component's token-based stylesheet.
 export function inputTextBehavior(field: HTMLElement) {
   const groups = [
-    field.querySelector<HTMLElement>(".stylos-input-text-leading"),
-    field.querySelector<HTMLElement>(".stylos-input-text-trailing"),
+    field.querySelector<HTMLElement>(".stylos-input-text-leading, .stylos-select-leading"),
+    field.querySelector<HTMLElement>(".stylos-input-text-trailing, .stylos-select-trailing"),
   ];
   function measure() {
     groups.forEach((group, index) => {

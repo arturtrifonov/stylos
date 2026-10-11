@@ -136,6 +136,8 @@ single-line and multiline layouts, composing the same Input.
 
 *Amended 2026-10-11:* the owner selected native scrollbar CSS with accepted browser differences to complete Dropdown overflow styling. The Figma small/absolute treatment is connected through shared CSS; a custom ScrollArea is outside this slice.
 
+*Amended 2026-10-11:* the owner selected **Select** after Dropdown control rows. The single-value field composes Dropdown and its Default options, reusing field geometry, focus effects and selection behaviour. Search, Multiselect and Select Cascade remain later slices.
+
 ### 4.2 Stage 5 — `@stylos/ui`
 
 The work order is SPEC 0009; the stack and the layering are ADR 0002. What assembles into what:

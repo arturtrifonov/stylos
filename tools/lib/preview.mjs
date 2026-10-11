@@ -57,7 +57,7 @@ function iconDrawings() {
 }
 
 export function sampleHtml(entry, props = {}) {
-  if (entry.id === "Input Text" && props.state && props.state !== "default") {
+  if (["Input Text", "Select"].includes(entry.id) && props.state && props.state !== "default") {
     props = { ...props, validation: "off" };
   }
   const api = new Map((entry.api ?? []).map((property) => [property.name, property]));
@@ -96,7 +96,7 @@ export function sampleHtml(entry, props = {}) {
         // Listbox and option identifiers are rendered by their branches below.
       } else if (["Dropdown Item Checkbox", "Dropdown Item Toggle"].includes(entry.id) && ["id", "name", "value", "form"].includes(name)) {
         // Native row-control attributes are rendered below.
-      } else if (entry.id === "Input Text" && ["id", "name", "form", "autocomplete", "label ids", "description ids"].includes(name)) {
+      } else if (["Input Text", "Select"].includes(entry.id) && ["id", "value", "name", "form", "autocomplete", "label ids", "description ids", "max height"].includes(name)) {
         // Native text-field attributes are rendered below.
       } else if (entry.id === "Label" && ["html for", "additional text id"].includes(name)) {
         // Native label association is rendered below.
@@ -185,7 +185,7 @@ export function sampleHtml(entry, props = {}) {
     return `<label class="${cls}"${attr}${htmlFor}>${esc(props["label text"] ?? "Label")}${marker}${additional}</label>`;
   }
 
-  if (entry.id === "Input Text") {
+  if (["Input Text", "Select"].includes(entry.id)) {
     const id = props.id ?? `input-text-preview-${++inputPreviewCounter}`;
     const size = props.size ?? "medium";
     const state = props.state ?? "default";
@@ -227,6 +227,18 @@ export function sampleHtml(entry, props = {}) {
     const validation = outcome !== "off" ? `<span class="stylos-input-text-validation" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: { error: "error", warning: "warning", success: "check_circle" }[outcome] })}</span>` : "";
     const suffix = props["has suffix text"] ? `<span class="stylos-input-text-suffix" id="${esc(suffixId)}">${esc(props["suffix text"] ?? "Suffix")}</span>` : "";
     const placeholder = props["has placeholder"] ? ` placeholder="${esc(props["placeholder text"] ?? "Placeholder text")}"` : "";
+    if (entry.id === "Select") {
+      const filled = !!props.value;
+      const display = filled ? props["input text"] || props.value : (props["has placeholder"] ?? true) ? props["placeholder text"] ?? "Select the option" : "";
+      const triggerSemantics = semantics.replace(/ readonly/g, ' aria-readonly="true"').replace(/ required/g, ' aria-required="true"');
+      const svg = name => sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name });
+      const clear = props["has clear button"] && filled && state === "default"
+        ? `<span class="stylos-select-clear"><button class="stylos-button-inner" data-state="default" type="button" aria-label="${esc(props["clear accessible name"] || `Clear ${accessibleName || ""}`)}"><span class="stylos-button-inner-icon" aria-hidden="true">${svg("close")}</span></button></span>` : "";
+      const chevron = state === "default" ? `<span class="stylos-select-icon" data-position="trailing" aria-hidden="true">${svg("arrow_drop_down")}</span>` : "";
+      const formSemantics = (state === "disabled" ? " disabled" : "") + (props["is required"] && state === "default" ? " required" : "");
+      const nativeSelect = `<select data-select-native id="${esc(id)}-native"${native}${formSemantics} aria-hidden="true" tabindex="-1"><option value=""${filled ? "" : " selected"}></option>${filled ? `<option value="${esc(props.value)}" selected>${esc(display)}</option>` : ""}</select>`;
+      return `<div class="${cls}"${attr} data-is-filled="${filled}">${label}<div class="stylos-select-field" data-surface-layer="1" data-surface-attachment="in-layout"><button type="button" class="stylos-select-trigger" id="${esc(id)}" role="combobox" aria-haspopup="listbox" aria-expanded="false"${triggerSemantics}><span class="stylos-select-value"><span>${esc(display)}</span></span></button>${nativeSelect}<div class="stylos-select-adornments"><span class="stylos-select-leading">${icon("leading").replaceAll("stylos-input-text", "stylos-select")}</span><span class="stylos-select-trailing">${suffix.replaceAll("stylos-input-text", "stylos-select")}${clear}${validation.replaceAll("stylos-input-text", "stylos-select")}${chevron}</span></div></div></div>`;
+    }
     return `<div class="${cls}"${attr} data-is-filled="${!!props.value}">${label}<div class="stylos-input-text-field" data-surface-layer="1" data-surface-attachment="in-layout"><input type="text" id="${esc(id)}" value="${esc(props.value ?? "")}"${native}${semantics}${placeholder}><div class="stylos-input-text-adornments"><span class="stylos-input-text-leading">${icon("leading")}</span><span class="stylos-input-text-trailing">${suffix}${validation}${icon("trailing")}</span></div></div></div>`;
   }
 
