@@ -4,6 +4,14 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-11 (Dropdown entry)
+
+- Increase the shared layer-3 entry shift from 8 to 16 px through the existing gap token, making upward travel clearer for Dropdown and Select while preserving scale, timing and opacity-only exit.
+
+### Added — 2026-10-11 (Select)
+
+- Add Select with five Figma size profiles, bindable single value, clear action, validation, read-only and disabled modes. Compose Label, Button Inner and Dropdown; reuse Input Text field CSS and Dropdown selection/motion. Native form integration supports submission, required validation, autofill, fieldset disabling and reset. Include independent CSS, static previews, Default, Icons playground and a compact Form example.
+
 ### Added — 2026-10-11 (Dropdown control rows)
 
 - Add Dropdown Item Checkbox and Toggle with five Figma sizes, bindable binary selection, associated descriptions, disabled states and full-row labels. Reuse native Checkbox/Toggle controls and shared Dropdown row CSS; Toggle supports leading and trailing placement. Add a group content role and Zag Popover adapter for persistent native-control panels, with shared layer-3 motion, dismissal, focus order and form integration. Include compact interactive examples and independent CSS/static previews.

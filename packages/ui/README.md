@@ -160,7 +160,7 @@ FND-LAYERS-04:
 | --- | --- | --- |
 | Button / Button Icon: Base, Outline | 1 | `in-layout` |
 | Button / Button Icon: Ghost | 0 | `in-layout` |
-| Input Text field | 1 | `in-layout` |
+| Input Text / Select field | 1 | `in-layout` |
 | Tooltip | 2 | `control` |
 | Dropdown | 3 | `control` |
 
@@ -236,7 +236,7 @@ for the animation.
 
 Selection uses `listbox`/`option` and `aria-selected`; the trigger uses Zag's
 select-only `combobox` semantics. Dropdown itself is not a form field and does
-not submit a value; the future Select owner supplies form integration.
+not submit a value; Select supplies form integration.
 
 `backSlot`, `searchSlot` and `actionsSlot` retain the Figma bands and accept
 configured content, but their interaction belongs to future nested, searchable
@@ -633,3 +633,43 @@ Independent CSS imports move from `button-base.css`, `button-outline.css` and
 `tag.css`, and from the interactive treatment files to `tag-interactive.css`.
 Checkbox, Radio and Toggle retain Input/Label/Text: Label hugs one line, while
 Text wraps within its parent and uses a distinct text layout.
+
+### Select
+
+`Select` composes the verified closed field with `Dropdown` and plain
+`DropdownItemDefault` options. Bind `value` to the option identifier; empty
+string means no selection. Every row needs a unique, non-empty value. The
+selected label is resolved from the rows. Supply `inputText` for the initial
+selected label when rendering on the server.
+
+```svelte
+<script>
+  import { Select, DropdownItemDefault } from "@stylos/ui";
+  let workspace = $state("design");
+</script>
+
+<Select labelText="Workspace" name="workspace" bind:value={workspace}
+  inputText="Design" hasClearButton isRequired>
+  <DropdownItemDefault value="design" labelText="Design" />
+  <DropdownItemDefault value="development" labelText="Development" />
+</Select>
+```
+
+The full-field button is a select-only combobox. Clear is a separate native
+button; `clearAccessibleName` localizes its field-specific name. The hidden
+native select owns submission, required validation, autofill and reset. Native
+`oninput`/`onchange` callbacks receive that select as their event target.
+`id` identifies the visible trigger; `name`, `form` and `autocomplete` are
+forwarded to the form control. Read-only stays focusable and submitted but
+cannot open or clear; disabled fields and disabled fieldsets leave form data.
+
+The five size profiles, adornments, resting layer-1 shadow and fading focus
+halo reuse Input Text CSS. The list uses Dropdown's layer-3 motion and native
+scrollbar. Vertical trim follows the Select text layers in Figma: enabled only
+for XS–L placeholders, absent for XL and chosen values. Long values truncate
+horizontally; option rows retain their full text. `maxHeight` limits the list.
+Search, nested options and multiple selection remain separate components.
+
+Independent CSS: `@stylos/ui/css/select.css`. Static previews show the closed
+field. Storybook has Default, Icons playground and a small Form example for
+selection, clear, reset, required validation and disabled-fieldset checks.

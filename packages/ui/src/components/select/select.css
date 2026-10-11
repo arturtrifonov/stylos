@@ -1,0 +1,64 @@
+@import "../../behaviors/field.css";
+@import "../button-inner/button-inner.css";
+@import "../dropdown/dropdown.css";
+@import "../dropdown-item-default/dropdown-item-default.css";
+
+/* Select, Figma 4804:9784. The trigger covers the entire field; only the
+ * separate clear button intercepts its pointer hit area. */
+.stylos-select .stylos-select-trigger {
+  display: flex;
+  align-items: center;
+  text-align: start;
+  cursor: pointer;
+}
+
+.stylos-select-value {
+  display: block;
+  min-width: 0;
+  /* Preserve glyphs beyond the trimmed box inside the horizontal ellipsis
+   * clip. Symmetric clearance keeps the text centred and field height fixed. */
+  padding-block: var(--_stylos-input-gap);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stylos-select-value > span { display: inline; }
+.stylos-select[data-is-filled="false"] .stylos-select-value { color: var(--stylos-color-text-tertiary); }
+
+/* Vertical trim is enabled only on XS–L placeholders in the source set. */
+.stylos-select:not([data-size="extra large"])[data-is-filled="false"] .stylos-select-value {
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+
+.stylos-select-clear {
+  --stylos-button-inner-footprint: var(--_stylos-input-validation-size);
+  display: block;
+  flex: none;
+  width: calc(var(--_stylos-input-validation-size) - var(--stylos-dimension-gap-g-0_250));
+  height: var(--_stylos-input-validation-size);
+  pointer-events: auto;
+}
+.stylos-select-clear > .stylos-button-inner { display: block; }
+
+.stylos-select-field:has(> .stylos-select-trigger[aria-expanded="true"])::before,
+.stylos-select-field:has(.stylos-select-clear :focus-visible)::before { opacity: 0; }
+.stylos-select-field:has(> .stylos-select-trigger[aria-expanded="true"])::after,
+.stylos-select-field:has(.stylos-select-clear :focus-visible)::after { opacity: 1; }
+.stylos-select-trigger[aria-expanded="true"] { border-color: var(--stylos-color-border-primary); }
+.stylos-select-field:has(.stylos-select-clear :focus-visible) .stylos-button-inner::after { opacity: 0; }
+
+.stylos-select[data-state="disabled"] .stylos-select-value { color: var(--stylos-color-text-disabled); }
+.stylos-select[data-state="read only"] .stylos-select-trigger { cursor: default; }
+
+/* The native select remains a form control, not a second tab stop. */
+.stylos-select-field > select {
+  position: absolute;
+  width: var(--stylos-border-width-normal);
+  height: var(--stylos-border-width-normal);
+  padding: 0;
+  border: 0;
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+}

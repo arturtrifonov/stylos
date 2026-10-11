@@ -23,7 +23,7 @@ test("all levels project explicit gap aliases and scales, including a floating l
     assert.equal(manifest.properties[`${prefix}-shift`].rule, "FND-MOTION-19");
     assert.ok(!css.includes(`${prefix}-shift: calc(`), "no arithmetic changes the gap token");
   }
-  assert.ok(css.includes("--stylos-motion-surface-layer-3-shift: var(--stylos-dimension-gap-g-1_000);"));
+  assert.ok(css.includes("--stylos-motion-surface-layer-3-shift: var(--stylos-dimension-gap-g-2_000);"));
   assert.ok(css.includes("--stylos-motion-surface-layer-3-scale: 0.85;"));
   assert.ok(css.includes("--stylos-motion-surface-layer-5-shift: var(--stylos-dimension-gap-g-1_750);"));
   assert.ok(css.includes("--stylos-motion-surface-layer-5-scale: 0.75;"));

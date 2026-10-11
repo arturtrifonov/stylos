@@ -7,11 +7,11 @@ name: "Select"
 family: "Input"
 level: "object"
 role: "input"
-html: "<label>Label text <span>Additional text</span></label><select>"
+html: "<label></label><button role=combobox></button><select aria-hidden=true></select><ul role=listbox></ul>"
 status: "ready"
 version: "0.1.0"
 summary: "A form control showing the option currently chosen, which opens a list to change it."
-purpose: "A select shows the option currently chosen and a chevron saying there are others. That pair is the whole of it: the value in a box, the mark that the box opens, and an optional control for putting it back to nothing. What opens is not here — the list, its options and every way of moving through them belong to whatever draws it, which is why this entry describes a closed control and stops there."
+purpose: "A single-value form field. Select renders the closed field and composes Dropdown with authored Dropdown Item Default options. Shared Zag Select behaviour owns keyboard selection, typeahead navigation, dismissal and placement; a hidden native select participates in forms, autofill, required validation and reset."
 use_when:
   - "One value is chosen from a set the product knows, and the set is short enough to be worth opening rather than searching."
   - "The set is fixed: a person picks from it and cannot add to it."
@@ -58,25 +58,27 @@ uses:
   - "Label"
   - "Icon"
   - "Button Inner"
+  - "Dropdown"
+  - "Dropdown Item Default"
 flow_behavior:
   - "fill"
   - "hug"
 a11y:
   -
     status: "requires"
-    note: "The field needs an accessible name and something has to associate it with the control. Which route is used is the implementation's to choose — see has label — but having none is not a route."
+    note: "Supply label text, an accessible name or external label IDs. The full-field trigger is a select-only combobox associated with the Dropdown listbox."
   -
     status: "requires"
-    note: "Everything about the open list is outside this component: that it is open, which option is active, how the arrow keys move through it, how the choice returns. None of that is here to get right or wrong, and all of it is required for the control to work — SC 4.1.2 and SC 2.1.1."
+    note: "Arrow keys, Home/End, typeahead navigation, Enter/Space, Escape and Tab follow Zag Select. Disabled options are skipped. The native select supplies form data, autofill, required validation and reset."
   -
     status: "requires"
-    note: "validation is drawn as the border colour and the mark in the field, and on error and warning as the message above it. None of it is programmatic. The implementation has to say the field is invalid and tie the message to it, or a person not looking at the colour learns nothing. SC 1.4.1 and SC 3.3.1."
+    note: "Only error sets aria-invalid. Error/warning messages and any suffix are associated through aria-describedby. The owner supplies the outcome and useful message."
   -
     status: "requires"
-    note: "The clear control carries no visible text. It needs a name saying what it clears, because a form of identically named controls is a list a person cannot choose between."
+    note: "Clear is a separate native button, named with the field label by default. Supply clear accessible name when external labels or localization require it."
   -
     status: "requires"
-    note: "read only and disabled have to be exposed as the different things they are. A read-only field stays reachable, stays selectable and is announced as read-only; a disabled one leaves the tab order and is announced as unavailable. The text role is what separates them on screen, and nothing about the semantics follows from that automatically."
+    note: "Read-only retains the value, form submission and keyboard focus but cannot open or clear. Disabled leaves the tab order and form submission. Both suppress validation and the chevron. Disabled fieldsets are handled by the native form bridge."
 sizing_model:
   horizontal: "fixed"
   vertical: "hug"
@@ -154,8 +156,8 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
-    description: "Field density, and it has to match the fields beside it in the same form. Drives the box, its padding and gap, the type, the chevron and the two smaller marks."
+    default: "medium"
+    description: "Field height, padding, text and icon sizes. Width belongs to the consumer."
     values:
       -
         value: "extra small"
@@ -171,109 +173,164 @@ api:
     name: "state"
     kind: "variant"
     default: "default"
-    description: "Where the control is in the interaction, and — for two of the values — whether it can be opened at all."
+    description: "Interaction mode. Hover and focus are native. Read-only stays focusable but cannot open or clear; disabled also leaves form submission."
     values:
       -
         value: "default"
       -
-        value: "hover"
-        note: "The border takes the primary role."
-      -
-        value: "active / focus"
-        note: "One value, not two. Pressing the control is what focuses it, so the two would never be seen apart."
-      -
         value: "read only"
-        note: "The chosen value is shown and cannot be changed. No chevron, because there is no list to open. Carries no validation outcome."
       -
         value: "disabled"
-        note: "Not applicable now, against read only, which is applicable and settled. No chevron for the same reason, the label and the value both take the disabled text role, and the field leaves the tab order."
   -
     name: "validation"
     kind: "variant"
     default: "off"
-    description: "What checking the value said. It colours the border and puts a mark in the field. On error and warning it also switches the message above the label; on success it does not — see that value."
+    description: "Consumer-supplied checking result. Error and warning show supporting text; success shows only a mark. Read-only and disabled suppress the outcome. Only error sets aria-invalid; a warning is advisory."
     values:
       -
         value: "off"
-        note: "Nothing has been checked, or nothing was wrong. Not the same as success."
       -
         value: "error"
-        note: "Carries the message with it, because a person who has to fix something needs to be told what."
       -
         value: "warning"
-        note: "Carries the message with it."
       -
         value: "success"
-        note: "The mark in the field and nothing else. The label stays in its default treatment and no message appears, because a field that is simply correct rarely has anything to say beyond being correct — and success is rare enough that the mark carries it. Where there is something to say, the supporting line is switched on deliberately."
   -
-    name: "is filled"
-    kind: "variant"
-    default: "false"
-    description: "Whether an option has been chosen. It swaps the placeholder for the value and takes the text from tertiary to base, and it is what makes the clear control possible."
-    values:
-      -
-        value: "false"
-      -
-        value: "true"
-  -
-    name: "has leading icon"
-    kind: "boolean"
-    default: "false"
-    description: "Whether a mark sits before the value — the kind of thing the list holds."
-    controls:
-      - "leading icon"
-  -
-    name: "leading icon"
-    kind: "instance"
-    default: "Placeholder"
-    description: "Which mark leads. Named for the meaning the set carries, not for a drawing."
+    name: "value"
+    kind: "string"
+    default: ""
+    description: "Selected option value, bindable in Svelte. Empty string means no selection; is filled is derived. Options need unique non-empty values."
   -
     name: "has label"
     kind: "boolean"
-    default: "true"
-    description: "Whether the name of the field is shown above it. On by default. Three routes give the field its name: the label is passed to the component, which associates it; a label is authored outside and associated with the control; or the context makes the field obvious and the name is supplied without being shown. Turning this off rules out the first and leaves the other two."
+    default: true
+    description: "Shows the associated Label above the field. When hidden, supply an external label or accessible name."
+  -
+    name: "label text"
+    kind: "text"
+    default: "Label"
+    description: "Passed to the nested Label and used as the visible field's accessible name."
+  -
+    name: "has additional text"
+    kind: "boolean"
+    default: false
+    description: "Shows the Label's supporting line outside error and warning, which require the line."
+    controls:
+      - "additional text"
+  -
+    name: "additional text"
+    kind: "text"
+    default: "Additional text"
+    description: "Hint or validation message, associated with the field through aria-describedby."
   -
     name: "has placeholder"
     kind: "boolean"
-    default: "true"
-    description: "Whether the control shows a placeholder before anything is chosen. On by default: an empty select cannot be typed into, so the placeholder is the only thing separating a control nobody has answered from one whose answer happens to be short."
+    default: true
+    description: "Shows the placeholder before an option is chosen."
     controls:
       - "placeholder text"
   -
     name: "placeholder text"
     kind: "text"
     default: "Select the option"
-    description: "What stands in the control before anything is chosen. It is an instruction rather than an example of a format — there is nothing to demonstrate and nothing is typed over it, because the chosen option replaces it whole. One line, truncated with an ellipsis."
+    description: "Instruction for the empty field; does not provide its accessible name."
   -
-    name: "input text"
-    kind: "text"
-    default: "Selected option"
-    description: "The chosen option, shown when is filled is true. One line, truncated with an ellipsis rather than wrapped — an option too long for the field is cut here and readable in the list."
+    name: "has leading icon"
+    kind: "boolean"
+    default: false
+    description: "Shows the supplied leading decorative mark. No placeholder drawing is substituted."
+    controls:
+      - "leading icon"
+  -
+    name: "leading icon"
+    kind: "instance"
+    svelte_type: "snippet"
+    description: "Decorative snippet before the value, normally Icon."
   -
     name: "has suffix text"
     kind: "boolean"
-    default: "false"
-    description: "Whether a short quiet string sits at the end of the field, inside it."
+    default: false
+    description: "Shows a unit or qualifier after the value; it is not part of the submitted value."
     controls:
       - "suffix text"
   -
     name: "suffix text"
     kind: "text"
     default: "Suffix"
-    description: "The unit or qualifier the chosen value is in. It sits in the secondary text role at a smaller measure, inside the field and after the value."
+    description: "Unit or qualifier, included in the field's accessible description."
+  -
+    name: "is required"
+    kind: "boolean"
+    default: false
+    description: "Native required constraint and the nested Label's required marker."
+  -
+    name: "id"
+    kind: "string"
+    description: "Native control ID. A stable instance ID is generated when omitted."
+  -
+    name: "name"
+    kind: "string"
+    description: "Native form-data key."
+  -
+    name: "form"
+    kind: "string"
+    description: "ID of an external form, when the field is outside it."
+  -
+    name: "autocomplete"
+    kind: "string"
+    description: "Native autocomplete hint."
+  -
+    name: "accessible name"
+    kind: "text"
+    description: "Nonvisual accessible name when has label is false."
+  -
+    name: "label ids"
+    kind: "string"
+    description: "Space-separated external label IDs for aria-labelledby when has label is false."
+  -
+    name: "description ids"
+    kind: "string"
+    description: "Additional description IDs, combined with the component's supporting text and suffix."
+  -
+    name: "oninput"
+    kind: "event"
+    description: "Input event from the native form bridge."
+  -
+    name: "onchange"
+    kind: "event"
+    description: "Change event from the native form bridge; the value binding has been updated."
+  -
+    name: "input text"
+    kind: "text"
+    default: ""
+    description: "Optional selected label for server rendering before the adapter resolves it from the option rows. It does not set the value."
   -
     name: "has clear button"
     kind: "boolean"
-    default: "false"
-    description: "Whether a control for returning the field to nothing sits before the chevron. It only exists while is filled is true — an unchosen field has nothing to clear — so turning it on before then does nothing. Off by default because clearing is not always allowed: a field that must hold a value should not offer it."
+    default: false
+    description: "Shows a separate clear action only when a value is chosen and the field is editable."
+  -
+    name: "clear accessible name"
+    kind: "text"
+    description: "Localized field-specific clear action name. Defaults to Clear plus the visible field label."
+  -
+    name: "max height"
+    kind: "string"
+    default: ""
+    description: "CSS length limiting the Dropdown option area; empty uses its size-token default."
+  -
+    name: "options slot"
+    kind: "slot"
+    description: "Dropdown Item Default snippets. Select supplies the Dropdown panel and size context; each option has a unique non-empty value."
 limitations:
-  - "This is the closed control and the value in it. There is no open state, no list, no active option and no is expanded — everything that happens after the field is pressed belongs to whatever draws the list."
-  - "One line, always. The chosen option truncates with an ellipsis; there is no wrapping and no second line."
-  - "No search and no typeahead. A set long enough to need either is a set this component is the wrong shape for."
-  - "validation exists only on default, hover and active / focus. A read-only or disabled field carries no outcome, so a form re-rendered read-only after a failed submit has nowhere to keep the error."
-  - "Marking a field required belongs to the label, not to the field: the component passes it on and the label carries the marker, so there is no is required here. A required field with has label off has nowhere to show it, and that shape is not supported."
-  - "No tone and no way to mark one option as different from the rest. The field shows a string; whatever distinguishes that option lives in the list."
+  - "Single selection with plain Dropdown Item Default rows. Search, nested options, staged actions and multiple selection remain separate components. Keyboard typeahead navigates the fixed options without a search field."
+  - "One line. The selected label truncates horizontally and remains readable in the list."
+  - "The chosen value must match an authored option. For server-rendered selected text supply input text; the browser resolves the label from option rows."
+  - "The owner supplies validation and localized content, including a field-specific clear accessible name when needed."
 figma_notes:
+  - "Verified 2026-10-11 against set 4804:9784: medium default; five sizes; default/hover/focus/read-only/disabled; four validation outcomes and empty/filled variants."
+  - "In the web API hover/focus follow interaction and is filled follows value. Label text, supporting text and requiredness are forwarded to the nested Label."
+  - "Vertical trim is CAP_HEIGHT on empty placeholders at extra small, small, medium and large. The extra-large placeholder and all selected Input text layers use NONE. This is a component detail, not a typography rule."
   - "read only and disabled drop the chevron entirely rather than dimming it, because in those states there is no list to open."
   - "The placeholder sits in a wrapper so the field row keeps its width when the placeholder is switched off."
   - "The label's words and the message's words are properties of the nested Label instance rather than of this component, because Figma cannot push a value deeper without a variable for the whole file. In @stylos/ui both are set on Select and passed down."
@@ -283,7 +340,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4804:9784"
-  last_verified: "2026-09-05"
+  last_verified: "2026-10-11"
 notes: "Select and Input Text share property keys, box, type run, states and colour roles. That is because they are the same kind of thing in a form, not because either derives from the other. The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."
 import:
   batch: 1
