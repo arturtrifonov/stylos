@@ -171,7 +171,7 @@ Work:
 **Gate:** the `0.2.0` table in §1.
 **Estimate:** 10–12 weeks.
 
-**Amended 2026-10-10:** the owner selected Dropdown next and chose single-value selection first. Deliver the panel, Dropdown Item Default and external-trigger selection behaviour. Search, nested navigation, checkbox/toggle rows and action menus remain later slices. Optional bands retain the Figma layout and accept owner-supplied content; they are outside the current selection adapter.
+**Amended 2026-10-10:** the owner selected Dropdown next and chose single-value selection first. Deliver the panel, Dropdown Item Default and external-trigger selection behaviour. Search, nested navigation and action menus remain later slices. Checkbox/Toggle rows and their native-control popup were added on 2026-10-11; staged Apply/Cancel remains a later owner slice. Optional bands retain the Figma layout and accept owner-supplied content; they are outside the current selection adapter.
 
 ### 4.3 Stage 6 — the proof, and the consumer surface
 

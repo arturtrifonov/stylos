@@ -1,0 +1,113 @@
+@import "./dropdown.css";
+@import "../components/icon/icon.css";
+
+.stylos-dropdown-item {
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  flex: none;
+  width: calc(100%);
+  min-width: 0;
+  padding-block: var(--_stylos-dropdown-row-padding-block);
+  padding-inline: var(--_stylos-dropdown-row-padding-inline);
+  gap: var(--_stylos-dropdown-row-gap);
+  border-radius: var(--stylos-radius-small);
+  color: var(--stylos-color-text-base);
+  background-color: transparent;
+  font-family: var(--stylos-font-family-normal);
+  font-size: var(--_stylos-dropdown-font-size);
+  font-weight: var(--stylos-font-weight-emphasis);
+  font-stretch: normal;
+  line-height: var(--_stylos-dropdown-line-height);
+  letter-spacing: var(--stylos-font-letter-spacing-style-normal);
+  cursor: pointer;
+  transition: background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+}
+.stylos-dropdown-item[data-is-selected="true"] {
+  color: var(--stylos-color-text-primary);
+  background-color: var(--stylos-color-surface-subtle-primary-default);
+}
+.stylos-dropdown-item:not([data-state="disabled"]):hover {
+  background-color: var(--stylos-color-surface-subtle-base-hover);
+}
+.stylos-dropdown-item[data-is-selected="true"]:not([data-state="disabled"]):hover {
+  background-color: var(--stylos-color-surface-subtle-primary-hover);
+}
+.stylos-dropdown-item:not([data-state="disabled"]):active {
+  background-color: var(--stylos-color-surface-subtle-base-active);
+}
+.stylos-dropdown-item[data-is-selected="true"]:not([data-state="disabled"]):active {
+  background-color: var(--stylos-color-surface-subtle-primary-active);
+}
+.stylos-dropdown-item[data-state="disabled"] {
+  color: var(--stylos-color-text-disabled);
+  background-color: transparent;
+  cursor: default;
+}
+.stylos-dropdown-item-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  padding-block: var(--_stylos-dropdown-text-padding);
+  gap: var(--_stylos-dropdown-text-gap);
+}
+.stylos-dropdown-item-label,
+.stylos-dropdown-item-additional {
+  display: block;
+  /* Keep horizontal ellipsis, but let glyphs use the existing vertical text
+   * padding. Negative margins borrow that space without changing row height. */
+  padding-block: var(--_stylos-dropdown-text-padding);
+  margin-block: calc(-1 * var(--_stylos-dropdown-text-padding));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stylos-dropdown-item-additional {
+  color: var(--stylos-color-text-secondary);
+  font-size: var(--_stylos-dropdown-additional-font-size);
+  font-weight: var(--stylos-font-weight-base);
+  line-height: var(--_stylos-dropdown-additional-line-height);
+}
+.stylos-dropdown-item[data-state="disabled"] .stylos-dropdown-item-additional { color: inherit; }
+.stylos-dropdown-item-leading,
+.stylos-dropdown-item-selected {
+  --stylos-icon-footprint: var(--_stylos-dropdown-icon-size);
+  position: relative;
+  flex: none;
+  width: calc(var(--_stylos-dropdown-icon-size) - var(--_stylos-dropdown-icon-overhang));
+  height: var(--_stylos-dropdown-icon-size);
+}
+.stylos-dropdown-item-leading > * { position: absolute; inset-inline-end: 0; inset-block-start: 0; }
+.stylos-dropdown-item-selected > * { position: absolute; inset-inline-start: 0; inset-block-start: 0; }
+.stylos-dropdown-item-selected { display: none; }
+.stylos-dropdown-item[data-is-selected="true"] .stylos-dropdown-item-selected { display: block; }
+.stylos-dropdown-item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Figma's enlarged frame has an OUTSIDE stroke: its painted edge is
+   * four units outside the row, matching a thick outline at a thick offset. */
+  outline: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary);
+  outline-offset: var(--stylos-border-width-thick);
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+}
+.stylos-dropdown-options:focus-visible .stylos-dropdown-item[data-highlighted]:not([data-state="disabled"])::after {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .stylos-dropdown-item,
+  .stylos-dropdown-item::after { transition: none; }
+}
+/* System colours must follow the active forced-colours palette. */
+/* stylelint-disable scale-unlimited/declaration-strict-value */
+@media (forced-colors: active) {
+  .stylos-dropdown-item[data-is-selected="true"] { color: HighlightText; background-color: Highlight; }
+  .stylos-dropdown-item[data-state="disabled"] { color: GrayText; }
+}
+
+/* stylelint-enable scale-unlimited/declaration-strict-value */

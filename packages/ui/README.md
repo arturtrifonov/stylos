@@ -257,6 +257,41 @@ in the workshop's Chromium browser. Screen-reader assessment remains part of
 the package's verification plan. Recorded Figma colour-pairing findings remain
 in the registry; this implementation does not change the palette.
 
+### Dropdown: Checkbox and Toggle rows
+
+`DropdownItemCheckbox` and `DropdownItemToggle` compose the existing native
+controls and inherit `Dropdown` size. Bind `isSelected` to `"false" | "true"`.
+The complete row is a label; keyboard focus surrounds the row once. Optional
+additional text is an associated description. Toggle accepts `alignment="start|end"`.
+
+Render these rows inside `Dropdown contentRole="group"` and connect an external
+button and `[data-dropdown-positioner]` using `dropdownControlsBehavior`:
+
+```svelte
+<div use:dropdownControlsBehavior={{ id: "notifications", accessibleName: "Notifications" }}>
+  <span data-dropdown-trigger><Button labelText="Notifications" /></span>
+  <div data-dropdown-positioner hidden>
+    <Dropdown contentRole="group" accessibleName="Notifications">
+      {#snippet contentSlot()}
+        <DropdownItemToggle labelText="Email" bind:isSelected={emailEnabled} />
+      {/snippet}
+    </Dropdown>
+  </div>
+</div>
+```
+
+The non-modal popup stays open after changes. Zag Popover handles placement,
+Escape, outside dismissal, focus return and portalled Tab order. Native controls
+handle Space, state, disabled rows and form reset. Checkbox values are collected
+by the owner; Toggle changes take effect immediately in that owner's handler.
+Use `form` explicitly when a control must submit to a form outside the body portal.
+The adapter supports plain groups only; search, nesting and Apply/Cancel are
+separate future slices. Single-choice `dropdownBehavior` remains listbox-only.
+
+Independent CSS is `@stylos/ui/css/dropdown-item-checkbox.css` and
+`@stylos/ui/css/dropdown-item-toggle.css`. The framework-free popup adapter is
+also exported at `@stylos/ui/behaviors/dropdown-controls`.
+
 ### Native scrollbar styling
 
 `@stylos/ui/scrollbar.css` styles an existing overflow element with the

@@ -150,9 +150,19 @@ api:
     kind: "slot"
     description: "Optional actions band. The owner supplies actions and staged-value behaviour."
   -
+    name: "content role"
+    kind: "variant"
+    default: "listbox"
+    description: "Listbox for plain selection options; group for native Checkbox and Toggle rows. The owner chooses matching behaviour."
+    values:
+      -
+        value: "listbox"
+      -
+        value: "group"
+  -
     name: "id"
     kind: "string"
-    description: "Identifier of the listbox, available to the behaviour owner."
+    description: "Identifier of the content group or listbox, available to the behaviour owner."
   -
     name: "accessible name"
     kind: "text"
@@ -170,7 +180,7 @@ limitations:
   - "No empty state, no loading state and no group headings inside the list. A list with nothing in it, a list still arriving, and a list that needs dividing all have to be built in the slot."
   - "The scrollbar uses small/absolute at every panel size in Figma; the web applies this drawing treatment through native CSS with owner-approved platform differences. The scrollbar is the same size at every panel size. That is a choice of default parameters for it rather than a run, and it does not follow the size property the way the rows, the field and the buttons do."
   - "One search field and one back row, both at the top and both in a fixed order. Nothing reorders the bands."
-  - "The current web behaviour supports plain single selection. Search, back and actions slots provide visual bands only; their behaviour belongs to future combobox, nested or staged-selection owners. They cannot be combined with dropdownBehavior."
+  - "dropdownBehavior supports plain single selection; dropdownControlsBehavior supports a group of native Checkbox/Toggle rows. Search, back and actions slots provide visual bands only; their behaviour belongs to future combobox, nested or staged-selection owners. They cannot be combined with dropdownBehavior."
 figma_notes:
   - "Elevation checked on 2026-10-11: all ten size/height variants use shadow/elevation 3 (style key 1f7004d54f790d3624f31d20a58a9a6543ab2470). Web CSS now matches that binding; the earlier elevation-4 implementation was incorrect."
   - "The maximum height has no property in the set. Figma cannot hold a maximum and keep the buttons band pinned beneath it, so the two ends are variants instead: hug is the panel under its maximum, and fixed is a height a designer sets by hand to see the list clipped with the buttons still in place. Neither value is part of the component — it has one adjustable maximum and no such switch."

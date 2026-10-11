@@ -4,6 +4,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-10-11 (Dropdown control rows)
+
+- Add Dropdown Item Checkbox and Toggle with five Figma sizes, bindable binary selection, associated descriptions, disabled states and full-row labels. Reuse native Checkbox/Toggle controls and shared Dropdown row CSS; Toggle supports leading and trailing placement. Add a group content role and Zag Popover adapter for persistent native-control panels, with shared layer-3 motion, dismissal, focus order and form integration. Include compact interactive examples and independent CSS/static previews.
+
 ### Added — 2026-10-11 (Dropdown and shared surface profiles)
 
 - Add Dropdown and Dropdown Item Default with five Figma sizes, optional content bands, icons and selection states. Add external-trigger Zag Select behaviour for single-value selection, keyboard navigation, typeahead, disabled-option skipping, dismissal and focus return, with compact Storybook examples and independent CSS/static previews.
