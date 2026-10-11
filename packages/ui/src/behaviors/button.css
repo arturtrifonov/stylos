@@ -24,7 +24,7 @@
   border-radius: var(--stylos-radius-medium);
   background-color: var(--_stylos-button-surface);
   color: var(--_stylos-button-foreground);
-  box-shadow: var(--_stylos-button-shadow);
+  box-shadow: var(--_stylos-surface-shadow);
   font-family: var(--stylos-font-family-normal);
   font-weight: var(--stylos-font-weight-emphasis);
   font-size: var(--_stylos-button-font-size);

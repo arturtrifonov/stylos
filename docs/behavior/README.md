@@ -13,7 +13,7 @@ Written to the grammar in [`docs/RULES.md`](../RULES.md); rules here carry `BEH-
 | [keyboard.md](keyboard.md) | Yet to fill |
 | [pointer.md](pointer.md) | Yet to fill |
 | [selection.md](selection.md) | Yet to fill |
-| [overlays.md](overlays.md) | Yet to fill |
+| [overlays.md](overlays.md) | Confirmed |
 | [disabled.md](disabled.md) | Yet to fill |
 | [loading.md](loading.md) | Yet to fill |
 | [validation.md](validation.md) | Yet to fill |
@@ -27,4 +27,4 @@ Written to the grammar in [`docs/RULES.md`](../RULES.md); rules here carry `BEH-
 | [timing.md](timing.md) | Yet to fill |
 | [text-input.md](text-input.md) | Yet to fill |
 
-**Every file is a scope line and nothing else**, and says so in its status. SPEC 0013 created the complete set, with every file empty. The place for a rule has to exist before the rule is decided; otherwise the rule is written in whatever document its author happens to have open. Nothing here is settled yet, and no file should be read as if it were.
+**Files marked Yet to fill are scope lines only.** SPEC 0013 created the complete set with every file empty; Overlays now records ownership and stacking, with the remaining questions listed under Open. The place for a rule has to exist before the rule is decided; otherwise the rule is written in whatever document its author happens to have open. Nothing here is settled yet, and no file should be read as if it were.

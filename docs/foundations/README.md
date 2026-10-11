@@ -14,6 +14,7 @@ This table is an index of the files and nothing more. Where the table and a file
 | [sizing.md](sizing.md) | Confirmed |
 | [naming.md](naming.md) | Confirmed |
 | [icons.md](icons.md) | Confirmed |
+| [layers.md](layers.md) | Confirmed |
 | [effects.md](effects.md) | Confirmed |
 | [accessibility.md](accessibility.md) | Confirmed |
 | [tokens.md](tokens.md) | Yet to fill |

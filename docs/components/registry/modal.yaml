@@ -226,7 +226,7 @@ api:
     default: "false"
     description: "Shows a third action at the left end of the footer, apart from the pair. Off by default. The separation is the point: it is not a third choice ranked below the other two but an action of a different kind — learn more, go back a step, do something else entirely — and putting it at the far end says so before the label is read."
 limitations:
-  - "There is no state. A dialog is open or it is not, and everything about how it arrives, how it leaves and what happens behind it belongs to whoever places it."
+  - "There is no state. A dialog is open or it is not, and the owner manages its opening, dismissal and backdrop. Surface motion follows FND-MOTION-19."
   - "The overlay is not part of the component. What is drawn here is the panel; the thing that dims the page and blocks it is supplied elsewhere, which is why it is written as an obligation rather than as anatomy."
   - "The close control cannot be turned off. A dialog that cannot be dismissed is a dialog that has taken the screen hostage, and the system does not offer one."
   - "Nothing scrolls. The height hugs whatever the slot holds, so content that would overflow makes a taller dialog rather than a scrolling one — which is the signal that it should not have been a dialog."
@@ -240,7 +240,7 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4453-7650"
   last_verified: "2026-09-05"
-notes: "The accessibility target is not chosen yet — PLAN.md Stage 5 — so what is recorded here is the obligation on the consumer rather than a judgement against a criterion the system has not adopted. children is carried over whole from the imported entry and is close to the whole library, which is what a dialog slot permits in principle; narrowing it is a later judgement."
+notes: "Level 6, free attachment under FND-LAYERS-01 and FND-LAYERS-02; shadow selection follows FND-EFFECTS-05 and surface motion follows FND-MOTION-19. For the future web implementation, its owner coordinates the backdrop under FND-MOTION-11. The accessibility target is not chosen yet — PLAN.md Stage 5 — so what is recorded here is the obligation on the consumer rather than a judgement against a criterion the system has not adopted. children is carried over whole from the imported entry and is close to the whole library, which is what a dialog slot permits in principle; narrowing it is a later judgement."
 import:
   batch: 1
   ready: true

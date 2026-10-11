@@ -4,6 +4,12 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-10-11 (Dropdown and shared surface profiles)
+
+- Add Dropdown and Dropdown Item Default with five Figma sizes, optional content bands, icons and selection states. Add external-trigger Zag Select behaviour for single-value selection, keyboard navigation, typeahead, disabled-option skipping, dismissal and focus return, with compact Storybook examples and independent CSS/static previews.
+- Add token-based native scrollbar styling and connect its small/absolute treatment to Dropdown, with standard-CSS and forced-colours fallbacks and accepted browser differences. Preserve glyphs within row text padding while retaining horizontal ellipsis.
+- Define Layers depth and attachment separately from overlay ownership and order. Components declare their surface profile; shared CSS selects elevation and fixed motion profiles using existing gap tokens for every level, including level 5. Match Dropdown to Figma elevation 3 and preserve its approved entry. Edge attachment selects edge travel independently. Preserve focus/disabled effects, interrupted motion, opacity-only floating exit and reduced-motion alternatives. Document implementation details in the UI package guide; the shared overlay manager remains future work.
+
 ### Added — 2026-10-10 (Button Icon)
 
 - Add native `ButtonIcon` with base/outline/ghost variants, five sizes and five tones, configured icon snippets, accessible action names and form integration. Reuse Button treatment CSS, focus, disabled behaviour and micro/linear Motion; retain Figma's square targets and centred Element-run icons. Include independent CSS, static previews and Default followed by Icons playground.

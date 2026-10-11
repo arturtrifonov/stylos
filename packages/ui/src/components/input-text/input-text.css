@@ -1,3 +1,4 @@
+@import "../../behaviors/surface.css";
 @import "../label/label.css";
 @import "../icon/icon.css";
 
@@ -38,7 +39,7 @@
   transition: opacity var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
 }
 .stylos-input-text-field::before {
-  box-shadow: var(--stylos-shadow-elevation-1);
+  box-shadow: var(--_stylos-surface-shadow);
   opacity: 1;
 }
 .stylos-input-text-field::after {

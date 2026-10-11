@@ -1,0 +1,24 @@
+@import "./surface.css";
+
+/* The adapter marks the visibility node, which can be an outer positioner.
+ * Placement and spatial motion then remain on separate elements.
+ */
+[data-surface-motion][data-state] {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--_stylos-surface-exit-duration, var(--stylos-motion-duration-medium-exit)) var(--_stylos-surface-exit-easing, var(--stylos-motion-easing-exit)),
+    visibility var(--_stylos-surface-exit-duration, var(--stylos-motion-duration-medium-exit)) step-end;
+}
+
+[data-surface-motion][data-state="open"] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity var(--_stylos-surface-enter-duration, var(--stylos-motion-duration-medium-enter)) var(--_stylos-surface-enter-easing, var(--stylos-motion-easing-enter)),
+    visibility var(--_stylos-surface-enter-duration, var(--stylos-motion-duration-medium-enter)) step-start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-surface-motion][data-state] { transition: none; }
+}

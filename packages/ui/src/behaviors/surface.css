@@ -1,0 +1,57 @@
+/* Shared web profiles implementing FND-LAYERS-04.
+ * Reset private profiles on every surface so nested surfaces do not inherit
+ * their owner's elevation or motion. Components compose the selected shadow
+ * with their inside stroke/focus treatment; this sheet does not paint it.
+ */
+[data-surface-layer] {
+  --_stylos-surface-shadow: none;
+  --_stylos-surface-enter-transform: none;
+  --_stylos-surface-exit-transform: none;
+  --_stylos-surface-enter-duration: var(--stylos-motion-duration-medium-enter);
+  --_stylos-surface-exit-duration: var(--stylos-motion-duration-medium-exit);
+  --_stylos-surface-enter-easing: var(--stylos-motion-easing-enter);
+  --_stylos-surface-exit-easing: var(--stylos-motion-easing-exit);
+}
+
+[data-surface-layer="1"] { --_stylos-surface-shadow: var(--stylos-shadow-elevation-1); }
+[data-surface-layer="2"] { --_stylos-surface-shadow: var(--stylos-shadow-elevation-2); }
+[data-surface-layer="3"] { --_stylos-surface-shadow: var(--stylos-shadow-elevation-3); }
+[data-surface-layer="4"] { --_stylos-surface-shadow: var(--stylos-shadow-elevation-4); }
+[data-surface-layer="5"] { --_stylos-surface-shadow: var(--stylos-shadow-elevation-5); }
+[data-surface-layer="6"] { --_stylos-surface-shadow: var(--stylos-shadow-elevation-6); }
+
+/* FND-MOTION-19: depth supplies intensity; attachment selects the treatment. */
+:is([data-surface-attachment="control"], [data-surface-attachment="free"]) {
+  transform-origin: var(--transform-origin, center);
+}
+
+:is([data-surface-attachment="control"], [data-surface-attachment="free"])[data-surface-layer="2"] {
+  --_stylos-surface-enter-transform: translateY(var(--stylos-motion-surface-layer-2-shift)) scale(var(--stylos-motion-surface-layer-2-scale));
+}
+
+:is([data-surface-attachment="control"], [data-surface-attachment="free"])[data-surface-layer="3"] {
+  --_stylos-surface-enter-transform: translateY(var(--stylos-motion-surface-layer-3-shift)) scale(var(--stylos-motion-surface-layer-3-scale));
+}
+
+:is([data-surface-attachment="control"], [data-surface-attachment="free"])[data-surface-layer="4"] {
+  --_stylos-surface-enter-transform: translateY(var(--stylos-motion-surface-layer-4-shift)) scale(var(--stylos-motion-surface-layer-4-scale));
+}
+
+:is([data-surface-attachment="control"], [data-surface-attachment="free"])[data-surface-layer="5"] {
+  --_stylos-surface-enter-transform: translateY(var(--stylos-motion-surface-layer-5-shift)) scale(var(--stylos-motion-surface-layer-5-scale));
+}
+
+:is([data-surface-attachment="control"], [data-surface-attachment="free"])[data-surface-layer="6"] {
+  --_stylos-surface-enter-transform: translateY(var(--stylos-motion-surface-layer-6-shift)) scale(var(--stylos-motion-surface-layer-6-scale));
+}
+
+/* FND-MOTION-18: edge travel uses the panel extent and never scales content. */
+[data-surface-attachment="window-edge"] {
+  --_stylos-surface-exit-transform: var(--_stylos-surface-enter-transform);
+  --_stylos-surface-enter-duration: var(--stylos-motion-duration-long-enter);
+  --_stylos-surface-exit-duration: var(--stylos-motion-duration-long-exit);
+}
+[data-surface-attachment="window-edge"][data-surface-edge="left"] { --_stylos-surface-enter-transform: translateX(-100%); }
+[data-surface-attachment="window-edge"][data-surface-edge="right"] { --_stylos-surface-enter-transform: translateX(100%); }
+[data-surface-attachment="window-edge"][data-surface-edge="top"] { --_stylos-surface-enter-transform: translateY(-100%); }
+[data-surface-attachment="window-edge"][data-surface-edge="bottom"] { --_stylos-surface-enter-transform: translateY(100%); }

@@ -21,6 +21,8 @@
     <span class="stylos-tooltip-positioner">
       <span
         class="stylos-tooltip"
+        data-surface-layer="2"
+        data-surface-attachment="control"
         data-type={type}
         data-tone={tone}
         data-size={size}

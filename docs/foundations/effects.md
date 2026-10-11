@@ -1,7 +1,7 @@
 # Borders, radii, and effects
 
 Status: Confirmed
-Scope: Borders, radii, gradients, opacity and shadows, including which elevation style a surface uses.
+Scope: Borders, radii, gradients, opacity and shadows, including shadow selection by Layers level; surface roles belong in Layers.
 
 ## Binding
 
@@ -59,18 +59,17 @@ X is always zero, and **blur equals the Y offset**. That is why there is no blur
 
 ### FND-EFFECTS-04 — An elevation style matches a surface's relationship to the page
 
-**MUST.** An elevated surface uses the `shadow/elevation N` style that matches its relationship to the page in the table below.
+**RETIRED** 2026-10-11. Surface roles previously selected elevation directly in this document.
 
-Why: a shadow is not picked by how strong it looks. Its job is to tell a person how the surface relates to the page and to the thing that opened it. Without that shared order, two surfaces with the same role can look as though they sit at different depths.
+Why: FND-LAYERS-01 now owns the classification; FND-EFFECTS-05 maps that level to the existing shadow scale.
 
-| Style | Relationship to the page | Use for |
-| --- | --- | --- |
-| `shadow/elevation 1` | Raised within the page. It stays in the layout and never leaves it. | Buttons, input fields, cards |
-| `shadow/elevation 2` | The smallest overlay. It appears next to the element it belongs to and disappears with it. | Tooltips |
-| `shadow/elevation 3` | An overlay anchored to a control. It has its own content, is opened by an element and is positioned against it. | Dropdowns, popovers, date pickers, autocomplete |
-| `shadow/elevation 4` | An overlay positioned against the screen, not against an element. It arrives on its own and does not block the page. | Alert popups, notifications, toasts |
-| `shadow/elevation 5` | A large panel attached to an edge of the screen. It holds a task beside the page and leaves the page visible. | Drawers, side panels, bottom sheets |
-| `shadow/elevation 6` | The surface takes over. It is centred, detached from every edge, and nothing behind it is reachable. | Modals |
+### FND-EFFECTS-05 — The shadow style follows the Layers level
+
+**MUST.** Use `shadow/elevation N` for an elevated surface assigned level N under FND-LAYERS-01.
+
+Why: the shadow expresses the same depth as the surface's motion profile.
+
+Level 0 adds no elevation shadow. Focus treatments remain local state effects and do not reclassify the surface.
 
 Serves: PRN-06.
 

@@ -1,8 +1,8 @@
+@import "../../behaviors/surface.css";
 @import "../../behaviors/button.css";
 
 .stylos-button-base {
   --_stylos-button-foreground: var(--stylos-color-text-inverted);
-  --_stylos-button-shadow: var(--stylos-shadow-elevation-1);
 }
 
 .stylos-button-base[data-tone="base"] {
@@ -41,10 +41,6 @@
 }
 
 /* The INSIDE stroke keeps Outline the same width as Base and Ghost. */
-.stylos-button-outline {
-  --_stylos-button-shadow: var(--stylos-shadow-elevation-1);
-}
-
 .stylos-button-outline::before {
   content: "";
   position: absolute;
@@ -107,7 +103,6 @@
 .stylos-button-ghost {
   --_stylos-button-default: transparent;
   --_stylos-button-disabled: transparent;
-  --_stylos-button-shadow: none;
 }
 
 .stylos-button-ghost[data-tone="base"] {

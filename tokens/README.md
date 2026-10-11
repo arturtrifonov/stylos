@@ -1,8 +1,8 @@
 # tokens/
 
-The canonical token set — **the record**, and the contract everything downstream reads. Written by `tools/import-tokens.mjs` straight from a Figma export, using the one authored file here.
+The canonical token set — **the record**, and the contract everything downstream reads. Written by `tools/import-tokens.mjs` straight from a Figma export, using the authored declarations described below.
 
-Figma is the source of truth; this is the repository's record of it. Nothing sits in between: the exported files are read once at import and never committed, because a directory of exports collected one collection at a time is not an export of anything.
+Figma is the source of the exported collections; this is the repository's record of them. Nothing sits in between: the exported files are read once at import and never committed, because a directory of exports collected one collection at a time is not an export of anything.
 
 How it works and why it is shaped this way: SPEC 0001.
 
@@ -24,6 +24,17 @@ and 16% alpha in both themes. The two other layers reference the canonical
 directly; no replacement dimensions or palette bindings are inferred. Update
 this record from the Figma style when it changes. `tokens:check` validates both
 themes and colour references; `tokens:css` includes style provenance in its manifest.
+
+## Authored surface motion profile
+
+`_surface-motion.yaml` records the owner's 2026-10-11 system decision under
+FND-MOTION-19. It is separate from Figma exports and does not claim a Figma
+variable id. It assigns an existing semantic gap token and an explicit initial
+scale to every level from 0 through 6. The CSS build projects those records to
+`--stylos-motion-surface-layer-N-shift` and `scale`, without level arithmetic.
+Window-edge attachment selects FND-MOTION-18 independently; level 5 also has
+a general profile for other attachments. `tokens:check` validates the complete
+mapping and references; `tokens:report motion` renders current values.
 
 ## The nine canonical collections
 

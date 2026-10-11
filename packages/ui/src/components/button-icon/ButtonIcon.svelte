@@ -19,6 +19,8 @@
   aria-describedby={descriptionIds || undefined}
   {onclick}
   class={`stylos-button-icon stylos-button-${variant}`}
+  data-surface-layer={variant === "ghost" ? "0" : "1"}
+  data-surface-attachment="in-layout"
   data-variant={variant}
   data-tone={tone}
   data-size={size}

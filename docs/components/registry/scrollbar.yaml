@@ -20,7 +20,7 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: ""
+notes: "Native scrollbar CSS is implemented at packages/ui/src/behaviors/scrollbar.css from Figma Vertical 4816:17212 and Horizontal 4817:17790, verified 2026-10-11. The owner chose browser styling with platform differences accepted. It is not a separately rendered Svelte component: the browser owns overflow, thumb length and interaction. Dropdown uses the small/absolute treatment; native gutters need not overlay content. Standard CSS falls back to thin thickness and token colours; Chromium/WebKit expose thumb hover/active geometry."
 import:
   batch: 1
   ready: true

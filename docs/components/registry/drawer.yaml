@@ -260,7 +260,7 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "5232-15231"
   last_verified: "2026-09-05"
-notes: "position takes physical values where naming.md §7 prefers leading and trailing. That is a deliberate exception with a reason recorded on the property: the border's side is a physical fact about which edge the panel is against, and a logical property would put it on the wrong side in a right-to-left interface. The accessibility target is not chosen yet — PLAN.md Stage 5 — so what is recorded here is the obligation on the consumer rather than a judgement. children is carried over whole from the imported entry; narrowing it is a later judgement."
+notes: "Level 5, window edge attachment under FND-LAYERS-01 and FND-LAYERS-02; shadow selection follows FND-EFFECTS-05 and surface motion follows FND-MOTION-18. position takes physical values where naming.md §7 prefers leading and trailing. That is a deliberate exception with a reason recorded on the property: the border's side is a physical fact about which edge the panel is against, and a logical property would put it on the wrong side in a right-to-left interface. The accessibility target is not chosen yet — PLAN.md Stage 5 — so what is recorded here is the obligation on the consumer rather than a judgement. children is carried over whole from the imported entry; narrowing it is a later judgement."
 import:
   batch: 2
   ready: false

@@ -16,6 +16,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { loadSurfaceMotionProfile } from "./lib/surface-motion-profiles.mjs";
 import { loadCanonical, groupByPrefix, resolve, themeModes } from "./lib/tokens.mjs";
 
 /**
@@ -117,5 +118,17 @@ if (isMain) {
 
   // The only write to stdout in this file — everything else is stderr, so the
   // report can be redirected to a file without picking up progress noise.
-  console.log(renderReport(collections, all));
+  let report = renderReport(collections, all);
+  const profile = loadSurfaceMotionProfile(root);
+  if (profile && (!names.length || names.includes("motion"))) {
+    report += "\n## Surface motion profiles\n\n" +
+      "Explicit system profiles in `tokens/_surface-motion.yaml` under FND-MOTION-19, not imported from Figma.\n\n" +
+      "| Layer | Shift token | Shift | Initial scale |\n| --- | --- | --- | --- |\n" +
+      profile.layers.map(({ level, shift, scale }) => {
+        const slash = shift.indexOf("/");
+        const value = resolve(all, shift.slice(0, slash), shift.slice(slash + 1), "default").value;
+        return `| ${level} | \`${shift}\` | ${value}px | ${scale} |`;
+      }).join("\n") + "\n";
+  }
+  console.log(report);
 }
