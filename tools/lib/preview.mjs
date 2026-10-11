@@ -94,6 +94,8 @@ export function sampleHtml(entry, props = {}) {
         styles.push(`--_stylos-dropdown-height-limit:${value}`);
       } else if (["Dropdown", "Dropdown Item Default"].includes(entry.id) && ["id", "value"].includes(name)) {
         // Listbox and option identifiers are rendered by their branches below.
+      } else if (entry.id === "Dropdown Item Parent" && ["id", "controls"].includes(name)) {
+        // Native Parent attributes are rendered below.
       } else if (["Dropdown Item Checkbox", "Dropdown Item Toggle"].includes(entry.id) && ["id", "name", "value", "form"].includes(name)) {
         // Native row-control attributes are rendered below.
       } else if (["Input Text", "Select"].includes(entry.id) && ["id", "value", "name", "form", "autocomplete", "label ids", "description ids", "max height"].includes(name)) {
@@ -138,10 +140,22 @@ export function sampleHtml(entry, props = {}) {
     const id = props.id ? ` id="${esc(props.id)}"` : "";
     return `<div class="${cls}"${attr}>${band("back slot", "back")}${band("search slot", "search")}<ul class="stylos-dropdown-options stylos-scrollbar" data-scrollbar-size="small" data-scrollbar-position="absolute" role="${esc(props["content role"] ?? "listbox")}"${id}${name}>${props["content slot"] ?? ""}</ul>${band("actions slot", "actions")}</div>`;
   }
+  if (entry.id === "Dropdown Item Parent") {
+    const id = props.id || `stylos-dropdown-parent-preview-${++inputPreviewCounter}`;
+    const descriptionId = `${id}-description`;
+    const icon = props["has icon"] && props.icon
+      ? `<span class="stylos-dropdown-item-leading" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: props.icon })}</span>` : "";
+    const arrow = sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: "arrow_right" });
+    return `<li role="presentation"><button type="button" class="stylos-dropdown-item ${cls}"${attr} id="${esc(id)}" aria-label="${esc(props["label text"] ?? "Option")}"${props.controls ? ` aria-controls="${esc(props.controls)}"` : ""}${props.state === "disabled" ? " disabled" : ""}${props["has additional text"] ? ` aria-describedby="${esc(descriptionId)}"` : ""}>${icon}<span class="stylos-dropdown-item-content"><span class="stylos-dropdown-item-label">${esc(props["label text"] ?? "Option")}</span>${props["has additional text"] ? `<span class="stylos-dropdown-item-additional" id="${esc(descriptionId)}">${esc(props["additional text"])}</span>` : ""}</span><span class="stylos-dropdown-item-parent-arrow" aria-hidden="true">${arrow}</span></button></li>`;
+  }
   if (entry.id === "Dropdown Item Default") {
     const icon = props["has icon"] && typeof props.icon === "string" && iconDrawings().has(props.icon)
       ? `<span class="stylos-dropdown-item-leading" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: props.icon })}</span>` : "";
     const tick = sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: "check" });
+    if (props.interaction === "action") {
+      const descriptionId = `stylos-dropdown-action-preview-${++inputPreviewCounter}-description`;
+      return `<li role="presentation"><button type="button" class="stylos-dropdown-item ${cls}"${attr} data-value="${esc(props.value)}" aria-label="${esc(props["label text"] ?? "Option")}"${props.value ? ` aria-pressed="${props["is selected"] === "true"}"` : ""}${props.state === "disabled" ? " disabled" : ""}${props["has additional text"] ? ` aria-describedby="${esc(descriptionId)}"` : ""}>${icon}<span class="stylos-dropdown-item-content"><span class="stylos-dropdown-item-label">${esc(props["label text"] ?? "Option")}</span>${props["has additional text"] ? `<span class="stylos-dropdown-item-additional" id="${esc(descriptionId)}">${esc(props["additional text"])}</span>` : ""}</span><span class="stylos-dropdown-item-selected" aria-hidden="true">${tick}</span></button></li>`;
+    }
     return `<li class="stylos-dropdown-item ${cls}" role="option"${attr} data-value="${esc(props.value)}" aria-selected="${props["is selected"] === "true"}"${props.state === "disabled" ? ' aria-disabled="true"' : ""}>${icon}<span class="stylos-dropdown-item-content"><span class="stylos-dropdown-item-label">${esc(props["label text"] ?? "Option")}</span>${props["has additional text"] ? `<span class="stylos-dropdown-item-additional">${esc(props["additional text"])}</span>` : ""}</span><span class="stylos-dropdown-item-selected" aria-hidden="true">${tick}</span></li>`;
   }
 

@@ -4,7 +4,7 @@
   let args: DropdownItemDefaultProps = $props();
 </script>
 
-<Dropdown size={args.size ?? "medium"} accessibleName="Option preview">
+<Dropdown size={args.size ?? "medium"} contentRole={args.interaction === "action" ? "group" : "listbox"} accessibleName="Option preview">
   {#snippet contentSlot()}
     <DropdownItemDefault {...args}>
       {#snippet icon()}<Icon name="home" />{/snippet}

@@ -138,6 +138,8 @@ single-line and multiline layouts, composing the same Input.
 
 *Amended 2026-10-11:* the owner selected **Select** after Dropdown control rows. The single-value field composes Dropdown and its Default options, reusing field geometry, focus effects and selection behaviour. Search, Multiselect and Select Cascade remain later slices.
 
+*Amended 2026-10-12:* the owner selected **Dropdown Item Parent and nested navigation** next. The first composition changes levels within one popup and reuses the existing Back band; leaves choose a value. This does not implement Select Cascade or a side-opening action menu.
+
 ### 4.2 Stage 5 — `@stylos/ui`
 
 The work order is SPEC 0009; the stack and the layering are ADR 0002. What assembles into what:

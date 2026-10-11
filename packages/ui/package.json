@@ -38,6 +38,10 @@
     "./behaviors/dropdown-controls": {
       "types": "./dist/package/behaviors/dropdown-controls.d.ts",
       "default": "./dist/package/behaviors/dropdown-controls.js"
+    },
+    "./behaviors/dropdown-navigation": {
+      "types": "./dist/package/behaviors/dropdown-navigation.d.ts",
+      "default": "./dist/package/behaviors/dropdown-navigation.js"
     }
   },
   "peerDependencies": {

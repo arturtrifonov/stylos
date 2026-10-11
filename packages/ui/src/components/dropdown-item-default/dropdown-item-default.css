@@ -1,1 +1,5 @@
 @import "../../behaviors/dropdown-item.css";
+
+button.stylos-dropdown-item-default { margin: 0; border: 0; text-align: start; }
+button.stylos-dropdown-item-default:focus { outline: none; }
+button.stylos-dropdown-item-default:focus-visible:not([data-state="disabled"])::after { opacity: 1; }

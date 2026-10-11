@@ -4,6 +4,11 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-10-12 (Dropdown navigation)
+
+- Add Dropdown Item Parent with five verified Figma sizes, a fixed right arrow, decorative icon snippets and native keyboard/disabled states. Reuse shared row geometry, focus and Motion. Add native action mode to Dropdown Item Default for navigation leaves and the existing Back band; keep Select's option mode as the default.
+- Add navigation inside one Dropdown with named levels, focus and scroll restoration on Back, disabled-row skipping, keyboard shortcuts, dismissal and value selection only at leaves. Reuse Zag Popover, shared layer-3 entry and scrollbar. Slide levels out then in across their own width, using shared Motion timing and animated height over one continuous surface, preserving interrupted presentation and reduced motion; include compact Nested navigation and Icons playground examples and independent CSS/static previews.
+
 ### Changed — 2026-10-11 (Dropdown entry)
 
 - Increase the shared layer-3 entry shift from 8 to 16 px through the existing gap token, making upward travel clearer for Dropdown and Select while preserving scale, timing and opacity-only exit.
