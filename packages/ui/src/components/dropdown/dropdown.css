@@ -1,6 +1,7 @@
 @import "../../behaviors/dropdown.css";
 @import "../../behaviors/scrollbar.css";
 @import "../../behaviors/surface-motion.css";
+@import "../../behaviors/dropdown-navigation.css";
 
 .stylos-dropdown {
   box-sizing: border-box;

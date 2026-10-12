@@ -1,0 +1,29 @@
+/* One continuous Figma surface surrounds the changing navigation levels.
+ * Inner borders retain their space, so row geometry stays unchanged. */
+[data-dropdown-navigation] {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--stylos-radius-medium);
+  background-color: var(--stylos-color-background-base);
+  box-shadow: var(--_stylos-surface-shadow);
+}
+[data-dropdown-navigation]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  border: var(--stylos-border-width-normal) solid var(--stylos-color-border-default);
+  border-radius: inherit;
+  pointer-events: none;
+}
+[data-dropdown-navigation] .stylos-dropdown {
+  border-color: transparent;
+  background-color: transparent;
+  box-shadow: none;
+}
+[data-dropdown-panel][data-navigation-leaving] {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 0;
+  pointer-events: none;
+}

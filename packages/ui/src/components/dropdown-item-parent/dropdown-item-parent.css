@@ -1,0 +1,18 @@
+@import "../../behaviors/dropdown-item.css";
+
+/* Parent's geometry matches the existing rows; its arrow is always present. */
+.stylos-dropdown-item-parent {
+  margin: 0;
+  border: 0;
+  text-align: start;
+}
+.stylos-dropdown-item-parent-arrow {
+  --stylos-icon-footprint: var(--_stylos-dropdown-icon-size);
+  position: relative;
+  flex: none;
+  width: calc(var(--_stylos-dropdown-icon-size) - var(--_stylos-dropdown-icon-overhang));
+  height: var(--_stylos-dropdown-icon-size);
+}
+.stylos-dropdown-item-parent-arrow > * { position: absolute; inset-inline-start: 0; inset-block-start: 0; }
+.stylos-dropdown-item:focus-visible:not([data-state="disabled"])::after { opacity: 1; }
+.stylos-dropdown-item:focus { outline: none; }

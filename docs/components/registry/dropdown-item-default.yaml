@@ -4,7 +4,7 @@ name: "Dropdown Item Default"
 family: "Dropdown Item"
 level: "object"
 role: "input"
-html: "<li role=\"option\">"
+html: "<li role=\"option\"> or <li role=\"presentation\"><button>"
 status: "ready"
 version: "0.1.0"
 summary: "One option in a dropdown list, with a mark when it is the chosen one."
@@ -107,6 +107,20 @@ sizing_model:
       icon: "size/s-4_000"
 api:
   -
+    name: "interaction"
+    kind: "variant"
+    default: "option"
+    description: "Option for the existing Select listbox; action for a native button in a navigation group or the Back band. The visual row is unchanged."
+    values:
+      -
+        value: "option"
+      -
+        value: "action"
+  -
+    name: "onclick"
+    kind: "event"
+    description: "Native activation callback in action mode."
+  -
     name: "size"
     kind: "variant"
     default: "medium"
@@ -146,7 +160,7 @@ api:
   -
     name: "has icon"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Whether a mark leads the option — what kind of thing it is, where it comes from."
     controls:
       - "icon"
@@ -166,7 +180,7 @@ api:
   -
     name: "has additional text"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Whether a second, quieter line sits under the option. It qualifies the option rather than continuing it, and it makes every row in the list taller."
     controls:
       - "additional text"
@@ -188,8 +202,9 @@ limitations:
   - "No tone. An option that is destructive, recommended or unavailable-for-a-reason looks like every other option."
   - "No group heading, no separator and no empty state. A list that needs any of them gets them from whatever draws it."
   - "is selected and is focused are independent and both can be true. That is the point of them, and it means the row can carry a tint, a tick and a ring at once."
-  - "This is an option inside a single-choice Dropdown, not an independently focusable button. Attach dropdownBehavior to the owning composition for selection and keyboard navigation."
+  - "Default option mode belongs to a single-choice Dropdown and uses dropdownBehavior for selection and keyboard navigation. Action mode is a native button inside a named navigation group."
 figma_notes:
+  - "Amended 2026-10-12: the web action mode reuses the existing Figma row for navigation leaves and the verified Back band (4857:3748). It changes native semantics only; the default option mode is preserved."
   - "The focus ring is an absolutely positioned rectangle larger than the row, with a thick stroke and a larger radius than the row itself, so it reads as around the option rather than as part of it. It is absent from the disabled variants rather than hidden."
   - "The row's own stroke weight is bound on all four sides but no stroke colour is set, so nothing is painted."
   - "The tick sits in a container named Selected icon container, which appears only in the chosen variants rather than being hidden in the others."

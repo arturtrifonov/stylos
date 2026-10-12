@@ -68,3 +68,8 @@ export type { DropdownControlsBehaviorOptions } from "./behaviors/dropdown-contr
 
 export { default as Select } from "./components/select/Select.svelte";
 export type { SelectProps } from "./components/select/props.ts";
+
+export { default as DropdownItemParent } from "./components/dropdown-item-parent/DropdownItemParent.svelte";
+export type { DropdownItemParentProps } from "./components/dropdown-item-parent/props.ts";
+export { dropdownNavigationBehavior } from "./behaviors/dropdown-navigation.ts";
+export type { DropdownNavigationBehaviorOptions } from "./behaviors/dropdown-navigation.ts";

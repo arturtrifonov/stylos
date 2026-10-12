@@ -239,8 +239,8 @@ select-only `combobox` semantics. Dropdown itself is not a form field and does
 not submit a value; Select supplies form integration.
 
 `backSlot`, `searchSlot` and `actionsSlot` retain the Figma bands and accept
-configured content, but their interaction belongs to future nested, searchable
-and staged-selection owners. The current `dropdownBehavior` rejects those
+configured content. Navigation below uses the Back band; search and staged
+selection require their own behaviour. The current `dropdownBehavior` rejects those
 bands. The normal single-choice example contains only `contentSlot`. A panel's
 default maximum is derived from its six-and-a-half-row profile; `maxHeight`
 accepts an owner-supplied CSS length. Overflow uses the Figma small/absolute treatment on the native scrollbar. Text has no Vertical trim, as in Figma.
@@ -285,12 +285,55 @@ Escape, outside dismissal, focus return and portalled Tab order. Native controls
 handle Space, state, disabled rows and form reset. Checkbox values are collected
 by the owner; Toggle changes take effect immediately in that owner's handler.
 Use `form` explicitly when a control must submit to a form outside the body portal.
-The adapter supports plain groups only; search, nesting and Apply/Cancel are
-separate future slices. Single-choice `dropdownBehavior` remains listbox-only.
+The adapter supports plain groups only; search, nesting within control groups
+and Apply/Cancel require separate behaviour. Single-choice `dropdownBehavior` remains listbox-only.
 
 Independent CSS is `@stylos/ui/css/dropdown-item-checkbox.css` and
 `@stylos/ui/css/dropdown-item-toggle.css`. The framework-free popup adapter is
 also exported at `@stylos/ui/behaviors/dropdown-controls`.
+
+### Dropdown: Parent and navigation
+
+`DropdownItemParent` is a native button with the shared row treatment and a
+fixed `arrow_right`. `controls` identifies the next panel; it never selects a
+value. `DropdownItemDefault interaction="action"` provides a native button for
+leaves and the Figma Back band. The default `interaction="option"` retains the
+existing Select/listbox contract.
+
+`dropdownNavigationBehavior` connects an external button and
+`[data-dropdown-positioner]` to a `[data-dropdown-navigation]` wrapper. Inside
+that wrapper, mount named `[data-dropdown-panel]` sections with unique IDs;
+the first is the root. Each section contains a named `Dropdown contentRole="group"`.
+Parent `controls` points to one of those section IDs. Leaves use action-mode
+Default rows with unique, non-empty values. Render the Back action in each
+non-root panel's `backSlot`, with an empty value and a leading `arrow_back`.
+The level graph and authored rows stay stable while the adapter is mounted;
+remount it to replace that graph.
+
+Supply `{ id, accessibleName, value, onValueChange }`, optional `disabled` and
+the existing four `placement` values. The owner retains the selected value.
+Zag Popover supplies a non-modal dialog, placement, dismissal, focus return and
+portalled Tab order. Parent replaces the visible level in that same popup;
+Back restores the originating row and its list's scroll position. Only a leaf
+calls `onValueChange` and closes. Reopening starts at the root.
+
+Native buttons handle Enter, Space and Tab. Arrow Up/Down, Home/End and typeahead
+move between available rows; Arrow Right enters Parent and Arrow Left returns.
+Disabled rows are skipped. Escape dismisses without selecting. The existing
+layer-3 entry/exit runs only when the popup opens or closes. Internal levels
+use slide-out followed immediately by slide-in across the panel’s own width,
+without fading: forward exits left and arrives from the right; Back reverses it. The frame and shadow stay continuous while height interpolates.
+The next level and height change begin when the outgoing level has left.
+Arrival and expansion use medium/enter with enter easing; departure and
+contraction use medium/exit with exit easing. Interrupted navigation continues
+from its current presentation, and reduced motion switches levels immediately. Destroy returns the portal to its owner and removes
+listeners and DOM changes. This composition does not supply native form data
+or replace Select Cascade.
+
+Independent CSS: `@stylos/ui/css/dropdown-item-parent.css`. The adapter is also
+exported as `@stylos/ui/behaviors/dropdown-navigation`. Storybook adds Parent
+Default followed by Icons playground, and Dropdown's compact Nested navigation
+example. Static previews preserve native Parent/action button semantics.
 
 ### Native scrollbar styling
 
@@ -668,7 +711,7 @@ halo reuse Input Text CSS. The list uses Dropdown's layer-3 motion and native
 scrollbar. Vertical trim follows the Select text layers in Figma: enabled only
 for XS–L placeholders, absent for XL and chosen values. Long values truncate
 horizontally; option rows retain their full text. `maxHeight` limits the list.
-Search, nested options and multiple selection remain separate components.
+Search, nested Select options and multiple selection remain separate components.
 
 Independent CSS: `@stylos/ui/css/select.css`. Static previews show the closed
 field. Storybook has Default, Icons playground and a small Form example for
