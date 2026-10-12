@@ -1,3 +1,4 @@
+import { overlayHost, onOwnerDismiss } from "./overlay-host.ts";
 import { surfaceMotion } from "./surface-motion.js";
 import * as select from "@zag-js/select";
 import { VanillaMachine, normalizeProps, spreadProps } from "@zag-js/vanilla";
@@ -63,7 +64,7 @@ export function singleSelectBehavior(root: HTMLElement, options: SingleSelectOpt
   }
   let collection = readItems();
   positioner.before(anchor);
-  doc.body.append(positioner);
+  overlayHost(trigger).append(positioner);
   const motion = surfaceMotion(surface, positioner);
   const machineProps = () => ({
     id: options.id, collection, value: options.value ? [options.value] : [],
@@ -126,6 +127,8 @@ export function singleSelectBehavior(root: HTMLElement, options: SingleSelectOpt
   render();
   const unsubscribe = machine.subscribe(render);
   machine.start();
+  const stopOwnerDismiss = onOwnerDismiss(trigger, () => select.connect(machine.service, normalizeProps).setOpen(false));
+
   const observer = new MutationObserver(records => {
     if (!records.some(record => record.type !== "attributes" || record.oldValue !== (record.target as Element).getAttribute(record.attributeName!))) return;
     collection = readItems();
@@ -143,6 +146,7 @@ export function singleSelectBehavior(root: HTMLElement, options: SingleSelectOpt
       render();
     },
     destroy() {
+      stopOwnerDismiss();
       observer.disconnect();
       motion.destroy();
       unsubscribe();

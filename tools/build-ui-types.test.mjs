@@ -107,3 +107,10 @@ test("a snippet-only instance retains its name and rejects unsupported renderer 
   assert.match(renderProps({ id: "Link", api: [property] }), /leadingIcon\?: Snippet;/);
   assert.throws(() => fieldFor({ ...property, svelte_type: "unknown" }), /unsupported svelte_type/);
 });
+
+test("window actions retain native click events and dialog closing retains Event", () => {
+  for (const name of ["onprimaryclick", "onsecondaryclick", "ontertiaryclick"]) {
+    assert.equal(fieldFor({ name, kind: "event" }).type, "(event: MouseEvent) => void");
+  }
+  assert.equal(fieldFor({ name: "onclose", kind: "event" }).type, "(event: Event) => void");
+});

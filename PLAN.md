@@ -142,6 +142,8 @@ single-line and multiline layouts, composing the same Input.
 
 *Amended 2026-10-12:* the owner selected **the table** before Modal. Table Cell Heading/Text and Table Row Head/Body implement the wave-3 core, with native table structure and a compact sorting/filtering composition. Other cell types, selection, column resizing and pagination remain later slices.
 
+*Amended 2026-10-12:* the owner selected **Modal and Drawer together** after the table. Shared frame geometry, existing actions, native window interaction and owner-aware anchored children form one implementation slice. Drawer follows approved level 5 despite the current elevation-6 Figma effect.
+
 ### 4.2 Stage 5 — `@stylos/ui`
 
 The work order is SPEC 0009; the stack and the layering are ADR 0002. What assembles into what:

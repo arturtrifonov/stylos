@@ -84,7 +84,7 @@ export function fieldFor(property, { soleSlot = false } = {}) {
     },
     slot: () => "Snippet",
     event: () => {
-      const type = { onclick: "MouseEvent", oninput: "Event", onchange: "Event" }[property.name];
+      const type = { onclick: "MouseEvent", onprimaryclick: "MouseEvent", onsecondaryclick: "MouseEvent", ontertiaryclick: "MouseEvent", onclose: "Event", oninput: "Event", onchange: "Event" }[property.name];
       if (!type) throw new Error(`unsupported native event "${property.name}"`);
       return `(event: ${type}) => void`;
     },

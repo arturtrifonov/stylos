@@ -768,3 +768,61 @@ Each component has an independent `@stylos/ui/css/table-*.css` export. Import
 the CSS of children as well when composing native HTML without Svelte.
 Storybook has Default for all four, Icons playground after the cell Defaults,
 and Table under Table Row Body with real sorting and filter clearing.
+
+### Modal and Drawer
+
+Both share five size profiles and a `medium` default. `Modal` uses native
+`showModal()` and level-6 free entry; `Drawer` uses non-modal `show()`, level 5
+and physical `position="left|right"` edge travel. Window widths are the contract's
+400/500/600/700/800 px exceptions above the dimension scale; `width` accepts an
+optional CSS length override, capped by the viewport.
+
+```svelte
+<script>
+  import { Modal, Button } from "@stylos/ui";
+  let open = $state(false);
+</script>
+<Button labelText="Edit workspace" onclick={() => { open = true; }} />
+<Modal bind:isOpen={open} headingText="Edit workspace"
+  primaryButtonText="Save" onprimaryclick={() => { open = false; }}>
+  <!-- Supply a short task with existing content styles/components. -->
+</Modal>
+```
+
+`headingText` names the native dialog; `id` derives its heading association.
+`hasPrimaryButton`, `hasSecondaryButton` and `hasTertiaryButton` retain Figma's
+fixed action order. When all three flags are false, the whole footer is absent.
+Their `*ButtonText` labels and `closeAccessibleName` are
+localizable. Named `onprimaryclick`, `onsecondaryclick` and `ontertiaryclick`
+handlers receive the native Button click. Cancel closes unless its handler
+prevents default. Primary and tertiary handlers decide when the task completes.
+The close control remains present. `onclose` receives the native close event
+once dismissal finishes.
+
+Escape closes the top active window after any anchored child handles it.
+Focus moves inside; an `autofocus` control in content can choose the target,
+otherwise Close receives it. Modal contains focus and locks page scrolling
+until exit finishes; locks survive nested modals and restore the prior styles.
+Drawer keeps the page and its tab order operable, returning focus when dismissed
+from within the drawer and preserving focus already moved to a page task.
+Neither window dismisses through an outside click. Set `isOpen=false` for the
+animated close path; direct native `dialog.close()` remains an immediate close.
+
+Drawer fills the viewport, fixing its header/footer around a named, focusable
+scrolling content region. Its medium/absolute scrollbar follows Figma and the
+accepted native-browser CSS differences. Modal's content hugs its task; the
+host can scroll the whole panel on a small viewport as a fallback. Heading
+Vertical trim stays off. Figma supplies no backdrop colour, so the modal's
+native backdrop is transparent; a product can supply `--stylos-window-backdrop`.
+
+Dropdown, Select and Tooltip adapters keep their portals inside the owning
+window's full-viewport host, outside its clipped panel, and dismiss with it.
+This preserves native modal interaction and prevents child popup clipping.
+Motion reuses the shared level and attachment profiles, handles interrupted
+closing/reopening and completes immediately with reduced motion.
+
+Independent CSS: `@stylos/ui/css/modal.css` and `drawer.css`; native HTML owners
+can use `@stylos/ui/behaviors/window` with the same dialog/panel markup and
+`WindowBehaviorOptions`. Static previews show only the frame (the Drawer
+preview supplies its own illustrative viewport height). Storybook retains
+Default and one Form example per window, including Select and nested confirmation.

@@ -85,3 +85,9 @@ export type { TableRowHeadProps } from "./components/table-row-head/props.ts";
 
 export { default as TableRowBody } from "./components/table-row-body/TableRowBody.svelte";
 export type { TableRowBodyProps } from "./components/table-row-body/props.ts";
+
+export { default as Modal } from "./components/modal/Modal.svelte";
+export type { ModalProps } from "./components/modal/props.ts";
+
+export { default as Drawer } from "./components/drawer/Drawer.svelte";
+export type { DrawerProps } from "./components/drawer/props.ts";

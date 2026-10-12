@@ -66,6 +66,12 @@
     "Table Cell Heading",
     "Table Cell Text"
   ],
+  "Modal": [
+    "Modal"
+  ],
+  "Drawer": [
+    "Drawer"
+  ],
   "Table": [
     "Table Row Head",
     "Table Row Body"

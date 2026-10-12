@@ -30,6 +30,8 @@ export default {
           "Select", ["Select", ["Docs", "default", "Icons playground", "Form", "Checkbox selection", "Toggle settings", "Nested navigation", "Table", "*"]],
           "Input", ["Input Text", ["Docs", "default", "Icons playground", "Form", "Checkbox selection", "Toggle settings", "Nested navigation", "Table", "*"]],
           "Table Cell", ["Table Cell Heading", ["Docs", "default", "Icons playground", "Form", "Checkbox selection", "Toggle settings", "Nested navigation", "Table", "*"], "Table Cell Text", ["Docs", "default", "Icons playground", "Form", "Checkbox selection", "Toggle settings", "Nested navigation", "Table", "*"]],
+          "Modal", ["Modal", ["Docs", "default", "Form", "*"]],
+          "Drawer", ["Drawer", ["Docs", "default", "Form", "*"]],
           "Table", ["Table Row Head", ["Docs", "default", "Icons playground", "Form", "Checkbox selection", "Toggle settings", "Nested navigation", "Table", "*"], "Table Row Body", ["Docs", "default", "Icons playground", "Form", "Checkbox selection", "Toggle settings", "Nested navigation", "Table", "*"]],
         ], "Foundations"],
       },
