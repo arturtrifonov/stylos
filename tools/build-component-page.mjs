@@ -45,7 +45,7 @@ import {
 } from "./lib/registry.mjs";
 import { SIZING_TOKEN_FIELDS, createTokenResolver } from "./lib/sizing.mjs";
 import { CHROME_CSS, renderSiteHeader, renderSiteFooter } from "./lib/chrome.mjs";
-import { sampleHtml, defaultAssignment, buildPreviewAssets } from "./lib/preview.mjs";
+import { sampleHtml, defaultAssignment, buildPreviewAssets, wrapTablePreview } from "./lib/preview.mjs";
 import { loadTheme, themeCss } from "./lib/theme.mjs";
 
 // The page is opened by one person, from disk, on a wide screen, to read one
@@ -446,7 +446,7 @@ export function previewSlot(entry, assignment, resolveToken, live = false) {
       // The row's assignment rides on top of the contract's defaults: a tone
       // row still needs the default count to have anything to paint, and a
       // boolean row needs the rest of the component around it.
-      return `<div class="slot live">${sampleHtml(entry, { ...defaultAssignment(entry), ...assignment })}</div>`;
+      return `<div class="slot live">${wrapTablePreview(entry, sampleHtml(entry, { ...defaultAssignment(entry), ...assignment }))}</div>`;
     } catch {
       // fall through to the placeholder
     }
@@ -1004,7 +1004,7 @@ function renderPreviewBand(entry, live) {
   if (!live) return "";
   let html;
   try {
-    html = sampleHtml(entry, defaultAssignment(entry));
+    html = wrapTablePreview(entry, sampleHtml(entry, defaultAssignment(entry)));
   } catch {
     return "";
   }

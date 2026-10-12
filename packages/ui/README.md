@@ -70,6 +70,11 @@ Heading styles follow FND-TYPOGRAPHY-09. For `heading/*`, the CSS generator omit
 
 ## Adding a component
 
+Storybook groups components by their Figma pages. Add page membership in
+`apps/workshop/component-groups.json` when introducing a component. Authored
+examples share the generated component title and explicit meta ID; keep the
+existing ID when changing its group so saved links continue to work.
+
 Per SPEC 0009 §5, contract first: the entry's `api` is corrected to describe the web component in the same session the `.svelte` is written. Then a directory under `src/components/` named by the entry's slug, the authored CSS and wrapper, an export in `src/index.ts` — and the generators produce the props type and the workshop story.
 
 ## Accessibility implementation and verification
@@ -716,3 +721,50 @@ Search, nested Select options and multiple selection remain separate components.
 Independent CSS: `@stylos/ui/css/select.css`. Static previews show the closed
 field. Storybook has Default, Icons playground and a small Form example for
 selection, clear, reset, required validation and disabled-fieldset checks.
+
+### Table core
+
+Use native `<table class="stylos-table">`, `<thead>` and `<tbody>` with
+`TableRowHead`, `TableRowBody`, `TableCellHeading` and `TableCellText`.
+Column widths belong to the owner, usually through `<colgroup>`. Rows provide
+their five-step `size` to all built cells. The web default is `medium`, selected
+by the owner; the Figma set default remains `extra small`.
+The table keeps native layout, column associations and automatic row height.
+
+```svelte
+<table class="stylos-table">
+  <thead><TableRowHead size="small">
+    <TableCellHeading cellText="Workspace" />
+    <TableCellHeading cellText="Amount" alignment="end" />
+  </TableRowHead></thead>
+  <tbody><TableRowBody size="small" hasDivider>
+    <TableCellText cellText="Design" />
+    <TableCellText cellText="€24" alignment="end" />
+  </TableRowBody></tbody>
+</table>
+```
+
+Cells keep one main line and an optional qualifier, with complete strings in
+the DOM and native `title` attributes. Width-constrained text uses horizontal
+ellipsis without clipping glyphs vertically. Vertical trim remains off.
+`alignment="end"` mirrors the icon and controls; lining/tabular numerals match
+Figma. `id` identifies either cell; Text's `headers` supports complex native
+associations. Heading always uses `scope="col"`.
+
+An already constrained heading shows its sort/filter Button Inner controls.
+`isSorted` and `sortDirection="ascending|descending"` expose `aria-sort`;
+`isFiltered` shows the filter control. Both flags share one bottom mark.
+Set localized `sortAccessibleName` and `filterAccessibleName` as needed.
+`onclick` receives the native click from either control; its button's nearest
+`[data-table-action]` wrapper identifies `sort` or `filter`. The owner updates
+the state and data. Initiating constraints through a menu remains a later slice.
+
+Body rows accept `hasBackground` and `hasDivider`; the owner chooses banding.
+Browser hover changes only enabled backgrounds, preserving the current Figma
+limitation on plain rows. It uses micro/linear Motion, immediate in reduced
+motion. Rows carry no activation, selection or keyboard-grid behaviour.
+
+Each component has an independent `@stylos/ui/css/table-*.css` export. Import
+the CSS of children as well when composing native HTML without Svelte.
+Storybook has Default for all four, Icons playground after the cell Defaults,
+and Table under Table Row Body with real sorting and filter clearing.

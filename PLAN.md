@@ -140,6 +140,8 @@ single-line and multiline layouts, composing the same Input.
 
 *Amended 2026-10-12:* the owner selected **Dropdown Item Parent and nested navigation** next. The first composition changes levels within one popup and reuses the existing Back band; leaves choose a value. This does not implement Select Cascade or a side-opening action menu.
 
+*Amended 2026-10-12:* the owner selected **the table** before Modal. Table Cell Heading/Text and Table Row Head/Body implement the wave-3 core, with native table structure and a compact sorting/filtering composition. Other cell types, selection, column resizing and pagination remain later slices.
+
 ### 4.2 Stage 5 — `@stylos/ui`
 
 The work order is SPEC 0009; the stack and the layering are ADR 0002. What assembles into what:
@@ -159,6 +161,8 @@ authored ─────────── packages/ui/src/components/<name>/<na
 ```
 
 `ui:generate` generates component types, stories, independent CSS, fonts and text styles after `tokens:css`; `ui:build` runs the package build with generation as its `prebuild`. Everything under `dist/` is gitignored and rebuilt.
+
+**Amended 2026-10-12:** group the workshop by Figma pages as the component library grows, while retaining existing story URLs and the Default/Icons playground order.
 
 **Amended 2026-10-09:** at the owner’s request, the workshop presents one Default playground per component, with every variant value available through registry-derived Controls. Separate pages for individual property values are removed; authored examples remain for distinct uses, including Button Base’s Icons playground after Default. Static documentation previews continue to render independently from the registry and component CSS.
 

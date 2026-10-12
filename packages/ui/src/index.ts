@@ -73,3 +73,15 @@ export { default as DropdownItemParent } from "./components/dropdown-item-parent
 export type { DropdownItemParentProps } from "./components/dropdown-item-parent/props.ts";
 export { dropdownNavigationBehavior } from "./behaviors/dropdown-navigation.ts";
 export type { DropdownNavigationBehaviorOptions } from "./behaviors/dropdown-navigation.ts";
+
+export { default as TableCellText } from "./components/table-cell-text/TableCellText.svelte";
+export type { TableCellTextProps } from "./components/table-cell-text/props.ts";
+
+export { default as TableCellHeading } from "./components/table-cell-heading/TableCellHeading.svelte";
+export type { TableCellHeadingProps } from "./components/table-cell-heading/props.ts";
+
+export { default as TableRowHead } from "./components/table-row-head/TableRowHead.svelte";
+export type { TableRowHeadProps } from "./components/table-row-head/props.ts";
+
+export { default as TableRowBody } from "./components/table-row-body/TableRowBody.svelte";
+export type { TableRowBodyProps } from "./components/table-row-body/props.ts";

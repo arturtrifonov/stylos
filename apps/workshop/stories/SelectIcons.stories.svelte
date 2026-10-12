@@ -4,7 +4,7 @@
   import { icons } from "../../../packages/ui/src/components/icon/icons.ts";
 
   const { Story } = defineMeta({
-    title: "Components/Select", component: Example,
+    id: "components-select", title: "Components/Select/Select", component: Example,
     args: { size: "medium", state: "default", validation: "off", value: "design",
       labelText: "Workspace", hasLeadingIcon: true, leadingIconName: "person", hasClearButton: true },
     argTypes: {

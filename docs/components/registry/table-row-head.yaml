@@ -74,7 +74,7 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
+    default: "medium"
     description: "Row density, and it has to be the size every cell in the row and every body row in the table is set to. It drives the row's own padding; the cells carry their own run."
     values:
       -
@@ -98,10 +98,12 @@ limitations:
   - "No sticky behaviour and no property for one. A header that stays put while the body scrolls is the table's mechanism, not the row's."
   - "The row cannot say how many columns it has, and nothing checks that it matches the body."
 figma_notes:
+  - "Web default size is medium, selected by the owner on 2026-10-12; the Figma set default remains extra small."
+  - "Verified 2026-10-12: native tr owns row treatment and provides a shared size context. Padding is projected through its direct native cells: first/last cells carry the row inline inset, and header cells carry its extra block padding. This keeps column widths aligned without spacer cells or flex rows."
   - "The line is a LINE node positioned absolutely at the row's bottom edge with a MAX vertical constraint, rather than a bottom border on the frame. Its stroke weight is bound to width/normal."
   - "The slot is Figma's SLOT property type. The four heading cells visible in every variant are the slot's default content, not a fixed anatomy — a row takes as many cells as the table has columns."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "5101:16565"
-  last_verified: "2026-09-05"
+  last_verified: "2026-10-12"
 notes: "The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."

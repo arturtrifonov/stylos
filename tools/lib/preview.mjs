@@ -96,6 +96,8 @@ export function sampleHtml(entry, props = {}) {
         // Listbox and option identifiers are rendered by their branches below.
       } else if (entry.id === "Dropdown Item Parent" && ["id", "controls"].includes(name)) {
         // Native Parent attributes are rendered below.
+      } else if (["Table Cell Heading", "Table Cell Text"].includes(entry.id) && ["id", "headers"].includes(name)) {
+        // Native table associations are rendered below.
       } else if (["Dropdown Item Checkbox", "Dropdown Item Toggle"].includes(entry.id) && ["id", "name", "value", "form"].includes(name)) {
         // Native row-control attributes are rendered below.
       } else if (["Input Text", "Select"].includes(entry.id) && ["id", "value", "name", "form", "autocomplete", "label ids", "description ids", "max height"].includes(name)) {
@@ -133,6 +135,16 @@ export function sampleHtml(entry, props = {}) {
   }
   if (styles.length) attrs.push(`style="${esc(styles.join(";"))}"`);
   const attr = attrs.length ? ` ${attrs.join(" ")}` : "";
+
+  if (["Table Cell Heading", "Table Cell Text"].includes(entry.id)) {
+    return tableCellHtml(entry.id === "Table Cell Heading", props, attr);
+  }
+  if (["Table Row Head", "Table Row Body"].includes(entry.id)) {
+    const heading = entry.id === "Table Row Head";
+    const cells = props["cells slot"] || Array.from({ length: 4 }, () => tableCellHtml(heading,
+      { size: props.size ?? "medium" }, ` data-size="${esc(props.size ?? "medium")}" data-alignment="start"`)).join("");
+    return `<tr class="stylos-table-row ${cls}"${attr}>${cells}</tr>`;
+  }
 
   if (entry.id === "Dropdown") {
     const band = (slot, className) => props[slot] ? `<div class="stylos-dropdown-${className}">${props[slot]}</div>` : "";
@@ -322,6 +334,27 @@ export function sampleHtml(entry, props = {}) {
   }
 
   return `<span class="${cls}"${attr}>${esc(content)}</span>`;
+}
+
+function tableCellHtml(heading, props, attr) {
+  const iconHtml = name => sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name });
+  const icon = props["has icon"] && props.icon ? `<span class="stylos-table-cell-icon" aria-hidden="true">${iconHtml(props.icon)}</span>` : "";
+  const text = props["cell text"] ?? "Cell text";
+  const copy = `<span class="stylos-table-cell-copy"><span class="stylos-table-cell-label" title="${esc(text)}">${esc(text)}</span>${props["has additional text"] ? `<span class="stylos-table-cell-additional" title="${esc(props["additional text"])}">${esc(props["additional text"])}</span>` : ""}</span>`;
+  const action = (kind, name) => `<span class="stylos-table-cell-action" data-table-action="${kind}"><button type="button" class="stylos-button-inner" data-state="default" aria-label="${esc(props[`${kind} accessible name`] || `${kind === "sort" ? "Sort" : "Filter"} by ${text}`)}"><span class="stylos-button-inner-icon" aria-hidden="true">${iconHtml(name)}</span></button></span>`;
+  const controls = heading ? `${props["is sorted"] ? action("sort", props["sort direction"] === "descending" ? "arrow_upward" : "arrow_downward") : ""}${props["is filtered"] ? action("filter", "filter_list") : ""}` : "";
+  const associations = `${props.id ? ` id="${esc(props.id)}"` : ""}${props.headers ? ` headers="${esc(props.headers)}"` : ""}`;
+  const tag = heading ? "th" : "td";
+  return `<${tag} class="stylos-table-cell stylos-table-cell-${heading ? "heading" : "text"}"${attr}${associations}${heading ? ` scope="col" data-constrained="${!!(props["is sorted"] || props["is filtered"])}"${props["is sorted"] ? ` aria-sort="${esc(props["sort direction"] ?? "ascending")}"` : ""}` : ""}><div class="stylos-table-cell-frame">${icon}${copy}${controls}</div></${tag}>`;
+}
+
+/** Native cells and rows require table scaffolding on standalone preview pages. */
+export function wrapTablePreview(entry, html) {
+  if (!["Table Cell Heading", "Table Cell Text", "Table Row Head", "Table Row Body"].includes(entry.id)) return html;
+  const heading = entry.id === "Table Cell Heading" || entry.id === "Table Row Head";
+  const band = heading ? "thead" : "tbody";
+  const row = entry.id.startsWith("Table Cell") ? `<tr>${html}</tr>` : html;
+  return `<table class="stylos-table" aria-label="${esc(entry.name ?? entry.id)}"><${band}>${row}</${band}></table>`;
 }
 
 /**

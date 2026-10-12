@@ -9,8 +9,15 @@ import { existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from "node:
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import componentGroups from "../apps/workshop/component-groups.json" with { type: "json" };
+
 import { loadRegistry, slugPath } from "./lib/registry.mjs";
 import { builtComponents, camelName, pascalName, fieldFor } from "./build-ui-types.mjs";
+
+export function storyMeta(entry) {
+  const page = Object.entries(componentGroups).find(([, names]) => names.includes(entry.name))?.[0] ?? entry.name;
+  return { title: `Components/${page}/${entry.name}`, id: `components-${slugPath(entry.id).replaceAll("/", "-")}` };
+}
 
 export const STORIES_DIR = "apps/workshop/stories/generated";
 
@@ -89,6 +96,7 @@ export function componentDescription(entry) {
 export function renderStories(entry, { fixture = false } = {}) {
   const component = pascalName(entry.id);
   const defaults = defaultArgs(entry);
+  const meta = storyMeta(entry);
 
   // The marker lives inside the script block: Storybook's svelte-docgen
   // fails to parse a .stories.svelte that opens with an HTML comment.
@@ -99,7 +107,8 @@ export function renderStories(entry, { fixture = false } = {}) {
 ${fixture ? `  import Example from "../fixtures/${component}Example.svelte";\n` : ""}
 
   const { Story } = defineMeta({
-    title: "Components/${entry.name}",
+    id: ${JSON.stringify(meta.id)},
+    title: ${JSON.stringify(meta.title)},
     component: ${component},
     argTypes: ${JSON.stringify(storyArgTypes(entry))},
 ${fixture ? `    render: template,\n` : ""}

@@ -5,7 +5,7 @@
 
   const iconNames = Object.keys(icons);
   const { Story } = defineMeta({
-    title: "Components/Link",
+    id: "components-link", title: "Components/Link/Link",
     component: Example,
     args: {
       labelText: "Link",

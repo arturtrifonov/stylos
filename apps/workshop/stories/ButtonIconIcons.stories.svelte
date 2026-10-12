@@ -5,7 +5,7 @@
   import { icons } from "../../../packages/ui/src/components/icon/icons.ts";
 
   const { Story } = defineMeta({
-    title: "Components/Button Icon",
+    id: "components-button-icon", title: "Components/Button Icon/Button Icon",
     component: Example,
     args: {
       variant: "base", tone: "primary", size: "medium", state: "default",
