@@ -4,6 +4,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-10-12 (Modal and Drawer)
+
+- Add Modal and Drawer with one shared frame, five verified sizes, native dialog interaction, localized actions and controlled visibility. Reuse Button, Button Inner, surface Motion and the medium/absolute scrollbar. Modal uses level 6 and blocks the page; Drawer follows owner-confirmed level 5, leaves the page operable and scrolls its content. Preserve anchored child ownership and dismissal, focus return, interrupted exits and reduced motion. Hide the footer completely when all actions are absent. Include compact Default and Form examples and independent static previews.
+
 ### Changed — 2026-10-12 (Workshop navigation)
 
 - Group Storybook components by their verified Figma pages, preserving existing story URLs and keeping Default followed by Icons playground within each component.

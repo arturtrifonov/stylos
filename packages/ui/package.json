@@ -42,6 +42,10 @@
     "./behaviors/dropdown-navigation": {
       "types": "./dist/package/behaviors/dropdown-navigation.d.ts",
       "default": "./dist/package/behaviors/dropdown-navigation.js"
+    },
+    "./behaviors/window": {
+      "types": "./dist/package/behaviors/window.d.ts",
+      "default": "./dist/package/behaviors/window.js"
     }
   },
   "peerDependencies": {

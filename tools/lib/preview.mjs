@@ -96,6 +96,8 @@ export function sampleHtml(entry, props = {}) {
         // Listbox and option identifiers are rendered by their branches below.
       } else if (entry.id === "Dropdown Item Parent" && ["id", "controls"].includes(name)) {
         // Native Parent attributes are rendered below.
+      } else if (["Modal", "Drawer"].includes(entry.id) && ["id", "width"].includes(name)) {
+        // Native window identifier and adjustable CSS width are rendered below.
       } else if (["Table Cell Heading", "Table Cell Text"].includes(entry.id) && ["id", "headers"].includes(name)) {
         // Native table associations are rendered below.
       } else if (["Dropdown Item Checkbox", "Dropdown Item Toggle"].includes(entry.id) && ["id", "name", "value", "form"].includes(name)) {
@@ -135,6 +137,8 @@ export function sampleHtml(entry, props = {}) {
   }
   if (styles.length) attrs.push(`style="${esc(styles.join(";"))}"`);
   const attr = attrs.length ? ` ${attrs.join(" ")}` : "";
+
+  if (["Modal", "Drawer"].includes(entry.id)) return windowPanelHtml(entry, props, attr);
 
   if (["Table Cell Heading", "Table Cell Text"].includes(entry.id)) {
     return tableCellHtml(entry.id === "Table Cell Heading", props, attr);
@@ -334,6 +338,21 @@ export function sampleHtml(entry, props = {}) {
   }
 
   return `<span class="${cls}"${attr}>${esc(content)}</span>`;
+}
+
+function windowPanelHtml(entry, props, attr) {
+  const modal = entry.id === "Modal";
+  const id = props.id ?? `window-preview-${++inputPreviewCounter}`;
+  const heading = props["heading text"] ?? `${entry.id} heading`;
+  const previewStyle = [props.width ? `--stylos-window-width:${props.width}` : "", modal ? "" : "height:500px"].filter(Boolean).join(";");
+  const icon = sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: "close" });
+  const action = (kind, variant, tone, fallback) => {
+    if (!(props[`has ${kind} button`] ?? kind !== "tertiary")) return "";
+    const values = { size: props.size ?? "medium", variant, tone, state: "default", "label text": props[`${kind} button text`] ?? fallback };
+    return sampleHtml({ id: "Button", api: Object.keys(values).map(name => ({ name, kind: name === "label text" ? "text" : "variant", values: [{ value: values[name] }] })) }, values);
+  };
+  const hasActions = (props["has primary button"] ?? true) || (props["has secondary button"] ?? true) || (props["has tertiary button"] ?? false);
+  return `<section class="stylos-window stylos-${entry.id.toLowerCase()}"${attr} id="${esc(id)}" aria-labelledby="${esc(id)}-heading" data-surface-layer="${modal ? 6 : 5}" data-surface-attachment="${modal ? "free" : "window-edge"}" data-surface-edge="${esc(props.position ?? "right")}"${previewStyle ? ` style="${esc(previewStyle)}"` : ""}><div class="stylos-window-header"><h2 class="stylos-window-heading" id="${esc(id)}-heading">${esc(heading)}</h2><span class="stylos-window-close"><button type="button" class="stylos-button-inner" data-state="default" aria-label="${esc(props["close accessible name"] ?? "Close")}"><span class="stylos-button-inner-icon" aria-hidden="true">${icon}</span></button></span></div><div class="stylos-window-content stylos-scrollbar" data-scrollbar-size="medium" data-scrollbar-position="absolute">${props["content slot"] ?? ""}</div>${hasActions ? `<div class="stylos-window-footer">${action("tertiary", "ghost", "base", "Alternative")}<div class="stylos-window-actions">${action("secondary", "outline", "base", "Cancel")}${action("primary", "base", "primary", "Confirm")}</div></div>` : ""}</section>`;
 }
 
 function tableCellHtml(heading, props, attr) {

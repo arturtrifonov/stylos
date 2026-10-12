@@ -116,13 +116,13 @@ flow_behavior:
 a11y:
   -
     status: "requires"
-    note: "Focus has to move into the dialog when it opens, stay inside it while it is open, and return to whatever opened it when it closes. None of that is in this component; it is the single largest obligation on whoever places one."
+    note: "The native modal moves focus inside, contains it and restores the opener after dismissal. Autofocus in supplied content can choose the initial control; otherwise the close control receives focus. The owner keeps the opener present."
   -
     status: "requires"
     note: "Escape has to close it, and closing by Escape has to be the same act as pressing the close control — same cleanup, same returned focus. A dialog that can only be left with the mouse traps anyone who is not using one."
   -
     status: "requires"
-    note: "The overlay behind the dialog is not part of this component. Whoever places it supplies it, and it has to actually prevent interaction with the page rather than only dim it — a modal that can be clicked past is not modal."
+    note: "The native modal makes the rest of its document inert and locks page scrolling until dismissal completes. Figma supplies no dimming style; the web backdrop is transparent unless the owner supplies --stylos-window-backdrop."
   -
     status: "requires"
     note: "The heading names the dialog, so it has to be present and has to say what is being asked. It is the only text the component guarantees, and it is what assistive technology announces on open."
@@ -213,33 +213,85 @@ api:
   -
     name: "has primary button"
     kind: "boolean"
-    default: "true"
+    default: true
     description: "Shows the filled button at the right end of the footer — the answer the dialog exists to get. On by default, and off only for a dialog whose only answer is to leave, where a primary button would invent an action that does not exist."
   -
     name: "has secondary button"
     kind: "boolean"
-    default: "true"
+    default: true
     description: "Shows the outlined button beside the primary one — the way out that is not the answer, usually cancel. On by default, because a dialog that stops everything and offers one way forward is a dialog that has to be got past rather than answered."
   -
     name: "has tertiary button"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Shows a third action at the left end of the footer, apart from the pair. Off by default. The separation is the point: it is not a third choice ranked below the other two but an action of a different kind — learn more, go back a step, do something else entirely — and putting it at the far end says so before the label is read."
+  -
+    name: "is open"
+    kind: "boolean"
+    default: false
+    description: "Bindable visibility. Close and Escape update it; the owner opens the window and closes it after successful actions."
+  -
+    name: "id"
+    kind: "string"
+    description: "Optional native dialog identifier; the heading association derives from it."
+  -
+    name: "width"
+    kind: "string"
+    description: "Optional CSS width override on the contract's adjustable axis. The viewport caps it."
+  -
+    name: "close accessible name"
+    kind: "text"
+    default: "Close"
+    description: "Localized name for the mandatory close control."
+  -
+    name: "primary button text"
+    kind: "text"
+    default: "Confirm"
+    description: "Localized primary action label."
+  -
+    name: "onprimaryclick"
+    kind: "event"
+    description: "Native click on the primary Button. The owner handles the action and controls is open."
+  -
+    name: "secondary button text"
+    kind: "text"
+    default: "Cancel"
+    description: "Localized secondary action label."
+  -
+    name: "onsecondaryclick"
+    kind: "event"
+    description: "Native click on the secondary Button. Cancel closes the window unless the handler prevents default."
+  -
+    name: "tertiary button text"
+    kind: "text"
+    default: "Alternative"
+    description: "Localized tertiary action label."
+  -
+    name: "ontertiaryclick"
+    kind: "event"
+    description: "Native click on the tertiary Button. The owner handles the action and controls is open."
+  -
+    name: "onclose"
+    kind: "event"
+    description: "Native dialog close event after dismissal completes."
 limitations:
-  - "There is no state. A dialog is open or it is not, and the owner manages its opening, dismissal and backdrop. Surface motion follows FND-MOTION-19."
-  - "The overlay is not part of the component. What is drawn here is the panel; the thing that dims the page and blocks it is supplied elsewhere, which is why it is written as an obligation rather than as anatomy."
+  - "Figma has no state variant. The web is open property is bindable; the owner opens the window and resolves primary/tertiary actions. Close, Cancel and Escape request dismissal. Surface motion follows FND-MOTION-19."
+  - "The drawing contains the panel only. Web modality is native; a custom backdrop colour belongs to the owner because no dimming style is defined in Figma."
   - "The close control cannot be turned off. A dialog that cannot be dismissed is a dialog that has taken the screen hostage, and the system does not offer one."
-  - "Nothing scrolls. The height hugs whatever the slot holds, so content that would overflow makes a taller dialog rather than a scrolling one — which is the signal that it should not have been a dialog."
+  - "The content band hugs its content. On a small viewport the window host can scroll the whole panel as a fallback; long tasks still belong in Drawer or a page."
   - "The footer holds at most three buttons and their order is fixed. A dialog needing a fourth is asking more than one question."
   - "The widths are not tokens and are not meant to become them. The dimension scale is built for the inside of components and reaches nothing near a window."
 figma_notes:
+  - "Owner confirmed 2026-10-12: when all three action buttons are disabled by their visibility flags, the whole footer band is absent, including padding and divider."
+  - "The shared web frame composes Button and Button Inner. Its callbacks carry native click events; labels and the close accessible name are localizable. Cancel closes unless its handler prevents default; primary and tertiary actions leave dismissal to the owner."
+  - "Verified 2026-10-12: headings use leadingTrim=NONE and heading/h6 through heading/h2; footer instances follow the window size. Native Button and Button Inner reuse their exact library assets."
   - "The close control is a Button Inner whose width is bound across a five-step run. That is not an instance being scaled to fit: Button Inner ships one footprint and no size property, and its own contract says a consumer needing another dimension sets it outright."
   - "The footer buttons are real instances of Button Base, Button Outline and Button Ghost, with tone and size set per variant. They are recorded in uses for that reason, and the size run they follow is the same one the modal is on."
   - "The api block above is ordered for readability, per naming.md §8 and §10. Figma's API returns properties in a key order that does not match the panel, so the order the designer sees could not be read and is not asserted here."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4453-7650"
-  last_verified: "2026-09-05"
+  last_verified: "2026-10-12"
 notes: "Level 6, free attachment under FND-LAYERS-01 and FND-LAYERS-02; shadow selection follows FND-EFFECTS-05 and surface motion follows FND-MOTION-19. For the future web implementation, its owner coordinates the backdrop under FND-MOTION-11. The accessibility target is not chosen yet — PLAN.md Stage 5 — so what is recorded here is the obligation on the consumer rather than a judgement against a criterion the system has not adopted. children is carried over whole from the imported entry and is close to the whole library, which is what a dialog slot permits in principle; narrowing it is a later judgement."
 import:
   batch: 1

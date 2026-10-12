@@ -1,0 +1,147 @@
+@import "./surface-motion.css";
+@import "./scrollbar.css";
+
+.stylos-window-root {
+  position: fixed;
+  inset: 0;
+  box-sizing: border-box;
+  width: calc(100%);
+  height: calc(100%);
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--stylos-color-text-base);
+  isolation: isolate;
+  overflow: visible;
+}
+.stylos-window-root[open] { display: flex; }
+/* Figma supplies the panel, not a dimming style. The owner can provide one. */
+.stylos-window-root::backdrop { background: var(--stylos-window-backdrop, transparent); }
+.stylos-modal-root {
+  padding: var(--stylos-dimension-gap-g-2_500);
+  overflow: auto;
+}
+.stylos-drawer-root { pointer-events: none; z-index: 5; }
+.stylos-window {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+  flex: none;
+  width: var(--stylos-window-width, var(--_stylos-window-default-width));
+  max-width: calc(100%);
+  background-color: var(--stylos-color-background-base);
+  color: var(--stylos-color-text-base);
+  overflow: clip;
+  pointer-events: auto;
+}
+.stylos-modal {
+  margin: auto;
+  border-radius: var(--stylos-radius-extra-large);
+  box-shadow: var(--_stylos-surface-shadow);
+}
+.stylos-drawer { height: calc(100%); box-shadow: var(--_stylos-surface-shadow); }
+.stylos-drawer[data-position="right"] {
+  margin-left: auto;
+
+}
+.stylos-drawer[data-position="left"] {
+  margin-right: auto;
+
+}
+.stylos-window::after { content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; }
+.stylos-modal::after { box-shadow: inset 0 0 0 var(--stylos-border-width-normal) var(--stylos-color-border-secondary); }
+.stylos-drawer[data-position="right"]::after { box-shadow: inset var(--stylos-border-width-normal) 0 var(--stylos-color-border-secondary); }
+.stylos-drawer[data-position="left"]::after { box-shadow: inset calc(-1 * var(--stylos-border-width-normal)) 0 var(--stylos-color-border-secondary); }
+.stylos-window-header,
+.stylos-window-footer {
+  display: flex;
+  align-items: center;
+  flex: none;
+  padding: var(--_stylos-window-padding);
+  background-color: var(--stylos-color-background-secondary);
+}
+.stylos-window-header {
+  gap: var(--_stylos-window-padding);
+  box-shadow: inset 0 calc(-1 * var(--stylos-border-width-normal)) var(--stylos-color-border-secondary);
+}
+.stylos-window-heading {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--stylos-font-family-display);
+  font-weight: var(--stylos-font-weight-strong);
+  font-size: var(--_stylos-window-heading-size);
+  line-height: var(--_stylos-window-heading-line);
+  letter-spacing: var(--stylos-font-letter-spacing-style-normal);
+  font-variant-numeric: lining-nums tabular-nums;
+  overflow-wrap: anywhere;
+}
+.stylos-window-close { --stylos-button-inner-footprint: var(--_stylos-window-close-size); display: flex; flex: none; }
+.stylos-window-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: none;
+  min-width: 0;
+  padding: var(--_stylos-window-padding);
+  gap: var(--_stylos-window-padding);
+}
+.stylos-drawer .stylos-window-content { flex: 1; min-height: 0; overflow: auto; }
+.stylos-window-footer {
+  justify-content: flex-end;
+  gap: var(--_stylos-window-footer-gap);
+  box-shadow: inset 0 var(--stylos-border-width-normal) var(--stylos-color-border-secondary);
+}
+.stylos-window-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; flex: 1; min-width: 0; gap: var(--_stylos-window-footer-gap); }
+
+/* stylelint-disable unit-disallowed-list -- Window widths are explicitly above the dimension scale in Modal/Drawer contracts. */
+.stylos-window[data-size="extra small"] {
+  --_stylos-window-default-width: 400px;
+  --_stylos-window-padding: var(--stylos-dimension-gap-g-1_500);
+  --_stylos-window-footer-gap: var(--stylos-dimension-gap-g-0_750);
+  --_stylos-window-heading-size: var(--stylos-font-size-1_125);
+  --_stylos-window-heading-line: var(--stylos-font-line-height-heading-1_125);
+  --_stylos-window-close-size: var(--stylos-dimension-size-s-2_500);
+}
+
+.stylos-window[data-size="small"] {
+  --_stylos-window-default-width: 500px;
+  --_stylos-window-padding: var(--stylos-dimension-gap-g-2_000);
+  --_stylos-window-footer-gap: var(--stylos-dimension-gap-g-0_875);
+  --_stylos-window-heading-size: var(--stylos-font-size-1_250);
+  --_stylos-window-heading-line: var(--stylos-font-line-height-heading-1_250);
+  --_stylos-window-close-size: var(--stylos-dimension-size-s-3_000);
+}
+
+.stylos-window[data-size="medium"] {
+  --_stylos-window-default-width: 600px;
+  --_stylos-window-padding: var(--stylos-dimension-gap-g-2_500);
+  --_stylos-window-footer-gap: var(--stylos-dimension-gap-g-1_000);
+  --_stylos-window-heading-size: var(--stylos-font-size-1_500);
+  --_stylos-window-heading-line: var(--stylos-font-line-height-heading-1_500);
+  --_stylos-window-close-size: var(--stylos-dimension-size-s-3_500);
+}
+
+.stylos-window[data-size="large"] {
+  --_stylos-window-default-width: 700px;
+  --_stylos-window-padding: var(--stylos-dimension-gap-g-3_000);
+  --_stylos-window-footer-gap: var(--stylos-dimension-gap-g-1_250);
+  --_stylos-window-heading-size: var(--stylos-font-size-1_750);
+  --_stylos-window-heading-line: var(--stylos-font-line-height-heading-1_750);
+  --_stylos-window-close-size: var(--stylos-dimension-size-s-4_000);
+}
+
+.stylos-window[data-size="extra large"] {
+  --_stylos-window-default-width: 800px;
+  --_stylos-window-padding: var(--stylos-dimension-gap-g-3_500);
+  --_stylos-window-footer-gap: var(--stylos-dimension-gap-g-1_500);
+  --_stylos-window-heading-size: var(--stylos-font-size-2_000);
+  --_stylos-window-heading-line: var(--stylos-font-line-height-heading-2_000);
+  --_stylos-window-close-size: var(--stylos-dimension-size-s-4_500);
+}
+
+/* stylelint-enable unit-disallowed-list */

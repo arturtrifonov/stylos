@@ -122,7 +122,7 @@ flow_behavior:
 a11y:
   -
     status: "requires"
-    note: "Focus has to move into the drawer when it opens and return to whatever opened it when it closes. Whether focus is also trapped inside is the consumer's call and depends on whether the page behind stays operable — but the move in and the return out are not optional either way."
+    note: "The web drawer is non-modal. Focus moves inside on open and returns to the opener when dismissal comes from within it. If focus has already moved to an unrelated page task, closing preserves that focus. The page remains operable and focus is not trapped."
   -
     status: "requires"
     note: "Escape has to close it, and closing by Escape has to be the same act as pressing the close control — same cleanup, same returned focus. A panel that can only be left with the mouse traps anyone who is not using one."
@@ -131,7 +131,7 @@ a11y:
     note: "The heading names the panel, so it has to be present and has to say what the drawer is for. It is the only text the component guarantees, and it is what assistive technology announces on open."
   -
     status: "requires"
-    note: "The content scrolls, so it has to be reachable by keyboard — a scrolling region that only responds to a wheel is content that some readers cannot get to the bottom of."
+    note: "The content is a named, keyboard-focusable native scrolling region. Header and footer stay fixed while only the content scrolls; the existing medium/absolute browser scrollbar follows the Figma instance."
 sizing_model:
   horizontal: "fixed"
   vertical: "fill"
@@ -231,26 +231,79 @@ api:
   -
     name: "has primary button"
     kind: "boolean"
-    default: "true"
+    default: true
     description: "Shows the filled button at the right end of the footer — the action the drawer exists to complete. On by default, and off for a drawer that only shows something and has nothing to confirm."
   -
     name: "has secondary button"
     kind: "boolean"
-    default: "true"
+    default: true
     description: "Shows the outlined button beside the primary one — the way out that is not the action, usually cancel. On by default."
   -
     name: "has tertiary button"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Shows a third action at the left end of the footer, apart from the pair. Off by default. The separation is the point: it is an action of a different kind rather than a third choice ranked below the other two, and putting it at the far end says so before the label is read."
+  -
+    name: "is open"
+    kind: "boolean"
+    default: false
+    description: "Bindable visibility. Close and Escape update it; the owner opens the window and closes it after successful actions."
+  -
+    name: "id"
+    kind: "string"
+    description: "Optional native dialog identifier; the heading association derives from it."
+  -
+    name: "width"
+    kind: "string"
+    description: "Optional CSS width override on the contract's adjustable axis. The viewport caps it."
+  -
+    name: "close accessible name"
+    kind: "text"
+    default: "Close"
+    description: "Localized name for the mandatory close control."
+  -
+    name: "primary button text"
+    kind: "text"
+    default: "Confirm"
+    description: "Localized primary action label."
+  -
+    name: "onprimaryclick"
+    kind: "event"
+    description: "Native click on the primary Button. The owner handles the action and controls is open."
+  -
+    name: "secondary button text"
+    kind: "text"
+    default: "Cancel"
+    description: "Localized secondary action label."
+  -
+    name: "onsecondaryclick"
+    kind: "event"
+    description: "Native click on the secondary Button. Cancel closes the window unless the handler prevents default."
+  -
+    name: "tertiary button text"
+    kind: "text"
+    default: "Alternative"
+    description: "Localized tertiary action label."
+  -
+    name: "ontertiaryclick"
+    kind: "event"
+    description: "Native click on the tertiary Button. The owner handles the action and controls is open."
+  -
+    name: "onclose"
+    kind: "event"
+    description: "Native dialog close event after dismissal completes."
 limitations:
-  - "There is no state. A drawer is open or it is not, and how it arrives, how it leaves and what happens to the page behind it belong to whoever places it."
-  - "There is no overlay, and unlike the Modal none is implied. The page behind a drawer is meant to stay visible; whether it also stays operable is the consumer's decision and nothing here enforces either answer."
+  - "Figma has no state variant. The web is open property is bindable; Close, Cancel and Escape request dismissal. The non-modal native host leaves the page operable. Motion follows its level-5 window-edge attachment."
+  - "This web implementation has no backdrop and does not block the page. A task requiring modality uses Modal."
   - "The close control cannot be turned off."
   - "The scrollbar is a property here rather than a consequence, which is an artefact of the drawing rather than a design decision — see the Figma notes."
   - "The footer holds at most three buttons and their order is fixed."
   - "The widths are not tokens and are not meant to become them. The dimension scale is built for the inside of components and reaches nothing near a panel."
 figma_notes:
+  - "Owner confirmed 2026-10-12: when all three action buttons are disabled by their visibility flags, the whole footer band is absent, including padding and divider."
+  - "The scrollbar instance is medium/absolute at all window sizes. Web overflow selects its presence; no has scrollbar prop is exposed. Its geometry keeps the accepted browser-CSS differences."
+  - "Owner confirmed level 5 on 2026-10-12 despite the current Figma elevation-6 effect. Web shadow follows level 5; geometry follows the verified drawing."
+  - "Verified 2026-10-12: headings use leadingTrim=NONE and heading/h6 through heading/h2; footer instances follow the window size. Native Button and Button Inner reuse their exact library assets."
   - "The height is a flat 500 in all ten variants because Figma has no way to express a height that is simply the container's. It is a placeholder for the viewport, not a value this contract records."
   - "has scrollbar is a Figma property and not part of the API, so it is recorded here rather than in api — registry/README.md. A Figma component cannot react to its own overflow, so the boolean is how the behaviour is shown in the library; the scrollbar belongs to the content and appears when there is more of it than room, exactly as it would anywhere else. A consumer drives it from overflow and exposes nothing for it."
   - "The close control is a Button Inner whose width is bound across a five-step run. That is not an instance being scaled to fit: Button Inner ships one footprint and no size property, and its own contract says a consumer needing another dimension sets it outright."
@@ -259,8 +312,8 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "5232-15231"
-  last_verified: "2026-09-05"
-notes: "Level 5, window edge attachment under FND-LAYERS-01 and FND-LAYERS-02; shadow selection follows FND-EFFECTS-05 and surface motion follows FND-MOTION-18. position takes physical values where naming.md §7 prefers leading and trailing. That is a deliberate exception with a reason recorded on the property: the border's side is a physical fact about which edge the panel is against, and a logical property would put it on the wrong side in a right-to-left interface. The accessibility target is not chosen yet — PLAN.md Stage 5 — so what is recorded here is the obligation on the consumer rather than a judgement. children is carried over whole from the imported entry; narrowing it is a later judgement."
+  last_verified: "2026-10-12"
+notes: "Level 5, window edge attachment under FND-LAYERS-01 and FND-LAYERS-02; shadow selection follows FND-EFFECTS-05 and surface motion follows FND-MOTION-18. position takes physical values where naming.md §7 prefers leading and trailing. That is a deliberate exception with a reason recorded on the property: the border's side is a physical fact about which edge the panel is against, and a logical property would put it on the wrong side in a right-to-left interface. Web focus, keyboard dismissal and content scrolling are implemented; assistive-technology assessment remains a separate verification. children is carried over whole from the imported entry; narrowing it is a later judgement."
 import:
   batch: 2
   ready: false

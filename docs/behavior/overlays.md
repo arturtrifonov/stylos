@@ -1,7 +1,7 @@
 # Overlays
 
 Status: Confirmed
-Scope: Runtime stacking and ownership of overlays; visual depth belongs in Layers, while modality, dismissal, positioning and scroll lock remain open below.
+Scope: Runtime stacking, ownership and implemented window behaviour; visual depth belongs in Layers. Broader overlay policies remain open below.
 
 ## Ownership and order
 
@@ -39,7 +39,7 @@ Why: moving a node to avoid clipping must not change which task it belongs to.
 
 ## Open
 
-- The web overlay manager and its numeric `z-index` allocation are not implemented. Their implementation will follow BEH-OVERLAYS-01 through BEH-OVERLAYS-04 when nested windows are built; the current Tooltip and Dropdown adapters portal to the document body.
-- Modality, initial focus, focus containment and focus return need a shared decision when Modal and Drawer behaviour is implemented.
-- Escape priority, outside interaction, descendant dismissal and scroll lock need a shared decision for nested overlays.
+- Modal and Drawer now coordinate their native window hosts and anchored children. A general manager for every overlay type and numeric stacking allocation remains open; independent anchored groups still use their existing adapter positioning.
+- Modal uses native modality, containment and a shared scroll lock. Drawer is non-modal and preserves an unrelated page task's focus. The implementation is recorded in the [UI package guide](../../packages/ui/README.md#modal-and-drawer); product-specific initial-focus policies remain open.
+- Anchored children consume Escape before their window; the top active window handles the next Escape. Closing an owner dismisses its descendants. Window outside-click dismissal is not implemented; a broader policy for other overlay types remains open.
 - Positioning and viewport collision handling currently belong to component adapters; a shared policy will be decided when further anchored surfaces are implemented.

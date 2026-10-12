@@ -1,3 +1,4 @@
+import { overlayHost, onOwnerDismiss } from "./overlay-host.ts";
 import { surfaceMotion } from "./surface-motion.js";
 import * as tooltip from "@zag-js/tooltip";
 import { VanillaMachine, normalizeProps, spreadProps } from "@zag-js/vanilla";
@@ -21,7 +22,7 @@ export function tooltipBehavior(root: HTMLElement, options: Options) {
   let cleanContent = () => {};
 
   // Escape clipping ancestors; return the node before Svelte unmounts it.
-  doc.body.append(positioner);
+  overlayHost(trigger).append(positioner);
   const motion = surfaceMotion(content);
   const machineProps = () => ({
     id: options.id,
@@ -89,6 +90,8 @@ export function tooltipBehavior(root: HTMLElement, options: Options) {
   render();
   const unsubscribe = machine.subscribe(render);
   machine.start();
+  const stopOwnerDismiss = onOwnerDismiss(trigger, () => tooltip.connect(machine.service, normalizeProps).setOpen(false));
+
 
   // Zag's closing grace state does not track Escape. Dismiss it there too.
   const dismissClosing = (event: KeyboardEvent) => {
@@ -106,6 +109,7 @@ export function tooltipBehavior(root: HTMLElement, options: Options) {
       if (api.open) api.reposition({ placement: options.placement });
     },
     destroy() {
+      stopOwnerDismiss();
       motion.destroy();
       unsubscribe();
       doc.removeEventListener("keydown", dismissClosing, true);

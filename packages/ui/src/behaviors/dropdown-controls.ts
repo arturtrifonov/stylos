@@ -1,3 +1,4 @@
+import { overlayHost, onOwnerDismiss } from "./overlay-host.ts";
 import * as popover from "@zag-js/popover";
 import { VanillaMachine, normalizeProps, spreadProps } from "@zag-js/vanilla";
 import { surfaceMotion } from "./surface-motion.js";
@@ -25,7 +26,7 @@ export function dropdownControlsBehavior(root: HTMLElement, initial: DropdownCon
   const elements = [trigger, positioner, surface];
   const originalAttributes = elements.map(element => new Map([...element.attributes].map(a => [a.name, a.value])));
   positioner.before(anchor);
-  doc.body.append(positioner);
+  overlayHost(trigger).append(positioner);
   const motion = surfaceMotion(surface, positioner);
   const machineProps = () => ({
     id: options.id, getRootNode: () => doc, modal: false, portalled: true,
@@ -50,6 +51,8 @@ export function dropdownControlsBehavior(root: HTMLElement, initial: DropdownCon
   render();
   const unsubscribe = machine.subscribe(render);
   machine.start();
+  const stopOwnerDismiss = onOwnerDismiss(trigger, () => popover.connect(machine.service, normalizeProps).setOpen(false));
+
   return {
     update(next: DropdownControlsBehaviorOptions) {
       options = next;
@@ -58,6 +61,7 @@ export function dropdownControlsBehavior(root: HTMLElement, initial: DropdownCon
       render();
     },
     destroy() {
+      stopOwnerDismiss();
       motion.destroy();
       unsubscribe();
       machine.stop();

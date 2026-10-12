@@ -1,3 +1,4 @@
+import { overlayHost, onOwnerDismiss } from "./overlay-host.ts";
 import * as popover from "@zag-js/popover";
 import { VanillaMachine, normalizeProps, spreadProps } from "@zag-js/vanilla";
 import { surfaceMotion } from "./surface-motion.js";
@@ -39,7 +40,7 @@ export function dropdownNavigationBehavior(root: HTMLElement, initial: DropdownN
   const originals = elements.map(element => new Map([...element.attributes].map(a => [a.name, a.value])));
   const anchor = doc.createComment("dropdown navigation positioner");
   positioner.before(anchor);
-  doc.body.append(positioner);
+  overlayHost(trigger).append(positioner);
   content.dataset.surfaceLayer = "3";
   content.dataset.surfaceAttachment = "control";
   const motion = surfaceMotion(content, positioner);
@@ -145,6 +146,8 @@ export function dropdownNavigationBehavior(root: HTMLElement, initial: DropdownN
   render();
   const unsubscribe = machine.subscribe(render);
   machine.start();
+  const stopOwnerDismiss = onOwnerDismiss(trigger, () => popover.connect(machine.service, normalizeProps).setOpen(false));
+
   return {
     update(next: DropdownNavigationBehaviorOptions) {
       options = next;
@@ -153,6 +156,7 @@ export function dropdownNavigationBehavior(root: HTMLElement, initial: DropdownN
       render();
     },
     destroy() {
+      stopOwnerDismiss();
       content.removeEventListener("click", click);
       content.removeEventListener("keydown", keydown);
       levelMotion.destroy(); motion.destroy(); unsubscribe(); machine.stop();
