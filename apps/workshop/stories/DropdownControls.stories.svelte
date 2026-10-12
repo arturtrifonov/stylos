@@ -2,7 +2,7 @@
   import { defineMeta } from "@storybook/addon-svelte-csf";
   import Example from "./fixtures/DropdownControlsExample.svelte";
   const { Story } = defineMeta({
-    title: "Components/Dropdown", component: Example,
+    id: "components-dropdown", title: "Components/Dropdown/Dropdown", component: Example,
     args: { size: "medium", maxHeight: "", alignment: "start", hasAdditionalText: false },
     argTypes: {
       size: { control: "inline-radio", options: ["extra small", "small", "medium", "large", "extra large"] },

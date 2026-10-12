@@ -124,7 +124,7 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
+    default: "medium"
     description: "Row density. Drives the padding, the gap, the type and the icon together, and through them the row height. It does not set the width."
     values:
       -
@@ -148,18 +148,18 @@ api:
         value: "start"
       -
         value: "end"
-        note: "Right-aligns the text and moves the icon to the leading edge. Meant for numbers a reader compares down the column."
+        note: "Right-aligns the text and moves the icon to the trailing edge. Meant for numbers a reader compares down the column."
   -
     name: "has icon"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Whether a mark sits beside the value. The mark classifies the value — a currency, a file kind, a direction — and never acts."
     controls:
       - "icon"
   -
     name: "icon"
     kind: "instance"
-    default: "Placeholder"
+    svelte_type: "snippet"
     description: "Which mark. Named for the meaning the set carries, not for a drawing. The property is not called leading or trailing because the side is not fixed — alignment decides it."
   -
     name: "cell text"
@@ -179,7 +179,7 @@ api:
   -
     name: "has additional text"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Whether a second, quieter line sits under the value. It qualifies the value rather than continuing it, and it doubles the row height, so a table that turns it on turns it on for the column."
     controls:
       - "additional text"
@@ -188,6 +188,14 @@ api:
     kind: "text"
     default: "Additional text"
     description: "The qualifier: a unit, an owner, a timestamp, the thing the value is of. It takes the secondary text role and a smaller measure, and it truncates on the same terms as the value above it."
+  -
+    name: "id"
+    kind: "string"
+    description: "Optional native cell identifier."
+  -
+    name: "headers"
+    kind: "string"
+    description: "Optional header IDs for a complex native table. Ordinary column associations use th scope=col."
 limitations:
   - "One line, always. There is no wrapping value and no property to allow one; a value longer than its column is cut with an ellipsis and the rest is gone from the rendering."
   - "No state at all — no hover, no selected, no disabled. Row highlighting, striping and selection belong to whatever draws the row, and this component cannot participate in them."
@@ -195,13 +203,15 @@ limitations:
   - "The additional-text measure repeats: five sizes map onto three type steps, so extra small and small share one measure and medium and large share another. The primary run does not repeat."
   - "No numeric alignment beyond right-aligning the string. Nothing lines up decimal points or pads to a common width."
 figma_notes:
+  - "Web default size is medium, selected by the owner on 2026-10-12; the Figma set default remains extra small."
+  - "Verified 2026-10-12: all primary and additional text layers have leadingTrim=NONE. The web projection retains the Element string measures, native table cells, tabular lining numerals and the mirrored icon order. Complete strings remain in the DOM and native title attributes expose them on hover."
   - "The icon sits in a container whose width binds to a local collection named icon size, outside tokens/, and which is narrower than the icon it holds — the overhang is the drawing's optical inset. The icon's own footprint is the token recorded in sizes above."
   - "has icon and has additional text are false in all ten variants, so the set stores no visible geometry for either. Everything recorded here about them comes from their variable bindings, which are stored whether the layer is visible or not."
   - "The two alignment values are built as mirrored child orders rather than by an alignment property on one frame, which is why the icon layer is named for the side it happens to be on."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4860:14267"
-  last_verified: "2026-09-05"
+  last_verified: "2026-10-12"
 notes: "A wrapping cell is expected to join this family — the set will grow and a multi-line value will need one — and is sequenced in PLAN.md under beta rather than designed here. The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."
 import:
   batch: 1

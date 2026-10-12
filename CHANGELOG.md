@@ -4,6 +4,14 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed — 2026-10-12 (Workshop navigation)
+
+- Group Storybook components by their verified Figma pages, preserving existing story URLs and keeping Default followed by Icons playground within each component.
+
+### Added — 2026-10-12 (Table core)
+
+- Add Table Cell Heading/Text and Table Row Head/Body from the verified Figma designs, with five density profiles and a medium default, mirrored alignment, optional icon and qualifier, tabular numerals, header constraints, banding and dividers. Preserve native table semantics, column associations and full strings; reuse Button Inner for sort/filter actions and shared Motion for browser hover. Include compact Table and Icons playground examples and native static previews.
+
 ### Added — 2026-10-12 (Dropdown navigation)
 
 - Add Dropdown Item Parent with five verified Figma sizes, a fixed right arrow, decorative icon snippets and native keyboard/disabled states. Reuse shared row geometry, focus and Motion. Add native action mode to Dropdown Item Default for navigation leaves and the existing Back band; keep Select's option mode as the default.

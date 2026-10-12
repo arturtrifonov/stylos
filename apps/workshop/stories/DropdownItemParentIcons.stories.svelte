@@ -3,7 +3,7 @@
   import Example from "./fixtures/DropdownItemParentIcons.svelte";
   import { icons } from "../../../packages/ui/src/components/icon/icons.ts";
   const { Story } = defineMeta({
-    title: "Components/Dropdown Item Parent", component: Example,
+    id: "components-dropdown-item-parent", title: "Components/Dropdown/Dropdown Item Parent", component: Example,
     args: { size: "medium", state: "default", hasIcon: true, iconName: "home",
       labelText: "Workspace", hasAdditionalText: false, additionalText: "Team workspace" },
     argTypes: {

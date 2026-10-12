@@ -4,7 +4,7 @@
   import { icons } from "../../../packages/ui/src/components/icon/icons.ts";
 
   const { Story } = defineMeta({
-    title: "Components/Tag",
+    id: "components-tag", title: "Components/Tag/Tag",
     component: Example,
     args: {
       variant: "fill",

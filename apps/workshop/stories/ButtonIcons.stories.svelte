@@ -6,7 +6,7 @@
 
   const iconNames = Object.keys(icons);
   const { Story } = defineMeta({
-    title: "Components/Button",
+    id: "components-button", title: "Components/Button/Button",
     component: Example,
     args: {
       variant: "base",

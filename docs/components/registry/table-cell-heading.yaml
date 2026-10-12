@@ -127,7 +127,7 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
+    default: "medium"
     description: "Row density, and it has to be the size the value cells in the same table are set to. Drives padding, gap, type, icon and the controls together."
     values:
       -
@@ -154,14 +154,14 @@ api:
   -
     name: "has icon"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Whether a mark sits beside the column name — a unit, a source, the kind of thing the column holds."
     controls:
       - "icon"
   -
     name: "icon"
     kind: "instance"
-    default: "Placeholder"
+    svelte_type: "snippet"
     description: "Which mark. Not called leading or trailing because alignment decides the side."
   -
     name: "cell text"
@@ -181,7 +181,7 @@ api:
   -
     name: "has additional text"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Whether a second line sits under the column name, usually the unit the column is in."
     controls:
       - "additional text"
@@ -193,21 +193,50 @@ api:
   -
     name: "is sorted"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Whether the table is currently ordered by this column. It shows the sort control and marks the column. The direction is the cell's own: it knows which way the column is ordered and drives the control's arrow from it."
   -
     name: "is filtered"
     kind: "boolean"
-    default: "false"
+    default: false
     description: "Whether this column is currently narrowing the rows. It shows the filter control and marks the column with the same rule is sorted uses. There is one mark, not one per state — it says the column is constrained and shows the reader how wide the column is — and which constraint is applied is told by the control that is showing."
+  -
+    name: "id"
+    kind: "string"
+    description: "Optional native cell identifier."
+  -
+    name: "sort direction"
+    kind: "variant"
+    default: "ascending"
+    description: "Applied sort direction, exposed through aria-sort only when is sorted is true."
+    values:
+      -
+        value: "ascending"
+      -
+        value: "descending"
+  -
+    name: "sort accessible name"
+    kind: "text"
+    description: "Localized sort action name; defaults to Sort by followed by the column name."
+  -
+    name: "filter accessible name"
+    kind: "text"
+    description: "Localized filter action name; defaults to Filter by followed by the column name."
+  -
+    name: "onclick"
+    kind: "event"
+    description: "Native click from either shown Button Inner action. Its nearest data-table-action wrapper identifies sort or filter. The owner applies the result."
 limitations:
   - "The controls here adjust a sort or a filter that is already applied. Starting one happens from a menu that is not part of this cell, which is why an untouched column shows no control — there is nothing yet to adjust."
-  - "The rule that draws that mark has a thickness that is not bound to a variable at any size. It steps with the box, but it steps outside the scale."
+  - "In Figma the constraint mark thickness is not bound to a variable. The web projection uses existing gap tokens for the measured sizes."
   - "One line, always. There is no wrapping header and no property to allow one."
   - "No state — no hover, no active, no disabled. Whatever the sort and filter controls do on hover is theirs; the cell around them does not change."
-  - "Nothing says which axis the cell heads. A row header is not a value of anything here, so a table with headers down its left side has no component for them."
+  - "The web heading uses scope=col. A row header is not a value of anything here, so a table with headers down its left side has no component for them."
   - "No resize handle and no width property. A column a reader can drag wider is the table's mechanism, not the header's."
 figma_notes:
+  - "Web default size is medium, selected by the owner on 2026-10-12; the Figma set default remains extra small."
+  - "Constraint marks measure 2/2/3/4/4 px and project through existing gap/g-0_250, g-0_375 and g-0_500 tokens. A single mark represents sorted or filtered. Native Button Inner footprints are 12/14/16/18/20 px; controls retain their source order, reversing with end alignment."
+  - "Verified 2026-10-12: all primary and additional text layers have leadingTrim=NONE. The web projection retains the Element string measures, native table cells, tabular lining numerals and the mirrored icon order. Complete strings remain in the DOM and native title attributes expose them on hover."
   - "The mark for a constrained column is built as two identical rectangles, one governed by is sorted and one by is filtered, because a Figma property cannot show one layer when either of two booleans is true without introducing variables for it. There is one mark, not two."
   - "Nothing in the set exposes the sort direction as a property, so it is set by swapping the icon inside the sort control's instance. The cell carries the direction; the Figma set has nowhere to put it."
   - "Both rectangles are absolutely positioned at the cell's bottom edge and the cell does not clip, so in the Figma set the mark renders outside the component's own box."
@@ -217,7 +246,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4862:5460"
-  last_verified: "2026-09-05"
+  last_verified: "2026-10-12"
 notes: "Built on the value cell — the two share property keys, box and type run — so a column can be composed once and its header differs from its cells in colour, in the controls it carries, and in nothing else. A header cell that opens a menu is expected as a separate component; this is the plain one, and sorting and filtering are initiated from that menu rather than here. The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."
 import:
   batch: 1

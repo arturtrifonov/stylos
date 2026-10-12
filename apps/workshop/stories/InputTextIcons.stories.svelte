@@ -4,7 +4,7 @@
   import { icons } from "../../../packages/ui/src/components/icon/icons.ts";
 
   const { Story } = defineMeta({
-    title: "Components/Input Text",
+    id: "components-input-text", title: "Components/Input/Input Text",
     component: Example,
     args: {
       size: "medium", state: "default", validation: "off", value: "",

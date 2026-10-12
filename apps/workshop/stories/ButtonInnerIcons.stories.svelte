@@ -4,7 +4,7 @@
   import { icons } from "../../../packages/ui/src/components/icon/icons.ts";
 
   const { Story } = defineMeta({
-    title: "Components/Button Inner",
+    id: "components-button-inner", title: "Components/Button Inner/Button Inner",
     component: Example,
     args: { iconName: "close", accessibleName: "Clear field", state: "default" },
     argTypes: {
