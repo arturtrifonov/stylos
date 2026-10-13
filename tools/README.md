@@ -197,6 +197,30 @@ A file it cannot read whole stops the build. These SVGs are generated, so an unr
 
 Not to be confused with `build-icons.mjs` above: that one draws the set out of the variable font and is run by hand; this one runs on every `ui:generate` and never touches a font.
 
+## `check-ui-release.mjs` — Stage 5 acceptance
+
+After `npm run ui:build` and `npm run workshop:build`, run `npm run ui:verify`.
+The command reads the core membership from `PLAN.md`, fails on a missing
+implementation or build artifact, verifies generated props and export paths,
+and server-renders the complete registry variant product plus individual
+boolean toggles in configured workshop contexts. CI runs this check after its builds.
+
+`npm run ui:verify:browser` serves a loopback harness at `http://127.0.0.1:4174`.
+Its Run button constructs every case in light and dark, runs axe on the Default
+examples (opening Modal and Drawer), and checks a separate HTML/CSS core page
+with no JavaScript. Fonts and per-component styles resolve through the package
+exports. Inspect component also exposes representative native forms and overlays
+for manual checks. Browser results are written to `build/ui-release/browser.json`;
+`npm run ui:verify:results` fails on incomplete, failing or stale evidence.
+The source fingerprint covers component code, tokens, fixtures, the harness,
+its case generator, lockfile and generated case inputs. Automated rendering
+and axe findings do not establish visual parity or screen-reader support.
+See the [acceptance record](../packages/ui/verification/0.2.0.md) for measured scope.
+
+Registry defaults use `lib/registry.mjs`'s `propertyDefault` in both Storybook
+args and static previews: quoted boolean defaults become actual booleans;
+strings in a variant vocabulary retain their string values.
+
 ## `build-ui-css.mjs`
 
 The independent CSS export (SPEC 0010 §2.2), run by `npm run ui:generate` after the two generators above. It copies each built component's authored `src/components/<name>/<name>.css` to `packages/ui/dist/css/<name>.css`, embedding local SVG mask URLs as data URLs with their original bytes, and concatenates all of them, in registry order, into `dist/css/stylos.css` with a generated header naming the version and the components inside. No geometry or token transform, no minification, no autoprefixing — a build that improved a value on the way through would be a second source of it. Neither output contains `tokens.css`: a consumer links tokens separately, because that is the file a client theme overrides. A component directory without its authored CSS fails the build.

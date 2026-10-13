@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 import componentGroups from "../apps/workshop/component-groups.json" with { type: "json" };
 
-import { loadRegistry, slugPath } from "./lib/registry.mjs";
+import { loadRegistry, slugPath, propertyDefault } from "./lib/registry.mjs";
 import { builtComponents, camelName, pascalName, fieldFor } from "./build-ui-types.mjs";
 
 export function storyMeta(entry) {
@@ -32,7 +32,7 @@ export function defaultArgs(entry) {
     if (["instance", "slot", "event"].includes(property.kind)) continue;
     // No default but documented values: start from the first of them, so a
     // contract that declines to name a default still has a story that renders.
-    const value = property.default ?? (property.values ?? [])[0]?.value;
+    const value = propertyDefault(property);
     if (value === undefined || value === null) continue;
     args[camelName(property.name)] = value;
   }

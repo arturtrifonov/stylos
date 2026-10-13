@@ -36,6 +36,13 @@ test("Dropdown previews keep optional bands outside the option list", () => {
 });
 
 for (const kind of ["Checkbox", "Toggle"]) {
+  test(`Dropdown Item ${kind} default preview omits its disabled supporting line`, () => {
+    const row = entries.find(entry => entry.id === `Dropdown Item ${kind}`);
+    const defaults = defaultAssignment(row);
+    assert.equal(defaults["has additional text"], false);
+    const html = sampleHtml(row, defaults);
+    assert.doesNotMatch(html, /stylos-dropdown-item-additional|aria-describedby/);
+  });
   test(`Dropdown Item ${kind} uses one labelled native control with a description and form association`, () => {
     const controlRow = entries.find(entry => entry.id === `Dropdown Item ${kind}`);
     const html = sampleHtml(controlRow, { ...defaultAssignment(controlRow), id: 'control"',

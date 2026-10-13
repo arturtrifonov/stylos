@@ -1,6 +1,7 @@
 node_modules/
 build/
 packages/*/dist/
+packages/*/.svelte-kit/
 .DS_Store
 *.log
 packages/ui/src/components/*/props.ts

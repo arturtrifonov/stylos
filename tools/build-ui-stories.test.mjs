@@ -56,6 +56,14 @@ test("defaultArgs takes every contract default, camelCased", () => {
   });
 });
 
+test("quoted registry booleans become boolean controls, while variant strings stay strings", () => {
+  assert.deepEqual(defaultArgs({ api: [
+    { name: "has additional text", kind: "boolean", default: "false" },
+    { name: "has icon", kind: "boolean", default: "true" },
+    { name: "is selected", kind: "variant", default: "false", values: [{ value: "false" }, { value: "true" }] },
+  ] }), { hasAdditionalText: false, hasIcon: true, isSelected: "false" });
+});
+
 test("defaultArgs skips instances and slots — they have no default", () => {
   const args = defaultArgs({
     id: "Alert",

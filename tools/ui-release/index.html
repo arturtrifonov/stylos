@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stylos 0.2.0 acceptance</title></head>
+  <body>
+    <main>
+      <h1>Stylos 0.2.0 acceptance</h1>
+      <p>Registry-derived rendering checks in light and dark, followed by axe on the configured Default examples. Keyboard and screen-reader evaluation remain separate.</p>
+      <button id="run" type="button">Run browser checks</button>
+      <p id="status" role="status">Ready</p>
+      <label for="inspect">Inspect component</label><select id="inspect"></select>
+      <button id="show" type="button">Show Default example</button>
+      <section aria-label="Current component" id="sample"></section>
+      <pre id="results"></pre>
+      <h2>Independent HTML and CSS</h2>
+      <p><a href="/independent.html" target="_blank">Open the CSS-only core set</a></p>
+      <iframe title="Core set without Svelte" src="/independent.html"></iframe>
+    </main>
+    <script type="module" src="/client.mjs"></script>
+  </body>
+</html>

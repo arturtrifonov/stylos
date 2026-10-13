@@ -417,7 +417,7 @@ the target-area conditions recorded in the contract.
 The workshop renders a single named checkbox in its Default playground, with Controls for its supported properties.
 The exact Figma glyphs are internal masks, retaining their original sizes;
 the independent CSS export embeds their SVG bytes and needs no asset folder.
-The assistive-technology matrix below remains open.
+The initial assistive-technology matrix below is selected; its manual results remain pending.
 
 ### Tooltip
 
@@ -464,9 +464,11 @@ The planned component checks combine automated assertions with manual keyboard, 
 
 The proof interface is assessed separately for content, composition and complete user processes. Results state which uses, versions and environments were tested; they do not claim conformance for every application using the package. The work is sequenced in [PLAN.md](../../PLAN.md#42-stage-5--stylosui).
 
+For Stage 5 acceptance, build the UI package and workshop, then run `npm run ui:verify` at the root. This derives the core membership from the plan, exhausts each component's variant product, exercises boolean properties individually, and checks generated props, built wrappers and CSS/font export paths. `npm run ui:verify:browser` serves the same cases at `http://127.0.0.1:4174`, plus representative compositions for keyboard and assistive-technology checks. Use **Run browser checks** to record light/dark DOM construction, axe on configured Default examples (with Modal/Drawer opened), and visible CSS-only samples. `npm run ui:verify:results` checks that the browser report is complete, passes and matches the source fingerprint. Detailed scope, results and remaining manual work are in the [0.2.0 acceptance record](verification/0.2.0.md).
+
 ### Open
 
-- **Assistive-technology support matrix:** select the screen-reader and browser pairs before the Stage 5 manual checks are designed, and record them here with the tested versions and results. The matrix is not yet chosen, and no screen-reader support is claimed from the registry alone. The browser feature floor remains in [ARCHITECTURE.md](../../ARCHITECTURE.md#7-conventions).
+- **Manual assistive-technology evaluation:** the owner selected Linux, Chrome and Orca for the initial Stage 5 evaluation. Manual speech/braille results are pending, so this is an evaluation target, not a support claim. Record exact versions and results in the [acceptance record](verification/0.2.0.md). The browser feature floor remains in [ARCHITECTURE.md](../../ARCHITECTURE.md#7-conventions).
 
 ### Checkbox Label and Checkbox Text
 

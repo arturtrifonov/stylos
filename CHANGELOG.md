@@ -4,6 +4,14 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-10-13 (Stage 5 acceptance)
+
+- Add reproducible core-set acceptance derived from the plan and registry: check generated props, built wrappers, independent CSS/font exports and every variant combination, with individual boolean checks. Run server rendering in CI and provide a browser harness for both themes, Default-example axe scans, CSS-only samples and representative keyboard/assistive-technology compositions. Reject stale or failing browser evidence and record the remaining Chrome/Orca manual evaluation separately. Remove tracked Svelte packaging scratch output and ignore it on rebuild.
+
+### Fixed — 2026-10-13 (quoted boolean defaults)
+
+- Project quoted boolean defaults as booleans in Storybook Controls and static previews. Dropdown Checkbox/Toggle rows now omit their additional text by default and their static previews render; variant strings such as `"false"` retain their existing meaning.
+
 ### Added — 2026-10-12 (Modal and Drawer)
 
 - Add Modal and Drawer with one shared frame, five verified sizes, native dialog interaction, localized actions and controlled visibility. Reuse Button, Button Inner, surface Motion and the medium/absolute scrollbar. Modal uses level 6 and blocks the page; Drawer follows owner-confirmed level 5, leaves the page operable and scrolls its content. Preserve anchored child ownership and dismissal, focus return, interrupted exits and reduced motion. Hide the footer completely when all actions are absent. Include compact Default and Form examples and independent static previews.

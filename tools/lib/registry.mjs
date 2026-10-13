@@ -236,6 +236,16 @@ export function loadRegistry(root) {
     .sort((a, b) => String(a.id).localeCompare(String(b.id)) || a.file.localeCompare(b.file));
 }
 
+/** Registry booleans may be quoted; consumers must receive actual booleans. */
+export function propertyDefault(property) {
+  const value = property.default ?? (property.values ?? [])[0]?.value;
+  if (property.kind !== "boolean" || value === undefined) return value;
+  if (![true, false, "true", "false"].includes(value)) {
+    throw new Error(`api "${property.name}": boolean default is not true or false`);
+  }
+  return value === true || value === "true";
+}
+
 const hasText = (value) => typeof value === "string" && value.trim().length > 0;
 
 /** Missing required contract data under STD-04, independent of representations. */

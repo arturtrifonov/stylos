@@ -27,10 +27,10 @@ All three fall inside the `0.1` milestone, whose checklist is §4.1. The version
 
 | # | Requirement | Verified by |
 | --- | --- | --- |
-| 1 | `@stylos/ui` builds and renders every documented variant of the core set | the workshop build |
-| 2 | Every component's props are exactly its entry's `api` under SPEC 0009 §3 | the compiler, against generated `props.ts` |
+| 1 | `@stylos/ui` builds and renders every documented variant of the core set | the workshop build, `ui:verify` and the browser evidence checked by `ui:verify:results` |
+| 2 | Every component's props are exactly its entry's `api`, with the [documented name conversion](packages/ui/README.md#name-conversion) | the compiler, against generated `props.ts`; `ui:verify` checks generation freshness |
 | 3 | No value outside `tokens.css` — no hex, no raw `px` | Stylelint |
-| 4 | The component CSS is consumable without Svelte | the export resolves and renders in a plain HTML page |
+| 4 | The component CSS is consumable without Svelte | `ui:verify` checks export resolution; browser acceptance checks the CSS-only core page |
 
 ### `0.3.0`
 
@@ -54,8 +54,6 @@ Everything below is generated from `tokens/` and the registry, or authored once.
 
 | Artifact | Built by | Lands in | Committed | Consumer | Release |
 | --- | --- | --- | --- | --- | --- |
-| Svelte components | `svelte-package` | `packages/ui/dist/package/` | no | Svelte applications | `0.2.0` |
-| The workshop | Storybook | `apps/workshop/` | no | the frontend developer — behaviour and states | `0.2.0` |
 | `registry.json` — the contracts machine-readable, with the unimplemented marked as such | a generator in `tools/` | `packages/ui/dist/` | no | an agent choosing a component | `0.3.0` |
 | The consumer skill — how to build a screen on Stylos | authored once | `packages/ui/skill/` | yes | an agent in any tool | `0.3.0` |
 | The Stylelint config | authored once | `packages/ui/` | yes | the consumer's own lint run | `0.3.0` |
