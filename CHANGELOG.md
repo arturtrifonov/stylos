@@ -4,6 +4,11 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Fixed — 2026-10-14 (acceptance review)
+
+- Cover variants behind visibility gates, forward Dropdown group args and use shared table fixtures with native data rows. Verify exact class tokens and variant attributes against the fresh packaged entry in both rendering passes. Rebuild and fingerprint source inputs plus dist bytes, and reject changed, malformed or stale evidence. Record deferred runtime errors/warnings, require loaded Georama faces, include WCAG 2.1 A rules and wait for surface motion before axe. Preserve UTF-8 uploads and return useful missing-report and size-limit errors. Normalize boolean defaults in the registry loader so component-page examples share the fix.
+- Enable relative TypeScript import rewriting in the UI package build. Packaged wrappers and behaviours now reference emitted `.js` modules instead of absent `.ts` files.
+
 ### Added — 2026-10-13 (Stage 5 acceptance)
 
 - Add reproducible core-set acceptance derived from the plan and registry: check generated props, built wrappers, independent CSS/font exports and every variant combination, with individual boolean checks. Run server rendering in CI and provide a browser harness for both themes, Default-example axe scans, CSS-only samples and representative keyboard/assistive-technology compositions. Reject stale or failing browser evidence and record the remaining Chrome/Orca manual evaluation separately. Remove tracked Svelte packaging scratch output and ignore it on rebuild.

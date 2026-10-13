@@ -173,8 +173,18 @@ Work:
 - Implement in the slice order of SPEC 0009 §7 — Badge, Checkbox Input, Tooltip, Modal/Drawer, Dropdown, Select, the table, Button ×6. The first two are the pace test: after them the estimate below meets a real line of the package for the first time.
 - Correct each component's `api` as its contract is opened, per §3.1.
 - Add the independent CSS export to `packages/ui/package.json` — per component plus an aggregate, so a preview links one file and an application pulls only what it uses.
-- Stylelint, Vitest browser mode, Playwright for keyboard behaviour, axe on every story, all into the CI of SPEC 0008.
-- Select the screen-reader/browser matrix before designing manual checks, then assess keyboard, focus and assistive-technology behaviour in representative component compositions. Record the tested conditions and consumer obligations in the [package guide](packages/ui/README.md#accessibility-implementation-and-verification); automated checks alone do not establish conformance.
+- Run Stylelint, type checking, package/workshop builds and registry-derived packaged SSR acceptance in CI. Use the separate browser harness for rendering, variant-attribute assertions and axe on configured Default compositions; perform real keyboard checks in representative compositions.
+- Assess keyboard, focus and assistive-technology behaviour using the selected initial Linux Chrome + Orca matrix. Record tested versions, results and consumer obligations in the [package guide](packages/ui/README.md#accessibility-implementation-and-verification); automated checks alone do not establish conformance.
+
+**Amended 2026-10-14 — Stage 5 verification approach:** replace the earlier
+Vitest browser/Playwright runner and every-story axe proposal with packaged SSR
+in CI and an explicit browser-harness run outside CI. The browser run covers
+the registry variant product, including open windows and active sorted headings,
+and asserts forwarded attributes. axe covers configured Default compositions,
+not every variant or authored story, and waits for surface motion to finish.
+Real browser keyboard checks and the owner's selected Chrome + Orca evaluation
+remain separate recorded evidence. This amendment states the implemented scope;
+it does not claim that the earlier proposed coverage has been delivered.
 
 **Gate:** the `0.2.0` table in §1.
 **Estimate:** 10–12 weeks.

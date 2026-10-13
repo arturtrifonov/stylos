@@ -43,6 +43,7 @@
     "axe-core": "^4.14.0",
     "fontkit": "^2.0.4",
     "material-symbols": "^0.47.1",
+    "parse5": "^8.0.1",
     "postcss-html": "^2.0.0",
     "stylelint": "^17.15.0",
     "stylelint-config-html": "^2.0.0",

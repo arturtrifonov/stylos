@@ -189,6 +189,8 @@ function toEntry(root, file) {
   const sizingModel = parsed.get("sizing_model");
   const variants = parsed.get("variants");
   const motion = parsed.get("motion");
+  const api = list(parsed, "api").map(plain).map(property => property.kind === "boolean" &&
+    ["true", "false"].includes(property.default) ? { ...property, default: property.default === "true" } : property);
 
   return {
     file: relative,
@@ -213,7 +215,7 @@ function toEntry(root, file) {
     sizingModel: sizingModel instanceof Map ? plain(sizingModel) : null,
     variants: variants instanceof Map ? plain(variants) : null,
     motion: motion instanceof Map ? plain(motion) : null,
-    api: list(parsed, "api").map(plain),
+    api,
     limitations: list(parsed, "limitations"),
     figmaNotes: list(parsed, "figma_notes").map(plain),
     notes: parsed.get("notes") ?? "",

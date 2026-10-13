@@ -41,6 +41,31 @@ import:
   ready: false
 `;
 
+test("quoted boolean defaults are normalized before any registry consumer sees them", () => {
+  const root = fixture({ "docs/components/registry/example.yaml": `id: "Example"
+api:
+  -
+    name: "has additional text"
+    kind: "boolean"
+    default: "false"
+    examples:
+      -
+        verdict: "do"
+        props:
+          "additional text": "Example"
+  -
+    name: "is selected"
+    kind: "variant"
+    default: "false"
+` });
+  try {
+    const entry = loadRegistry(root)[0];
+    assert.equal(entry.api[0].default, false);
+    assert.equal(entry.api[1].default, "false");
+    assert.equal(entry.api[0].examples[0].props["additional text"], "Example");
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
 const tdText = `id: "Table / TD Text"
 name: "Table / TD Text"
 level: "object"
