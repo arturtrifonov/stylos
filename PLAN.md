@@ -27,10 +27,10 @@ All three fall inside the `0.1` milestone, whose checklist is §4.1. The version
 
 | # | Requirement | Verified by |
 | --- | --- | --- |
-| 1 | `@stylos/ui` builds and renders every documented variant of the core set | the workshop build |
-| 2 | Every component's props are exactly its entry's `api` under SPEC 0009 §3 | the compiler, against generated `props.ts` |
+| 1 | `@stylos/ui` builds and renders every documented variant of the core set | the workshop build, `ui:verify` and the browser evidence checked by `ui:verify:results` |
+| 2 | Every component's props are exactly its entry's `api`, with the [documented name conversion](packages/ui/README.md#name-conversion) | the compiler, against generated `props.ts`; `ui:verify` checks generation freshness |
 | 3 | No value outside `tokens.css` — no hex, no raw `px` | Stylelint |
-| 4 | The component CSS is consumable without Svelte | the export resolves and renders in a plain HTML page |
+| 4 | The component CSS is consumable without Svelte | `ui:verify` checks export resolution; browser acceptance checks the CSS-only core page |
 
 ### `0.3.0`
 
@@ -54,8 +54,6 @@ Everything below is generated from `tokens/` and the registry, or authored once.
 
 | Artifact | Built by | Lands in | Committed | Consumer | Release |
 | --- | --- | --- | --- | --- | --- |
-| Svelte components | `svelte-package` | `packages/ui/dist/package/` | no | Svelte applications | `0.2.0` |
-| The workshop | Storybook | `apps/workshop/` | no | the frontend developer — behaviour and states | `0.2.0` |
 | `registry.json` — the contracts machine-readable, with the unimplemented marked as such | a generator in `tools/` | `packages/ui/dist/` | no | an agent choosing a component | `0.3.0` |
 | The consumer skill — how to build a screen on Stylos | authored once | `packages/ui/skill/` | yes | an agent in any tool | `0.3.0` |
 | The Stylelint config | authored once | `packages/ui/` | yes | the consumer's own lint run | `0.3.0` |
@@ -175,8 +173,18 @@ Work:
 - Implement in the slice order of SPEC 0009 §7 — Badge, Checkbox Input, Tooltip, Modal/Drawer, Dropdown, Select, the table, Button ×6. The first two are the pace test: after them the estimate below meets a real line of the package for the first time.
 - Correct each component's `api` as its contract is opened, per §3.1.
 - Add the independent CSS export to `packages/ui/package.json` — per component plus an aggregate, so a preview links one file and an application pulls only what it uses.
-- Stylelint, Vitest browser mode, Playwright for keyboard behaviour, axe on every story, all into the CI of SPEC 0008.
-- Select the screen-reader/browser matrix before designing manual checks, then assess keyboard, focus and assistive-technology behaviour in representative component compositions. Record the tested conditions and consumer obligations in the [package guide](packages/ui/README.md#accessibility-implementation-and-verification); automated checks alone do not establish conformance.
+- Run Stylelint, type checking, package/workshop builds and registry-derived packaged SSR acceptance in CI. Use the separate browser harness for rendering, variant-attribute assertions and axe on configured Default compositions; perform real keyboard checks in representative compositions.
+- Assess keyboard, focus and assistive-technology behaviour using the selected initial Linux Chrome + Orca matrix. Record tested versions, results and consumer obligations in the [package guide](packages/ui/README.md#accessibility-implementation-and-verification); automated checks alone do not establish conformance.
+
+**Amended 2026-10-14 — Stage 5 verification approach:** replace the earlier
+Vitest browser/Playwright runner and every-story axe proposal with packaged SSR
+in CI and an explicit browser-harness run outside CI. The browser run covers
+the registry variant product, including open windows and active sorted headings,
+and asserts forwarded attributes. axe covers configured Default compositions,
+not every variant or authored story, and waits for surface motion to finish.
+Real browser keyboard checks and the owner's selected Chrome + Orca evaluation
+remain separate recorded evidence. This amendment states the implemented scope;
+it does not claim that the earlier proposed coverage has been delivered.
 
 **Gate:** the `0.2.0` table in §1.
 **Estimate:** 10–12 weeks.

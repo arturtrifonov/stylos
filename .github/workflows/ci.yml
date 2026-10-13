@@ -28,3 +28,4 @@ jobs:
       - run: npm run ui:check
       - run: npm run ui:build
       - run: npm run workshop:build
+      - run: npm run ui:verify

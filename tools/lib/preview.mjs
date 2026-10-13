@@ -22,7 +22,7 @@ import path from "node:path";
 
 import { loadCanonical } from "./tokens.mjs";
 import { loadEffectStyles } from "./effect-styles.mjs";
-import { slugPath } from "./registry.mjs";
+import { slugPath, propertyDefault } from "./registry.mjs";
 import { readNaming } from "../check-tokens.mjs";
 import { buildCss } from "../build-css.mjs";
 import { builtComponents } from "../build-ui-types.mjs";
@@ -389,7 +389,7 @@ export function defaultAssignment(entry) {
     // declines to name a default (Icon: a forgotten name must draw nothing)
     // still documents what a value looks like. This is the sample's fallback,
     // never the component's — nothing here reaches the built component.
-    const value = property?.default ?? (property?.values ?? [])[0]?.value;
+    const value = propertyDefault(property);
     if (value === undefined) continue;
     assignment[property.name] = value;
   }

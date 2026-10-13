@@ -2,7 +2,7 @@
 
 A design system for dense, desktop-oriented web product interfaces. Its visual language draws on antiquity, classical architecture and constructed proportion — strict and structural rather than decorative.
 
-**`0.1.0` — the contracts for the core set are fixed, and the Figma library implements them.** Private and owner-led. No code package yet, and nothing outside the core set is promised — see [`CHANGELOG.md`](CHANGELOG.md) and [`PLAN.md`](PLAN.md) §1.
+**`0.1.0` is the latest release; `0.2.0` is in acceptance.** The core set has a Svelte 5 implementation, independent CSS and a generated workshop. Private and owner-led; the release gate is in [`PLAN.md`](PLAN.md) §1 and the current evidence is in the [acceptance record](packages/ui/verification/0.2.0.md).
 
 | | |
 | --- | --- |
@@ -12,7 +12,7 @@ A design system for dense, desktop-oriented web product interfaces. Its visual l
 | Repository | https://github.com/arturtrifonov/stylos |
 | Design tool | Figma |
 | Platform | web, desktop-oriented applications |
-| Planned implementation | Svelte |
+| Implementation | Svelte 5 |
 | License | undecided; unlicensed for external use until chosen |
 
 ## Start here
