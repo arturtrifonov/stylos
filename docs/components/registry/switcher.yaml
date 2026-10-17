@@ -1,7 +1,3 @@
-# Hand-edited. This file is the source for its component's structural data.
-# The CSV import that created it ran once, on 2026-08-20, and will not run
-# again — see docs/components/registry/README.md for the schema and workflow.
-
 id: "Switcher"
 name: "Switcher"
 level: "widget"
@@ -17,7 +13,140 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: ""
+notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
 import:
   batch: 1
   ready: true
+status: "draft"
+html: "<fieldset><label><input type=\"radio\">Option</label></fieldset>"
+summary: "A compact single-choice segmented control."
+purpose: "Switch a product mode or value with native radio semantics and form participation."
+use_when:
+  - "A compact single-choice segmented control."
+do_not_use_when:
+  -
+    text: "The choices reveal associated content panels rather than select a form value."
+    instead: "Tabs Horizontal"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    description: "The five current Figma density presets; the consumer owns available width."
+    default: "extra small"
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "tone"
+    kind: "variant"
+    description: "Colour of the selected segment."
+    default: "base"
+    values:
+      -
+        value: "base"
+      -
+        value: "primary"
+  -
+    name: "value"
+    kind: "string"
+    description: "Bindable selected child value. Empty selects the first available child after mount."
+    default: ""
+  -
+    name: "accessible name"
+    kind: "text"
+    description: "Accessible name of the group."
+    default: "Options"
+  -
+    name: "content slot"
+    kind: "slot"
+    description: "Configured selection items. The group does not invent product choices."
+  -
+    name: "onchange"
+    kind: "event"
+    description: "Selection activation event after the bound value changes."
+  -
+    name: "name"
+    kind: "string"
+    description: "Native radio group/form key; a unique group name is generated when omitted."
+  -
+    name: "form"
+    kind: "string"
+    description: "Optional external form ID."
+  -
+    name: "state"
+    kind: "variant"
+    description: "Disable every segment as a native fieldset."
+    default: "default"
+    values:
+      -
+        value: "default"
+      -
+        value: "disabled"
+sizing_model:
+  horizontal: "hug"
+  vertical: "fixed"
+  adjustable:
+    horizontal: true
+    vertical: false
+  intent: "Five Figma outer heights; each segment inherits its group size and tone."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-3_000"
+      padding_x: "gap/g-0_125"
+      padding_y: "gap/g-0_125"
+      gap: "gap/g-0_250"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+    -
+      size: "small"
+      box: "size/s-4_000"
+      padding_x: "gap/g-0_250"
+      padding_y: "gap/g-0_250"
+      gap: "gap/g-0_375"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+    -
+      size: "medium"
+      box: "size/s-5_000"
+      padding_x: "gap/g-0_375"
+      padding_y: "gap/g-0_375"
+      gap: "gap/g-0_500"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+    -
+      size: "large"
+      box: "size/s-6_000"
+      padding_x: "gap/g-0_500"
+      padding_y: "gap/g-0_500"
+      gap: "gap/g-0_625"
+      font_size: "size/1_250"
+      line_height: "line height/string/1_250"
+    -
+      size: "extra large"
+      box: "size/s-7_000"
+      padding_x: "gap/g-0_625"
+      padding_y: "gap/g-0_625"
+      gap: "gap/g-0_750"
+      font_size: "size/1_500"
+      line_height: "line height/string/1_500"
+a11y:
+  -
+    status: "requires"
+    note: "Supply meaningful names and content. Keyboard and native semantics are implemented, but manual Chrome/Orca evaluation and contrast review are pending."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4848:9616"
+  last_verified: "2026-10-17"
+limitations:
+  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+children:
+  - "Switcher Item"

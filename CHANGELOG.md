@@ -4,6 +4,24 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Added — 2026-10-17 (urgent starting set, draft)
+
+- Bring Accordion, Alert Inline/Popup/Popup Timer, Input Search, Progress Bar,
+  Switcher, Tabs Horizontal and Text Area into the starting set, with Accordion
+  Header, Switcher Item and Tab Item as compositional dependencies. Write
+  provisional contracts against the current Figma references and retain `draft`
+  explicitly; no readiness assessment or release is implied.
+- Add Svelte wrappers, independent token-based CSS and Default workshop examples.
+  Reuse native form editing and radio selection, implement disclosure and tab
+  keyboard interaction, expose notification actions and a controlled timer view.
+  The host owns notification placement, lifetime, timer updates and undo.
+- Split the generic Alert inventory identity into its three concrete components
+  and rename Progress to Progress Bar. Update composition references and core
+  membership; the previous acceptance evidence must be repeated for the new set.
+- Share field styles with Search and Text Area; correct the unavailable string
+  font reference to the existing normal family. Add expand-more/less marks to the
+  existing Material Symbols preset.
+
 ### Fixed — 2026-10-14 (acceptance review)
 
 - Cover variants behind visibility gates, forward Dropdown group args and use shared table fixtures with native data rows. Verify exact class tokens and variant attributes against the fresh packaged entry in both rendering passes. Rebuild and fingerprint source inputs plus dist bytes, and reject changed, malformed or stale evidence. Record deferred runtime errors/warnings, require loaded Georama faces, include WCAG 2.1 A rules and wait for surface motion before axe. Preserve UTF-8 uploads and return useful missing-report and size-limit errors. Normalize boolean defaults in the registry loader so component-page examples share the fix.

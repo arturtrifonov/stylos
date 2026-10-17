@@ -1,0 +1,33 @@
+@import "../icon/icon.css";
+.stylos-progress-bar {
+  --_stylos-progress-fill: var(--stylos-color-surface-bold-primary-default);
+  display: flex;
+  align-items: center;
+  gap: var(--stylos-dimension-gap-g-0_750);
+  min-height: var(--stylos-dimension-size-s-2_500);
+  min-width: 0;
+}
+.stylos-progress-bar[data-type="warning"] { --_stylos-progress-fill: var(--stylos-color-surface-bold-warning-default); }
+.stylos-progress-bar[data-type="danger"] { --_stylos-progress-fill: var(--stylos-color-surface-bold-danger-default); }
+.stylos-progress-bar[data-type="success"] { --_stylos-progress-fill: var(--stylos-color-surface-bold-success-default); }
+.stylos-progress-bar > progress {
+  appearance: none;
+  flex: 1;
+  min-width: 0;
+  height: var(--stylos-dimension-size-s-1_000);
+  border: 0;
+  border-radius: var(--stylos-radius-extra-small);
+  overflow: hidden;
+  background: var(--stylos-color-border-default);
+  color: var(--_stylos-progress-fill);
+}
+.stylos-progress-bar > progress::-webkit-progress-bar { background: var(--stylos-color-border-default); border-radius: inherit; }
+.stylos-progress-bar > progress::-webkit-progress-value { background: var(--_stylos-progress-fill); border-radius: inherit; }
+.stylos-progress-bar > progress::-moz-progress-bar { background: var(--_stylos-progress-fill); border-radius: inherit; }
+.stylos-progress-label { font-family: var(--stylos-font-family-normal); font-size: var(--stylos-font-size-0_750); line-height: var(--stylos-font-line-height-string-0_750); font-weight: var(--stylos-font-weight-base); color: var(--stylos-color-text-base); }
+.stylos-progress-icon { --stylos-icon-footprint: var(--stylos-dimension-size-s-3_000); display: inline-flex; color: var(--_stylos-progress-fill); }
+/* An indeterminate task never presents a fake numerical completion value. */
+.stylos-progress-bar[data-state="skeleton"] > progress { background: var(--stylos-color-background-secondary); }
+@media (forced-colors: active) {
+  .stylos-progress-bar > progress { appearance: auto; }
+}

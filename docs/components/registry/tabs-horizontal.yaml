@@ -1,7 +1,3 @@
-# Hand-edited. This file is the source for its component's structural data.
-# The CSV import that created it ran once, on 2026-08-20, and will not run
-# again — see docs/components/registry/README.md for the schema and workflow.
-
 id: "Tabs Horizontal"
 name: "Tabs Horizontal"
 level: "widget"
@@ -19,7 +15,105 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: ""
+notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
 import:
   batch: 1
   ready: true
+status: "draft"
+html: "<div role=\"tablist\"><button role=\"tab\">Tab</button></div>"
+summary: "A horizontal tab list selecting one associated content panel."
+purpose: "Organise peer product views while preserving a predictable keyboard path."
+use_when:
+  - "A horizontal tab list selecting one associated content panel."
+do_not_use_when:
+  -
+    text: "The choice changes a form value rather than its associated content panel."
+    instead: "Switcher"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    description: "The five current Figma density presets; the consumer owns available width."
+    default: "extra small"
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "value"
+    kind: "string"
+    description: "Bindable selected child value. Empty selects the first available child after mount."
+    default: ""
+  -
+    name: "accessible name"
+    kind: "text"
+    description: "Accessible name of the group."
+    default: "Options"
+  -
+    name: "onchange"
+    kind: "event"
+    description: "Selection activation event after the bound value changes."
+  -
+    name: "tabs slot"
+    kind: "slot"
+    description: "Tab Item children in display order."
+  -
+    name: "panels slot"
+    kind: "slot"
+    description: "Consumer panels with matching IDs, role tabpanel, aria-labelledby and visibility controlled by the bound value."
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable:
+    horizontal: true
+    vertical: false
+  intent: "Fill width; five verified tab heights with an underline below the label band. Overflow uses native horizontal scrolling."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-3_000"
+      gap: "gap/g-0_500"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+    -
+      size: "small"
+      box: "size/s-4_000"
+      gap: "gap/g-0_625"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+    -
+      size: "medium"
+      box: "size/s-5_000"
+      gap: "gap/g-0_750"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+    -
+      size: "large"
+      box: "size/s-6_000"
+      gap: "gap/g-0_875"
+      font_size: "size/1_250"
+      line_height: "line height/string/1_250"
+    -
+      size: "extra large"
+      box: "size/s-7_000"
+      gap: "gap/g-1_000"
+      font_size: "size/1_500"
+      line_height: "line height/string/1_500"
+a11y:
+  -
+    status: "requires"
+    note: "Supply meaningful names and content. Keyboard and native semantics are implemented, but manual Chrome/Orca evaluation and contrast review are pending."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4451:19901"
+  last_verified: "2026-10-17"
+limitations:
+  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+  - "The consumer supplies mounted panels, IDs, aria-labelledby and hidden state. Activation is automatic on arrow navigation; disabled tabs are skipped. Vertical tabs and router navigation are outside this slice."

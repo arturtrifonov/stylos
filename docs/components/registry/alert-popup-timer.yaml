@@ -1,0 +1,196 @@
+id: "Alert Popup Timer"
+name: "Alert Popup Timer"
+level: "object"
+role: "trigger"
+status: "draft"
+html: "<section>Notification and actions</section>"
+summary: "A floating notification with a controlled time indicator."
+purpose: "Give product notifications a shared visual and interaction contract while their designs remain provisional."
+use_when:
+  - "A floating notification with a controlled time indicator."
+do_not_use_when:
+  -
+    text: "Important information must remain available until dismissed without time pressure."
+    instead: "Alert Popup"
+api:
+  -
+    name: "type"
+    kind: "variant"
+    description: "Semantic notification type. Legacy Figma Info maps to default and Error maps to danger."
+    default: "default"
+    values:
+      -
+        value: "default"
+      -
+        value: "warning"
+      -
+        value: "danger"
+      -
+        value: "success"
+  -
+    name: "is open"
+    kind: "boolean"
+    description: "Bindable presence. Closing hides this notification and does not steal focus."
+    default: true
+  -
+    name: "has heading"
+    kind: "boolean"
+    description: "Show the heading."
+    default: true
+    controls:
+      - "heading text"
+  -
+    name: "heading text"
+    kind: "text"
+    description: "Notification heading."
+    default: "Heading Text"
+  -
+    name: "has content"
+    kind: "boolean"
+    description: "Show the content slot."
+    default: false
+    controls:
+      - "content slot"
+  -
+    name: "content slot"
+    kind: "slot"
+    description: "Notification details; no product-specific fallback copy is inserted."
+  -
+    name: "has close button"
+    kind: "boolean"
+    description: "Show the native dismiss action."
+    default: true
+    controls:
+      - "close accessible name"
+  -
+    name: "close accessible name"
+    kind: "text"
+    description: "Accessible name of the icon-only dismiss action."
+    default: "Close"
+  -
+    name: "announcement"
+    kind: "variant"
+    description: "Consumer selects urgency independently of visual type; initial static content may need an enclosing live region."
+    default: "polite"
+    values:
+      -
+        value: "polite"
+      -
+        value: "assertive"
+      -
+        value: "off"
+  -
+    name: "onclose"
+    kind: "event"
+    description: "Close event after the bound is open becomes false."
+  -
+    name: "has undo button"
+    kind: "boolean"
+    description: "Show a consumer-owned Undo action."
+    default: true
+    controls:
+      - "undo button text"
+  -
+    name: "undo button text"
+    kind: "text"
+    description: "Label for the undo action."
+    default: "Undo"
+  -
+    name: "onundoclick"
+    kind: "event"
+    description: "Native click; restoring product state belongs to the consumer."
+  -
+    name: "has timer counter"
+    kind: "boolean"
+    description: "Show the supplied remaining-time label."
+    default: true
+    controls:
+      - "timer text"
+  -
+    name: "timer text"
+    kind: "text"
+    description: "Consumer-owned remaining time; it is not a clock or a live region."
+    default: "3"
+  -
+    name: "progress value"
+    kind: "string"
+    description: "Remaining percentage from 0 to 100; the consumer updates this with its timer."
+    default: "30"
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable:
+    horizontal: true
+    vertical: false
+  intent: "Current Figma composition; Inline and Timer have one authored density, Popup has five. Width follows the host. Floating placement, stacking and lifetime belong to the consumer."
+a11y:
+  -
+    status: "requires"
+    note: "Supply meaningful names and content. Keyboard and native semantics are implemented, but manual Chrome/Orca evaluation and contrast review are pending."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4462:2998"
+  last_verified: "2026-10-17"
+limitations:
+  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+  - "Popup is a notification surface, not a modal dialog; it neither traps focus nor implements an overlay queue."
+  - "Inline and Timer retain legacy Figma geometry. Existing Stylos Buttons and fonts replace their obsolete nested button/font definitions."
+  - "Controlled presentation only: the consumer owns the clock, pause/resume, expiry, undo and persistence. No automatic dismissal or per-second screen-reader announcement is introduced."
+notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
+children:
+  - "Avatar"
+  - "Badge"
+  - "Button"
+  - "Button Inner"
+  - "Button Dropdown"
+  - "Button Group"
+  - "Button Icon"
+  - "Checkbox Input"
+  - "Checkbox Label"
+  - "Checkbox Text"
+  - "Code Snippet"
+  - "Icon"
+  - "Image"
+  - "Indicator Status"
+  - "Indicator Special"
+  - "Input Text"
+  - "Input Date"
+  - "Input Search"
+  - "Input Number"
+  - "Input Color"
+  - "Input Datetime"
+  - "Input Email"
+  - "Input Password"
+  - "Input Time"
+  - "Input Telephone"
+  - "Input URL"
+  - "Link"
+  - "List"
+  - "Multiselect"
+  - "Person"
+  - "Tag"
+  - "Text Area"
+  - "Loader"
+  - "Tree"
+  - "Toggle Input"
+  - "Toggle Label"
+  - "Toggle Text"
+  - "Radio Input"
+  - "Radio Label"
+  - "Radio Text"
+  - "Slider"
+  - "Select"
+  - "Scrollbar"
+  - "Progress Bar"
+family: "Alert"
+figma_notes:
+  - "Figma title-case Show properties become canonical has properties. Info/Error map to default/danger. Unconfigured Icon placeholders are supplied by the consumer, never traced or substituted. Current geometry is a reference, not a claim that old Figma token aliases are approved."
+parents:
+  - "Accordion"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Drawer"
+  - "Side Panel Menu"

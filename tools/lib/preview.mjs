@@ -27,6 +27,7 @@ import { readNaming } from "../check-tokens.mjs";
 import { buildCss } from "../build-css.mjs";
 import { builtComponents } from "../build-ui-types.mjs";
 import { componentCss } from "./component-css.mjs";
+import { startingSetIds, startingSetPreview } from "./preview-starting-set.mjs";
 
 const ESCAPES = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ESCAPES[c]);
@@ -57,7 +58,7 @@ function iconDrawings() {
 }
 
 export function sampleHtml(entry, props = {}) {
-  if (["Input Text", "Select"].includes(entry.id) && props.state && props.state !== "default") {
+  if (["Input Text", "Select", "Input Search", "Text Area"].includes(entry.id) && props.state && props.state !== "default") {
     props = { ...props, validation: "off" };
   }
   const api = new Map((entry.api ?? []).map((property) => [property.name, property]));
@@ -102,7 +103,9 @@ export function sampleHtml(entry, props = {}) {
         // Native table associations are rendered below.
       } else if (["Dropdown Item Checkbox", "Dropdown Item Toggle"].includes(entry.id) && ["id", "name", "value", "form"].includes(name)) {
         // Native row-control attributes are rendered below.
-      } else if (["Input Text", "Select"].includes(entry.id) && ["id", "value", "name", "form", "autocomplete", "label ids", "description ids", "max height"].includes(name)) {
+      } else if (startingSetIds.has(entry.id)) {
+        // The draft DOM contracts are rendered by startingSetPreview below.
+      } else if (["Input Text", "Select", "Input Search", "Text Area"].includes(entry.id) && ["id", "value", "name", "form", "autocomplete", "label ids", "description ids", "max height", "maxlength", "minlength"].includes(name)) {
         // Native text-field attributes are rendered below.
       } else if (entry.id === "Label" && ["html for", "additional text id"].includes(name)) {
         // Native label association is rendered below.
@@ -137,6 +140,15 @@ export function sampleHtml(entry, props = {}) {
   }
   if (styles.length) attrs.push(`style="${esc(styles.join(";"))}"`);
   const attr = attrs.length ? ` ${attrs.join(" ")}` : "";
+
+  if (startingSetIds.has(entry.id)) return startingSetPreview(entry, props, { cls, attr, esc,
+    icon: name => sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name }),
+    button: (label, variant, size) => {
+      const args = { "label text": label, variant, size, tone: variant === "base" ? "primary" : "base", state: "default", type: "button" };
+      const api = Object.entries(args).map(([name, value]) => ({ name, kind: name === "label text" ? "text" : "variant", values: [{ value }] }));
+      return sampleHtml({ id: "Button", api }, args);
+    },
+  });
 
   if (["Modal", "Drawer"].includes(entry.id)) return windowPanelHtml(entry, props, attr);
 
@@ -215,7 +227,7 @@ export function sampleHtml(entry, props = {}) {
     return `<label class="${cls}"${attr}${htmlFor}>${esc(props["label text"] ?? "Label")}${marker}${additional}</label>`;
   }
 
-  if (["Input Text", "Select"].includes(entry.id)) {
+  if (["Input Text", "Select", "Input Search", "Text Area"].includes(entry.id)) {
     const id = props.id ?? `input-text-preview-${++inputPreviewCounter}`;
     const size = props.size ?? "medium";
     const state = props.state ?? "default";
@@ -269,7 +281,19 @@ export function sampleHtml(entry, props = {}) {
       const nativeSelect = `<select data-select-native id="${esc(id)}-native"${native}${formSemantics} aria-hidden="true" tabindex="-1"><option value=""${filled ? "" : " selected"}></option>${filled ? `<option value="${esc(props.value)}" selected>${esc(display)}</option>` : ""}</select>`;
       return `<div class="${cls}"${attr} data-is-filled="${filled}">${label}<div class="stylos-select-field" data-surface-layer="1" data-surface-attachment="in-layout"><button type="button" class="stylos-select-trigger" id="${esc(id)}" role="combobox" aria-haspopup="listbox" aria-expanded="false"${triggerSemantics}><span class="stylos-select-value"><span>${esc(display)}</span></span></button>${nativeSelect}<div class="stylos-select-adornments"><span class="stylos-select-leading">${icon("leading").replaceAll("stylos-input-text", "stylos-select")}</span><span class="stylos-select-trailing">${suffix.replaceAll("stylos-input-text", "stylos-select")}${clear}${validation.replaceAll("stylos-input-text", "stylos-select")}${chevron}</span></div></div></div>`;
     }
-    return `<div class="${cls}"${attr} data-is-filled="${!!props.value}">${label}<div class="stylos-input-text-field" data-surface-layer="1" data-surface-attachment="in-layout"><input type="text" id="${esc(id)}" value="${esc(props.value ?? "")}"${native}${semantics}${placeholder}><div class="stylos-input-text-adornments"><span class="stylos-input-text-leading">${icon("leading")}</span><span class="stylos-input-text-trailing">${suffix}${validation}${icon("trailing")}</span></div></div></div>`;
+    const trailing = entry.id === "Input Search" && props["has trailing icon"] && !props["trailing icon"]
+      ? `<span class="stylos-input-text-icon" data-position="trailing" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: "search" })}</span>` : icon("trailing");
+    let html = `<div class="${cls}"${attr} data-is-filled="${!!props.value}">${label}<div class="stylos-input-text-field" data-surface-layer="1" data-surface-attachment="in-layout"><input type="${entry.id === "Input Search" ? "search" : "text"}" id="${esc(id)}" value="${esc(props.value ?? "")}"${native}${semantics}${placeholder}><div class="stylos-input-text-adornments"><span class="stylos-input-text-leading">${icon("leading")}</span><span class="stylos-input-text-trailing">${suffix}${validation}${trailing}</span></div></div></div>`;
+    if (entry.id === "Input Search") html = html.replaceAll("stylos-input-text-", "stylos-input-search-");
+    if (entry.id === "Text Area") {
+      const counterId = `${id}-counter`;
+      const areaSemantics = props["has counter text"]
+        ? semantics.replace(/ aria-describedby="([^"]*)"/, (_, ids) => ` aria-describedby="${ids} ${counterId}"`) + (descriptions ? "" : ` aria-describedby="${counterId}"`) : semantics;
+      html = html.replace(/<input[^>]*>/, `<textarea id="${esc(id)}"${native}${areaSemantics}${placeholder}>${esc(props.value ?? "")}</textarea>`)
+        .replaceAll("stylos-input-text-", "stylos-text-area-");
+      if (props["has counter text"]) html = html.replace(/<\/div>$/, `<span class="stylos-text-area-counter" id="${counterId}">${esc(props["counter text"])}</span></div>`);
+    }
+    return html;
   }
 
   if (["Tag", "Tag Interactive"].includes(entry.id)) {

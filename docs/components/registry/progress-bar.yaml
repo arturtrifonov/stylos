@@ -1,0 +1,111 @@
+id: "Progress Bar"
+name: "Progress Bar"
+level: "object"
+role: "content"
+flow_behavior:
+  - "fill"
+children:
+  - "Badge"
+  - "Button Inner"
+  - "Icon"
+  - "Indicator Status"
+  - "Indicator Special"
+  - "Loader"
+parents:
+  - "Accordion"
+  - "Alert Inline"
+  - "Alert Popup"
+  - "Alert Popup Timer"
+  - "Toast"
+  - "Bottom Sheet"
+  - "Flex Layout"
+  - "Header"
+  - "Hero"
+  - "Modal"
+  - "Drawer"
+  - "Side Panel Menu"
+notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
+import:
+  batch: 2
+  ready: false
+status: "draft"
+html: "<progress></progress>"
+summary: "A determinate or indeterminate indicator of task completion."
+purpose: "Show process completion independently of loading content."
+use_when:
+  - "A determinate or indeterminate indicator of task completion."
+do_not_use_when:
+  -
+    text: "A status is unrelated to completion of a measurable task."
+    instead: "Indicator Status"
+api:
+  -
+    name: "type"
+    kind: "variant"
+    description: "Semantic notification type. Legacy Figma Info maps to default and Error maps to danger."
+    default: "default"
+    values:
+      -
+        value: "default"
+      -
+        value: "warning"
+      -
+        value: "danger"
+      -
+        value: "success"
+  -
+    name: "state"
+    kind: "variant"
+    description: "Static exposes a determinate value; skeleton is indeterminate and does not claim a percentage."
+    default: "static"
+    values:
+      -
+        value: "static"
+      -
+        value: "skeleton"
+  -
+    name: "value"
+    kind: "string"
+    description: "Numeric percentage from 0 to 100; invalid values clamp to 0."
+    default: "0"
+  -
+    name: "has label"
+    kind: "boolean"
+    description: "Show the derived percentage number or supplied label."
+    default: true
+    controls:
+      - "label text"
+  -
+    name: "label text"
+    kind: "text"
+    description: "Optional visible label override; empty derives the numeric value."
+    default: ""
+  -
+    name: "has icon"
+    kind: "boolean"
+    description: "Show a decorative semantic icon for warning, danger or success."
+    default: true
+  -
+    name: "accessible name"
+    kind: "text"
+    description: "Accessible name describing the operation being measured."
+    default: "Progress Bar"
+sizing_model:
+  horizontal: "fill"
+  vertical: "fixed"
+  adjustable:
+    horizontal: true
+    vertical: false
+  intent: "One authored density: fixed thin track and a compact label or semantic mark; width belongs to the consumer."
+a11y:
+  -
+    status: "requires"
+    note: "Supply meaningful names and content. Keyboard and native semantics are implemented, but manual Chrome/Orca evaluation and contrast review are pending."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "3417:15594"
+  last_verified: "2026-10-17"
+limitations:
+  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+figma_notes:
+  - "Legacy Figma percentage variants are examples; the web accepts every numeric percentage. Skeleton is indeterminate. Figma default text 20 is independent of its 0% bar: the web derives a consistent label unless explicitly overridden. Legacy hardcoded Roboto is mapped to the existing normal font role; no unrecorded font is added."

@@ -28,7 +28,9 @@ do_not_use_when:
 parents:
   - "Accordion"
   - "Asset"
-  - "Alert"
+  - "Alert Inline"
+  - "Alert Popup"
+  - "Alert Popup Timer"
   - "Toast"
   - "Bottom Sheet"
   - "Flex Layout"

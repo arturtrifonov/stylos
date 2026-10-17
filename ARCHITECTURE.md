@@ -89,6 +89,21 @@ and CSS imports have an explicit migration table in the package guide.
 
 ## 2. The three flows
 
+**Amended 2026-10-17 — urgent product integration under draft contracts.** The
+owner expanded the starting set with Accordion, Alert Inline/Popup/Popup Timer,
+Input Search, Progress Bar, Switcher, Tabs Horizontal and Text Area. Their public
+contracts, plus Accordion Header, Switcher Item and Tab Item, remain `draft` even
+when implemented and exported. Contract status, implementation presence and core
+membership are separate facts. Current Figma designs are the provisional visual
+reference; limitations record obsolete nested definitions and unresolved design
+choices. Search and Text Area share the field layer and native forms. Switcher
+uses native radios; horizontal tabs use a framework-free roving-focus adapter
+with consumer-owned panels. Alerts expose actions and bindable presence; their
+host owns positioning and lifetime. Timer is a controlled presentation, not an
+automatic-dismissal service. All generated types and stories still derive from
+the registry; no version is bumped and no readiness or accessibility assessment
+is inferred from a build.
+
 **Amended 2026-10-12 — Modal and Drawer together, selected by the owner.** The two layouts compose one private window frame with the verified five size profiles and native Button/Button Inner controls. Their native dialog adapter owns bindable visibility, interrupted Motion, Escape, focus restoration and modal scroll locks. Modal uses the browser top layer and level-6 free motion; Drawer is non-modal with physical left/right edge travel and owner-confirmed elevation 5. Drawer scrolls only its content, using the verified medium/absolute scrollbar. Anchored adapters portal into the owning dialog outside its clipped panel and close with that owner. Explicit window action callbacks retain native click events. No dimming colour is invented for the absent Figma backdrop.
 
 **Amended 2026-10-12 — Table core.** The owner selected the basic table before Modal. The web default is medium, selected by the owner independently of the Figma set default. Four native Svelte components render th/td/tr and share verified Figma cell geometry and row density through a size context. Consumers supply table/thead/tbody/colgroup and the column widths; `stylos-table` establishes native fixed layout without flex rows or spacer cells. Row inline insets and heading block padding are applied to native cells, preserving aligned columns. Header controls compose Button Inner and report native click events to the data owner; sorting and filtering remain controlled. Text keeps Figma leadingTrim=NONE and full DOM strings. Row background hover follows the current Figma coupling to banding, with shared micro/linear Motion. Standalone static previews receive valid native table scaffolding.
@@ -238,7 +253,7 @@ Stated explicitly so it is never assumed.
 Ordered by cost of leaving them.
 
 1. **The token record is stale by default.** The import mechanism exists; the habit does not. Neither a script nor a person can rely on `tokens/` reflecting the live Figma file.
-2. **Most contracts are still not exercised by a real build.** *Narrowed 2026-09-06 — the line used to read "nothing is validated by a real build", and that stopped being true when `@stylos/ui` landed:* `npm run ui:check` now generates the token CSS, the props types and the stories from the record and type-checks the built components against them, so the tokens and the implemented contracts are exercised on every run. What remains of the break is coverage — thirty-five entries of 108 are implemented (2026-10-12: the Radio and Toggle families join the five wave-1 primitives, Icon, Tooltip, three Checkbox components, Button, Button Icon, Link, Button Inner, Tag, Tag Interactive, Input Text, Select, Dropdown, Dropdown Item Default/Parent/Checkbox/Toggle and Table Cell Heading/Text and Table Row Head/Body, Modal and Drawer), and every contract outside them is still words no build has ever read.
+2. **Most contracts are still not exercised by a real build.** *Narrowed 2026-09-06 — the line used to read "nothing is validated by a real build", and that stopped being true when `@stylos/ui` landed:* `npm run ui:check` now generates the token CSS, the props types and the stories from the record and type-checks the built components against them, so the tokens and the implemented contracts are exercised on every run. What remains of the break is coverage: the implemented subset is derived from component directories and the registry. Inventory entries outside it still describe components that no package build has exercised.
 
 3. **The retired specs and decision records left content with nothing carrying it.** `docs/specs/` and `docs/decisions/` were deleted on 2026-09-10 — sixteen work orders and two decision records, four of the specs still open at the time. Most citations of them were provenance ("built by SPEC 0008") and read as well without the link. Some were not. `PLAN.md`'s `0.2.0` gate cites SPEC 0009 §3 for the props ↔ `api` mapping; `tools/README.md` cites SPEC 0010 §2.2 for the independent CSS export, SPEC 0012 for the emitted icon shape and SPEC 0001 for the token pipeline's reasoning; `PLAN.md`'s risk table leans on ADR 0002's revisit clause for Zag.js. Those sections are in git history and nowhere in the tree, so a reader who needs one has to know it was deleted before they can find it.
 

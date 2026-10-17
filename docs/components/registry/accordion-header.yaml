@@ -1,11 +1,3 @@
-# Hand-edited. This file is the source for its component's structural data.
-# The CSV import that created it ran once, on 2026-08-20, and will not run
-# again — see docs/components/registry/README.md for the schema and workflow.
-#
-# 2026-09-02: renamed from "Accordion / Header". A slash group is not how this
-# registry expresses a family — see the registry README, *Families*. The
-# entry moved out of accordion/ with it.
-
 id: "Accordion Header"
 name: "Accordion Header"
 level: "object"
@@ -26,7 +18,141 @@ children:
   - "Loader"
 parents:
   - "Accordion"
-notes: ""
+notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
 import:
   batch: 1
   ready: true
+status: "draft"
+html: "<button type=\"button\">Section title</button>"
+summary: "The native disclosure button for an Accordion."
+purpose: "Expose a section title and whether its content is expanded."
+use_when:
+  - "The native disclosure button for an Accordion."
+do_not_use_when:
+  -
+    text: "A disclosure needs its controlled body and state relationship."
+    instead: "Accordion"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    description: "The five current Figma density presets; the consumer owns available width."
+    default: "extra small"
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    description: "Native availability; hover, active and focus are browser states."
+    default: "default"
+    values:
+      -
+        value: "default"
+      -
+        value: "disabled"
+  -
+    name: "is expanded"
+    kind: "boolean"
+    description: "Bindable disclosure state; reflected in aria-expanded."
+    default: false
+  -
+    name: "expand icon position"
+    kind: "variant"
+    description: "Position of the disclosure chevron."
+    default: "leading"
+    values:
+      -
+        value: "leading"
+      -
+        value: "trailing"
+  -
+    name: "label text"
+    kind: "text"
+    description: "Visible accessible disclosure name."
+    default: "Accordion title"
+  -
+    name: "has icon"
+    kind: "boolean"
+    description: "Show the configured decorative icon."
+    default: false
+    controls:
+      - "icon"
+  -
+    name: "icon"
+    kind: "instance"
+    description: "Configured decorative mark beside the title."
+    svelte_type: "snippet"
+  -
+    name: "id"
+    kind: "string"
+    description: "Disclosure button ID."
+  -
+    name: "controls"
+    kind: "string"
+    description: "ID of the controlled body region."
+  -
+    name: "onclick"
+    kind: "event"
+    description: "Native activation, after the bound expansion state changes."
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable:
+    horizontal: true
+    vertical: false
+  intent: "Five native button heights with the verified larger Accordion title ramp."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-3_000"
+      padding_x: "gap/g-1_000"
+      gap: "gap/g-0_500"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+    -
+      size: "small"
+      box: "size/s-4_000"
+      padding_x: "gap/g-1_250"
+      gap: "gap/g-0_625"
+      font_size: "size/1_125"
+      line_height: "line height/string/1_125"
+    -
+      size: "medium"
+      box: "size/s-5_000"
+      padding_x: "gap/g-1_500"
+      gap: "gap/g-0_750"
+      font_size: "size/1_375"
+      line_height: "line height/string/1_375"
+    -
+      size: "large"
+      box: "size/s-6_000"
+      padding_x: "gap/g-2_000"
+      gap: "gap/g-0_875"
+      font_size: "size/1_625"
+      line_height: "line height/string/1_625"
+    -
+      size: "extra large"
+      box: "size/s-7_000"
+      padding_x: "gap/g-2_500"
+      gap: "gap/g-1_000"
+      font_size: "size/1_875"
+      line_height: "line height/string/1_875"
+a11y:
+  -
+    status: "requires"
+    note: "Supply meaningful names and content. Keyboard and native semantics are implemented, but manual Chrome/Orca evaluation and contrast review are pending."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4381:718"
+  last_verified: "2026-10-17"
+limitations:
+  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."

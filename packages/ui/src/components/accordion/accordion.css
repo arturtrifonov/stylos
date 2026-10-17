@@ -1,0 +1,7 @@
+@import "../accordion-header/accordion-header.css";
+.stylos-accordion {
+  min-width: 0;
+  border-block: var(--stylos-border-width-normal) solid var(--stylos-color-border-secondary);
+  padding-block: var(--stylos-dimension-gap-g-0_500);
+}
+.stylos-accordion-body:not([hidden]) { padding: var(--_stylos-input-gap) var(--_stylos-input-padding); }

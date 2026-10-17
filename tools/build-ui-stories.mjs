@@ -73,6 +73,7 @@ export function componentDescription(entry) {
   const limitations = entry.limitations ?? [];
 
   const parts = [];
+  if (entry.status === "draft") parts.push("**Draft:** available for early integration; the API and design remain provisional.");
   if (entry.summary) parts.push(`**${entry.summary}**`);
   if (entry.purpose) parts.push(entry.purpose);
   if (useWhen.length > 0) {

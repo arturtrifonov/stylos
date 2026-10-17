@@ -5,6 +5,7 @@ import { parseFragment } from "parse5";
 // These gates are behavioural and do not use registry controls groups.
 const visibilityGates = {
   Modal: ["is open"], Drawer: ["is open"], "Table Cell Heading": ["is sorted"],
+  Accordion: ["is expanded"], "Alert Inline": ["is open"], "Alert Popup": ["is open"], "Alert Popup Timer": ["is open"],
 };
 
 // Exhaust the registry's variant product; exercise each optional boolean

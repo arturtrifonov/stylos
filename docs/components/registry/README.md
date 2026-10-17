@@ -44,6 +44,13 @@ The two are independent: a component can be finished in Figma with a thin entry,
 
 It stays authored rather than computed because readiness turns on judgements a tool cannot make: whether existing instances have an understood migration path, whether the supported states are the right ones.
 
+**Amended 2026-10-17:** the owner explicitly authorised early implementation and
+product integration of the urgent starting-set additions while their contracts
+remain `draft`. Implementation, inclusion in the core plan and passing automated
+checks are independent of readiness. These entries must not be promoted by a
+generator or by the fact that they are exported. Their limitations record the
+provisional design and behaviour boundaries.
+
 A Figma representation is mandatory for `ready`: a single `figma.node_id` links it, or `figma.sources` links every supported visual treatment. Each representation carries its own `last_verified`. A component implemented only in code cannot pass the readiness gates. The Figma authoring checks are documented in [figma/components.md](../../../figma/components.md).
 
 **The value is `ready`, not `published`, and the reason is not taste.** Figma publishes a *file*: everything in it goes out at once, and there is no per-component publish state to mirror. A `published` value would have been a fact maintained by hand about something the tool does not have, and it would have gone stale the first time the file was published without it being updated. Which release a component's API shipped in is answered by `version`; what moved in the library at that release is answered by `CHANGELOG.md`. `status` answers the one question neither of those does — can this be built against.
@@ -215,7 +222,7 @@ An `instance` may specify `svelte_type: "snippet"` when its web implementation r
 
 **`text` and `string` use the same storage type but carry different things.** `text` supplies textual content: a label, heading, message, placeholder or input value. Its name follows FND-NAMING-12. `string` supplies an identifier or other non-text string value: `Icon.name` selects a mark rather than displaying the name as copy. A string property is named for its role and does not acquire the `text` suffix just because its value is stored as a string. Both kinds have string defaults and string example values, and both generate TypeScript `string` props.
 
-**`event` supplies a native callback.** It has no default or values. `onclick`, `onprimaryclick`, `onsecondaryclick` and `ontertiaryclick` receive a `MouseEvent`; the named action callbacks forward clicks from their composed Button. Keyboard activation of a native button also dispatches click. `onclose` receives the native dialog close `Event`. `oninput` and `onchange` receive an `Event` from a native form control. Event handlers are web integration properties and do not become Figma controls. The generator rejects an unsupported event name.
+**`event` supplies a native callback.** It has no default or values. `onclick`, `onprimaryclick`, `onsecondaryclick`, `ontertiaryclick` and `onundoclick` receive a `MouseEvent`; named actions forward clicks from their composed Button. Keyboard activation of a native button also dispatches click. `onclose` receives a close `Event` (native for windows; emitted after dismissing an Alert). `oninput` receives a native form event. `onchange` receives the activation event after a value or disclosure changes, or a native form change event. Event handlers are web integration properties and do not become Figma controls. The generator rejects an unsupported event name.
 
 **`controls` is what a "controlled group" is.** FND-NAMING-19 requires that when a boolean governs an element's presence, that element's properties follow it immediately. Recording which properties it governs makes the adjacency checkable instead of conventional.
 

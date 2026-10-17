@@ -1,7 +1,7 @@
 # assets/icons/
 
 The current default Stylos icon preset: one fixed Material Symbols Rounded
-instance, delivered as SVG. Twenty-nine drawings — the marks the Figma library
+instance, delivered as SVG. Thirty-one drawings — the marks the Figma library
 already carries as system components. The set is grown on demand, not stocked.
 
 | Path | Kind |

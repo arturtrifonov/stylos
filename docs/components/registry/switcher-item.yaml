@@ -1,0 +1,149 @@
+id: "Switcher Item"
+name: "Switcher Item"
+level: "object"
+role: "trigger"
+status: "draft"
+html: "<label><input type=\"radio\">Option</label>"
+summary: "One selectable native radio segment inside Switcher."
+purpose: "Provide composable product choices without arbitrary options encoded in the group."
+use_when:
+  - "One selectable native radio segment inside Switcher."
+do_not_use_when:
+  -
+    text: "A segment is used outside its native radio group."
+    instead: "Switcher"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    description: "The five current Figma density presets; the consumer owns available width."
+    default: "extra small"
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "tone"
+    kind: "variant"
+    description: "Inherited from Switcher when nested."
+    default: "base"
+    values:
+      -
+        value: "base"
+      -
+        value: "primary"
+  -
+    name: "state"
+    kind: "variant"
+    description: "Native item availability."
+    default: "default"
+    values:
+      -
+        value: "default"
+      -
+        value: "disabled"
+  -
+    name: "value"
+    kind: "string"
+    description: "Unique value within the group."
+    default: "option"
+  -
+    name: "label text"
+    kind: "text"
+    description: "Visible and accessible name."
+    default: "Option"
+  -
+    name: "has leading icon"
+    kind: "boolean"
+    description: "Show the configured leading mark."
+    default: false
+    controls:
+      - "leading icon"
+  -
+    name: "leading icon"
+    kind: "instance"
+    description: "Decorative leading icon snippet."
+    svelte_type: "snippet"
+  -
+    name: "has trailing icon"
+    kind: "boolean"
+    description: "Show the configured trailing mark."
+    default: false
+    controls:
+      - "trailing icon"
+  -
+    name: "trailing icon"
+    kind: "instance"
+    description: "Decorative trailing icon snippet."
+    svelte_type: "snippet"
+sizing_model:
+  horizontal: "hug"
+  vertical: "fixed"
+  adjustable:
+    horizontal: true
+    vertical: false
+  intent: "Inherits group density and tone; isolated previews use the size prop."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-3_000"
+      padding_x: "gap/g-0_125"
+      padding_y: "gap/g-0_125"
+      gap: "gap/g-0_250"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+    -
+      size: "small"
+      box: "size/s-4_000"
+      padding_x: "gap/g-0_250"
+      padding_y: "gap/g-0_250"
+      gap: "gap/g-0_375"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+    -
+      size: "medium"
+      box: "size/s-5_000"
+      padding_x: "gap/g-0_375"
+      padding_y: "gap/g-0_375"
+      gap: "gap/g-0_500"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+    -
+      size: "large"
+      box: "size/s-6_000"
+      padding_x: "gap/g-0_500"
+      padding_y: "gap/g-0_500"
+      gap: "gap/g-0_625"
+      font_size: "size/1_250"
+      line_height: "line height/string/1_250"
+    -
+      size: "extra large"
+      box: "size/s-7_000"
+      padding_x: "gap/g-0_625"
+      padding_y: "gap/g-0_625"
+      gap: "gap/g-0_750"
+      font_size: "size/1_500"
+      line_height: "line height/string/1_500"
+a11y:
+  -
+    status: "requires"
+    note: "Supply meaningful names and content. Keyboard and native semantics are implemented, but manual Chrome/Orca evaluation and contrast review are pending."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4848:7157"
+  last_verified: "2026-10-17"
+limitations:
+  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+  - "Use inside Switcher; size and tone are inherited from the group."
+notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
+children:
+  - "Icon"
+parents:
+  - "Switcher"

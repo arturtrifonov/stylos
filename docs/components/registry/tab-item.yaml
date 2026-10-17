@@ -1,11 +1,3 @@
-# Hand-edited. This file is the source for its component's structural data.
-# The CSV import that created it ran once, on 2026-08-20, and will not run
-# again — see docs/components/registry/README.md for the schema and workflow.
-#
-# 2026-09-02: renamed from "Tabs / Tab Item". A slash group is not how this
-# registry expresses a family — see the registry README, *Families*. The
-# entry moved out of tabs/ with it.
-
 id: "Tab Item"
 name: "Tab Item"
 level: "object"
@@ -14,16 +6,151 @@ flow_behavior:
   - "fill"
 children:
   - "Badge"
-  - "Avatar"
   - "Icon"
-  - "Indicator Status"
-  - "Indicator Special"
-  - "Tag"
-  - "Loader"
 parents:
   - "Tabs Horizontal"
   - "Tabs Vertical"
-notes: ""
+notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
 import:
   batch: 1
   ready: true
+status: "draft"
+html: "<button role=\"tab\">Tab name</button>"
+summary: "One horizontal tab with an associated panel."
+purpose: "Expose a named peer view and its selected state inside Tabs Horizontal."
+use_when:
+  - "One horizontal tab with an associated panel."
+do_not_use_when:
+  -
+    text: "An individual tab has no containing tab list or associated panel."
+    instead: "Tabs Horizontal"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    description: "The five current Figma density presets; the consumer owns available width."
+    default: "extra small"
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    description: "Native button availability."
+    default: "default"
+    values:
+      -
+        value: "default"
+      -
+        value: "disabled"
+  -
+    name: "value"
+    kind: "string"
+    description: "Unique selection value."
+    default: "tab"
+  -
+    name: "label text"
+    kind: "text"
+    description: "Visible tab name."
+    default: "Tab item"
+  -
+    name: "id"
+    kind: "string"
+    description: "Tab button ID used by the panel aria-labelledby."
+  -
+    name: "controls"
+    kind: "string"
+    description: "Associated panel ID."
+  -
+    name: "has badge"
+    kind: "boolean"
+    description: "Show the configured count."
+    default: false
+    controls:
+      - "number text"
+  -
+    name: "number text"
+    kind: "text"
+    description: "Badge count; include its meaning in the surrounding context."
+    default: "1"
+  -
+    name: "has leading icon"
+    kind: "boolean"
+    description: "Show the configured leading mark."
+    default: false
+    controls:
+      - "leading icon"
+  -
+    name: "leading icon"
+    kind: "instance"
+    description: "Decorative leading icon snippet."
+    svelte_type: "snippet"
+  -
+    name: "has trailing icon"
+    kind: "boolean"
+    description: "Show the configured trailing mark."
+    default: false
+    controls:
+      - "trailing icon"
+  -
+    name: "trailing icon"
+    kind: "instance"
+    description: "Decorative trailing icon snippet."
+    svelte_type: "snippet"
+sizing_model:
+  horizontal: "hug"
+  vertical: "fixed"
+  adjustable:
+    horizontal: true
+    vertical: false
+  intent: "Inherits the group size; five label heights plus the size-specific underline band."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-3_000"
+      gap: "gap/g-0_500"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+    -
+      size: "small"
+      box: "size/s-4_000"
+      gap: "gap/g-0_625"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+    -
+      size: "medium"
+      box: "size/s-5_000"
+      gap: "gap/g-0_750"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+    -
+      size: "large"
+      box: "size/s-6_000"
+      gap: "gap/g-0_875"
+      font_size: "size/1_250"
+      line_height: "line height/string/1_250"
+    -
+      size: "extra large"
+      box: "size/s-7_000"
+      gap: "gap/g-1_000"
+      font_size: "size/1_500"
+      line_height: "line height/string/1_500"
+a11y:
+  -
+    status: "requires"
+    note: "Supply meaningful names and content. Keyboard and native semantics are implemented, but manual Chrome/Orca evaluation and contrast review are pending."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4451:16154"
+  last_verified: "2026-10-17"
+limitations:
+  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+  - "This draft implements the current horizontal text tab; icon-only and vertical Figma treatments are deferred. Use inside Tabs Horizontal."

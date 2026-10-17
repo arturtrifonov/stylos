@@ -46,6 +46,14 @@
     "./behaviors/window": {
       "types": "./dist/package/behaviors/window.d.ts",
       "default": "./dist/package/behaviors/window.js"
+    },
+    "./behaviors/tabs": {
+      "types": "./dist/package/behaviors/tabs.d.ts",
+      "default": "./dist/package/behaviors/tabs.js"
+    },
+    "./behaviors/switcher": {
+      "types": "./dist/package/behaviors/switcher.d.ts",
+      "default": "./dist/package/behaviors/switcher.js"
     }
   },
   "peerDependencies": {

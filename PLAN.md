@@ -44,7 +44,7 @@ All three fall inside the `0.1` milestone, whose checklist is §4.1. The version
 
 It replaces the earlier phrasing, which assumed a person doing the building. The bar did not move; who holds the tools did, because the stated consumer on this horizon is the owner and the coding agents he runs (ADR 0002, *Constraints already set*).
 
-**Not required for either:** a native icon set, mobile support, client-brand themes beyond the contract, a public documentation site, a licence, a distribution channel, or coverage of all 114 registry entries.
+**Not required for either:** a native icon set, mobile support, client-brand themes beyond the contract, a public documentation site, a licence, a distribution channel, or coverage of the entire registry.
 
 ---
 
@@ -96,6 +96,22 @@ The `0.1` milestone's checklist, and the membership record for every entry the w
 | 4 | Input | Input Text, Select, Dropdown Item Default / Parent / Checkbox / Toggle, Dropdown | a toolbar and filters above that table | 1 wk |
 | 5 | The Button family | Button, Button Icon | every action on the screen | 2 wk |
 | 6 | The shell | Modal, Drawer, Tooltip | the Stage 6 proof screen, composed | 1 wk |
+| 7 | Urgent product dependencies | Accordion, Accordion Header, Alert Inline, Alert Popup, Alert Popup Timer, Input Search, Progress Bar, Switcher, Switcher Item, Tabs Horizontal, Tab Item, Text Area | the first product consumes provisional library components rather than inventing replacements | immediate |
+
+*Amended 2026-10-17 — urgent starting-set expansion, explicitly requested by the owner.*
+Wave 7 is the immediate implementation priority, ahead of finishing Stage 5
+acceptance. Its nine product components and their compositional dependencies move
+into the starting set from alpha/beta. Write their web contracts first, retain
+`status: draft`, and implement the current Figma designs without waiting for
+contract confirmation. An implementation or a successful build does not promote
+these contracts to `ready`. They are available for early product integration;
+their provisional API and design may change during subsequent review. This avoids
+the product inventing a separate component that must later be replaced.
+Existing core acceptance and manual Chrome/Orca evaluation remain required; adding
+draft components neither certifies accessibility nor cuts the 0.2.0 release.
+Alert's inventory entry is split into Inline, Popup and Popup Timer; Progress is
+renamed Progress Bar to match the selected Figma component. Accordion Header,
+Switcher Item and Tab Item accompany their parent components.
 
 *Amended 2026-09-07:* **Tooltip was built out of order**, ahead of the seven elements still open in wave 1 and the rest of wave 2 — the owner chose it explicitly. The table is a sequence rather than a gate, and nothing in it depends on the order being kept: the waves are grouped by what a screen needs next, not by what compiles after what. Wave 6's other two entries, Modal and Drawer, are untouched.
 
@@ -105,7 +121,8 @@ The `0.1` milestone's checklist, and the membership record for every entry the w
 
 *Amended 2026-10-10:* the owner selected **Toggle Input / Label / Text** next, from wave 2. The web API is binary false/true; mixed remains in Figma. The family retains one Default playground per component.
 
-The same six waves order the package's work in §4.2 — a component is implemented in the wave that wrote its contract, so the dependency order is already cut.
+The waves also order the package's work in §4.2. The urgent wave-7 amendment
+above takes priority over finishing acceptance of the original six waves.
 
 *Amended 2026-10-10:* the owner returned to **Link** before the remaining wave-1 components. It uses native navigation and the Default plus Icons playground workshop convention.
 
@@ -213,7 +230,7 @@ Work:
 - Sync the design-system bundle into a Claude Design project, one component at a time as previews land.
 - Tag `0.3.0`; write release notes against the `0.3.0` gate.
 
-The card group in a preview is the entry's `level` or `role` — both are filled on all 114 entries, so nothing new is authored to group them.
+The card group in a preview is the entry's `level` or `role` — both are filled on every registry entry, so nothing new is authored to group them.
 
 A preview is static: a Zag machine does not run in it, so an open menu or a visible focus ring renders from forced data attributes. That is a requirement on the generator, and it is why the pattern components' previews cost more than the primitives'.
 
@@ -290,8 +307,8 @@ The vocabulary — what a milestone is, how it differs from a release and from a
 
 | Milestone | The decision it opens | Entries |
 | --- | --- | --- |
-| alpha | the decision that the library is ready for **internal distribution** — someone other than the author builds on it | Input Color, Input Date, Input Datetime, Input Email, Input Number, Input Password, Input Search, Input Telephone, Input Time, Input URL, Text Area, Multiselect, Select Cascade, Date Picker, Slider, Chips, Uploader, Queryfield, Progress, Avatar, Image, Table Cell Actions, Table Cell Boolean, Table Cell Checkbox, Table Cell Expand, Table Cell Image, Table Cell Link, Table Cell Person, Table Cell Tags, Table Cell Heading Checkbox, Table Toolbar, Pagination, Button Group, Button Dropdown, Breadcrumbs, Tabs Horizontal, Tab Item, Tabs Vertical, Switcher, Scrollbar, Accordion, Accordion Header |
-| beta | the decision that it is ready **outside** — a product that is not ours, with the states a real screen has and an API that will not move under it | Toast, Alert, Popover, Skeleton Loader, Data Info, Metric, Card, List, Tree, Person, Event, Asset, Logo, Feature List, Hero, Code Snippet, Charts, Header, Side Panel Menu, Steps, Flex Layout, Tag Interactive, Table Cell Multiline |
+| alpha | the decision that the library is ready for **internal distribution** — someone other than the author builds on it | Input Color, Input Date, Input Datetime, Input Email, Input Number, Input Password, Input Telephone, Input Time, Input URL, Multiselect, Select Cascade, Date Picker, Slider, Chips, Uploader, Queryfield, Avatar, Image, Table Cell Actions, Table Cell Boolean, Table Cell Checkbox, Table Cell Expand, Table Cell Image, Table Cell Link, Table Cell Person, Table Cell Tags, Table Cell Heading Checkbox, Table Toolbar, Pagination, Button Group, Button Dropdown, Breadcrumbs, Tabs Vertical, Scrollbar |
+| beta | the decision that it is ready **outside** — a product that is not ours, with the states a real screen has and an API that will not move under it | Toast, Popover, Skeleton Loader, Data Info, Metric, Card, List, Tree, Person, Event, Asset, Logo, Feature List, Hero, Code Snippet, Charts, Header, Side Panel Menu, Steps, Flex Layout, Tag Interactive, Table Cell Multiline |
 | 1.0 | the decision that the library is **complete and its API is a commitment** | Code Editor, Code Editor Text Area, Code Editor Toolbar, Edit Mode, Audio Player, Video Player, Carousel |
 | Parked | no decision waits on these — mobile, which this plan excludes (§8) | Bottom Sheet, Pull to Refresh |
 
