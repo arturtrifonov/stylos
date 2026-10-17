@@ -44,7 +44,7 @@ export function verifyVariantCase(component, args, read) {
   for (const check of component.variantChecks) {
     let expected = args[check.prop];
     if (check.prop === "sortDirection" && !args.isSorted) expected = null;
-    if (check.prop === "validation" && ["Input Text", "Select"].includes(component.id) && args.state !== "default") expected = "off";
+    if (check.prop === "validation" && ["Input Text", "Select", "Input Search", "Text Area"].includes(component.id) && args.state !== "default") expected = "off";
     if (check.prop === "interaction") expected = expected === "option" ? "option" : null;
     const actual = read(check.className, check.attribute);
     if (actual !== expected) throw new Error(`${check.prop}: expected ${expected}, received ${actual}`);

@@ -22,12 +22,16 @@ do_not_use_when:
     text: "The information is required to complete the task. A tooltip is unavailable on touch, invisible to anyone not hovering, and gone the moment attention moves — it can repeat what is needed but must not be the only place it is said."
     instead:
       - "Label"
-      - "Alert"
+      - "Alert Inline"
+      - "Alert Popup"
+      - "Alert Popup Timer"
   -
     text: "The message reports something that happened rather than describing something that is there."
     instead:
       - "Toast"
-      - "Alert"
+      - "Alert Inline"
+      - "Alert Popup"
+      - "Alert Popup Timer"
   -
     text: "The text is a permanent classification of the thing beside it — a status, a category, a count."
     instead:

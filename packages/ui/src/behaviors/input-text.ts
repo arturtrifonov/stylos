@@ -3,8 +3,8 @@
 // Geometry and gaps still come from the component's token-based stylesheet.
 export function inputTextBehavior(field: HTMLElement) {
   const groups = [
-    field.querySelector<HTMLElement>(".stylos-input-text-leading, .stylos-select-leading"),
-    field.querySelector<HTMLElement>(".stylos-input-text-trailing, .stylos-select-trailing"),
+    field.querySelector<HTMLElement>(".stylos-input-text-leading, .stylos-select-leading, .stylos-input-search-leading, .stylos-text-area-leading"),
+    field.querySelector<HTMLElement>(".stylos-input-text-trailing, .stylos-select-trailing, .stylos-input-search-trailing, .stylos-text-area-trailing"),
   ];
   function measure() {
     groups.forEach((group, index) => {

@@ -41,6 +41,8 @@ icons:
   - "content_copy"
   - "edit"
   - "error"
+  - "expand_less"
+  - "expand_more"
   - "filter_list"
   - "home"
   - "keyboard_arrow_down"

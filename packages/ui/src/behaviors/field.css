@@ -6,7 +6,7 @@
  * adornment geometry and surface effects. Full-field controls reserve measured
  * adornment widths. Icon overhang comes from the same local collection as Button.
  */
-:is(.stylos-input-text, .stylos-select) {
+:is(.stylos-input-text, .stylos-select, .stylos-input-search, .stylos-text-area) {
   --_stylos-input-optical: var(--stylos-dimension-gap-g-0_250);
   display: flex;
   flex-direction: column;
@@ -14,11 +14,11 @@
   min-width: 0;
 }
 
-:is(.stylos-input-text, .stylos-select) > .stylos-label {
+:is(.stylos-input-text, .stylos-select, .stylos-input-search, .stylos-text-area) > .stylos-label {
   padding-inline: var(--stylos-dimension-gap-g-0_250);
 }
 
-:is(.stylos-input-text-field, .stylos-select-field) {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field) {
   position: relative;
   isolation: isolate;
   height: var(--_stylos-input-height);
@@ -27,8 +27,8 @@
 
 /* Crossfade complete effects; their geometry never interpolates. The field
  * control paints above these layers and keeps the entire pointer hit area. */
-:is(.stylos-input-text-field, .stylos-select-field)::before,
-:is(.stylos-input-text-field, .stylos-select-field)::after {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field)::before,
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field)::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -37,20 +37,20 @@
   pointer-events: none;
   transition: opacity var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
 }
-:is(.stylos-input-text-field, .stylos-select-field)::before {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field)::before {
   box-shadow: var(--_stylos-surface-shadow);
   opacity: 1;
 }
-:is(.stylos-input-text-field, .stylos-select-field)::after {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field)::after {
   box-shadow: var(--stylos-focus-base);
   opacity: 0;
 }
-:is(.stylos-input-text-field, .stylos-select-field):has(> :is(input, .stylos-select-trigger):enabled:not([readonly], [aria-readonly="true"]):focus)::before { opacity: 0; }
-:is(.stylos-input-text-field, .stylos-select-field):has(> :is(input, .stylos-select-trigger):enabled:not([readonly], [aria-readonly="true"]):focus)::after { opacity: 1; }
-:is(.stylos-input-text-field, .stylos-select-field):has(> :is(input, .stylos-select-trigger):is(:disabled, [readonly], [aria-readonly="true"]))::before,
-:is(.stylos-input-text-field, .stylos-select-field):has(> :is(input, .stylos-select-trigger):is(:disabled, [readonly], [aria-readonly="true"]))::after { opacity: 0; }
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(> :is(input, textarea, .stylos-select-trigger):enabled:not([readonly], [aria-readonly="true"]):focus)::before { opacity: 0; }
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(> :is(input, textarea, .stylos-select-trigger):enabled:not([readonly], [aria-readonly="true"]):focus)::after { opacity: 1; }
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(> :is(input, textarea, .stylos-select-trigger):is(:disabled, [readonly], [aria-readonly="true"]))::before,
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(> :is(input, textarea, .stylos-select-trigger):is(:disabled, [readonly], [aria-readonly="true"]))::after { opacity: 0; }
 
-:is(.stylos-input-text-field, .stylos-select-field) > :is(input, .stylos-select-trigger) {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field) > :is(input, textarea, .stylos-select-trigger) {
   display: block;
   min-width: 0;
   width: calc(100%);
@@ -75,7 +75,7 @@
   transition: border-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
 }
 
-:is(.stylos-input-text-adornments, .stylos-select-adornments) {
+:is(.stylos-input-text-adornments, .stylos-select-adornments, .stylos-input-search-adornments, .stylos-text-area-adornments) {
   position: absolute;
   inset: 0;
   display: flex;
@@ -86,39 +86,39 @@
   color: var(--stylos-color-text-base);
 }
 
-:is(.stylos-input-text-leading, .stylos-select-leading, .stylos-input-text-trailing, .stylos-select-trailing) {
+:is(.stylos-input-text-leading, .stylos-select-leading, .stylos-input-search-leading, .stylos-text-area-leading, .stylos-input-text-trailing, .stylos-select-trailing, .stylos-input-search-trailing, .stylos-text-area-trailing) {
   display: flex;
   align-items: center;
   gap: var(--_stylos-input-gap);
   min-width: 0;
 }
 
-:is(.stylos-input-text-leading, .stylos-select-leading):empty { display: none; }
-:is(.stylos-input-text-trailing, .stylos-select-trailing) { margin-inline-start: auto; }
+:is(.stylos-input-text-leading, .stylos-select-leading, .stylos-input-search-leading, .stylos-text-area-leading):empty { display: none; }
+:is(.stylos-input-text-trailing, .stylos-select-trailing, .stylos-input-search-trailing, .stylos-text-area-trailing) { margin-inline-start: auto; }
 
 /* Fixed icon reserves also work before the measurement adapter mounts. */
-:is(.stylos-input-text-field, .stylos-select-field):has(:is(.stylos-input-text-leading, .stylos-select-leading) > *) {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-leading, .stylos-select-leading, .stylos-input-search-leading, .stylos-text-area-leading) > *) {
   --_stylos-input-leading-reserve: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical) + var(--_stylos-input-gap));
 }
-:is(.stylos-input-text-field, .stylos-select-field):has(:is(.stylos-input-text-icon, .stylos-select-icon)[data-position="trailing"]) {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon)[data-position="trailing"]) {
   --_stylos-input-trailing-reserve: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical) + var(--_stylos-input-gap));
 }
-:is(.stylos-input-text-field, .stylos-select-field):has(:is(.stylos-input-text-validation, .stylos-select-validation)) {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-input-search-validation, .stylos-text-area-validation)) {
   --_stylos-input-trailing-reserve: calc(var(--_stylos-input-validation-size) - var(--stylos-dimension-gap-g-0_250) + var(--_stylos-input-gap));
 }
-:is(.stylos-input-text-field, .stylos-select-field):has(:is(.stylos-input-text-validation, .stylos-select-validation)):has(:is(.stylos-input-text-icon, .stylos-select-icon)[data-position="trailing"]) {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-input-search-validation, .stylos-text-area-validation)):has(:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon)[data-position="trailing"]) {
   --_stylos-input-trailing-reserve: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical) + var(--_stylos-input-validation-size) - var(--stylos-dimension-gap-g-0_250) + 2 * var(--_stylos-input-gap));
 }
 
-:is(.stylos-input-text-field, .stylos-select-field) > :is(input, .stylos-select-trigger):focus { text-overflow: clip; }
-:is(.stylos-input-text-field, .stylos-select-field) > :is(input, .stylos-select-trigger)::placeholder { color: var(--stylos-color-text-tertiary); opacity: 1; }
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field) > :is(input, textarea, .stylos-select-trigger):focus { text-overflow: clip; }
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field) > :is(input, textarea, .stylos-select-trigger)::placeholder { color: var(--stylos-color-text-tertiary); opacity: 1; }
 
-:is(.stylos-input-text-suffix, .stylos-select-suffix) {
+:is(.stylos-input-text-suffix, .stylos-select-suffix, .stylos-input-search-suffix, .stylos-text-area-suffix) {
   flex: none;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: var(--stylos-font-family-string);
+  font-family: var(--stylos-font-family-normal);
   font-weight: var(--stylos-font-weight-base);
   font-size: var(--_stylos-input-suffix-size);
   line-height: var(--_stylos-input-suffix-line);
@@ -126,7 +126,7 @@
   color: var(--stylos-color-text-secondary);
 }
 
-:is(.stylos-input-text-icon, .stylos-select-icon) {
+:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon) {
   --stylos-icon-footprint: var(--_stylos-input-icon-size);
   position: relative;
   flex: none;
@@ -134,16 +134,16 @@
   height: var(--_stylos-input-icon-size);
 }
 
-:is(.stylos-input-text-icon, .stylos-select-icon) > * {
+:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon) > * {
   position: absolute;
   top: 0;
   width: var(--_stylos-input-icon-size);
   height: var(--_stylos-input-icon-size);
 }
-:is(.stylos-input-text-icon, .stylos-select-icon)[data-position="leading"] > * { right: 0; }
-:is(.stylos-input-text-icon, .stylos-select-icon)[data-position="trailing"] > * { left: 0; }
+:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon)[data-position="leading"] > * { right: 0; }
+:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon)[data-position="trailing"] > * { left: 0; }
 
-:is(.stylos-input-text-validation, .stylos-select-validation) {
+:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-input-search-validation, .stylos-text-area-validation) {
   --stylos-icon-footprint: var(--_stylos-input-validation-size);
   position: relative;
   flex: none;
@@ -152,7 +152,7 @@
   color: var(--_stylos-input-border);
 }
 
-:is(.stylos-input-text-validation, .stylos-select-validation)::before {
+:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-input-search-validation, .stylos-text-area-validation)::before {
   content: "";
   position: absolute;
   top: calc((var(--_stylos-input-validation-size) - var(--_stylos-input-icon-size)) / 2);
@@ -162,50 +162,50 @@
   background-color: var(--_stylos-input-validation-background);
   border-radius: var(--stylos-radius-round);
 }
-:is(.stylos-input-text-validation, .stylos-select-validation) > .stylos-icon { position: relative; display: block; }
+:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-input-search-validation, .stylos-text-area-validation) > .stylos-icon { position: relative; display: block; }
 
-:is(.stylos-input-text, .stylos-select)[data-validation="error"] {
+:is(.stylos-input-text, .stylos-select, .stylos-input-search, .stylos-text-area)[data-validation="error"] {
   --_stylos-input-border: var(--stylos-color-border-danger);
   --_stylos-input-validation-background: var(--stylos-color-background-danger);
 }
-:is(.stylos-input-text, .stylos-select)[data-validation="warning"] {
+:is(.stylos-input-text, .stylos-select, .stylos-input-search, .stylos-text-area)[data-validation="warning"] {
   --_stylos-input-border: var(--stylos-color-border-warning);
   --_stylos-input-validation-background: var(--stylos-color-background-warning);
 }
-:is(.stylos-input-text, .stylos-select)[data-validation="success"] {
+:is(.stylos-input-text, .stylos-select, .stylos-input-search, .stylos-text-area)[data-validation="success"] {
   --_stylos-input-border: var(--stylos-color-border-success);
   --_stylos-input-validation-background: var(--stylos-color-background-success);
 }
 
-:is(.stylos-input-text-field, .stylos-select-field) > :is(input, .stylos-select-trigger):enabled:not([readonly], [aria-readonly="true"]):hover {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field) > :is(input, textarea, .stylos-select-trigger):enabled:not([readonly], [aria-readonly="true"]):hover {
   border-color: var(--stylos-color-border-primary);
 }
 
-:is(.stylos-input-text-field, .stylos-select-field) > :is(input, .stylos-select-trigger):enabled:not([readonly], [aria-readonly="true"]):focus {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field) > :is(input, textarea, .stylos-select-trigger):enabled:not([readonly], [aria-readonly="true"]):focus {
   border-color: var(--stylos-color-border-primary);
   outline: none;
 }
 
-:is(.stylos-input-text-field, .stylos-select-field) > :is(input, .stylos-select-trigger):is(:disabled, [readonly], [aria-readonly="true"]) {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field) > :is(input, textarea, .stylos-select-trigger):is(:disabled, [readonly], [aria-readonly="true"]) {
   border-color: var(--stylos-color-border-secondary);
   background-color: var(--stylos-color-background-secondary);
   box-shadow: none;
 }
-:is(.stylos-input-text-field, .stylos-select-field) > :is(input, .stylos-select-trigger):disabled,
-:is(.stylos-input-text-field, .stylos-select-field):has(> :is(input, .stylos-select-trigger):disabled) :is(.stylos-input-text-adornments, .stylos-select-adornments),
-:is(.stylos-input-text-field, .stylos-select-field):has(> :is(input, .stylos-select-trigger):disabled) :is(.stylos-input-text-suffix, .stylos-select-suffix),
-:is(.stylos-input-text-field, .stylos-select-field) > :is(input, .stylos-select-trigger):disabled::placeholder {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field) > :is(input, textarea, .stylos-select-trigger):disabled,
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(> :is(input, textarea, .stylos-select-trigger):disabled) :is(.stylos-input-text-adornments, .stylos-select-adornments, .stylos-input-search-adornments, .stylos-text-area-adornments),
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(> :is(input, textarea, .stylos-select-trigger):disabled) :is(.stylos-input-text-suffix, .stylos-select-suffix, .stylos-input-search-suffix, .stylos-text-area-suffix),
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field) > :is(input, textarea, .stylos-select-trigger):disabled::placeholder {
   color: var(--stylos-color-text-disabled);
 }
-:is(.stylos-input-text-field, .stylos-select-field) > :is(input, .stylos-select-trigger):disabled { cursor: default; }
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field) > :is(input, textarea, .stylos-select-trigger):disabled { cursor: default; }
 
 @media (prefers-reduced-motion: reduce) {
-  :is(.stylos-input-text-field, .stylos-select-field) > :is(input, .stylos-select-trigger),
-  :is(.stylos-input-text-field, .stylos-select-field)::before,
-  :is(.stylos-input-text-field, .stylos-select-field)::after { transition: none; }
+  :is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field) > :is(input, textarea, .stylos-select-trigger),
+  :is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field)::before,
+  :is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field)::after { transition: none; }
 }
 
-:is(.stylos-input-text, .stylos-select)[data-size="extra small"] {
+:is(.stylos-input-text, .stylos-select, .stylos-input-search, .stylos-text-area, .stylos-accordion, .stylos-accordion-header)[data-size="extra small"] {
   --_stylos-input-height: var(--stylos-dimension-size-s-3_000);
   --_stylos-input-padding: var(--stylos-dimension-gap-g-1_000);
   --_stylos-input-gap: var(--stylos-dimension-gap-g-0_500);
@@ -218,7 +218,7 @@
   --_stylos-input-validation-size: var(--stylos-dimension-size-s-1_500);
 }
 
-:is(.stylos-input-text, .stylos-select)[data-size="small"] {
+:is(.stylos-input-text, .stylos-select, .stylos-input-search, .stylos-text-area, .stylos-accordion, .stylos-accordion-header)[data-size="small"] {
   --_stylos-input-height: var(--stylos-dimension-size-s-4_000);
   --_stylos-input-padding: var(--stylos-dimension-gap-g-1_250);
   --_stylos-input-gap: var(--stylos-dimension-gap-g-0_625);
@@ -231,7 +231,7 @@
   --_stylos-input-validation-size: var(--stylos-dimension-size-s-1_750);
 }
 
-:is(.stylos-input-text, .stylos-select)[data-size="medium"] {
+:is(.stylos-input-text, .stylos-select, .stylos-input-search, .stylos-text-area, .stylos-accordion, .stylos-accordion-header)[data-size="medium"] {
   --_stylos-input-height: var(--stylos-dimension-size-s-5_000);
   --_stylos-input-padding: var(--stylos-dimension-gap-g-1_500);
   --_stylos-input-gap: var(--stylos-dimension-gap-g-0_750);
@@ -244,7 +244,7 @@
   --_stylos-input-validation-size: var(--stylos-dimension-size-s-2_000);
 }
 
-:is(.stylos-input-text, .stylos-select)[data-size="large"] {
+:is(.stylos-input-text, .stylos-select, .stylos-input-search, .stylos-text-area, .stylos-accordion, .stylos-accordion-header)[data-size="large"] {
   --_stylos-input-height: var(--stylos-dimension-size-s-6_000);
   --_stylos-input-padding: var(--stylos-dimension-gap-g-2_000);
   --_stylos-input-gap: var(--stylos-dimension-gap-g-0_875);
@@ -258,7 +258,7 @@
   --_stylos-input-optical: var(--stylos-dimension-gap-g-0_375);
 }
 
-:is(.stylos-input-text, .stylos-select)[data-size="extra large"] {
+:is(.stylos-input-text, .stylos-select, .stylos-input-search, .stylos-text-area, .stylos-accordion, .stylos-accordion-header)[data-size="extra large"] {
   --_stylos-input-height: var(--stylos-dimension-size-s-7_000);
   --_stylos-input-padding: var(--stylos-dimension-gap-g-2_500);
   --_stylos-input-gap: var(--stylos-dimension-gap-g-1_000);

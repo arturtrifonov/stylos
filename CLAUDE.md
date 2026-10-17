@@ -14,6 +14,12 @@ Working rules for agent sessions in this repository. The flow they implement is 
 - The PR title is the squash commit subject, in the imperative. The PR body holds the `CHANGELOG.md` lines the change earns.
 - Head branches are deleted after merge.
 
+**Owner exception, 2026-10-17:** the owner explicitly instructed this session to
+merge and release `0.2.0` now, moving all unfinished acceptance to `0.3.0` and the
+former proof release to `0.4.0` (`PLAN.md` §1). The agent may execute this specific
+release through GitHub after green CI. The prohibitions on direct master
+commits/pushes and local merges/tags remain; this is not standing release authority.
+
 ## Definition of done for a pull request
 
 - `npm test`, `npm run validate:registry`, `npm run validate:rules`, `npm run validate:skills` and `npm run tokens:check` all pass — run all five before opening the PR. (`npm test` runs `validate:rules` too; run it on its own when the change touches a guideline.)

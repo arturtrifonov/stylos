@@ -1,0 +1,15 @@
+@import "../../behaviors/surface.css";
+@import "../switcher-item/switcher-item.css";
+.stylos-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--_stylos-switcher-inset) + var(--stylos-dimension-gap-g-0_125));
+  min-width: 0;
+  padding: var(--_stylos-switcher-inset);
+  margin: 0;
+  box-sizing: border-box;
+  border: var(--stylos-border-width-normal) solid var(--stylos-color-border-default);
+  border-radius: var(--stylos-radius-medium);
+  background: var(--stylos-color-background-base);
+  box-shadow: var(--stylos-shadow-elevation-1);
+}

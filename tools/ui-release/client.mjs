@@ -21,7 +21,7 @@ for (const component of manifest.components) {
   inspect.append(option);
 }
 for (const [name, label] of [["NativeControls", "Native controls form"], ["DropdownControls", "Dropdown controls"],
-  ["DropdownNavigation", "Nested navigation"], ["ModalForm", "Modal form"], ["DrawerForm", "Drawer form"], ["SelectForm", "Select form"]]) {
+  ["DropdownNavigation", "Nested navigation"], ["ModalForm", "Modal form"], ["DrawerForm", "Drawer form"], ["SelectForm", "Select form"], ["StartingSet", "Starting set form"]]) {
   const option = document.createElement("option");
   option.value = name;
   option.textContent = label;

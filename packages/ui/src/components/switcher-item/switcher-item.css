@@ -1,0 +1,12 @@
+@import "../../behaviors/selection.css";
+.stylos-switcher-item {
+  gap: var(--_stylos-selection-gap);
+  height: var(--_stylos-segment-height);
+  padding: 0 var(--_stylos-segment-padding);
+  border-radius: var(--stylos-radius-small);
+}
+.stylos-switcher-item > input { position: absolute; inset: 0; width: calc(100%); height: calc(100%); opacity: 0; margin: 0; cursor: inherit; }
+.stylos-switcher-item[data-is-selected="true"] { background: var(--stylos-color-surface-bold-base-default); color: var(--stylos-color-text-inverted); }
+.stylos-switcher-item[data-tone="primary"][data-is-selected="true"] { background: var(--stylos-color-surface-bold-primary-default); }
+.stylos-switcher-item:not([data-is-selected="true"]):has(input:enabled):hover { background: var(--stylos-color-surface-subtle-base-hover); }
+.stylos-switcher-item:has(input:disabled) { background: var(--stylos-color-background-secondary); }

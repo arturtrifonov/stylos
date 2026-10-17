@@ -4,6 +4,62 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-10-17
+
+The first code implementation release: Svelte 5 components, independent CSS,
+generated tokens and workshop examples for the current starting set. There are
+47 implemented entries, including the 46-entry core and Tag Interactive.
+The package remains private and UNLICENSED, with the existing git consumption
+path; this release does not publish to npm or select a new distribution channel.
+
+### Release decision and deferred acceptance
+
+- **Owner-directed early release:** merge and ship the implementation now. All
+  unfinished Stage 5 checks move to **0.3.0**: fresh expanded-core browser evidence,
+  18 incomplete axe determinations, Linux Chrome + Orca, full visual/contrast and
+  interaction/composition review, and Figma synchronization/publication verification.
+  The former 0.3.0 proof/consumer-material stage becomes **0.4.0**, with follow-up
+  0.3.1 work becoming 0.4.1. The complete acceptance hand-off is
+  [packages/ui/verification/0.3.0.md](packages/ui/verification/0.3.0.md).
+- The twelve urgent contracts remain **draft**, including their three dependency
+  components. APIs and provisional translations may change. Alert Popup Timer is
+  a controlled view; its consuming application owns timing, pause, expiry and undo.
+- Prior browser evidence records 4,638 renders, zero detected violations and 18
+  incomplete checks; those results describe their original inputs, not a new
+  release-commit browser run. No full accessibility or pixel-parity claim is made.
+
+### Figma library
+
+- Figma publication and version synchronization are deferred to 0.3.0 acceptance.
+  The last real exported marker remains 0.1.0; it is not rewritten to imply a
+  publish. Token validation emits a visible warning for exactly the system
+  0.2.0 / recorded-Figma 0.1.0 pair; other mismatches still fail, and strict mode
+  rejects the warning. Token integrity checks remain in force.
+
+### Compatibility
+
+- Breaking component consolidations and registry identity changes are named in
+  the entries below. Consumers should pin this release and follow the package
+  guide when migrating Button and Tag variants or icon snippets.
+
+### Added — 2026-10-17 (urgent starting set, draft)
+
+- Bring Accordion, Alert Inline/Popup/Popup Timer, Input Search, Progress Bar,
+  Switcher, Tabs Horizontal and Text Area into the starting set, with Accordion
+  Header, Switcher Item and Tab Item as compositional dependencies. Write
+  provisional contracts against the current Figma references and retain `draft`
+  explicitly; no readiness assessment or release is implied.
+- Add Svelte wrappers, independent token-based CSS and Default workshop examples.
+  Reuse native form editing and radio selection, implement disclosure and tab
+  keyboard interaction, expose notification actions and a controlled timer view.
+  The host owns notification placement, lifetime, timer updates and undo.
+- Split the generic Alert inventory identity into its three concrete components
+  and rename Progress to Progress Bar. Update composition references and core
+  membership; the previous acceptance evidence must be repeated for the new set.
+- Share field styles with Search and Text Area; correct the unavailable string
+  font reference to the existing normal family. Add expand-more/less marks to the
+  existing Material Symbols preset.
+
 ### Fixed — 2026-10-14 (acceptance review)
 
 - Cover variants behind visibility gates, forward Dropdown group args and use shared table fixtures with native data rows. Verify exact class tokens and variant attributes against the fresh packaged entry in both rendering passes. Rebuild and fingerprint source inputs plus dist bytes, and reject changed, malformed or stale evidence. Record deferred runtime errors/warnings, require loaded Georama faces, include WCAG 2.1 A rules and wait for surface motion before axe. Preserve UTF-8 uploads and return useful missing-report and size-limit errors. Normalize boolean defaults in the registry loader so component-page examples share the fix.

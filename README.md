@@ -2,7 +2,7 @@
 
 A design system for dense, desktop-oriented web product interfaces. Its visual language draws on antiquity, classical architecture and constructed proportion — strict and structural rather than decorative.
 
-**`0.1.0` is the latest release; `0.2.0` is in acceptance.** The core set has a Svelte 5 implementation, independent CSS and a generated workshop. Private and owner-led; the release gate is in [`PLAN.md`](PLAN.md) §1 and the current evidence is in the [acceptance record](packages/ui/verification/0.2.0.md).
+**`0.2.0` ships the current starting set for early product integration.** The core set has a Svelte 5 implementation, independent CSS and a generated workshop. The urgent additions retain draft contracts. All unfinished acceptance moves to [`0.3.0`](packages/ui/verification/0.3.0.md); product proof and consumer materials move to `0.4.0`. The package stays private. This owner-directed release does not establish full accessibility or Figma parity; see [`PLAN.md`](PLAN.md) §1.
 
 | | |
 | --- | --- |

@@ -29,7 +29,9 @@ do_not_use_when:
     text: "The content is a short reaction to something the person just did, needing no answer."
     instead:
       - "Toast"
-      - "Alert"
+      - "Alert Inline"
+      - "Alert Popup"
+      - "Alert Popup Timer"
   -
     text: "It is a small amount of content anchored to one control rather than to the screen edge."
     instead:
@@ -37,7 +39,9 @@ do_not_use_when:
       - "Tooltip"
 children:
   - "Accordion"
-  - "Alert"
+  - "Alert Inline"
+  - "Alert Popup"
+  - "Alert Popup Timer"
   - "Asset"
   - "Avatar"
   - "Badge"
@@ -89,7 +93,7 @@ children:
   - "Select Cascade"
   - "Multiselect"
   - "Audio Player"
-  - "Progress"
+  - "Progress Bar"
   - "Queryfield"
   - "Radio Input"
   - "Radio Label"

@@ -1,0 +1,29 @@
+@import "../../behaviors/field.css";
+
+/* Native multiline control: the frame follows user resizing. */
+.stylos-text-area { gap: var(--_stylos-input-gap); }
+.stylos-text-area-field { height: auto; }
+.stylos-text-area .stylos-text-area-field > textarea {
+  height: var(--_stylos-area-height);
+  min-height: var(--_stylos-input-height);
+  padding-block: var(--_stylos-area-padding);
+  resize: vertical;
+  font-weight: var(--stylos-font-weight-base);
+  font-size: var(--_stylos-area-font);
+  line-height: var(--_stylos-area-line);
+  text-overflow: clip;
+}
+.stylos-text-area-adornments { align-items: flex-start; padding-block: var(--_stylos-area-padding); }
+.stylos-text-area-counter {
+  padding-inline: var(--stylos-dimension-gap-g-0_250);
+  color: var(--stylos-color-text-secondary);
+  font-family: var(--stylos-font-family-normal);
+  font-size: var(--_stylos-input-suffix-size);
+  line-height: var(--_stylos-input-suffix-line);
+  font-weight: var(--stylos-font-weight-emphasis);
+}
+.stylos-text-area[data-size="extra small"] { --_stylos-area-height: calc(calc(3 * var(--stylos-dimension-size-s-3_000) - var(--stylos-dimension-gap-g-1_000)) + var(--stylos-dimension-gap-g-0_500)); --_stylos-area-padding: var(--stylos-dimension-gap-g-0_500); --_stylos-area-font: var(--stylos-font-size-0_875); --_stylos-area-line: var(--stylos-font-line-height-text-0_875); }
+.stylos-text-area[data-size="small"] { --_stylos-area-height: calc(calc(2 * var(--stylos-dimension-size-s-5_000) + var(--stylos-dimension-gap-g-1_000))); --_stylos-area-padding: var(--stylos-dimension-gap-g-0_750); --_stylos-area-font: var(--stylos-font-size-1_125); --_stylos-area-line: var(--stylos-font-line-height-text-1_125); }
+.stylos-text-area[data-size="medium"] { --_stylos-area-height: calc(calc(2 * var(--stylos-dimension-size-s-6_000) + var(--stylos-dimension-gap-g-1_000)) + var(--stylos-dimension-gap-g-0_500)); --_stylos-area-padding: var(--stylos-dimension-gap-g-1_000); --_stylos-area-font: var(--stylos-font-size-1_375); --_stylos-area-line: var(--stylos-font-line-height-text-1_375); }
+.stylos-text-area[data-size="large"] { --_stylos-area-height: calc(calc(2 * var(--stylos-dimension-size-s-7_000) + var(--stylos-dimension-gap-g-1_000)) + var(--stylos-dimension-gap-g-0_500)); --_stylos-area-padding: var(--stylos-dimension-gap-g-1_250); --_stylos-area-font: var(--stylos-font-size-1_625); --_stylos-area-line: var(--stylos-font-line-height-text-1_625); }
+.stylos-text-area[data-size="extra large"] { --_stylos-area-height: calc(calc(3 * var(--stylos-dimension-size-s-6_000)) + var(--stylos-dimension-gap-g-0_500)); --_stylos-area-padding: var(--stylos-dimension-gap-g-1_500); --_stylos-area-font: var(--stylos-font-size-1_875); --_stylos-area-line: var(--stylos-font-line-height-text-1_875); }

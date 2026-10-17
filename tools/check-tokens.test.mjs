@@ -34,9 +34,21 @@ test("passes when the library reported the version the repository is on", () => 
 });
 
 test("fails when the library reported a different version, naming both", () => {
-  const problems = check({ system: "0.2.0", library: 'version: "0.1.0"\n' });
+  const problems = check({ system: "0.3.0", library: 'version: "0.1.0"\n' });
   assert.deepEqual(problems.warnings, []);
-  assert.match(problems.errors.join("\n"), /reported version "0\.1\.0"[\s\S]*system is "0\.2\.0"/);
+  assert.match(problems.errors.join("\n"), /reported version "0\.1\.0"[\s\S]*system is "0\.3\.0"/);
+});
+
+test("warns for the owner-authorized 0.2.0/0.1.0 pair without inventing a Figma export", () => {
+  const problems = check({ system: "0.2.0", library: 'version: "0.1.0"\n' });
+  assert.deepEqual(problems.errors, []);
+  assert.match(problems.warnings.join("\n"), /release exception[\s\S]*deferred to 0\.3\.0/);
+});
+
+test("the exception does not admit an unexpected Figma version", () => {
+  const problems = check({ system: "0.2.0", library: 'version: "0.0.9"\n' });
+  assert.deepEqual(problems.warnings, []);
+  assert.match(problems.errors.join("\n"), /reported version "0\.0\.9"/);
 });
 
 test("fails a record carrying no version rather than reading absence as agreement", () => {
