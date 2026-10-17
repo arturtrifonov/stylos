@@ -36,6 +36,24 @@ Both `kind: text` (textual content) and `kind: string` (a non-text string value 
 
 These conversions are implemented in `tools/build-ui-types.mjs`; they change spelling, not the property's meaning.
 
+## Theme scopes
+
+Import `@stylos/ui/tokens.css` once. Set `data-theme="dark"` on any element to
+apply dark semantic colours, shadows, focus effects and native control styling
+to that element and its descendants:
+
+```html
+<html data-theme="light">
+  <body>
+    <section data-theme="dark">Dark Stylos components go here.</section>
+  </body>
+</html>
+```
+
+Without an explicit root theme, the page follows the system colour preference.
+`data-theme="light"` on the root forces a light page. A local dark scope still
+works inside it; portaled content must carry the theme on its actual container.
+
 ## Typography exports
 
 The global contract is [Typography](../../docs/foundations/typography.md). `npm run ui:generate` projects the recorded styles in [`figma/text-styles.yaml`](../../figma/text-styles.yaml) to `dist/text.css`, with one class per style: `text/base/medium` becomes `.stylos-text-base-medium`, and `heading/h2` becomes `.stylos-heading-h2`. Link the token and font exports alongside the text stylesheet.
