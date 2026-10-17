@@ -1,0 +1,8 @@
+@import "../../behaviors/selection.css";
+@import "../badge/badge.css";
+.stylos-tab-item { padding: 0 0 var(--_stylos-tab-band); }
+.stylos-tab-item:focus-visible { outline-offset: calc(-1 * var(--stylos-border-width-thick)); }
+.stylos-tab-label { display: inline-flex; align-items: center; gap: var(--_stylos-selection-gap); height: var(--_stylos-selection-height); padding-inline: var(--_stylos-selection-padding); border-radius: var(--stylos-radius-medium); }
+.stylos-tab-item[data-is-selected="true"] { color: var(--stylos-color-text-primary); }
+.stylos-tab-item[data-is-selected="true"]::after { content: ""; position: absolute; bottom: 0; inset-inline: var(--_stylos-tab-band); height: var(--_stylos-tab-line); background: var(--stylos-color-surface-bold-primary-default); border-start-start-radius: var(--stylos-radius-small); border-start-end-radius: var(--stylos-radius-small); }
+.stylos-tab-item:enabled:hover .stylos-tab-label { background: var(--stylos-color-surface-subtle-base-hover); }

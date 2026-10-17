@@ -1,7 +1,3 @@
-# Hand-edited. This file is the source for its component's structural data.
-# The CSV import that created it ran once, on 2026-08-20, and will not run
-# again — see docs/components/registry/README.md for the schema and workflow.
-
 id: "Text Area"
 name: "Text Area"
 level: "object"
@@ -22,7 +18,9 @@ children:
   - "Loader"
 parents:
   - "Accordion"
-  - "Alert"
+  - "Alert Inline"
+  - "Alert Popup"
+  - "Alert Popup Timer"
   - "Toast"
   - "Bottom Sheet"
   - "Flex Layout"
@@ -31,7 +29,234 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: ""
+notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
 import:
   batch: 1
   ready: true
+status: "draft"
+html: "<label><textarea></textarea></label>"
+summary: "A labelled, resizable multiline text field."
+purpose: "Collect multiline product content with native editing, form submission, validation and reset."
+use_when:
+  - "A labelled, resizable multiline text field."
+do_not_use_when:
+  -
+    text: "The value takes one line and does not need multiline editing."
+    instead: "Input Text"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Field height, padding, text and icon sizes. Width belongs to the consumer."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "Editing mode. Hover and focus follow the native input; they are not simulated props."
+    values:
+      -
+        value: "default"
+      -
+        value: "read only"
+      -
+        value: "disabled"
+  -
+    name: "validation"
+    kind: "variant"
+    default: "off"
+    description: "Consumer-supplied checking result. Error and warning show supporting text; success shows only a mark. Read-only and disabled suppress the outcome. Only error sets aria-invalid; a warning is advisory."
+    values:
+      -
+        value: "off"
+      -
+        value: "error"
+      -
+        value: "warning"
+      -
+        value: "success"
+  -
+    name: "value"
+    kind: "text"
+    default: ""
+    description: "Native text value, bindable in Svelte. The Figma input text property maps here; is filled follows whether this value is empty."
+  -
+    name: "has label"
+    kind: "boolean"
+    default: true
+    description: "Shows the associated Label above the field. When hidden, supply an external label or accessible name."
+  -
+    name: "label text"
+    kind: "text"
+    default: "Label"
+    description: "Passed to the nested Label and used as the visible field's accessible name."
+  -
+    name: "has additional text"
+    kind: "boolean"
+    default: false
+    description: "Shows the Label's supporting line outside error and warning, which require the line."
+    controls:
+      - "additional text"
+  -
+    name: "additional text"
+    kind: "text"
+    default: "Additional text"
+    description: "Hint or validation message, associated with the field through aria-describedby."
+  -
+    name: "has placeholder"
+    kind: "boolean"
+    default: true
+    description: "Enables the native placeholder. A hint in the supporting line remains visible while typing."
+    controls:
+      - "placeholder text"
+  -
+    name: "placeholder text"
+    kind: "text"
+    default: "Placeholder text"
+    description: "Example format for the empty field; does not provide its accessible name."
+  -
+    name: "has leading icon"
+    kind: "boolean"
+    default: false
+    description: "Shows the supplied leading decorative mark. No placeholder drawing is substituted."
+    controls:
+      - "leading icon"
+  -
+    name: "leading icon"
+    kind: "instance"
+    svelte_type: "snippet"
+    description: "Decorative snippet before the value, normally Icon."
+  -
+    name: "has trailing icon"
+    kind: "boolean"
+    default: false
+    description: "Shows the supplied trailing decorative mark."
+    controls:
+      - "trailing icon"
+  -
+    name: "trailing icon"
+    kind: "instance"
+    svelte_type: "snippet"
+    description: "Decorative snippet after validation. Not an action slot."
+  -
+    name: "is required"
+    kind: "boolean"
+    default: false
+    description: "Native required constraint and the nested Label's required marker."
+  -
+    name: "id"
+    kind: "string"
+    description: "Native control ID. A stable instance ID is generated when omitted."
+  -
+    name: "name"
+    kind: "string"
+    description: "Native form-data key."
+  -
+    name: "form"
+    kind: "string"
+    description: "ID of an external form, when the field is outside it."
+  -
+    name: "autocomplete"
+    kind: "string"
+    description: "Native autocomplete hint."
+  -
+    name: "accessible name"
+    kind: "text"
+    description: "Nonvisual accessible name when has label is false."
+  -
+    name: "label ids"
+    kind: "string"
+    description: "Space-separated external label IDs for aria-labelledby when has label is false."
+  -
+    name: "description ids"
+    kind: "string"
+    description: "Additional description IDs, combined with the component's supporting text and suffix."
+  -
+    name: "oninput"
+    kind: "event"
+    description: "Native input event; value binding is already updated when the callback runs."
+  -
+    name: "onchange"
+    kind: "event"
+    description: "Native change event when the edited value is committed."
+  -
+    name: "has counter text"
+    kind: "boolean"
+    description: "Show the consumer-supplied counter beneath the textarea."
+    default: true
+    controls:
+      - "counter text"
+  -
+    name: "counter text"
+    kind: "text"
+    description: "Display text, not an enforced length limit. Update it from the bound value when needed."
+    default: "0 / 1000"
+  -
+    name: "maxlength"
+    kind: "string"
+    description: "Optional native maximum number of UTF-16 code units. A missing value imposes no limit."
+  -
+    name: "minlength"
+    kind: "string"
+    description: "Optional native minimum length for validation."
+sizing_model:
+  horizontal: "fill"
+  vertical: "hug"
+  adjustable:
+    horizontal: true
+    vertical: true
+  intent: "Five Figma presets set initial body height and typography. The consumer controls width; the user may resize vertically. Native overflow replaces the Figma scrollbar drawing."
+  sizes:
+    -
+      size: "extra small"
+      padding_x: "gap/g-1_000"
+      padding_y: "gap/g-0_500"
+      font_size: "size/0_875"
+      line_height: "line height/text/0_875"
+    -
+      size: "small"
+      padding_x: "gap/g-1_250"
+      padding_y: "gap/g-0_750"
+      font_size: "size/1_125"
+      line_height: "line height/text/1_125"
+    -
+      size: "medium"
+      padding_x: "gap/g-1_500"
+      padding_y: "gap/g-1_000"
+      font_size: "size/1_375"
+      line_height: "line height/text/1_375"
+    -
+      size: "large"
+      padding_x: "gap/g-2_000"
+      padding_y: "gap/g-1_250"
+      font_size: "size/1_625"
+      line_height: "line height/text/1_625"
+    -
+      size: "extra large"
+      padding_x: "gap/g-2_500"
+      padding_y: "gap/g-1_500"
+      font_size: "size/1_875"
+      line_height: "line height/text/1_875"
+a11y:
+  -
+    status: "requires"
+    note: "Supply meaningful names and content. Keyboard and native semantics are implemented, but manual Chrome/Orca evaluation and contrast review are pending."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4780:26517"
+  last_verified: "2026-10-17"
+limitations:
+  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+figma_notes:
+  - "Figma is filled and hover/focus are derived web states. Counter text remains consumer-supplied and independent of maxlength. Native scrollbars and resize affordance replace static Figma drawings; shared native scrollbar CSS is reused. Existing field effects and Label are composed."

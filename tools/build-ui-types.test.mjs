@@ -109,7 +109,7 @@ test("a snippet-only instance retains its name and rejects unsupported renderer 
 });
 
 test("window actions retain native click events and dialog closing retains Event", () => {
-  for (const name of ["onprimaryclick", "onsecondaryclick", "ontertiaryclick"]) {
+  for (const name of ["onprimaryclick", "onsecondaryclick", "ontertiaryclick", "onundoclick"]) {
     assert.equal(fieldFor({ name, kind: "event" }).type, "(event: MouseEvent) => void");
   }
   assert.equal(fieldFor({ name: "onclose", kind: "event" }).type, "(event: Event) => void");

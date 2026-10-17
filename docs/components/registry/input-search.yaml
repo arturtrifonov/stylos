@@ -1,7 +1,3 @@
-# Hand-edited. This file is the source for its component's structural data.
-# The CSV import that created it ran once, on 2026-08-20, and will not run
-# again — see docs/components/registry/README.md for the schema and workflow.
-
 id: "Input Search"
 name: "Input Search"
 level: "object"
@@ -22,7 +18,9 @@ children:
   - "Loader"
 parents:
   - "Accordion"
-  - "Alert"
+  - "Alert Inline"
+  - "Alert Popup"
+  - "Alert Popup Timer"
   - "Toast"
   - "Bottom Sheet"
   - "Flex Layout"
@@ -31,7 +29,277 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: ""
+notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
 import:
   batch: 1
   ready: true
+status: "draft"
+html: "<label><input type=\"search\"></label>"
+summary: "A single-line search query field with a persistent label."
+purpose: "Provide the product with a native search field now, reusing Input Text density, field effects and form semantics."
+use_when:
+  - "A single-line search query field with a persistent label."
+do_not_use_when:
+  -
+    text: "The value is chosen from a fixed set rather than typed as a query."
+    instead: "Select"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    default: "extra small"
+    description: "Field height, padding, text and icon sizes. Width belongs to the consumer."
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    default: "default"
+    description: "Editing mode. Hover and focus follow the native input; they are not simulated props."
+    values:
+      -
+        value: "default"
+      -
+        value: "read only"
+      -
+        value: "disabled"
+  -
+    name: "validation"
+    kind: "variant"
+    default: "off"
+    description: "Consumer-supplied checking result. Error and warning show supporting text; success shows only a mark. Read-only and disabled suppress the outcome. Only error sets aria-invalid; a warning is advisory."
+    values:
+      -
+        value: "off"
+      -
+        value: "error"
+      -
+        value: "warning"
+      -
+        value: "success"
+  -
+    name: "value"
+    kind: "text"
+    default: ""
+    description: "Native text value, bindable in Svelte. The Figma input text property maps here; is filled follows whether this value is empty."
+  -
+    name: "has label"
+    kind: "boolean"
+    default: true
+    description: "Shows the associated Label above the field. When hidden, supply an external label or accessible name."
+  -
+    name: "label text"
+    kind: "text"
+    default: "Label"
+    description: "Passed to the nested Label and used as the visible field's accessible name."
+  -
+    name: "has additional text"
+    kind: "boolean"
+    default: false
+    description: "Shows the Label's supporting line outside error and warning, which require the line."
+    controls:
+      - "additional text"
+  -
+    name: "additional text"
+    kind: "text"
+    default: "Additional text"
+    description: "Hint or validation message, associated with the field through aria-describedby."
+  -
+    name: "has placeholder"
+    kind: "boolean"
+    default: true
+    description: "Enables the native placeholder. A hint in the supporting line remains visible while typing."
+    controls:
+      - "placeholder text"
+  -
+    name: "placeholder text"
+    kind: "text"
+    default: "Placeholder text"
+    description: "Example format for the empty field; does not provide its accessible name."
+  -
+    name: "has leading icon"
+    kind: "boolean"
+    default: false
+    description: "Shows the supplied leading decorative mark. No placeholder drawing is substituted."
+    controls:
+      - "leading icon"
+  -
+    name: "leading icon"
+    kind: "instance"
+    svelte_type: "snippet"
+    description: "Decorative snippet before the value, normally Icon."
+  -
+    name: "has trailing icon"
+    kind: "boolean"
+    default: true
+    description: "Shows the supplied trailing decorative mark."
+    controls:
+      - "trailing icon"
+  -
+    name: "trailing icon"
+    kind: "instance"
+    svelte_type: "snippet"
+    description: "Decorative snippet after validation. Not an action slot."
+  -
+    name: "has suffix text"
+    kind: "boolean"
+    default: false
+    description: "Shows a unit or qualifier after the value; it is not part of the submitted value."
+    controls:
+      - "suffix text"
+  -
+    name: "suffix text"
+    kind: "text"
+    default: "Suffix"
+    description: "Unit or qualifier, included in the field's accessible description."
+  -
+    name: "is required"
+    kind: "boolean"
+    default: false
+    description: "Native required constraint and the nested Label's required marker."
+  -
+    name: "id"
+    kind: "string"
+    description: "Native control ID. A stable instance ID is generated when omitted."
+  -
+    name: "name"
+    kind: "string"
+    description: "Native form-data key."
+  -
+    name: "form"
+    kind: "string"
+    description: "ID of an external form, when the field is outside it."
+  -
+    name: "autocomplete"
+    kind: "string"
+    description: "Native autocomplete hint."
+  -
+    name: "accessible name"
+    kind: "text"
+    description: "Nonvisual accessible name when has label is false."
+  -
+    name: "label ids"
+    kind: "string"
+    description: "Space-separated external label IDs for aria-labelledby when has label is false."
+  -
+    name: "description ids"
+    kind: "string"
+    description: "Additional description IDs, combined with the component's supporting text and suffix."
+  -
+    name: "oninput"
+    kind: "event"
+    description: "Native input event; value binding is already updated when the callback runs."
+  -
+    name: "onchange"
+    kind: "event"
+    description: "Native change event when the edited value is committed."
+sizing_model:
+  horizontal: "fixed"
+  vertical: "hug"
+  adjustable:
+    horizontal: true
+    vertical: false
+  intent: "Same five field heights and text/icon geometry as Input Text. Width belongs to the consumer."
+  sizes:
+    -
+      size: "extra small"
+      field_height: "size/s-3_000"
+      padding_inline: "gap/g-1_000"
+      gap: "gap/g-0_500"
+      stack_gap: "gap/g-0_250"
+      font_size: "size/0_750"
+      line_height: "line height/string/0_750"
+      label_font_size: "size/0_750"
+      label_line_height: "line height/string/0_750"
+      message_font_size: "size/0_625"
+      message_line_height: "line height/string/0_625"
+      suffix_font_size: "size/0_625"
+      suffix_line_height: "line height/string/0_625"
+      icon: "size/s-2_000"
+      validation_icon: "size/s-1_500"
+    -
+      size: "small"
+      field_height: "size/s-4_000"
+      padding_inline: "gap/g-1_250"
+      gap: "gap/g-0_625"
+      stack_gap: "gap/g-0_375"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+      label_font_size: "size/0_875"
+      label_line_height: "line height/string/0_875"
+      message_font_size: "size/0_625"
+      message_line_height: "line height/string/0_625"
+      suffix_font_size: "size/0_625"
+      suffix_line_height: "line height/string/0_625"
+      icon: "size/s-2_500"
+      validation_icon: "size/s-1_750"
+    -
+      size: "medium"
+      field_height: "size/s-5_000"
+      padding_inline: "gap/g-1_500"
+      gap: "gap/g-0_750"
+      stack_gap: "gap/g-0_500"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+      label_font_size: "size/1_000"
+      label_line_height: "line height/string/1_000"
+      message_font_size: "size/0_750"
+      message_line_height: "line height/string/0_750"
+      suffix_font_size: "size/0_750"
+      suffix_line_height: "line height/string/0_750"
+      icon: "size/s-3_000"
+      validation_icon: "size/s-2_000"
+    -
+      size: "large"
+      field_height: "size/s-6_000"
+      padding_inline: "gap/g-2_000"
+      gap: "gap/g-0_875"
+      stack_gap: "gap/g-0_625"
+      font_size: "size/1_250"
+      line_height: "line height/string/1_250"
+      label_font_size: "size/1_125"
+      label_line_height: "line height/string/1_125"
+      message_font_size: "size/0_750"
+      message_line_height: "line height/string/0_750"
+      suffix_font_size: "size/0_750"
+      suffix_line_height: "line height/string/0_750"
+      icon: "size/s-3_500"
+      validation_icon: "size/s-2_250"
+    -
+      size: "extra large"
+      field_height: "size/s-7_000"
+      padding_inline: "gap/g-2_500"
+      gap: "gap/g-1_000"
+      stack_gap: "gap/g-0_750"
+      font_size: "size/1_500"
+      line_height: "line height/string/1_500"
+      label_font_size: "size/1_250"
+      label_line_height: "line height/string/1_250"
+      message_font_size: "size/0_875"
+      message_line_height: "line height/string/0_875"
+      suffix_font_size: "size/0_875"
+      suffix_line_height: "line height/string/0_875"
+      icon: "size/s-4_000"
+      validation_icon: "size/s-2_500"
+a11y:
+  -
+    status: "requires"
+    note: "Supply meaningful names and content. Keyboard and native semantics are implemented, but manual Chrome/Orca evaluation and contrast review are pending."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4833:15163"
+  last_verified: "2026-10-17"
+limitations:
+  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+  - "Search execution belongs to the enclosing form or oninput/onchange consumer. The trailing search mark is decorative."
+figma_notes:
+  - "Figma input text becomes bindable value; is filled follows the value; hover/focus follow the browser. The default trailing mark is search. Optional additional text inside the Figma field maps to suffix text; Label supporting text remains additional text in the web API. No result popup, filtering, debounce, submit action or clear action is invented."

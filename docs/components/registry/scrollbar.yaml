@@ -11,7 +11,9 @@ flow_behavior:
 parents:
   - "Accordion"
   - "Code Editor Text Area"
-  - "Alert"
+  - "Alert Inline"
+  - "Alert Popup"
+  - "Alert Popup Timer"
   - "Toast"
   - "Bottom Sheet"
   - "Flex Layout"

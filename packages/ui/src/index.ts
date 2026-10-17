@@ -91,3 +91,41 @@ export type { ModalProps } from "./components/modal/props.ts";
 
 export { default as Drawer } from "./components/drawer/Drawer.svelte";
 export type { DrawerProps } from "./components/drawer/props.ts";
+
+export { default as Accordion } from "./components/accordion/Accordion.svelte";
+export type { AccordionProps } from "./components/accordion/props.ts";
+
+export { default as AccordionHeader } from "./components/accordion-header/AccordionHeader.svelte";
+export type { AccordionHeaderProps } from "./components/accordion-header/props.ts";
+
+export { default as AlertInline } from "./components/alert-inline/AlertInline.svelte";
+export type { AlertInlineProps } from "./components/alert-inline/props.ts";
+
+export { default as AlertPopup } from "./components/alert-popup/AlertPopup.svelte";
+export type { AlertPopupProps } from "./components/alert-popup/props.ts";
+
+export { default as AlertPopupTimer } from "./components/alert-popup-timer/AlertPopupTimer.svelte";
+export type { AlertPopupTimerProps } from "./components/alert-popup-timer/props.ts";
+
+export { default as InputSearch } from "./components/input-search/InputSearch.svelte";
+export type { InputSearchProps } from "./components/input-search/props.ts";
+
+export { default as ProgressBar } from "./components/progress-bar/ProgressBar.svelte";
+export type { ProgressBarProps } from "./components/progress-bar/props.ts";
+
+export { default as Switcher } from "./components/switcher/Switcher.svelte";
+export type { SwitcherProps } from "./components/switcher/props.ts";
+
+export { default as SwitcherItem } from "./components/switcher-item/SwitcherItem.svelte";
+export type { SwitcherItemProps } from "./components/switcher-item/props.ts";
+
+export { default as TabsHorizontal } from "./components/tabs-horizontal/TabsHorizontal.svelte";
+export type { TabsHorizontalProps } from "./components/tabs-horizontal/props.ts";
+
+export { default as TabItem } from "./components/tab-item/TabItem.svelte";
+export type { TabItemProps } from "./components/tab-item/props.ts";
+
+export { default as TextArea } from "./components/text-area/TextArea.svelte";
+export type { TextAreaProps } from "./components/text-area/props.ts";
+export { tabsBehavior } from "./behaviors/tabs.ts";
+export { switcherBehavior } from "./behaviors/switcher.ts";

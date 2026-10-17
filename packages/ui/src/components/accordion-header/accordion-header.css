@@ -1,0 +1,43 @@
+@import "../icon/icon.css";
+@import "../../behaviors/field.css";
+
+.stylos-accordion-header {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: calc(100%);
+  height: var(--_stylos-input-height);
+  gap: var(--_stylos-input-gap);
+  padding: 0 var(--_stylos-input-padding);
+  border: 0;
+  border-radius: var(--stylos-radius-medium);
+  background: transparent;
+  color: var(--stylos-color-text-base);
+  cursor: pointer;
+  text-align: start;
+  font-family: var(--stylos-font-family-normal);
+  font-weight: var(--stylos-font-weight-emphasis);
+  font-size: var(--_stylos-accordion-font);
+  line-height: var(--_stylos-accordion-line);
+}
+.stylos-accordion-title { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.stylos-accordion-header[data-expand-icon-position="trailing"] .stylos-accordion-chevron { order: 2; }
+:is(.stylos-accordion-chevron,.stylos-accordion-icon) {
+  --stylos-icon-footprint: var(--_stylos-input-icon-size);
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: none;
+  width: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical));
+  height: var(--_stylos-input-icon-size);
+}
+:is(.stylos-accordion-chevron,.stylos-accordion-icon) > * { position: absolute; right: 0; }
+.stylos-accordion-header:enabled:hover { background: var(--stylos-color-surface-subtle-base-hover); }
+.stylos-accordion-header:enabled:active { background: var(--stylos-color-surface-subtle-base-active); }
+.stylos-accordion-header:focus-visible { outline: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary); outline-offset: var(--stylos-border-width-thick); }
+.stylos-accordion-header:disabled { color: var(--stylos-color-text-disabled); cursor: default; }
+.stylos-accordion-header[data-size="extra small"] { --_stylos-accordion-font: var(--stylos-font-size-0_875); --_stylos-accordion-line: var(--stylos-font-line-height-string-0_875); }
+.stylos-accordion-header[data-size="small"] { --_stylos-accordion-font: var(--stylos-font-size-1_125); --_stylos-accordion-line: var(--stylos-font-line-height-string-1_125); }
+.stylos-accordion-header[data-size="medium"] { --_stylos-accordion-font: var(--stylos-font-size-1_375); --_stylos-accordion-line: var(--stylos-font-line-height-string-1_375); }
+.stylos-accordion-header[data-size="large"] { --_stylos-accordion-font: var(--stylos-font-size-1_625); --_stylos-accordion-line: var(--stylos-font-line-height-string-1_625); }
+.stylos-accordion-header[data-size="extra large"] { --_stylos-accordion-font: var(--stylos-font-size-1_875); --_stylos-accordion-line: var(--stylos-font-line-height-string-1_875); }

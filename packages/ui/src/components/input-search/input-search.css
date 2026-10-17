@@ -1,0 +1,4 @@
+@import "../../behaviors/field.css";
+
+/* One configured search mark; no browser-specific duplicate cancel action. */
+.stylos-input-search input::-webkit-search-cancel-button { appearance: none; }

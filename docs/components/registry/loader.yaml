@@ -16,7 +16,7 @@ use_when:
 do_not_use_when:
   -
     text: "The progress is known as a proportion. A spinner in place of a bar throws away the one thing the person wants to know."
-    instead: "Progress"
+    instead: "Progress Bar"
   -
     text: "The mark is static — a symbol or decoration rather than a running process. This component is its animation; stopped, it is a shape with no meaning."
     instead: "Icon"
@@ -63,7 +63,7 @@ parents:
   - "Select"
   - "Select Cascade"
   - "Text Area"
-  - "Progress"
+  - "Progress Bar"
   - "Pull to Refresh"
   - "Table Cell Text"
   - "Table Cell Link"
@@ -73,7 +73,9 @@ parents:
   - "Table Cell Image"
   - "Table Cell Heading"
   - "Tab Item"
-  - "Alert"
+  - "Alert Inline"
+  - "Alert Popup"
+  - "Alert Popup Timer"
   - "Toast"
   - "Bottom Sheet"
   - "Flex Layout"

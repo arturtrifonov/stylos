@@ -89,6 +89,21 @@ and CSS imports have an explicit migration table in the package guide.
 
 ## 2. The three flows
 
+**Amended 2026-10-17 — urgent product integration under draft contracts.** The
+owner expanded the starting set with Accordion, Alert Inline/Popup/Popup Timer,
+Input Search, Progress Bar, Switcher, Tabs Horizontal and Text Area. Their public
+contracts, plus Accordion Header, Switcher Item and Tab Item, remain `draft` even
+when implemented and exported. Contract status, implementation presence and core
+membership are separate facts. Current Figma designs are the provisional visual
+reference; limitations record obsolete nested definitions and unresolved design
+choices. Search and Text Area share the field layer and native forms. Switcher
+uses native radios; horizontal tabs use a framework-free roving-focus adapter
+with consumer-owned panels. Alerts expose actions and bindable presence; their
+host owns positioning and lifetime. Timer is a controlled presentation, not an
+automatic-dismissal service. All generated types and stories still derive from
+the registry; no version is bumped and no readiness or accessibility assessment
+is inferred from a build.
+
 **Amended 2026-10-12 — Modal and Drawer together, selected by the owner.** The two layouts compose one private window frame with the verified five size profiles and native Button/Button Inner controls. Their native dialog adapter owns bindable visibility, interrupted Motion, Escape, focus restoration and modal scroll locks. Modal uses the browser top layer and level-6 free motion; Drawer is non-modal with physical left/right edge travel and owner-confirmed elevation 5. Drawer scrolls only its content, using the verified medium/absolute scrollbar. Anchored adapters portal into the owning dialog outside its clipped panel and close with that owner. Explicit window action callbacks retain native click events. No dimming colour is invented for the absent Figma backdrop.
 
 **Amended 2026-10-12 — Table core.** The owner selected the basic table before Modal. The web default is medium, selected by the owner independently of the Figma set default. Four native Svelte components render th/td/tr and share verified Figma cell geometry and row density through a size context. Consumers supply table/thead/tbody/colgroup and the column widths; `stylos-table` establishes native fixed layout without flex rows or spacer cells. Row inline insets and heading block padding are applied to native cells, preserving aligned columns. Header controls compose Button Inner and report native click events to the data owner; sorting and filtering remain controlled. Text keeps Figma leadingTrim=NONE and full DOM strings. Row background hover follows the current Figma coupling to banding, with shared micro/linear Motion. Standalone static previews receive valid native table scaffolding.
@@ -212,6 +227,8 @@ This is the only closed loop in the system, and the only automated step anywhere
 | `packages/ui/src/components/*/props.ts` | `docs/components/registry/*.yaml` | `tools/build-ui-types.mjs` | no — derived, rebuilt on demand |
 | `apps/workshop/stories/generated/` | `docs/components/registry/*.yaml` | `tools/build-ui-stories.mjs` | no — derived, rebuilt on demand |
 | `packages/ui/dist/package/` | `packages/ui/src/` | `svelte-package` | no — derived, rebuilt on demand |
+| `apps/workshop/storybook-static/` — the workshop | registry-generated stories and authored compositions | Storybook | no — derived, rebuilt on demand |
+| `build/ui-release/` — Stage 5 build/browser evidence and CSS-only smoke page | the core membership in `PLAN.md`, registry APIs and implemented wrappers/CSS | `tools/check-ui-release.mjs`; browser checks record their own results | no — evidence is rebuilt, with a source fingerprint |
 | `packages/ui/dist/css/<name>.css`, `dist/css/stylos.css` — the CSS export, per component and in aggregate, consumable without Svelte | `packages/ui/src/components/<name>/<name>.css` | `tools/build-ui-css.mjs` | no — derived, rebuilt on demand |
 | `packages/ui/dist/fonts.css`, `dist/assets/fonts/` — the font export: the `@font-face` rules and woff2 subsets behind the families `tokens.css` names | `assets/fonts/`, `FONT_FACES` in `tools/lib/theme.mjs` | `tools/build-ui-fonts.mjs` | no — derived, rebuilt on demand |
 | `figma/text-styles.yaml` — the record of the Figma text styles, aliases into `tokens/`, never raw values | a Plugin API read of the Styles file (Figma has no export for Styles) | `tools/import-styles.mjs` | yes — generated, never hand-edited |
@@ -236,7 +253,7 @@ Stated explicitly so it is never assumed.
 Ordered by cost of leaving them.
 
 1. **The token record is stale by default.** The import mechanism exists; the habit does not. Neither a script nor a person can rely on `tokens/` reflecting the live Figma file.
-2. **Most contracts are still not exercised by a real build.** *Narrowed 2026-09-06 — the line used to read "nothing is validated by a real build", and that stopped being true when `@stylos/ui` landed:* `npm run ui:check` now generates the token CSS, the props types and the stories from the record and type-checks the built components against them, so the tokens and the implemented contracts are exercised on every run. What remains of the break is coverage — thirty-five entries of 108 are implemented (2026-10-12: the Radio and Toggle families join the five wave-1 primitives, Icon, Tooltip, three Checkbox components, Button, Button Icon, Link, Button Inner, Tag, Tag Interactive, Input Text, Select, Dropdown, Dropdown Item Default/Parent/Checkbox/Toggle and Table Cell Heading/Text and Table Row Head/Body, Modal and Drawer), and every contract outside them is still words no build has ever read.
+2. **Most contracts are still not exercised by a real build.** *Narrowed 2026-09-06 — the line used to read "nothing is validated by a real build", and that stopped being true when `@stylos/ui` landed:* `npm run ui:check` now generates the token CSS, the props types and the stories from the record and type-checks the built components against them, so the tokens and the implemented contracts are exercised on every run. What remains of the break is coverage: the implemented subset is derived from component directories and the registry. Inventory entries outside it still describe components that no package build has exercised.
 
 3. **The retired specs and decision records left content with nothing carrying it.** `docs/specs/` and `docs/decisions/` were deleted on 2026-09-10 — sixteen work orders and two decision records, four of the specs still open at the time. Most citations of them were provenance ("built by SPEC 0008") and read as well without the link. Some were not. `PLAN.md`'s `0.2.0` gate cites SPEC 0009 §3 for the props ↔ `api` mapping; `tools/README.md` cites SPEC 0010 §2.2 for the independent CSS export, SPEC 0012 for the emitted icon shape and SPEC 0001 for the token pipeline's reasoning; `PLAN.md`'s risk table leans on ADR 0002's revisit clause for Zag.js. Those sections are in git history and nowhere in the tree, so a reader who needs one has to know it was deleted before they can find it.
 
@@ -272,6 +289,7 @@ An open question is anything not settled by a rule in one of those four director
 - **Language:** English, throughout the repository, including commit messages.
 - **Rules go in the four guideline directories** — `docs/foundations/`, `docs/behavior/`, `docs/patterns/`, `docs/content/` — one file per topic, each rule with an ID and its reasoning beside it, in the form [`docs/RULES.md`](docs/RULES.md) fixes. Everything else is a rule or a `CHANGELOG.md` line: `docs/decisions/` and `docs/specs/` were retired on 2026-09-10, and a decision that is not a rule is now recorded where it lands — in this document, in the guideline it changes, or in the release notes (§5).
 - **Generated output is never edited by hand.** Change the source and rebuild.
+- **Stage 5 acceptance is reproducible.** Acceptance commands first rebuild the UI artifacts, then check core coverage, fresh props, packaged rendering, CSS/font exports and all variant combinations, including visibility gates. Both SSR and the browser alias the component entry to `dist/package/index.js`. TypeScript's `rewriteRelativeImportExtensions` emits `.js` references to packaged modules while preserving `.ts` source imports. The fingerprint covers source inputs, fonts/text records, actual dist bytes and the independent HTML; changed inputs invalidate a running browser session. SSR checks whole class tokens and forwarded variant attributes, and runs in CI. The separate browser harness records rendering, deferred errors/warnings, loaded font faces, Default-composition axe results after finite motion settles, and CSS-only footprints. `ui:verify:results` rejects missing, malformed, incomplete, failing or stale evidence. No visual-parity or screen-reader support claim follows; the [acceptance record](packages/ui/verification/0.2.0.md) keeps manual evaluation results. Packaging scratch files under `.svelte-kit/` are generated and ignored.
 - **Figma exports are not kept.** `npm run tokens:import` reads one and writes `tokens/`; the export itself is discarded. History lives in git.
 - **Figma is never written to from this repository.** Explicit non-goal until a reliable round trip exists.
 - **A CSS or platform feature may be relied on once it is [Baseline Widely available](https://web.dev/baseline)** — supported across the core browser set, and stable there for the period Baseline defines. This is deliberately not a list of browsers. Baseline can be checked mechanically, because `web-features` data answers "is X widely available" with a lookup rather than a judgement call. It is also maintained by someone else: a version list written here ("last 2 versions of…") would be stale within a quarter, and nobody would re-check it on a schedule. It is stricter than the scope needs, because Baseline's browser set includes mobile browsers and Stylos is desktop-only; that is accepted, and the exception covers it. **A feature below the floor may be used where the code states which feature it is, why it is used, and what happens in a browser without it** — a `@supports` fallback, or a degradation that loses polish but not function. An exception nobody wrote down is a bug. This is a constraint on the build and not a rule of the design language, which is why it carries no rule ID: that a browser supports a feature is never a reason for a design to use it, and the only power the floor has over a design is to rule out what cannot be built.
@@ -340,5 +358,18 @@ That is what the table above means when the change is made in Figma rather than 
 **`CHANGELOG.md` is the only source of notes.** The GitHub release body and the Figma publish description are copies of it, made at the moment of release and never edited afterwards.
 
 **`meta/version` is checked, not trusted.** `npm run tokens:import` records it in `figma/library.yaml` and `npm run tokens:check` fails when it disagrees with `package.json`. Because the export is manual, it answers what the library reported at the last export and nothing about right now — which is enough, since the moment it matters is the release.
+
+**Owner-directed exception, 2026-10-17 — early `0.2.0` implementation release.**
+The owner explicitly authorized GitHub merges and release execution by the agent,
+with green engineering CI, while transferring all unfinished Stage 5 acceptance
+to `0.3.0`; the proof and consumer stage formerly named `0.3.0` becomes `0.4.0`.
+See `PLAN.md` §1 and [the acceptance hand-off](packages/ui/verification/0.3.0.md).
+Root, UI and workshop versions move together to `0.2.0`; draft contracts remain
+draft. Figma synchronization/publication verification is part of the deferred
+acceptance: the generated export record truthfully remains at its last observed
+`0.1.0`. Token checking warns only for that exact pair (strict mode fails); any
+other mismatch fails as before. This temporary exception neither creates an
+independent Figma version line nor establishes accessibility or visual parity.
+The `0.3.0` acceptance must close it with real evidence and a fresh export.
 
 **The milestone list is not duplicated outside `PLAN.md` §9**, GitHub Milestones included. §8 says why.

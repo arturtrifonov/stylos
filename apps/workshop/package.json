@@ -1,6 +1,6 @@
 {
   "name": "stylos-workshop",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Storybook workshop for @stylos/ui. Stories are generated from the registry (tools/build-ui-stories.mjs) — run npm run ui:generate at the root first.",
   "type": "module",

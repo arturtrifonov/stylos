@@ -12,27 +12,61 @@ Not normative. Rules live in [`ARCHITECTURE.md`](ARCHITECTURE.md) and [`docs/fou
 
 ## 1. The release ladder
 
-Two tags remain, each a decision about distribution rather than a percentage of work done, and each with a gate that can be checked rather than judged.
+**Amended 2026-10-17 — owner-directed early release.** Ship `0.2.0` with the
+current implementation, move every unfinished acceptance check to `0.3.0`, and
+shift the former `0.3.0` proof/consumer stage to `0.4.0` (its follow-up `0.3.1`
+becomes `0.4.1`). Completed measurements remain evidence with their original
+scope/date; deferred checks are not recorded as passed. The twelve urgent
+contracts remain `draft`. This explicit decision replaces the earlier Stage 5
+release gate and authorizes the agent to merge and release through GitHub.
+
+The release ladder now separates early integration, acceptance and product proof.
 
 | Tag | The decision it makes | Cut at |
 | --- | --- | --- |
-| `0.2.0` | the system renders — `@stylos/ui` builds the core set from the generated tokens | end of S5 |
-| `0.3.0` | the system is proved — a dense screen is built from Stylos by an agent, not by its author | end of S6 |
+| `0.2.0` | the current starting set is available for early product integration, with explicit acceptance debt | S5 implementation |
+| `0.3.0` | the expanded starting set completes all deferred component acceptance | S5 acceptance |
+| `0.4.0` | the system is proved — a dense screen is built from Stylos by an agent, not by its author | end of S6 |
 
 `0.1.0` made the first of these decisions — the contracts for the core set are fixed and the Figma library implements them — and was cut on 2026-09-05. Its gate is SPEC 0006 and its notes are in `CHANGELOG.md`; neither is restated here.
 
-All three fall inside the `0.1` milestone, whose checklist is §4.1. The versioning rules are [`ARCHITECTURE.md`](ARCHITECTURE.md) §9.
+All four fall inside the `0.1` milestone, whose checklist is §4.1. The versioning rules are [`ARCHITECTURE.md`](ARCHITECTURE.md) §9.
 
 ### `0.2.0`
 
-| # | Requirement | Verified by |
-| --- | --- | --- |
-| 1 | `@stylos/ui` builds and renders every documented variant of the core set | the workshop build |
-| 2 | Every component's props are exactly its entry's `api` under SPEC 0009 §3 | the compiler, against generated `props.ts` |
-| 3 | No value outside `tokens.css` — no hex, no raw `px` | Stylelint |
-| 4 | The component CSS is consumable without Svelte | the export resolves and renders in a plain HTML page |
+Release the current implementation with its provisional APIs and documented
+limits. Root, UI and workshop versions agree at `0.2.0`; the changelog names
+breaking changes, draft contracts and deferred acceptance. Merge through GitHub
+with passing CI, including unit/contract checks, token integrity, CSS lint,
+Svelte checking, package/workshop builds and packaged SSR. These engineering
+checks remain in force; they do not substitute for the acceptance below.
+
+No new distribution channel is introduced: the package stays private. The last
+recorded Figma marker remains `0.1.0`; synchronization/publication verification
+and a fresh real export move to `0.3.0`. `tokens:check` warns for this exact
+`0.2.0`/`0.1.0` pair; any other mismatch still fails, and strict mode rejects the
+warning. Never fabricate or hand-edit an export to make a release pass.
 
 ### `0.3.0`
+
+Complete every outstanding Stage 5 check against the expanded 46-entry core,
+including the draft additions. The complete hand-off is
+[0.3.0 acceptance](packages/ui/verification/0.3.0.md). Retain these original gates:
+
+| # | Requirement | Verified by |
+| --- | --- | --- |
+| 1 | `@stylos/ui` builds and renders every documented variant of the core set | the workshop build, `ui:verify` and the browser evidence checked by `ui:verify:results` |
+| 2 | Every component's props are exactly its entry's `api`, with the [documented name conversion](packages/ui/README.md#name-conversion) | the compiler, against generated `props.ts`; `ui:verify` checks generation freshness |
+| 3 | No value outside `tokens.css` — no hex, no raw `px` | Stylelint |
+| 4 | The component CSS is consumable without Svelte | `ui:verify` checks export resolution; browser acceptance checks the CSS-only core page |
+
+In addition, resolve the 18 incomplete axe checks; evaluate Linux Chrome + Orca;
+finish visual, contrast, focus, zoom/reflow, reduced-motion and composition
+review; fix and repeat failing cases; synchronize/re-import the Figma version
+and verify publication. Record exact scope, versions and remaining limitations.
+No component or full-product accessibility claim follows merely from a tag.
+
+### `0.4.0`
 
 | # | Requirement | Verified by |
 | --- | --- | --- |
@@ -44,7 +78,7 @@ All three fall inside the `0.1` milestone, whose checklist is §4.1. The version
 
 It replaces the earlier phrasing, which assumed a person doing the building. The bar did not move; who holds the tools did, because the stated consumer on this horizon is the owner and the coding agents he runs (ADR 0002, *Constraints already set*).
 
-**Not required for either:** a native icon set, mobile support, client-brand themes beyond the contract, a public documentation site, a licence, a distribution channel, or coverage of all 114 registry entries.
+**Not required for these releases:** a native icon set, mobile support, client-brand themes beyond the contract, a public documentation site, a licence, a distribution channel, or coverage of the entire registry.
 
 ---
 
@@ -54,12 +88,10 @@ Everything below is generated from `tokens/` and the registry, or authored once.
 
 | Artifact | Built by | Lands in | Committed | Consumer | Release |
 | --- | --- | --- | --- | --- | --- |
-| Svelte components | `svelte-package` | `packages/ui/dist/package/` | no | Svelte applications | `0.2.0` |
-| The workshop | Storybook | `apps/workshop/` | no | the frontend developer — behaviour and states | `0.2.0` |
-| `registry.json` — the contracts machine-readable, with the unimplemented marked as such | a generator in `tools/` | `packages/ui/dist/` | no | an agent choosing a component | `0.3.0` |
-| The consumer skill — how to build a screen on Stylos | authored once | `packages/ui/skill/` | yes | an agent in any tool | `0.3.0` |
-| The Stylelint config | authored once | `packages/ui/` | yes | the consumer's own lint run | `0.3.0` |
-| The design-system bundle — one preview per component, `@dsCard` markers | a generator in `tools/` | `packages/ui/dist/design-system/` | no | Claude Design | `0.3.0` |
+| `registry.json` — the contracts machine-readable, with the unimplemented marked as such | a generator in `tools/` | `packages/ui/dist/` | no | an agent choosing a component | `0.4.0` |
+| The consumer skill — how to build a screen on Stylos | authored once | `packages/ui/skill/` | yes | an agent in any tool | `0.4.0` |
+| The Stylelint config | authored once | `packages/ui/` | yes | the consumer's own lint run | `0.4.0` |
+| The design-system bundle — one preview per component, `@dsCard` markers | a generator in `tools/` | `packages/ui/dist/design-system/` | no | Claude Design | `0.4.0` |
 | Code Connect files | a generator in `tools/`, from `api` and `figma.node_id` | `figma/code-connect/` | yes | Figma MCP | alpha |
 
 `tokens.css` and `tokens.json` are absent from this table because they exist — they are `ARCHITECTURE.md` §3 rows already.
@@ -79,7 +111,7 @@ Everything below is generated from `tokens/` and the registry, or authored once.
 1. **Contract before its component.** A component's `api` is corrected to describe the web component in the same session its `.svelte` is written — per component, never as a sweep (ADR 0002, SPEC 0009 §5).
 2. **Every open question is time-boxed to one session.** Solo projects stall on decisions, not on work. If a question cannot be reasoned to a conclusion in one sitting, the conclusion is "adopt what the system already does, write it down as provisional, move on."
 3. **A stage is not finished until its gate passes.** Gates are mechanical where possible — a command exits 0 — rather than a judgement call.
-4. **Scope is cut from breadth, never from the gate.** If time runs short, fewer components — not a partially built one.
+4. **Gate changes require an explicit owner decision, recorded in place.** The 2026-10-17 exception splits early integration (`0.2.0`) from acceptance (`0.3.0`); it does not mark an unfinished check complete. Otherwise cut breadth before a gate.
 5. **Generated output is never authored.** A file a generator can write is a file nobody edits.
 
 ---
@@ -98,6 +130,23 @@ The `0.1` milestone's checklist, and the membership record for every entry the w
 | 4 | Input | Input Text, Select, Dropdown Item Default / Parent / Checkbox / Toggle, Dropdown | a toolbar and filters above that table | 1 wk |
 | 5 | The Button family | Button, Button Icon | every action on the screen | 2 wk |
 | 6 | The shell | Modal, Drawer, Tooltip | the Stage 6 proof screen, composed | 1 wk |
+| 7 | Urgent product dependencies | Accordion, Accordion Header, Alert Inline, Alert Popup, Alert Popup Timer, Input Search, Progress Bar, Switcher, Switcher Item, Tabs Horizontal, Tab Item, Text Area | the first product consumes provisional library components rather than inventing replacements | immediate |
+
+*Amended 2026-10-17 — urgent starting-set expansion, explicitly requested by the owner.*
+Wave 7 is the immediate implementation priority, ahead of finishing Stage 5
+acceptance. Its nine product components and their compositional dependencies move
+into the starting set from alpha/beta. Write their web contracts first, retain
+`status: draft`, and implement the current Figma designs without waiting for
+contract confirmation. An implementation or a successful build does not promote
+these contracts to `ready`. They are available for early product integration;
+their provisional API and design may change during subsequent review. This avoids
+the product inventing a separate component that must later be replaced.
+Existing core acceptance and manual Chrome/Orca evaluation remain required for
+`0.3.0`, under the later same-day release amendment in §1; adding draft
+components does not certify accessibility.
+Alert's inventory entry is split into Inline, Popup and Popup Timer; Progress is
+renamed Progress Bar to match the selected Figma component. Accordion Header,
+Switcher Item and Tab Item accompany their parent components.
 
 *Amended 2026-09-07:* **Tooltip was built out of order**, ahead of the seven elements still open in wave 1 and the rest of wave 2 — the owner chose it explicitly. The table is a sequence rather than a gate, and nothing in it depends on the order being kept: the waves are grouped by what a screen needs next, not by what compiles after what. Wave 6's other two entries, Modal and Drawer, are untouched.
 
@@ -107,7 +156,8 @@ The `0.1` milestone's checklist, and the membership record for every entry the w
 
 *Amended 2026-10-10:* the owner selected **Toggle Input / Label / Text** next, from wave 2. The web API is binary false/true; mixed remains in Figma. The family retains one Default playground per component.
 
-The same six waves order the package's work in §4.2 — a component is implemented in the wave that wrote its contract, so the dependency order is already cut.
+The waves also order the package's work in §4.2. The urgent wave-7 amendment
+above takes priority over finishing acceptance of the original six waves.
 
 *Amended 2026-10-10:* the owner returned to **Link** before the remaining wave-1 components. It uses native navigation and the Default plus Icons playground workshop convention.
 
@@ -175,10 +225,22 @@ Work:
 - Implement in the slice order of SPEC 0009 §7 — Badge, Checkbox Input, Tooltip, Modal/Drawer, Dropdown, Select, the table, Button ×6. The first two are the pace test: after them the estimate below meets a real line of the package for the first time.
 - Correct each component's `api` as its contract is opened, per §3.1.
 - Add the independent CSS export to `packages/ui/package.json` — per component plus an aggregate, so a preview links one file and an application pulls only what it uses.
-- Stylelint, Vitest browser mode, Playwright for keyboard behaviour, axe on every story, all into the CI of SPEC 0008.
-- Select the screen-reader/browser matrix before designing manual checks, then assess keyboard, focus and assistive-technology behaviour in representative component compositions. Record the tested conditions and consumer obligations in the [package guide](packages/ui/README.md#accessibility-implementation-and-verification); automated checks alone do not establish conformance.
+- Run Stylelint, type checking, package/workshop builds and registry-derived packaged SSR acceptance in CI. Use the separate browser harness for rendering, variant-attribute assertions and axe on configured Default compositions; perform real keyboard checks in representative compositions.
+- Assess keyboard, focus and assistive-technology behaviour using the selected initial Linux Chrome + Orca matrix. Record tested versions, results and consumer obligations in the [package guide](packages/ui/README.md#accessibility-implementation-and-verification); automated checks alone do not establish conformance.
 
-**Gate:** the `0.2.0` table in §1.
+**Amended 2026-10-14 — Stage 5 verification approach:** replace the earlier
+Vitest browser/Playwright runner and every-story axe proposal with packaged SSR
+in CI and an explicit browser-harness run outside CI. The browser run covers
+the registry variant product, including open windows and active sorted headings,
+and asserts forwarded attributes. axe covers configured Default compositions,
+not every variant or authored story, and waits for surface motion to finish.
+Real browser keyboard checks and the owner's selected Chrome + Orca evaluation
+remain separate recorded evidence. This amendment states the implemented scope;
+it does not claim that the earlier proposed coverage has been delivered.
+
+**Gate (amended 2026-10-17):** implementation ships as `0.2.0`; the original
+acceptance and all unfinished checks gate `0.3.0` in §1. See the
+[acceptance hand-off](packages/ui/verification/0.3.0.md).
 **Estimate:** 10–12 weeks.
 
 **Amended 2026-10-10:** the owner selected Dropdown next and chose single-value selection first. Deliver the panel, Dropdown Item Default and external-trigger selection behaviour. Search, nested navigation and action menus remain later slices. Checkbox/Toggle rows and their native-control popup were added on 2026-10-11; staged Apply/Cancel remains a later owner slice. Optional bands retain the Figma layout and accept owner-supplied content; they are outside the current selection adapter.
@@ -187,7 +249,7 @@ Work:
 
 Assess the proof interface against FND-ACCESSIBILITY-01 across its complete user processes, including content and composition. Reuse component evidence from Stage 5 and add automated checks and human evaluation of the full interface; record scope, environments and remaining findings.
 
-**Why:** the `0.3.0` gate itself. Nothing before this has been validated by anything but its own tests.
+**Why:** the `0.4.0` gate itself. Nothing before this has been validated by anything but its own tests.
 
 The two generators this stage adds:
 
@@ -201,15 +263,15 @@ Work:
 
 - Build the two generators, and author the consumer skill — what exists, how to derive a contract's address from a component name, what is forbidden, which commands verify the result.
 - Build one dense screen — table view with filters, side panel, modal — in Figma from the library.
-- **Hand an agent the published artifacts and nothing else, and have it build the same screen.** Log every question it could not answer from them. Those are the gaps, and they outrank any remaining open question as `0.3.1` input.
+- **Hand an agent the published artifacts and nothing else, and have it build the same screen.** Log every question it could not answer from them. Those are the gaps, and they outrank any remaining open question as `0.4.1` input.
 - Sync the design-system bundle into a Claude Design project, one component at a time as previews land.
-- Tag `0.3.0`; write release notes against the `0.3.0` gate.
+- Tag `0.4.0`; write release notes against the `0.4.0` gate.
 
-The card group in a preview is the entry's `level` or `role` — both are filled on all 114 entries, so nothing new is authored to group them.
+The card group in a preview is the entry's `level` or `role` — both are filled on every registry entry, so nothing new is authored to group them.
 
 A preview is static: a Zag machine does not run in it, so an open menu or a visible focus ring renders from forced data attributes. That is a requirement on the generator, and it is why the pattern components' previews cost more than the primitives'.
 
-**Gate:** the `0.3.0` table in §1.
+**Gate:** the `0.4.0` table in §1.
 **Estimate:** 5 weeks.
 
 ---
@@ -220,17 +282,18 @@ At 5–10 h/week, from 2026-09-06:
 
 | Stage | Estimate | Cumulative | Cuts |
 | --- | ---: | ---: | --- |
-| S5 — `@stylos/ui` | 10–12 wk | 12 wk | `0.2.0` |
-| S6 — proof + consumer surface | 5 wk | **17 wk** | `0.3.0` |
+| S5 — `@stylos/ui` implementation | 10–12 wk (original estimate) | 12 wk (original estimate) | `0.2.0` |
+| S5 — deferred acceptance | re-estimate after recorded findings | not yet estimated | `0.3.0` |
+| S6 — proof + consumer surface | 5 wk | re-estimate after acceptance | `0.4.0` |
 
-**≈ 4 months.** S6 carries a week more than it did: the two generators and the skill are new, and the agent-built half of the proof screen replaces the hand-built one rather than adding to it.
+**The original estimate was ≈ 4 months; it is no longer a delivery date.** The separate acceptance stage must be re-estimated before a new cumulative schedule is claimed. S6 carries a week more than it did: the two generators and the skill are new, and the agent-built half of the proof screen replaces the hand-built one rather than adding to it.
 
 **Scope levers, in the order to pull them:**
 
 1. Implement `Button Base` alone in S5, leaving Outline and Ghost to alpha, and drop Tooltip from the proof screen. Saves ~2 weeks. Drawer, Modal and the table are named by the gate and are not available to cut.
-2. Ship the design-system bundle after `0.3.0`. It serves scenario 2 and gates nothing; the tag does not wait on it.
+2. Ship the design-system bundle after `0.4.0`. It serves scenario 2 and gates nothing; the tag does not wait on it.
 
-Do **not** pull: the consumer skill or `registry.json` — requirement 2 of the `0.3.0` gate is unpassable without them — or the proof screen.
+Do **not** pull: the consumer skill or `registry.json` — requirement 2 of the `0.4.0` gate is unpassable without them — or the proof screen.
 
 ---
 
@@ -246,7 +309,7 @@ Do **not** pull: the consumer skill or `registry.json` — requirement 2 of the 
 
 **The guideline set is a list of open questions with a file each.** SPEC 0013 created `docs/behavior/`, `docs/patterns/` and `docs/content/` complete and empty, plus nine more foundations; every file marked *Yet to fill* is something the system has not decided. They are not listed one by one here — the directory indexes are the list, and `npm run validate:rules` counts them. Filling one is per-topic work, scheduled when a component or a screen needs the answer, and the migration of the eight written foundations to the rule grammar is sequenced in that spec's §7.
 
-**Deliberately unanswered before `0.3.0`:** the project's public contact details, responsive breakpoints (desktop-only scope makes them premature), automated skill installation, and React or any other framework adapter — the layering allows one and nothing asks for it.
+**Deliberately unanswered before `0.4.0`:** the project's public contact details, responsive breakpoints (desktop-only scope makes them premature), automated skill installation, and React or any other framework adapter — the layering allows one and nothing asks for it.
 
 **A Stylos Figma plugin is intended**, and the reason is ergonomic rather than technical: it removes the manual export and the JSON handling from the loop entirely, and opens the direction of authoring the palette outside Figma. Its scope and timing are open, not its existence. It is not on the critical path — the current pipeline works — so it is scheduled when the manual step becomes the thing slowing the week down.
 
@@ -259,7 +322,7 @@ Do **not** pull: the consumer skill or `registry.json` — requirement 2 of the 
 | The S5 estimate is untested against real pace | slices 1–2 take materially longer than a week each | re-price after them rather than at the end |
 | A Zag machine is the wrong shape for a contract | two sessions on one pattern component | ADR 0002's revisit clause: behaviour by hand for that component, recorded in its contract |
 | The consumer artifacts are written by hand and drift | a preview or a `registry.json` edited rather than regenerated | they are generators or they are not built |
-| The proof screen gets skipped as "obvious" | `0.3.0` tagged without S6 | it is the gate |
+| The proof screen gets skipped as "obvious" | `0.4.0` tagged without S6 | it is the gate |
 | The agent-built half quietly becomes author-assisted | hints supplied mid-run and not logged | every question the agent could not answer from the artifacts is written down; that log is the deliverable |
 
 ---
@@ -278,12 +341,12 @@ A dedicated native Stylos icon preset, mobile support, writing to Figma from the
 
 The vocabulary — what a milestone is, how it differs from a release and from a wave, and why neither lives on a registry entry — is [`ARCHITECTURE.md`](ARCHITECTURE.md) §8. This section is the content: which decision waits on what.
 
-**A milestone is not a size budget**: putting more into one moves the decision later, it does not make the milestone wrong. And **waves do not stop at the core set** — §4.1's numbering is continuous, so when the `0.1` milestone closes, alpha's checklist is cut into waves 7, 8, 9 and §4.1 grows.
+**A milestone is not a size budget**: putting more into one moves the decision later, it does not make the milestone wrong. And **waves do not stop at the core set** — §4.1's numbering is continuous, so when the `0.1` milestone closes, alpha's checklist continues from wave 8 and §4.1 grows.
 
 | Milestone | The decision it opens | Entries |
 | --- | --- | --- |
-| alpha | the decision that the library is ready for **internal distribution** — someone other than the author builds on it | Input Color, Input Date, Input Datetime, Input Email, Input Number, Input Password, Input Search, Input Telephone, Input Time, Input URL, Text Area, Multiselect, Select Cascade, Date Picker, Slider, Chips, Uploader, Queryfield, Progress, Avatar, Image, Table Cell Actions, Table Cell Boolean, Table Cell Checkbox, Table Cell Expand, Table Cell Image, Table Cell Link, Table Cell Person, Table Cell Tags, Table Cell Heading Checkbox, Table Toolbar, Pagination, Button Group, Button Dropdown, Breadcrumbs, Tabs Horizontal, Tab Item, Tabs Vertical, Switcher, Scrollbar, Accordion, Accordion Header |
-| beta | the decision that it is ready **outside** — a product that is not ours, with the states a real screen has and an API that will not move under it | Toast, Alert, Popover, Skeleton Loader, Data Info, Metric, Card, List, Tree, Person, Event, Asset, Logo, Feature List, Hero, Code Snippet, Charts, Header, Side Panel Menu, Steps, Flex Layout, Tag Interactive, Table Cell Multiline |
+| alpha | the decision that the library is ready for **internal distribution** — someone other than the author builds on it | Input Color, Input Date, Input Datetime, Input Email, Input Number, Input Password, Input Telephone, Input Time, Input URL, Multiselect, Select Cascade, Date Picker, Slider, Chips, Uploader, Queryfield, Avatar, Image, Table Cell Actions, Table Cell Boolean, Table Cell Checkbox, Table Cell Expand, Table Cell Image, Table Cell Link, Table Cell Person, Table Cell Tags, Table Cell Heading Checkbox, Table Toolbar, Pagination, Button Group, Button Dropdown, Breadcrumbs, Tabs Vertical, Scrollbar |
+| beta | the decision that it is ready **outside** — a product that is not ours, with the states a real screen has and an API that will not move under it | Toast, Popover, Skeleton Loader, Data Info, Metric, Card, List, Tree, Person, Event, Asset, Logo, Feature List, Hero, Code Snippet, Charts, Header, Side Panel Menu, Steps, Flex Layout, Tag Interactive, Table Cell Multiline |
 | 1.0 | the decision that the library is **complete and its API is a commitment** | Code Editor, Code Editor Text Area, Code Editor Toolbar, Edit Mode, Audio Player, Video Player, Carousel |
 | Parked | no decision waits on these — mobile, which this plan excludes (§8) | Bottom Sheet, Pull to Refresh |
 

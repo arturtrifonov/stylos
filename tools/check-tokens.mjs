@@ -71,7 +71,17 @@ export function checkLibraryVersion(root, problems) {
     return;
   }
 
-  if (version !== system) {
+  // Owner-authorized release exception, 2026-10-17: ship the implementation
+  // now and complete Figma synchronization during 0.3.0 acceptance (PLAN §1).
+  // Preserve the real export record. This exact pair alone is deferred;
+  // any other mismatch, including 0.3.0, still fails. --strict also rejects it.
+  if (system === "0.2.0" && version === "0.1.0") {
+    problems.warnings.push(
+      `0.2.0 release exception (2026-10-17): Figma last reported "0.1.0"; ` +
+        `synchronization and a fresh export are deferred to 0.3.0 acceptance. ` +
+        `See PLAN.md §1 and packages/ui/verification/0.3.0.md.`
+    );
+  } else if (version !== system) {
     problems.errors.push(
       `the Figma library reported version "${version}" at its last export; package.json says ` +
         `the system is "${system}". One of the two was not bumped. Correct meta/version in ` +

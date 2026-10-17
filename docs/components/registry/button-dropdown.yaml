@@ -19,7 +19,9 @@ children:
   - "Loader"
 parents:
   - "Accordion"
-  - "Alert"
+  - "Alert Inline"
+  - "Alert Popup"
+  - "Alert Popup Timer"
   - "Toast"
   - "Bottom Sheet"
   - "Flex Layout"

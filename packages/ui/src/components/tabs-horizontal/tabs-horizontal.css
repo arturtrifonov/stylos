@@ -1,0 +1,4 @@
+@import "../tab-item/tab-item.css";
+@import "../../behaviors/scrollbar.css";
+.stylos-tabs-horizontal { min-width: 0; }
+.stylos-tabs-list { display: flex; gap: var(--_stylos-selection-gap); overflow-x: auto; border-block-end: var(--stylos-border-width-normal) solid var(--stylos-color-border-secondary); }

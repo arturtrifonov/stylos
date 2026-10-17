@@ -60,7 +60,8 @@
     "Select"
   ],
   "Input": [
-    "Input Text"
+    "Input Text",
+    "Input Search"
   ],
   "Table Cell": [
     "Table Cell Heading",
@@ -75,5 +76,28 @@
   "Table": [
     "Table Row Head",
     "Table Row Body"
+  ],
+  "Accordion": [
+    "Accordion",
+    "Accordion Header"
+  ],
+  "Alert": [
+    "Alert Inline",
+    "Alert Popup",
+    "Alert Popup Timer"
+  ],
+  "Text Area": [
+    "Text Area"
+  ],
+  "Progress": [
+    "Progress Bar"
+  ],
+  "Switcher": [
+    "Switcher",
+    "Switcher Item"
+  ],
+  "Tabs": [
+    "Tabs Horizontal",
+    "Tab Item"
   ]
 }
