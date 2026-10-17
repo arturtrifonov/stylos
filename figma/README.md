@@ -34,6 +34,14 @@ The planned dedicated icon file and its preset scope are described in [Icons](ic
 
 ## What version the library is
 
+**Temporary exception, owner decision 2026-10-17:** the `0.2.0` implementation
+release precedes Figma synchronization/publication verification, now required
+for [0.3.0 acceptance](../packages/ui/verification/0.3.0.md). `library.yaml`
+retains the real last export (`0.1.0`); nothing here asserts a new Figma publish.
+`tokens:check` warns for exactly this pair, and strict mode rejects the warning.
+All other mismatches fail normally. The general policy below resumes unchanged
+when this exception closes.
+
 The published library states its own version, in one place: a `meta` collection in *Stylos / Styles* holding a single `STRING` variable, `version`, set to the release the publish belongs to. One field, edited once per release.
 
 It is a variable rather than a cover frame because **an agent reads variables**. The plugin API, the REST API and `get_variable_defs` all reach it; a hand-maintained frame reaches none of them, and is a second copy of a fact besides. The other place a person meets the version is the publish description, which is written at publish time and points at the release notes ([`ARCHITECTURE.md`](../ARCHITECTURE.md) §9).

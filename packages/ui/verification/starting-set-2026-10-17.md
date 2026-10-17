@@ -1,5 +1,10 @@
 # Starting-set expansion — draft integration, 2026-10-17
 
+**Later owner decision on 2026-10-17:** ship this implementation as `0.2.0`;
+all unfinished checks and a fresh acceptance run move to [0.3.0](0.3.0.md).
+The measurements below retain their original scope and inputs. Contracts stay
+draft; the early release does not turn unverified work into passing results.
+
 The owner added nine product components immediately and explicitly retained
 draft contracts. The twelve registry entries include Accordion Header, Switcher
 Item and Tab Item as dependencies. All remain `draft`; code exports, plan

@@ -359,4 +359,17 @@ That is what the table above means when the change is made in Figma rather than 
 
 **`meta/version` is checked, not trusted.** `npm run tokens:import` records it in `figma/library.yaml` and `npm run tokens:check` fails when it disagrees with `package.json`. Because the export is manual, it answers what the library reported at the last export and nothing about right now — which is enough, since the moment it matters is the release.
 
+**Owner-directed exception, 2026-10-17 — early `0.2.0` implementation release.**
+The owner explicitly authorized GitHub merges and release execution by the agent,
+with green engineering CI, while transferring all unfinished Stage 5 acceptance
+to `0.3.0`; the proof and consumer stage formerly named `0.3.0` becomes `0.4.0`.
+See `PLAN.md` §1 and [the acceptance hand-off](packages/ui/verification/0.3.0.md).
+Root, UI and workshop versions move together to `0.2.0`; draft contracts remain
+draft. Figma synchronization/publication verification is part of the deferred
+acceptance: the generated export record truthfully remains at its last observed
+`0.1.0`. Token checking warns only for that exact pair (strict mode fails); any
+other mismatch fails as before. This temporary exception neither creates an
+independent Figma version line nor establishes accessibility or visual parity.
+The `0.3.0` acceptance must close it with real evidence and a fresh export.
+
 **The milestone list is not duplicated outside `PLAN.md` §9**, GitHub Milestones included. §8 says why.
