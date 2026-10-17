@@ -237,6 +237,12 @@ This is the only closed loop in the system, and the only automated step anywhere
 
 The registry importer ran once, on 2026-08-20. It deletes and rewrites every file rather than merging, so it is kept as the record of how the registry came to exist and refuses to run without `--overwrite-hand-edits`.
 
+**Amended 2026-10-17 — local dark token scopes.** Generated `tokens.css` emits
+the complete explicit dark body for `[data-theme="dark"]` on any element, so a
+subtree can select dark colours, shadows, focus effects and `color-scheme` inside
+a light page. Default and automatic theme selection stay on the root. Theme
+inheritance follows the actual DOM; portaled surfaces need a themed container.
+
 ---
 
 ## 4. What does not exist

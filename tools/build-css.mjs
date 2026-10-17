@@ -482,7 +482,8 @@ export function buildCss({ collections, naming, effectStyles = new Map(), surfac
     `  }`,
     `}`,
     ``,
-    `:root[data-theme="dark"] {`,
+    // Explicit dark mode also scopes a subtree inside a light page.
+    `[data-theme="dark"] {`,
     `  color-scheme: dark;`,
     ``,
     ...dark.lines,

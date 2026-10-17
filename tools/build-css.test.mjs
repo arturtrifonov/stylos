@@ -44,7 +44,7 @@ test("the canonical set projects without a complaint", () => {
 
 test("focus/base preserves the Figma halo, layer order and bound shadow roles in both themes", () => {
   const light = declarations(scope(built.css, ":root {\n  color-scheme: light;"));
-  const dark = declarations(scope(built.css, ':root[data-theme="dark"] {'));
+  const dark = declarations(scope(built.css, '[data-theme="dark"] {'));
   for (const [theme, declarations, rgb] of [
     ["light", light, "55 48 163"], ["dark", dark, "199 210 254"],
   ]) {
@@ -233,27 +233,27 @@ test("special is a complete generated family at palette step 700", () => {
 // §8.6 — the light and dark scopes declare the same names.
 test("both scopes declare all 121 roles, complete both times", () => {
   const light = [...declarations(scope(built.css, ":root {\n  color-scheme: light;")).keys()];
-  const dark = [...declarations(scope(built.css, ':root[data-theme="dark"] {')).keys()];
+  const dark = [...declarations(scope(built.css, '[data-theme="dark"] {')).keys()];
 
   assert.deepEqual(light, dark);
   assert.equal(light.filter((n) => n.startsWith("--stylos-color-")).length, 121);
 });
 
 test("a role that does not vary is still declared in dark, so an override cannot inherit into it", () => {
-  const dark = declarations(scope(built.css, ':root[data-theme="dark"] {'));
+  const dark = declarations(scope(built.css, '[data-theme="dark"] {'));
   assert.equal(dark.get("--stylos-color-surface-bold-primary-default"), "var(--stylos-palette-dark-indigo-700)");
   // And one that does vary takes the other step.
   assert.equal(dark.get("--stylos-color-surface-bold-primary-disabled"), "var(--stylos-palette-dark-slate-200)");
 });
 
 // §8.8 — an explicit choice beats the system preference in both directions.
-test("the switch has three states, and the dark body is emitted twice byte-identical", () => {
+test("explicit dark mode scopes any element, with the same complete body as automatic dark mode", () => {
   const { css } = built;
   assert.match(css, /@media \(prefers-color-scheme: dark\) \{\n  :root:not\(\[data-theme="light"\]\) \{/);
-  assert.match(css, /:root\[data-theme="dark"\] \{\n  color-scheme: dark;/);
+  assert.match(css, /^\[data-theme="dark"\] \{\n  color-scheme: dark;/m);
 
   const media = scope(css, ':root:not([data-theme="light"]) {');
-  const explicit = scope(css, ':root[data-theme="dark"] {');
+  const explicit = scope(css, '[data-theme="dark"] {');
   // The media copy is one level deeper; the declarations are the same bytes.
   assert.deepEqual([...declarations(media)], [...declarations(explicit)]);
 });

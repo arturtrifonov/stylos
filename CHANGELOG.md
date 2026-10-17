@@ -4,6 +4,12 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Fixed
+
+- Emit explicit dark token values for `[data-theme="dark"]` on any element,
+  including a section inside a light page. Preserve root-level automatic theme
+  selection and rebind all semantic colours, shadows and focus effects locally.
+
 ## [0.2.0] — 2026-10-17
 
 The first code implementation release: Svelte 5 components, independent CSS,
