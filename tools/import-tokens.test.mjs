@@ -8,6 +8,7 @@ import path from "node:path";
 import {
   checkCollectionIdentity,
   checkWithdrawals,
+  dropSpecialRoles,
   metaDeclaration,
   parseArgv,
   readLibraryVersion,
@@ -262,4 +263,52 @@ test("--withdraw does not become an input file of the --collection before it", (
   ]);
   assert.deepEqual(groups, [{ name: "radius", files: ["one.json"] }]);
   assert.deepEqual(options.withdraw, ["radius/extra small"]);
+});
+
+// --- Special roles (FND-COLOR-14) ------------------------------------------
+//
+// The family is generated from tokens/_special.yaml, so an export's copy of it
+// is dropped rather than recorded, and a generated role survives any import.
+
+test("a generated role is not withdrawn by an export that lacks it", () => {
+  const before = new Map([collection("color", ["text/base", "text/special/violet"])]);
+  const generated = new Map([["color", new Set(["text/special/violet"])]]);
+  assert.deepEqual(withdrawnBy(before, incoming("color", ["text/base"]), generated), []);
+  assert.deepEqual(withdrawnBy(before, incoming("color", ["text/base"])), ["color/text/special/violet"]);
+});
+
+const generatedRole = (light, dark) => ({ ref: new Map([["light", light], ["dark", dark]]) });
+
+test("drops every special role from the export and reports where Figma diverges", () => {
+  const record = (name) => ({ alias: { collection: "palette.light", name } });
+  const byMode = new Map([
+    ["light", new Map([
+      ["text/base", record("slate/950")],
+      ["text/special/violet", record("violet/700")],
+      ["surface/special/violet", record("violet/700")],
+    ])],
+    ["dark", new Map([
+      ["text/base", record("slate/950")],
+      ["text/special/violet", record("violet/700")],
+      ["surface/special/violet", record("violet/700")],
+    ])],
+  ]);
+  const generated = new Map([["text/special/violet", generatedRole("palette/violet/700", "palette/violet/800")]]);
+
+  const { dropped, notes } = dropSpecialRoles(byMode, generated);
+
+  assert.equal(dropped, 2);
+  assert.deepEqual([...byMode.get("light").keys()], ["text/base"]);
+  assert.deepEqual([...byMode.get("dark").keys()], ["text/base"]);
+  assert.match(notes.join("\n"), /1 special variable\(s\) the generated family does not: surface\/special\/violet/);
+  assert.match(notes.join("\n"), /text\/special\/violet \(dark\): Figma palette\/violet\/700, generated palette\/violet\/800/);
+});
+
+test("says nothing when Figma's special roles agree with the generated ones", () => {
+  const byMode = new Map([
+    ["light", new Map([["text/special/violet", { alias: { name: "violet/700" } }]])],
+    ["dark", new Map([["text/special/violet", { alias: { name: "violet/800" } }]])],
+  ]);
+  const generated = new Map([["text/special/violet", generatedRole("palette/violet/700", "palette/violet/800")]]);
+  assert.deepEqual(dropSpecialRoles(byMode, generated).notes, []);
 });

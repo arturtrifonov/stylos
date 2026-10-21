@@ -17,7 +17,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-import { readIcons } from "../build-ui-icons.mjs";
+import { drawRegistered } from "./icon-preset.mjs";
 import path from "node:path";
 
 import { loadCanonical } from "./tokens.mjs";
@@ -42,19 +42,17 @@ const kebab = (name) => name.trim().replace(/\s+/g, "-");
  * contract does not carry.
  */
 /**
- * The committed icon set, read once. The repository root is derived from this
- * file's own location rather than passed in: sampleHtml is called from deep
- * inside the page renderer and threading a root through every caller would
- * buy nothing here, where the only reader is this repository's own tooling.
+ * The registered marks, drawn once from the preset when this module loads —
+ * the same drawings the component resolves without an import. The repository
+ * root is derived from this file's own location rather than passed in:
+ * sampleHtml is called from deep inside the page renderer and threading a root
+ * through every caller would buy nothing here, where the only reader is this
+ * repository's own tooling.
  */
-let iconCache = null;
+const registeredIcons = await drawRegistered(fileURLToPath(new URL("../..", import.meta.url)));
 let inputPreviewCounter = 0;
 function iconDrawings() {
-  if (iconCache === null) {
-    const root = fileURLToPath(new URL("../..", import.meta.url));
-    iconCache = new Map(readIcons(root));
-  }
-  return iconCache;
+  return registeredIcons;
 }
 
 export function sampleHtml(entry, props = {}) {
@@ -205,7 +203,7 @@ export function sampleHtml(entry, props = {}) {
   // Icon is the second structural case: the mark is a <path>, not content, so
   // the generic text-content branch would
   // put the name inside the <svg> and draw nothing. The drawing comes from
-  // the committed set, the same files the component renders.
+  // the registered marks, the same ones the component resolves.
   if (entry.id === "Icon") {
     const drawing = props.name ? iconDrawings().get(props.name) : undefined;
     if (!drawing) return `<svg class="${cls}"${attr} aria-hidden="true" focusable="false"></svg>`;

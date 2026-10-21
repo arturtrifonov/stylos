@@ -19,6 +19,7 @@ not a general accessibility or visual-parity claim. Distribution stays private.
 ## Generated, never hand-written
 
 - `src/components/<name>/props.ts` — from the entry's `api` by `tools/build-ui-types.mjs`, so props ↔ `api` is checked by the compiler.
+- `src/components/icon/icons.ts` and `dist/icons/` — the icon preset, drawn from the pinned font by `tools/build-ui-icons.mjs` (see [Icons](#icons)).
 - `dist/` — `tokens.css` + `tokens.json` (`tokens:css`) and `package/` (`svelte-package`).
 
 `npm run ui:generate` at the root rebuilds all of it; `npm run ui:build` builds the package (generation runs as its `prebuild`).
@@ -53,6 +54,59 @@ to that element and its descendants:
 Without an explicit root theme, the page follows the system colour preference.
 `data-theme="light"` on the root forces a light page. A local dark scope still
 works inside it; portaled content must carry the theme on its actual container.
+
+## Categorical colours
+
+Every palette hue group except `mono` has a full set of categorical roles,
+generated from [`tokens/_special.yaml`](../../tokens/_special.yaml) under
+FND-COLOR-14. Each mirrors the shape of a tone, with `special-<hue>` where the
+tone would be:
+
+| Role | Custom property |
+| --- | --- |
+| bold surface, each state | `--stylos-color-surface-bold-special-<hue>-default` · `-hover` · `-active` · `-disabled` |
+| subtle surface, each state | `--stylos-color-surface-subtle-special-<hue>-default` · `-hover` · `-active` · `-disabled` |
+| text | `--stylos-color-text-special-<hue>` |
+| background | `--stylos-color-background-special-<hue>` |
+| border | `--stylos-color-border-special-<hue>` |
+
+A category colour is chosen by the product, not by the system; keep the
+assignment stable and name the category in text as well (FND-COLOR-08,
+WCAG 2.2 SC 1.4.1). `tokens.json` marks each generated property with
+`generated: "tokens/_special.yaml"`.
+
+## Icons
+
+`Icon` resolves `name` against a registry. The marks listed under `registered`
+in [`assets/icons/manifest.yaml`](../../assets/icons/manifest.yaml) — the ones
+the components and the Figma library use — resolve from the start. Every other
+mark in the preset's catalogue (about 3,900 Material Symbols names) is
+available as its own module: import it and register it once, then name it
+anywhere, including inside another component's icon snippet.
+
+```js
+import { Icon, registerIcons } from "@stylos/ui";
+import rocketLaunch from "@stylos/ui/icons/rocket_launch";
+
+registerIcons(rocketLaunch);
+```
+
+```svelte
+{#snippet launch()}<Icon name="rocket_launch" />{/snippet}
+<ButtonIcon icon={launch} accessibleName="Launch" />
+```
+
+A bundle carries only the marks it imports. Registration is reactive, so a
+lazily loaded route may register the marks it needs and icons already on
+screen draw once they arrive. It also works on the server, so register before
+rendering. An unregistered name renders nothing (FND-ICONS-13). `IconName` is
+the union of catalogue names, for code that wants the check. `resolveIcon`
+returns a registered drawing for code that renders marks itself.
+
+Static HTML uses the SVG file of the same name, `@stylos/ui/icons/<name>.svg`.
+It carries geometry only — `currentColor`, no size, no ARIA (FND-ICONS-09) — so
+size it with the icon footprint token and hide it from assistive technology
+(FND-ICONS-10).
 
 ## Typography exports
 
@@ -212,7 +266,7 @@ effect-style token. Its halo replaces the resting shadow on the entire native in
 
 The icon snippets are decorative; no placeholder icon is substituted and
 they are not action slots. Storybook offers Default followed by Icons
-playground with the complete active icon set. Vertical trim stays off,
+playground with the registered icon set. Vertical trim stays off,
 matching all 140 Figma variants. `Label.htmlFor` and `additionalTextId`
 provide native associations without changing Label's CSS.
 
@@ -234,7 +288,7 @@ Supply a configured icon snippet and a non-empty `accessibleName` describing the
 action. The component supplies no default icon or action name. The icon is
 hidden from assistive technology; compose a surrounding Tooltip when the action
 needs a visible explanation. Default and Icons playground use add/Add item as
-sample content, and the playground can select any icon in the active set.
+sample content, and the playground can select any registered icon.
 
 Native hover, press, keyboard focus, disabled fieldsets and form properties work
 as in Button. `type="button"` is the default; submit/reset, `id`, `name`, `value`,

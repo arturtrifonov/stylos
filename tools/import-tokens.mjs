@@ -48,6 +48,12 @@ import {
 } from "./lib/convert.mjs";
 import { verifyCanonical } from "./lib/verify.mjs";
 import { readNaming } from "./check-tokens.mjs";
+import {
+  SCALE_FILE,
+  generateSpecialRoles,
+  isSpecialRole,
+  loadSpecialScale,
+} from "./lib/special-colors.mjs";
 
 const USAGE = `Usage:
   node tools/import-tokens.mjs --collection <name> <file...> [--collection <name> <file...>]
@@ -387,18 +393,59 @@ function referencesFrom(canonical, byMode, figmaOf, problems) {
  *
  * @returns {string[]} canonical paths, `collection/token`
  */
-export function withdrawnBy(existingByName, canonicalGroups) {
+export function withdrawnBy(existingByName, canonicalGroups, generated = new Map()) {
   const gone = [];
   for (const [canonical, byMode] of canonicalGroups) {
     const before = existingByName.get(canonical);
     if (!before) continue;
     // Mode parity is checked separately, so any one mode answers for the set.
-    const incoming = new Set([...byMode.values()][0].keys());
+    // A generated role survives any import: it is not the export's to remove.
+    const incoming = new Set([...[...byMode.values()][0].keys(), ...(generated.get(canonical) ?? [])]);
     for (const tokenPath of before.tokens.keys()) {
       if (!incoming.has(tokenPath)) gone.push(`${canonical}/${tokenPath}`);
     }
   }
   return gone;
+}
+
+/**
+ * Special roles are generated from tokens/_special.yaml, never recorded
+ * (FND-COLOR-14). Figma may carry its own copy for its designers; it is
+ * dropped here, and where it disagrees with the generated family the import
+ * says so, because a designer reading those variables would see other colours.
+ *
+ * @returns {{dropped: number, notes: string[]}}
+ */
+export function dropSpecialRoles(byMode, generated, paletteName = "palette") {
+  let dropped = 0;
+  const absent = [];
+  const differing = [];
+  for (const [mode, tokens] of byMode) {
+    for (const [tokenPath, record] of [...tokens]) {
+      if (!isSpecialRole(tokenPath)) continue;
+      tokens.delete(tokenPath);
+      if (mode === [...byMode.keys()][0]) dropped++;
+
+      const role = generated.get(tokenPath);
+      if (!role) {
+        if (!absent.includes(tokenPath)) absent.push(tokenPath);
+        continue;
+      }
+      const figma = record.alias ? `${paletteName}/${record.alias.name}` : "an unbound value";
+      const target = role.ref.get(mode) ?? role.ref.get("default");
+      if (figma !== target) differing.push(`${tokenPath} (${mode}): Figma ${figma}, generated ${target}`);
+    }
+  }
+
+  const notes = [];
+  const sample = (list) => list.slice(0, 3).join("; ") + (list.length > 3 ? `; and ${list.length - 3} more` : "");
+  if (absent.length) {
+    notes.push(`Figma has ${absent.length} special variable(s) the generated family does not: ${sample(absent)}.`);
+  }
+  if (differing.length) {
+    notes.push(`Figma binds ${differing.length} special variable(s) differently: ${sample(differing)}.`);
+  }
+  return { dropped, notes };
 }
 
 const quoteArg = (value) => (/[\s"]/.test(value) ? JSON.stringify(value) : value);
@@ -528,6 +575,10 @@ async function main(root, argv) {
     staged.set(group.name, readCollectionFiles(group, declared.get(group.name)));
   }
 
+  // The record alone answers what the export replaces; with the generated
+  // roles beside it, it answers which names exist before and after.
+  const recorded = listCanonical(root).length > 0 ? loadCanonical(root, [], { derived: false }) : [];
+  const recordedByName = new Map(recorded.map((c) => [c.name, c]));
   const existing = listCanonical(root).length > 0 ? loadCanonical(root) : [];
   const existingByName = new Map(existing.map((c) => [c.name, c]));
 
@@ -540,7 +591,7 @@ async function main(root, argv) {
     for (const [figmaName, modes] of declared) {
       const { canonical, canonicalMode } = [...modes.values()][0];
       const ids = new Set();
-      for (const t of existingByName.get(canonical)?.tokens.values() ?? []) {
+      for (const t of recordedByName.get(canonical)?.tokens.values() ?? []) {
         if (typeof t.id === "string") ids.add(t.id);
         else if (t.id instanceof Map) {
           const own = t.id.get(canonicalMode);
@@ -590,9 +641,28 @@ async function main(root, argv) {
     canonicalGroups.set(canonical, new Map(wanted.map((m) => [m, byMode.get(m)])));
   }
 
+  // Special roles are generated, so an export's copy of them is dropped
+  // before anything is compared or written (FND-COLOR-14).
+  const paletteName = (naming.get("draws_from") ?? new Map()).get("color");
+  const generatedSpecial = generateSpecialRoles(
+    loadSpecialScale(root),
+    existingByName.get(paletteName) ?? null
+  );
+  if (canonicalGroups.has("color")) {
+    const { dropped, notes } = dropSpecialRoles(canonicalGroups.get("color"), generatedSpecial, paletteName);
+    if (dropped) {
+      console.error(`  color  ${dropped} special role(s) in the export not recorded — generated from ${SCALE_FILE}`);
+    }
+    for (const note of notes) console.error(`WARN  ${note}`);
+  }
+
   // Before anything is written: does this import remove a token, and was that
   // said out loud? See docs/specs/0007-tokens-to-css.md §6.
-  const disappearing = withdrawnBy(existingByName, canonicalGroups);
+  const disappearing = withdrawnBy(
+    existingByName,
+    canonicalGroups,
+    new Map([["color", new Set(generatedSpecial.keys())]])
+  );
   const everyKnownToken = new Set(
     existing.flatMap((c) => [...c.tokens.keys()].map((t) => `${c.name}/${t}`))
   );
@@ -645,7 +715,7 @@ async function main(root, argv) {
     });
     documents.set(canonical, document);
 
-    const before = existingByName.get(canonical);
+    const before = recordedByName.get(canonical);
     const count = document.get("tokens").size;
     const status = !before
       ? "new"

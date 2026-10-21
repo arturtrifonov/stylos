@@ -23,6 +23,11 @@
     "./css/*.css": "./dist/css/*.css",
     "./registry.json": "./dist/registry.json",
     "./registry/*.json": "./dist/registry/*.json",
+    "./icons/*.svg": "./dist/icons/*.svg",
+    "./icons/*": {
+      "types": "./dist/icons/*.d.ts",
+      "default": "./dist/icons/*.js"
+    },
     "./behaviors/input-text": {
       "types": "./dist/package/behaviors/input-text.d.ts",
       "default": "./dist/package/behaviors/input-text.js"

@@ -124,7 +124,7 @@ Only one word is wrong as a tone:
 | --- | --- |
 | `error` | a validation outcome, not a colour — the colour is `danger` |
 
-`neutral` is a valid palette hue group like `slate` or `zinc`, and `surface/special/neutral` exists.
+`neutral` is a valid palette hue group like `slate` or `zinc`, and `text/special/neutral` exists.
 
 **A component whose `tone` carries semantic tones and categorical hues at once is a design question, not a naming one.** The Indicator family separates those purposes into `Indicator Status` and `Indicator Special`.
 

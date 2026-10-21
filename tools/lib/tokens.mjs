@@ -11,6 +11,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import path from "node:path";
 
 import { parse } from "./yaml.mjs";
+import { loadSpecialScale, withSpecialRoles } from "./special-colors.mjs";
 
 /**
  * @typedef {object} Token
@@ -74,9 +75,14 @@ function readCollection(root, name) {
  * Load canonical collections. With no names, loads all of them in
  * alphabetical order; with names, loads exactly those in the order given.
  *
+ * `color` arrives with the special family generated from tokens/_special.yaml
+ * (FND-COLOR-14) unless `derived: false` asks for the record alone — which the
+ * importer does to compare the record with an export, and tokens:check does to
+ * confirm the record holds no special role.
+ *
  * @returns {Collection[]}
  */
-export function loadCanonical(root, names = []) {
+export function loadCanonical(root, names = [], { derived = true } = {}) {
   const available = listCanonical(root);
 
   if (available.length === 0) {
@@ -94,7 +100,15 @@ export function loadCanonical(root, names = []) {
     );
   }
 
-  return wanted.map((name) => readCollection(root, name));
+  const collections = wanted.map((name) => readCollection(root, name));
+  if (!derived || !wanted.includes("color")) return collections;
+
+  const palette =
+    collections.find((c) => c.name === "palette") ??
+    (available.includes("palette") ? readCollection(root, "palette") : null);
+  return collections.map((c) =>
+    c.name === "color" ? withSpecialRoles(c, palette, loadSpecialScale(root)) : c
+  );
 }
 
 /**

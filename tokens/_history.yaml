@@ -2,6 +2,36 @@
 # When each collection was last imported, and what it did. The values are in git.
 imports:
   -
+    at: "2026-10-21 09:28Z"
+    collections:
+      -
+        collection: "color"
+        tokens: 77
+        status: "changed"
+        withdrawn:
+          - "surface/special/slate"
+          - "surface/special/gray"
+          - "surface/special/zinc"
+          - "surface/special/neutral"
+          - "surface/special/stone"
+          - "surface/special/red"
+          - "surface/special/orange"
+          - "surface/special/amber"
+          - "surface/special/yellow"
+          - "surface/special/lime"
+          - "surface/special/green"
+          - "surface/special/emerald"
+          - "surface/special/teal"
+          - "surface/special/cyan"
+          - "surface/special/sky"
+          - "surface/special/blue"
+          - "surface/special/indigo"
+          - "surface/special/violet"
+          - "surface/special/purple"
+          - "surface/special/fuchsia"
+          - "surface/special/pink"
+          - "surface/special/rose"
+  -
     at: "2026-10-07 19:07Z"
     collections:
       -

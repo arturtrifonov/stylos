@@ -12,10 +12,11 @@ How it works and why it is shaped this way: SPEC 0001.
 | --- | --- |
 | `_naming.yaml` | **authored.** Which Figma collection and mode each canonical one comes from, and which roles may legitimately differ per mode. |
 | `_styles.yaml` | **recorded from Figma styles.** Effect styles omitted by variable exports, with source IDs, ordered layers and theme colours. Maintained separately from collection imports. |
+| `_special.yaml` | **authored.** The step scale the special colour roles are generated from, for every palette hue group (FND-COLOR-14). Never imported. |
 | `_history.yaml` | **generated.** A line per import: when, which collection, how many tokens, what it did. |
 | everything else | **generated.** Overwritten by `npm run tokens:import`. Never hand-edit — your change is gone at the next import, and the file says so at the top. |
 
-The `_` prefix marks the files the pipeline treats specially, not the authored ones: `_naming.yaml` is authored, `_styles.yaml` records styles, and `_history.yaml` is generated. Everything without the prefix is a canonical collection, and every one of those is generated.
+The `_` prefix marks the files the pipeline treats specially, not the authored ones: `_naming.yaml`, `_special.yaml` and `_surface-motion.yaml` are authored, `_styles.yaml` records styles, and `_history.yaml` is generated. Everything without the prefix is a canonical collection, and every one of those is generated.
 
 `focus/base` is emitted from `_styles.yaml` as the composite token
 `--stylos-focus-base`. Its halo preserves the original `Focus/Primary` values
@@ -35,6 +36,25 @@ scale to every level from 0 through 6. The CSS build projects those records to
 Window-edge attachment selects FND-MOTION-18 independently; level 5 also has
 a general profile for other attachments. `tokens:check` validates the complete
 mapping and references; `tokens:report motion` renders current values.
+
+## Authored special colour scale
+
+`_special.yaml` records the owner's 2026-10-21 decision under FND-COLOR-14:
+categorical colour has a fixed scale of its own, starting from the steps the
+`warning` roles had in that day's export. Each entry is a role template with
+`{hue}` where the hue group goes and the palette step it takes per mode —
+`default`, or one per mode, as in the record. Loading the canonical set
+generates every template for every palette hue group except `mono`, in palette
+order, and places the result in `color` after that area's recorded roles: 11
+templates × 22 hue groups = 242 roles. They behave like any other role
+downstream, and `tokens.json` marks them as generated.
+
+A `color` import never records a `*/special/*` variable. It drops Figma's copy,
+warns where that copy's names or steps differ from the generated family, and
+treats generated roles as surviving the import. `tokens:check` validates the
+scale against the palette — every step it generates must exist for every hue
+group — and fails if `color.yaml` records a special role. `tokens:report color`
+shows the generated roles with the rest.
 
 ## The nine canonical collections
 

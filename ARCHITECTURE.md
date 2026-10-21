@@ -28,6 +28,8 @@ Every domain has exactly one authoritative source. When two places disagree, the
 | Canonical tokens | *derived* | `tokens/` | `tools/import-tokens.mjs`, from a Figma export plus `tokens/_naming.yaml` |
 | Effect styles omitted by variable exports | Figma style record | `tokens/_styles.yaml` | recorded from Figma with style and variable IDs; checked by `tokens:check` |
 | Figma-to-Stylos collection and mode naming | YAML | `tokens/_naming.yaml` | by hand, validated by `npm run tokens:check` |
+| Special colour scale — the steps categorical roles take | YAML | `tokens/_special.yaml` | by hand, validated by `npm run tokens:check`; the roles are generated from it (FND-COLOR-14) |
+| Icon preset — instance and default registrations | YAML | `assets/icons/manifest.yaml` | by hand; with the pinned font it reproduces every mark (FND-ICONS-14) |
 | Compiled skill document | *derived* | `skills/dist/` | `tools/build-skills.mjs` |
 | Published documentation | *derived* | `build/` | `tools/build-site.mjs`; uploaded by hand — see §4 |
 
@@ -121,6 +123,16 @@ Variables are authored in Figma. An export is made by hand and handed to `npm ru
 `npm run tokens:css` projects the record onto CSS custom properties — `tools/build-css.mjs`, writing `packages/ui/dist/tokens.css` and a `tokens.json` manifest beside it (SPEC 0007). It is a projection, not a second record: it reads `tokens/*.yaml` and nothing else, improves no value on the way through, refuses to run on a set that fails `tokens:check`, and its output is not committed. The command is `tokens:css`; there is no `tokens:build`. Its reader is `@stylos/ui` in `packages/ui` (SPEC 0009): every component's CSS is `var(--stylos-…)` references and nothing else, and `tokens:css` runs as the package's `prebuild` (via `npm run ui:generate`, which also generates the props types and the Storybook stories from the registry).
 
 **Break:** the export is still manual and has no cadence. Nothing detects that Figma has moved on, so `tokens/` is only as current as the last person to import. What `npm run tokens:check` does catch is drift *within* the record — an alias that no longer agrees with the value beside it, or a mode dependence that is not declared.
+
+**Amended 2026-10-21 — special colours are generated.** At the owner's
+decision, categorical colour roles are no longer exported from Figma or
+imported. `tokens/_special.yaml` records one scale of its own, starting from the
+`warning` steps; loading the canonical set generates its eleven role templates
+for every palette hue group except `mono`, and adds them to `color`, so every
+reader sees one set of roles (FND-COLOR-14). The import drops Figma's special
+variables and warns where they differ. The flat `surface/special/<hue>` roles
+were withdrawn; `text/special/<hue>` keeps its names. The same import brought
+lighter light-mode steps for `warning`, `danger` and `success`.
 
 Effect styles omitted by variable exports are recorded separately in
 `tokens/_styles.yaml`. The CSS projection emits `focus/base` as
@@ -225,6 +237,7 @@ This is the only closed loop in the system, and the only automated step anywhere
 | `figma/library.yaml` | a Figma export of the `meta` collection | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
 | `packages/ui/dist/tokens.css`, `tokens.json` | `tokens/*.yaml` | `tools/build-css.mjs` | no — derived, rebuilt on demand |
 | `packages/ui/src/components/*/props.ts` | `docs/components/registry/*.yaml` | `tools/build-ui-types.mjs` | no — derived, rebuilt on demand |
+| `packages/ui/dist/icons/<name>.{js,d.ts,svg}`, `packages/ui/src/components/icon/icons.ts` — every mark of the icon preset, and the registered ones | `assets/icons/manifest.yaml` and the `material-symbols` font pinned by `package-lock.json` | `tools/build-ui-icons.mjs` | no — derived, rebuilt on demand |
 | `apps/workshop/stories/generated/` | `docs/components/registry/*.yaml` | `tools/build-ui-stories.mjs` | no — derived, rebuilt on demand |
 | `packages/ui/dist/package/` | `packages/ui/src/` | `svelte-package` | no — derived, rebuilt on demand |
 | `apps/workshop/storybook-static/` — the workshop | registry-generated stories and authored compositions | Storybook | no — derived, rebuilt on demand |
@@ -236,6 +249,15 @@ This is the only closed loop in the system, and the only automated step anywhere
 | `packages/ui/dist/prose.css` — recorded body/heading styles and approved document spacing | `figma/text-styles.yaml` and the document-spacing contract in `docs/foundations/typography.md` | `tools/build-prose-css.mjs`, sharing the text-style projection | no — derived, rebuilt on demand |
 
 The registry importer ran once, on 2026-08-20. It deletes and rewrites every file rather than merging, so it is kept as the record of how the registry came to exist and refuses to run without `--overwrite-hand-edits`.
+
+**Amended 2026-10-21 — the whole icon preset is built.** At the owner's
+request, `npm run ui:generate` draws every name the pinned font package declares,
+about 3,900 marks, in about a second; the separate `icons:import` step and the
+committed `assets/icons/svg/` are gone (FND-ICONS-14, which supersedes
+FND-ICONS-08). Each mark is its own module, so a consumer imports the marks it
+uses and registers them with `registerIcons`; the manifest's registered marks
+resolve without that step. Icon resolves names through that reactive registry.
+Static previews draw the registered marks from the font directly.
 
 **Amended 2026-10-17 — local dark token scopes.** Generated `tokens.css` emits
 the complete explicit dark body for `[data-theme="dark"]` on any element, so a

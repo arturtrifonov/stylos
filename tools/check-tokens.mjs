@@ -18,6 +18,7 @@ import { loadCanonical, listCanonical } from "./lib/tokens.mjs";
 import { verifyCanonical } from "./lib/verify.mjs";
 import { loadEffectStyles, validateEffectStyles } from "./lib/effect-styles.mjs";
 import { loadSurfaceMotionProfile, validateSurfaceMotionProfile } from "./lib/surface-motion-profiles.mjs";
+import { loadSpecialScale, validateSpecialScale } from "./lib/special-colors.mjs";
 
 export function readNaming(root) {
   const file = path.join(root, "tokens/_naming.yaml");
@@ -90,6 +91,22 @@ export function checkLibraryVersion(root, problems) {
   }
 }
 
+/** The generated special family against its scale and the record (FND-COLOR-14). */
+function checkSpecialScale(root, naming, collections) {
+  const byName = new Map(collections.map((c) => [c.name, c]));
+  const paletteName = (naming.get("draws_from") ?? new Map()).get("color");
+  const color = byName.get("color");
+  const palette = byName.get(paletteName);
+  if (!color || !palette) return [];
+  const [recorded] = loadCanonical(root, ["color"], { derived: false });
+  return validateSpecialScale(loadSpecialScale(root), {
+    color,
+    palette,
+    paletteName,
+    recorded: recorded.tokens.keys(),
+  });
+}
+
 export function runCheck({ root, strict = false }) {
   const problems = { errors: [], warnings: [] };
 
@@ -146,6 +163,7 @@ export function runCheck({ root, strict = false }) {
   try {
     problems.errors.push(...validateEffectStyles(loadEffectStyles(root), collections));
     problems.errors.push(...validateSurfaceMotionProfile(loadSurfaceMotionProfile(root), collections));
+    problems.errors.push(...checkSpecialScale(root, naming, collections));
   } catch (error) {
     problems.errors.push(error.message);
   }

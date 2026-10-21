@@ -1,13 +1,15 @@
 <script lang="ts">
   // Icon — docs/components/registry/icon.yaml. The wrapper takes the
-  // contract's props and renders the drawing icons.ts carries; it is the only
+  // contract's props and renders the drawing the registry resolves; it is the only
   // Svelte-specific file in the component (ADR 0002).
   //
   // `name` is a name in the active icon preset. The default preset currently
   // retains Material Symbols names; that is an implementation convention, not
   // part of the Icon contract (docs/foundations/icons.md).
   //
-  // A name the build does not carry renders nothing. There is no placeholder
+  // Any mark in the preset's catalogue can be named once it is registered
+  // (registry.ts); the registered marks resolve from the start. A name that
+  // resolves to nothing renders nothing. There is no placeholder
   // mark: in Figma a placeholder marks an instance nobody has chosen yet,
   // which is a state a design file has and a program does not — an icon that
   // was not chosen is not written (docs/foundations/icons.md).
@@ -18,12 +20,12 @@
   // mark repeating the words beside it has to be silent or it is read twice.
   // Both are the consumer's obligations (the entry's `requires` finding).
   import "./icon.css";
-  import { icons } from "./icons.ts";
+  import { resolveIcon } from "./registry.ts";
   import type { IconProps } from "./props.ts";
 
   let { name }: IconProps = $props();
 
-  const drawing = $derived(name ? icons[name] : undefined);
+  const drawing = $derived(name ? resolveIcon(name) : undefined);
 </script>
 
 {#if drawing}

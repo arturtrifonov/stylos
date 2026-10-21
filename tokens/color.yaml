@@ -1,9 +1,9 @@
 # GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export.
-# Imported 2026-09-28 23:48Z from Stylos / Styles.
+# Imported 2026-10-21 09:28Z from Stylos / Styles.
 collection: "color"
 layer: "semantic"
 source:
-  imported: "2026-09-28 23:48Z"
+  imported: "2026-10-21 09:28Z"
   figma_file: "Stylos / Styles"
   figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
 modes:
@@ -116,7 +116,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/amber/700"
+      light: "palette/amber/600"
+      dark: "palette/amber/700"
   "surface/bold/warning/hover":
     type: "color"
     id: "VariableID:1943:1251"
@@ -124,7 +125,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/amber/800"
+      light: "palette/amber/700"
+      dark: "palette/amber/800"
   "surface/bold/warning/active":
     type: "color"
     id: "VariableID:1943:1252"
@@ -132,7 +134,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/amber/900"
+      light: "palette/amber/800"
+      dark: "palette/amber/900"
   "surface/bold/warning/disabled":
     type: "color"
     id: "VariableID:2579:813"
@@ -149,7 +152,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/red/700"
+      light: "palette/red/600"
+      dark: "palette/red/700"
   "surface/bold/danger/hover":
     type: "color"
     id: "VariableID:1943:1245"
@@ -157,7 +161,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/red/800"
+      light: "palette/red/700"
+      dark: "palette/red/800"
   "surface/bold/danger/active":
     type: "color"
     id: "VariableID:1943:1246"
@@ -165,7 +170,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/red/900"
+      light: "palette/red/800"
+      dark: "palette/red/900"
   "surface/bold/danger/disabled":
     type: "color"
     id: "VariableID:2579:815"
@@ -182,7 +188,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/green/700"
+      light: "palette/green/600"
+      dark: "palette/green/700"
   "surface/bold/success/hover":
     type: "color"
     id: "VariableID:1943:1248"
@@ -190,7 +197,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/green/800"
+      light: "palette/green/700"
+      dark: "palette/green/800"
   "surface/bold/success/active":
     type: "color"
     id: "VariableID:1943:1249"
@@ -198,7 +206,8 @@ tokens:
       - "FRAME_FILL"
       - "SHAPE_FILL"
     ref:
-      default: "palette/green/900"
+      light: "palette/green/800"
+      dark: "palette/green/900"
   "surface/bold/success/disabled":
     type: "color"
     id: "VariableID:2579:816"
@@ -400,182 +409,6 @@ tokens:
       - "SHAPE_FILL"
     ref:
       default: "palette/slate/25"
-  "surface/special/slate":
-    type: "color"
-    id: "VariableID:2395:2832"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/slate/700"
-  "surface/special/gray":
-    type: "color"
-    id: "VariableID:2397:2370"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/gray/700"
-  "surface/special/zinc":
-    type: "color"
-    id: "VariableID:2398:2371"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/zinc/700"
-  "surface/special/neutral":
-    type: "color"
-    id: "VariableID:2398:2372"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/neutral/700"
-  "surface/special/stone":
-    type: "color"
-    id: "VariableID:2398:2373"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/stone/700"
-  "surface/special/red":
-    type: "color"
-    id: "VariableID:2398:2374"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/red/700"
-  "surface/special/orange":
-    type: "color"
-    id: "VariableID:2398:2375"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/orange/700"
-  "surface/special/amber":
-    type: "color"
-    id: "VariableID:2398:2376"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/amber/700"
-  "surface/special/yellow":
-    type: "color"
-    id: "VariableID:2398:2377"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/yellow/700"
-  "surface/special/lime":
-    type: "color"
-    id: "VariableID:2398:2378"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/lime/700"
-  "surface/special/green":
-    type: "color"
-    id: "VariableID:2398:2379"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/green/700"
-  "surface/special/emerald":
-    type: "color"
-    id: "VariableID:2398:2380"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/emerald/700"
-  "surface/special/teal":
-    type: "color"
-    id: "VariableID:2398:2381"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/teal/700"
-  "surface/special/cyan":
-    type: "color"
-    id: "VariableID:2398:2382"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/cyan/700"
-  "surface/special/sky":
-    type: "color"
-    id: "VariableID:2398:2383"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/sky/700"
-  "surface/special/blue":
-    type: "color"
-    id: "VariableID:2398:2384"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/blue/700"
-  "surface/special/indigo":
-    type: "color"
-    id: "VariableID:2398:2385"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/indigo/700"
-  "surface/special/violet":
-    type: "color"
-    id: "VariableID:2398:2386"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/violet/700"
-  "surface/special/purple":
-    type: "color"
-    id: "VariableID:2398:2387"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/purple/700"
-  "surface/special/fuchsia":
-    type: "color"
-    id: "VariableID:2398:2388"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/fuchsia/700"
-  "surface/special/pink":
-    type: "color"
-    id: "VariableID:2398:2389"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/pink/700"
-  "surface/special/rose":
-    type: "color"
-    id: "VariableID:2398:2390"
-    scopes:
-      - "FRAME_FILL"
-      - "SHAPE_FILL"
-    ref:
-      default: "palette/rose/700"
   "text/base":
     type: "color"
     id: "VariableID:1943:1254"
@@ -623,7 +456,8 @@ tokens:
       - "SHAPE_FILL"
       - "TEXT_FILL"
     ref:
-      default: "palette/amber/800"
+      light: "palette/amber/700"
+      dark: "palette/amber/800"
   "text/danger":
     type: "color"
     id: "VariableID:1943:1262"
@@ -631,7 +465,8 @@ tokens:
       - "SHAPE_FILL"
       - "TEXT_FILL"
     ref:
-      default: "palette/red/800"
+      light: "palette/red/700"
+      dark: "palette/red/800"
   "text/success":
     type: "color"
     id: "VariableID:1943:1260"
@@ -639,7 +474,8 @@ tokens:
       - "SHAPE_FILL"
       - "TEXT_FILL"
     ref:
-      default: "palette/green/800"
+      light: "palette/green/700"
+      dark: "palette/green/800"
   "text/inverted":
     type: "color"
     id: "VariableID:1943:1270"
@@ -674,182 +510,6 @@ tokens:
       - "TEXT_FILL"
     ref:
       default: "palette/slate/400"
-  "text/special/slate":
-    type: "color"
-    id: "VariableID:2398:2392"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/slate/700"
-  "text/special/gray":
-    type: "color"
-    id: "VariableID:2398:2393"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/gray/700"
-  "text/special/zinc":
-    type: "color"
-    id: "VariableID:2398:2394"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/zinc/700"
-  "text/special/neutral":
-    type: "color"
-    id: "VariableID:2398:2395"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/neutral/700"
-  "text/special/stone":
-    type: "color"
-    id: "VariableID:2398:2396"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/stone/700"
-  "text/special/red":
-    type: "color"
-    id: "VariableID:2398:2397"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/red/700"
-  "text/special/orange":
-    type: "color"
-    id: "VariableID:2398:2398"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/orange/700"
-  "text/special/amber":
-    type: "color"
-    id: "VariableID:2398:2399"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/amber/700"
-  "text/special/yellow":
-    type: "color"
-    id: "VariableID:2398:2400"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/yellow/700"
-  "text/special/lime":
-    type: "color"
-    id: "VariableID:2398:2401"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/lime/700"
-  "text/special/green":
-    type: "color"
-    id: "VariableID:2398:2402"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/green/700"
-  "text/special/emerald":
-    type: "color"
-    id: "VariableID:2398:2403"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/emerald/700"
-  "text/special/teal":
-    type: "color"
-    id: "VariableID:2398:2404"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/teal/700"
-  "text/special/cyan":
-    type: "color"
-    id: "VariableID:2398:2405"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/cyan/700"
-  "text/special/sky":
-    type: "color"
-    id: "VariableID:2398:2406"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/sky/700"
-  "text/special/blue":
-    type: "color"
-    id: "VariableID:2398:2407"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/blue/700"
-  "text/special/indigo":
-    type: "color"
-    id: "VariableID:2398:2408"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/indigo/700"
-  "text/special/violet":
-    type: "color"
-    id: "VariableID:2398:2409"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/violet/700"
-  "text/special/purple":
-    type: "color"
-    id: "VariableID:2398:2410"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/purple/700"
-  "text/special/fuchsia":
-    type: "color"
-    id: "VariableID:2398:2411"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/fuchsia/700"
-  "text/special/pink":
-    type: "color"
-    id: "VariableID:2398:2412"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/pink/700"
-  "text/special/rose":
-    type: "color"
-    id: "VariableID:2398:2413"
-    scopes:
-      - "SHAPE_FILL"
-      - "TEXT_FILL"
-    ref:
-      default: "palette/rose/700"
   "background/base":
     type: "color"
     id: "VariableID:1943:1276"
@@ -949,21 +609,24 @@ tokens:
     scopes:
       - "STROKE"
     ref:
-      default: "palette/green/800"
+      light: "palette/green/700"
+      dark: "palette/green/800"
   "border/warning":
     type: "color"
     id: "VariableID:1943:1307"
     scopes:
       - "STROKE"
     ref:
-      default: "palette/amber/800"
+      light: "palette/amber/700"
+      dark: "palette/amber/800"
   "border/danger":
     type: "color"
     id: "VariableID:1943:1305"
     scopes:
       - "STROKE"
     ref:
-      default: "palette/red/800"
+      light: "palette/red/700"
+      dark: "palette/red/800"
   "shadow/base":
     type: "color"
     id: "VariableID:2233:3914"

@@ -255,7 +255,7 @@ test("colours the authored status in both themes, and never by colour alone", ()
   // The word is in the cell; the colour and the dot only make it scannable.
   // Both tones come from tokens/ — text/success in each mode — so the pair
   // asserted here is the pair the token set currently resolves to.
-  assert.match(html, /--ok: #166534;/);
+  assert.match(html, /--ok: #15803d;/);
   assert.match(html, /--ok: #8aeeae;/);
   assert.match(html, /\.status\[data-status="ready"\] \{ color: var\(--ok\); \}/);
   assert.match(html, /el\("span", \{ text: entry\.status \|\| "\u2014" \}\)/);
