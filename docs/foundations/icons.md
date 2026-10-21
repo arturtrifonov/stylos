@@ -56,7 +56,7 @@ Why: one preset is what makes the icons one set. Mixing families or treatments l
 
 Why: a visual difference that happens to exist in one source is not a system state model. Treating it as one makes components depend on a preset detail that the next preset may not have.
 
-## The delivery form: SVG, generated, committed
+## The delivery form: SVG, generated from the preset
 
 ### FND-ICONS-07 — Icons ship as SVG, never as an icon font
 
@@ -72,11 +72,19 @@ A second reason is specific to this repository: SPEC 0010 already decided that f
 
 ### FND-ICONS-08 — The delivered set is reproducible and committed
 
-**MUST.** The delivered icons are reproducible from their declared preset and are committed with it.
+**RETIRED** 2026-10-21. The delivered icons were reproducible from their declared preset and committed with it, one SVG per mark named in the manifest.
 
-Why: reproducible assets let a preset be replaced deliberately, and committed assets turn every change to it into a diff.
+Why: committing grew the set one mark at a time, and a consumer could use only the marks someone had already added. Drawing the whole preset takes about a second, so the build reproduces it every time and committed copies add nothing. Superseded by FND-ICONS-14.
 
-Checked by: `npm test` fails if the set and the manifest disagree.
+### FND-ICONS-14 — The whole preset is reproduced from its declaration
+
+**MUST.** Generate every mark of the declared preset from its pinned source in the build, so that any mark is available to a consumer and none is maintained by hand.
+
+Why: a set grown one request at a time leaves a product waiting for a mark the preset already contains, or tempts it to trace one from elsewhere (FND-ICONS-05). Reproducing the whole preset from a pinned source keeps every mark available and every drawing traceable to one declaration; a change to the drawings arrives as a change to that declaration or to the pinned version.
+
+Delivery keeps a consumer's footprint to the marks it uses: each mark is available on its own, and a mark is resolved by name once the consumer registers it. The package guide documents the [registration API](../../packages/ui/README.md#icons).
+
+Checked by: `npm run ui:generate` — a mark registered by default that does not resolve to exactly one drawing stops the build; `npm test` draws the registered marks from the pinned font.
 
 ### FND-ICONS-09 — A generated icon file carries geometry alone
 
@@ -111,12 +119,13 @@ Why: this is WCAG 2.2 SC 1.4.1 applied to the smallest element the system ships.
 ## Current default preset — Material Symbols Rounded
 
 This is the preset the repository currently builds, not a rule that Stylos
-icons must be Material. Its source, axes and names live in the authored
-[`assets/icons/manifest.yaml`](../../assets/icons/manifest.yaml); the importer
-turns those choices into the committed SVGs in
-[`assets/icons/svg/`](../../assets/icons/README.md). A replacement preset must
-continue to satisfy the rules above and the `Icon` drawing contract, but may
-use different drawings, names and an importer appropriate to its source.
+icons must be Material. Its source, axes and the marks registered by default
+live in the authored [`assets/icons/manifest.yaml`](../../assets/icons/manifest.yaml);
+the build draws every name the pinned font package declares — the whole
+catalogue — under FND-ICONS-14 ([`assets/icons/`](../../assets/icons/README.md)).
+A replacement preset must continue to satisfy the rules above and the `Icon`
+drawing contract, but may use different drawings, names and a generator
+appropriate to its source.
 
 Stylos supplies this preset. A consumer choosing another preset is responsible
 for its assets and implementation integrations. A managed way to supply other
@@ -127,10 +136,10 @@ The current instance is Material Symbols Rounded (Apache-2.0), `wght 500`,
 it is available, comprehensive and works at the system's icon sizes. It does
 not claim that Material is Stylos's visual language.
 
-The importer instances that variable font rather than using the stock SVG
+The generator instances that variable font rather than using the stock SVG
 packages, which are drawn at a different optical size. That is a property of
 this preset's source, not a requirement for a later source. Its variable axes
-are fixed at import time; no call site receives an axis control.
+are fixed in the manifest; no call site receives an axis control.
 
 The owner chose these parameters by visual comparison so that one optical
 version works across the system's icon sizes. The preset supplies one drawing
@@ -151,7 +160,7 @@ Figma authoring, library structure and the recorded alignment work are documente
 
 Why: an icon mismatch cannot be resolved by taste at every component. One authority makes a replacement auditable and prevents the two representations quietly becoming different sets.
 
-For the current default preset, the committed SVGs are authoritative because they are reproducible from the manifest.
+For the current default preset, the drawings the build generates from the manifest and the pinned font package are authoritative.
 
 ### FND-ICONS-13 — An unresolved icon renders nothing
 

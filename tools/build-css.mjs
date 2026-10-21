@@ -27,6 +27,7 @@ import { cssDuration, cssEasing } from "./lib/motion.mjs";
 import { readNaming, runCheck } from "./check-tokens.mjs";
 import { loadEffectStyles, validateEffectStyles } from "./lib/effect-styles.mjs";
 import { loadSurfaceMotionProfile, validateSurfaceMotionProfile } from "./lib/surface-motion-profiles.mjs";
+import { claimedHue } from "./lib/special-colors.mjs";
 
 export const PREFIX = "--stylos-";
 
@@ -94,79 +95,16 @@ export function cssNumber(value, tokenPath) {
  *
  * Only one family of names makes a claim about hue: a role with a `special`
  * segment names the group it must land in, and that is the whole of
- * FND-COLOR-08. Every other
- * role is named for what it paints and may be bound to any step — moving one
- * is a colour decision, not a contract change, so there is nothing here to
- * check and nothing to authorise.
+ * FND-COLOR-08 — except in its disabled state, which drops the hue like every
+ * disabled role. Every other role is named for what it paints and may be bound
+ * to any step — moving one is a colour decision, not a contract change, so
+ * there is nothing here to check and nothing to authorise.
+ *
+ * The family itself is generated from tokens/_special.yaml (FND-COLOR-14), so
+ * its completeness is a property of the generator; `tokens:check` validates
+ * the scale it is generated from.
  */
-export function claimedGroup(tokenPath) {
-  const segments = tokenPath.split("/");
-  return segments.includes("special") ? segments.at(-1) : null;
-}
-
-/**
- * The categorical roles are the one semantic family whose membership and
- * bindings are derivable from the palette. Keep the Figma export honest: a
- * palette group gains both roles, no role survives for a removed group, and
- * all of them land on its 700 step (FND-COLOR-13).
- */
-export function specialFamilyErrors({ color, palette, paletteName }) {
-  const errors = [];
-  const hues = new Set(
-    [...palette.tokens.keys()].map((tokenPath) => tokenPath.split("/")[0]).filter((hue) => hue !== "mono")
-  );
-  const areas = ["surface", "text"];
-  const actual = new Set();
-
-  for (const tokenPath of color.tokens.keys()) {
-    const parts = tokenPath.split("/");
-    if (parts[1] !== "special") continue;
-    if (!areas.includes(parts[0]) || parts.length !== 3) {
-      errors.push(
-        `color/${tokenPath} is outside the generated special family. ` +
-          `Only surface/special/<hue> and text/special/<hue> exist (FND-COLOR-13).`
-      );
-      continue;
-    }
-    actual.add(tokenPath);
-  }
-
-  for (const hue of hues) {
-    for (const area of areas) {
-      const tokenPath = `${area}/special/${hue}`;
-      const token = color.tokens.get(tokenPath);
-      if (!token) {
-        errors.push(
-          `color/${tokenPath} is missing. Every palette hue except mono needs both generated ` +
-            `special roles (FND-COLOR-13).`
-        );
-        continue;
-      }
-
-      const expected = `${paletteName}/${hue}/700`;
-      for (const mode of color.modes) {
-        const target = token.ref ? (token.ref.get(mode) ?? token.ref.get("default")) : null;
-        if (target !== expected) {
-          errors.push(
-            `color/${tokenPath} (${mode}) references "${target ?? "no palette token"}", but generated ` +
-              `special roles reference "${expected}" (FND-COLOR-13).`
-          );
-        }
-      }
-    }
-  }
-
-  for (const tokenPath of actual) {
-    const hue = tokenPath.split("/")[2];
-    if (!hues.has(hue)) {
-      errors.push(
-        `color/${tokenPath} has no palette hue group "${hue}" to generate it (FND-COLOR-13).`
-      );
-    }
-  }
-
-  return errors;
-}
+export const claimedGroup = claimedHue;
 
 // --- The build -------------------------------------------------------------
 
@@ -200,8 +138,6 @@ export function buildCss({ collections, naming, effectStyles = new Map(), surfac
   if (!color) {
     return { css: "", manifest: {}, errors: [`tokens/color.yaml is missing — nothing to scope.`] };
   }
-
-  errors.push(...specialFamilyErrors({ color, palette, paletteName }));
 
   /** property name -> where it came from. Also the duplicate-slug check. */
   const manifest = new Map();
@@ -398,7 +334,12 @@ export function buildCss({ collections, naming, effectStyles = new Map(), surfac
       }
 
       names.push(name);
-      if (record) declare(name, { token: canonical, collection: "color", scoped: true }, canonical);
+      if (record) {
+        declare(name, {
+          token: canonical, collection: "color", scoped: true,
+          ...(token.generated ? { generated: token.generated } : {}),
+        }, canonical);
+      }
       lines.push(`  ${name}: ${value};`);
     }
 

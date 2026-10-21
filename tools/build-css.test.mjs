@@ -14,7 +14,6 @@ import {
   cssColor,
   cssNumber,
   claimedGroup,
-  specialFamilyErrors,
 } from "./build-css.mjs";
 
 // Every test here is one line of docs/specs/0007-tokens-to-css.md §8. The
@@ -160,8 +159,10 @@ test("a string token with no authored stack fails rather than shipping without o
 // --- §4.2, what a role's name claims ---------------------------------------
 
 test("only a hue-named role claims a hue; every other name claims none", () => {
-  assert.equal(claimedGroup("surface/special/violet"), "violet");
+  assert.equal(claimedGroup("surface/bold/special/violet/default"), "violet");
+  assert.equal(claimedGroup("surface/subtle/special/violet/hover"), "violet");
   assert.equal(claimedGroup("text/special/amber"), "amber");
+  assert.equal(claimedGroup("surface/bold/special/violet/disabled"), null);
   assert.equal(claimedGroup("surface/bold/danger/default"), null);
   assert.equal(claimedGroup("surface/bold/danger/disabled"), null);
   assert.equal(claimedGroup("background/base"), null);
@@ -172,7 +173,12 @@ test("every role reaches the palette step its binding names", () => {
   const d = declarations(scope(built.css, ":root {\n  color-scheme: light;"));
   assert.equal(d.get("--stylos-color-surface-bold-primary-default"), "var(--stylos-palette-light-indigo-700)");
   assert.equal(d.get("--stylos-color-surface-bold-danger-disabled"), "var(--stylos-palette-light-slate-100)");
-  assert.equal(d.get("--stylos-color-surface-special-violet"), "var(--stylos-palette-light-violet-700)");
+  assert.equal(d.get("--stylos-color-surface-bold-special-violet-default"), "var(--stylos-palette-light-violet-600)");
+  assert.equal(d.get("--stylos-color-surface-bold-special-violet-disabled"), "var(--stylos-palette-light-slate-100)");
+  assert.equal(d.get("--stylos-color-surface-subtle-special-violet-hover"), "var(--stylos-palette-light-violet-100)");
+  assert.equal(d.get("--stylos-color-text-special-violet"), "var(--stylos-palette-light-violet-700)");
+  assert.equal(d.get("--stylos-color-border-special-violet"), "var(--stylos-palette-light-violet-700)");
+  assert.equal(d.get("--stylos-color-background-special-violet"), "var(--stylos-palette-light-violet-50)");
   assert.equal(d.get("--stylos-color-background-base"), "var(--stylos-palette-light-mono-white)");
   assert.equal(
     d.get("--stylos-color-shadow-base"),
@@ -201,42 +207,39 @@ test("a hue-named role rebound off its own hue fails — the hue is the meaning"
   const rebound = collections.map((c) => {
     if (c.name !== "color") return c;
     const tokens = new Map(c.tokens);
-    const role = tokens.get("surface/special/violet");
-    tokens.set("surface/special/violet", { ...role, ref: new Map([["default", "palette/indigo/700"]]) });
+    const role = tokens.get("text/special/violet");
+    tokens.set("text/special/violet", { ...role, ref: new Map([["default", "palette/indigo/700"]]) });
     return { ...c, tokens };
   });
   assert.match(
     buildCss({ collections: rebound, naming }).errors.join("\n"),
-    /color\/surface\/special\/violet \(light\) resolves into the hue group "indigo".*says "violet"/s
+    /color\/text\/special\/violet \(light\) resolves into the hue group "indigo".*says "violet"/s
   );
 });
 
-test("special is a complete generated family at palette step 700", () => {
-  const color = collections.find((collection) => collection.name === "color");
-  const palette = collections.find((collection) => collection.name === "palette");
-  assert.deepEqual(specialFamilyErrors({ color, palette, paletteName: "palette" }), []);
+test("generated special roles carry their scale as provenance", () => {
+  const record = built.manifest.properties["--stylos-color-surface-subtle-special-teal-default"];
+  assert.equal(record.token, "color/surface/subtle/special/teal/default");
+  assert.equal(record.generated, "tokens/_special.yaml");
+  assert.equal(built.manifest.properties["--stylos-color-surface-bold-primary-default"].generated, undefined);
+});
 
-  const incomplete = collections.map((collection) => {
-    if (collection.name !== "color") return collection;
-    const tokens = new Map(collection.tokens);
-    tokens.delete("text/special/amber");
-    return { ...collection, tokens };
-  });
-  assert.match(
-    buildCss({ collections: incomplete, naming }).errors.join("\n"),
-    /color\/text\/special\/amber is missing.*FND-COLOR-13/s
-  );
+test("the generated family is emitted in both scopes for every hue but mono", () => {
+  const dark = declarations(scope(built.css, '[data-theme="dark"] {'));
+  assert.equal(dark.get("--stylos-color-surface-bold-special-rose-default"), "var(--stylos-palette-dark-rose-700)");
+  assert.equal(dark.get("--stylos-color-text-special-rose"), "var(--stylos-palette-dark-rose-800)");
+  assert.equal(dark.get("--stylos-color-surface-bold-special-mono-default"), undefined);
 });
 
 // --- §4.3 and §4.4, the two scopes and the switch --------------------------
 
 // §8.6 — the light and dark scopes declare the same names.
-test("both scopes declare all 121 roles, complete both times", () => {
+test("both scopes declare all 319 roles, complete both times", () => {
   const light = [...declarations(scope(built.css, ":root {\n  color-scheme: light;")).keys()];
   const dark = [...declarations(scope(built.css, '[data-theme="dark"] {')).keys()];
 
   assert.deepEqual(light, dark);
-  assert.equal(light.filter((n) => n.startsWith("--stylos-color-")).length, 121);
+  assert.equal(light.filter((n) => n.startsWith("--stylos-color-")).length, 319);
 });
 
 test("a role that does not vary is still declared in dark, so an override cannot inherit into it", () => {
@@ -366,11 +369,13 @@ test("refuses to run when the canonical set does not check out, and writes nothi
   assert.equal(existsSync(path.join(empty, "dist")), false);
 });
 
-// Counted against the real set: 44 roles name a hue and must land on it, 77
-// name what they paint and may land anywhere — 121 in all.
+// Counted against the real set: 77 recorded roles name what they paint and may
+// land anywhere; 242 generated ones are eleven roles for each of 22 hues, and
+// all but the 44 disabled ones name a hue and must land on it — 319 in all.
 test("only the hue-named roles carry a claim about their hue", () => {
   const color = collections.find((c) => c.name === "color");
   const claimed = [...color.tokens.keys()].filter((p) => claimedGroup(p) !== null);
-  assert.equal(claimed.length, 44);
-  assert.equal(color.tokens.size, 121);
+  assert.equal(claimed.length, 198);
+  assert.equal([...color.tokens.values()].filter((t) => t.generated).length, 242);
+  assert.equal(color.tokens.size, 319);
 });

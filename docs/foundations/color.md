@@ -71,7 +71,7 @@ The semantic layer is cut first by **what a colour paints**. Inside an area that
 | tone | `surface`, `text`, `background`, `border`, `shadow` | `base` for neutral structure (`default` on `border`), then `primary`, `info`, `success`, `warning`, `danger`; `shadow` has only `base` and `primary` |
 | prominence | `text`, `background`, `border` | `base`, `secondary`, `tertiary`; `border` has `default` and `secondary` |
 | state | `surface` | `default`, `hover`, `active`, `disabled` |
-| type | `surface`, `text` | `special/<hue>` — one role per named hue |
+| type | `surface`, `text`, `background`, `border` | `special/<hue>` in place of a tone — one set of roles per palette hue group, generated (FND-COLOR-14) |
 
 Besides these, `text` has four roles of its own: `inverted`, `static-light`, `static-dark` and `disabled`. Disabled is the one place where a tone is dropped instead of made paler. `surface/bold/danger/disabled` is neutral, because a disabled control cannot be used, whatever it would have meant when enabled.
 
@@ -96,6 +96,7 @@ Why: the two differ by one decision, and people confuse them all the time, picki
 
 Why: those roles carry **categorical** colour — tags, labels, statuses a product defines for itself, chart series — where the specific colour is the point. A role that means "violet" and stops being violet has no meaning left.
 
+Exception: a disabled special surface drops its hue like every disabled surface, because a disabled control cannot be used, whatever it would have meant when enabled.
 Checked by: `npm run tokens:css` — a `special` role bound to another hue fails the build, naming both.
 
 ## Translucency
@@ -130,11 +131,19 @@ Why: a dark region inside a light page is not a supported case. Supporting it la
 
 ### FND-COLOR-13 — Special roles are generated from the palette
 
-**MUST.** `surface/special/<hue>` and `text/special/<hue>` are a complete generated family: one role in each area for every palette hue group except `mono`, each bound to `palette/<hue>/700` in both modes.
+**RETIRED** 2026-10-21. `surface/special/<hue>` and `text/special/<hue>` were a generated family of one role per area for every palette hue group except `mono`, each bound to `palette/<hue>/700` in both modes, and imported from the Figma export.
 
-Why: categorical colour is the one semantic family whose names, membership and palette bindings are entirely determined by another collection. Generating it makes a new hue group available everywhere categorical colour is offered, and prevents a hand-maintained subset, a wrong hue or a different step from quietly becoming part of the language. The generated tokens remain semantic roles, so components still bind roles rather than palette primitives.
+Why: categorical colour needs the full set of roles a tone has — bold and subtle surfaces with their states, text, background and border — and one step for every area made tags hard to colour. Importing a family whose membership the palette already decides was busywork. Superseded by FND-COLOR-14.
 
-Checked by: `npm run tokens:css` — a missing, extra or incorrectly bound `special` role fails the build.
+### FND-COLOR-14 — Special roles are generated from an authored scale
+
+**MUST.** Generate every `*/special/<hue>` role from the scale in [`tokens/_special.yaml`](../../tokens/_special.yaml), for every palette hue group except `mono`, and never record one from a Figma export.
+
+Why: categorical colour — tags, labels, categories a product defines — is used wherever a tone is: bold and subtle surfaces with their states, text, background and border. Which roles exist is decided by the palette, so generating them makes a new hue group available everywhere at once and stops a hand-kept subset, a wrong hue or a stray step from becoming part of the language. The family keeps a scale of its own rather than copying `primary`, because darker steps raise contrast and make hues harder to tell apart; its first steps are those of `warning`, the tone most sensitive to hue. The generated tokens remain semantic roles, so components still bind roles rather than palette primitives (FND-COLOR-02).
+
+The scale names each role with `{hue}` where the hue group goes — `surface/bold/special/{hue}/hover`, `text/special/{hue}` — and the step it takes in each mode. One hue's roles coincide with a tone's roles when that tone uses the same hue and steps; that is expected. A Figma file may carry its own copy of these variables for design work. The import drops it and reports where it differs from the generated family.
+
+Checked by: `npm run tokens:check` — a malformed scale, a role off its own hue, a step some hue group lacks, or a special role recorded in `tokens/color.yaml` fails.
 
 ## Open
 

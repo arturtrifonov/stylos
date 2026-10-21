@@ -147,7 +147,9 @@ Figma names each file after its **mode**, not its collection, so a full refresh 
 
 `build-css.mjs` projects the canonical set onto CSS custom properties in `packages/ui/dist/tokens.css`, with `tokens.json` recording which canonical token each name came from. Built to SPEC 0007. Neither file is committed. It reads `tokens/*.yaml` and nothing else, and it refuses to run at all on a set that fails `tokens:check`.
 
-Two things in it are authored rather than read: the font fallback stacks and the shadow composition. Shadow styles are not exported from Figma; the build composes the six stacks from the parameters in `effect`, following the [shadow scale](../docs/foundations/effects.md#the-shadow-scale). Figma collection and export conventions are documented in [figma/foundations.md](../figma/foundations.md). One claim is checked rather than authored — a role with a `special` segment names the hue group it must land in, so `surface/special/violet` bound to indigo fails the build naming both (FND-COLOR-08). Every other role is named for what it paints and may be bound to any step, so there is nothing about it to check.
+Two things in it are authored rather than read: the font fallback stacks and the shadow composition. Shadow styles are not exported from Figma; the build composes the six stacks from the parameters in `effect`, following the [shadow scale](../docs/foundations/effects.md#the-shadow-scale). Figma collection and export conventions are documented in [figma/foundations.md](../figma/foundations.md). One claim is checked rather than authored — a role with a `special` segment names the hue group it must land in, so `text/special/violet` bound to indigo fails the build naming both (FND-COLOR-08); a disabled special surface is the exception and drops its hue. Every other role is named for what it paints and may be bound to any step, so there is nothing about it to check.
+
+The special roles themselves are generated, not read from `tokens/color.yaml`. `lib/special-colors.mjs` expands the authored scale in `tokens/_special.yaml` for every palette hue group except `mono` (FND-COLOR-14), and `lib/tokens.mjs` adds the result to `color` whenever the canonical set is loaded — so the CSS build, the theme, the report and the registry all see one set of roles. `tokens.json` marks each generated property with `generated: "tokens/_special.yaml"`. `check-tokens.mjs` validates the scale against the palette and fails a special role recorded in `tokens/color.yaml`; `import-tokens.mjs` drops the special variables from a `color` export, warns where Figma's copy differs from the generated family, and counts a generated role as surviving the import rather than as withdrawn.
 
 *Until 2026-09-15 this stage also synthesised a layer of `--stylos-slot-*` properties, five names × thirteen steps, and enforced that every non-`special` role reached one of five hue groups. Both are gone: no rule of the design language says a role belongs to one of five groups, nothing consumed the properties, and the check failed a colour decision that broke nothing.*
 
@@ -171,31 +173,25 @@ The `@stylos/ui` generators (SPEC 0009 §4), run together with `tokens:css` by `
 
 Both outputs are gitignored and rebuilt, like every generated thing.
 
-## `build-icons.mjs` — the icon set
+## `build-ui-icons.mjs` — the icon preset
 
 ```bash
-npm run icons:import      # assets/icons/manifest.yaml → assets/icons/svg/*.svg
+npm run ui:generate       # assets/icons/manifest.yaml + the pinned font → packages/ui/dist/icons/, icons.ts
 ```
 
-Draws each icon named in the manifest out of the Material Symbols variable font at the one instance [`icons.md`](../docs/foundations/icons.md) fixes — Rounded, `wght 500`, `FILL 1`, `GRAD 0`, `opsz 20` — and writes it as an SVG carrying geometry only: the upstream `0 -960 960 960` box, `currentColor`, no size, no ARIA.
+Draws every name the pinned `material-symbols` package declares out of its variable font at the one instance the manifest fixes — Rounded, `wght 500`, `FILL 1`, `GRAD 0`, `opsz 20` — in about a second, under FND-ICONS-14. The font work lives in `lib/icon-preset.mjs`; this writes the outputs:
 
-Run by hand, never from a build. The SVGs are committed, so a change to the set or to the instance arrives as a readable diff — the same rule `assets/fonts/` follows — and nothing downstream needs the font. `npm test` fails if `svg/` and `manifest.yaml` disagree, which is what makes editing the manifest without re-running this a caught mistake rather than a silent one.
+- `packages/ui/dist/icons/<name>.js` and `.d.ts` — one module per mark, `{ name, viewBox, paths }`, which a consumer imports and passes to `registerIcons`;
+- `packages/ui/dist/icons/<name>.svg` — the same geometry as a file: the upstream `0 -960 960 960` box, `currentColor`, no size, no ARIA;
+- `packages/ui/src/components/icon/icons.ts` — the registered marks, which Icon resolves without an import, and the `IconName` union of every catalogue name.
 
-A name that does not shape into exactly one glyph stops the import. A blank icon that ships is worse than a build that stops.
+Data rather than markup, so nothing parses markup at runtime and nothing anywhere needs `{@html}` — no injection shape, no sanitiser to keep. The emitted shape is SPEC 0012 §4, which is also the shape a client's replacement set has to satisfy, so the default set and a replacement are one type. The catalogue directory is cleared first, so a mark a newer font no longer declares cannot survive into the package. Nothing is committed: the manifest and the version `package-lock.json` pins reproduce every drawing.
 
-**This is the exception to the dependency-free norm at the top of this file**, and the only one: `fontkit`, `wawoff2` and `material-symbols`, all devDependencies, none of them on any build path. Instancing a variable font and reading a glyph outline is genuinely not something plain Node can do, and the alternative — the stock `@material-symbols/svg-NNN` packages — cannot supply `opsz 20`, because those are drawn at `opsz 48` and optical size is a redrawing rather than a scale. `wawoff2` is there for a narrower reason: fontkit's `getVariation` cannot read a WOFF2, so the packaged face is decompressed to TrueType in memory first.
+A declared name that does not shape into exactly one glyph is skipped and reported. A **registered** name that does not stops the build: the components render those without being asked, and a blank one that ships is worse than a build that stops. `lib/preview.mjs` draws the registered marks the same way for the static component pages.
 
-## `build-ui-icons.mjs`
+**This is the exception to the dependency-free norm at the top of this file**, and the only one: `fontkit`, `wawoff2` and `material-symbols`, all devDependencies. Instancing a variable font and reading a glyph outline is genuinely not something plain Node can do, and the alternative — the stock `@material-symbols/svg-NNN` packages — cannot supply `opsz 20`, because those are drawn at `opsz 48` and optical size is a redrawing rather than a scale. `wawoff2` is there for a narrower reason: fontkit's `getVariation` cannot read a WOFF2, so the packaged face is decompressed to TrueType in memory first.
 
-```bash
-npm run ui:generate       # assets/icons/svg/*.svg → packages/ui/src/components/icon/icons.ts
-```
-
-A projection, in the same sense `tokens:css` is one: the committed SVGs are the source and this restates them as data the Icon component renders, so nothing parses markup at runtime and nothing anywhere needs `{@html}` — no injection shape, no sanitiser to keep. The emitted shape is SPEC 0012 §4, which is also the shape a client's replacement set has to satisfy, so the default set and a replacement are one type.
-
-A file it cannot read whole stops the build. These SVGs are generated, so an unreadable one means `build-icons.mjs` changed underneath — a half-read drawing reaching the component would be a mark that is wrong rather than absent.
-
-Not to be confused with `build-icons.mjs` above: that one draws the set out of the variable font and is run by hand; this one runs on every `ui:generate` and never touches a font.
+*Until 2026-10-21 a separate `npm run icons:import` drew only the names listed in the manifest and committed them under `assets/icons/svg/`, and this step restated those files. A consumer could use only the marks someone had added; FND-ICONS-08 is retired.*
 
 ## `check-ui-release.mjs` — Stage 5 acceptance
 
@@ -254,6 +250,10 @@ Shared, dependency-free modules for the above.
 `lib/verify.mjs` checks the canonical set against itself — every reference resolves, none loop, mode dependence is declared.
 
 `lib/tokens.mjs` loads `tokens/*.yaml` into an in-memory model and resolves references — following `effect/shadow/color/base` through `color` into `palette`, in whichever theme is asked for. It is the one place that knows the canonical shape, so a consumer never re-implements YAML → model — the planned colour and accessibility viewer is meant to use it rather than grow a second reader.
+
+`lib/special-colors.mjs` generates the special colour roles from `tokens/_special.yaml` and validates that scale (FND-COLOR-14). `lib/tokens.mjs` applies it when loading `color`; `loadCanonical(root, names, { derived: false })` returns the record alone, for the importer and for `check-tokens.mjs`.
+
+`lib/icon-preset.mjs` reads `assets/icons/manifest.yaml`, locates the pinned font package wherever `node_modules` is, and draws marks from it — the one module here that is not dependency-free, for the reasons under `build-ui-icons.mjs`.
 
 ## Future candidates
 

@@ -21,10 +21,12 @@ Checkbox Input’s Default renders a native named checkbox. Checkbox Label
 and Text also keep their Default playgrounds and Controls. Additional visual
 matrices, interaction-test pages and form demonstrations are omitted from the workshop.
 
-Button Base keeps Default followed by one `Icons playground` story. It renders a single live button; Controls independently select the leading and trailing marks from the active icon set and adjust their presence, size, tone, label and availability.
+Button Base keeps Default followed by one `Icons playground` story. It renders a single live button; Controls independently select the leading and trailing marks from the registered icon set and adjust their presence, size, tone, label and availability.
 
 Link also keeps Default followed by Icons playground, with native navigation and independently configurable leading and trailing icons.
 
-Button Inner follows the same Default and Icons playground convention, with one icon selected from the active set and an explicit action name. It has no size or tone controls.
+Button Inner follows the same Default and Icons playground convention, with one icon selected from the registered set and an explicit action name. It has no size or tone controls.
 
-Tag Fill and Tag Outline each keep Default followed by Icons playground. Controls cover five sizes, five tones, two text cases and independently selected decorative icons from the active set.
+Tag Fill and Tag Outline each keep Default followed by Icons playground. Controls cover five sizes, five tones, two text cases and independently selected decorative icons from the registered set.
+
+Icon keeps Default followed by `Registered from the catalogue`, which imports three marks outside the registered set from `@stylos/ui/icons/<name>`, registers them and selects one by name.

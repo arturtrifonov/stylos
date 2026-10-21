@@ -1,0 +1,41 @@
+# AUTHORED SYSTEM SCALE — not a Figma export, never written by tools/import-tokens.mjs.
+# The categorical colour roles. Each template is generated for every palette hue
+# group not excluded below, with {hue} replaced by the group (FND-COLOR-14).
+# Owner decision 2026-10-21: categorical colour keeps a fixed scale of its own
+# rather than copying primary. Darker steps raise contrast and make hues harder to
+# tell apart. The initial steps are the warning roles' as exported 2026-10-21;
+# warning is the tone most sensitive to hue.
+source:
+  decided: "2026-10-21"
+  rule: "FND-COLOR-14"
+exclude:
+  - "mono"
+roles:
+  "surface/bold/special/{hue}/default":
+    light: "palette/{hue}/600"
+    dark: "palette/{hue}/700"
+  "surface/bold/special/{hue}/hover":
+    light: "palette/{hue}/700"
+    dark: "palette/{hue}/800"
+  "surface/bold/special/{hue}/active":
+    light: "palette/{hue}/800"
+    dark: "palette/{hue}/900"
+  "surface/bold/special/{hue}/disabled":
+    light: "palette/slate/100"
+    dark: "palette/slate/200"
+  "surface/subtle/special/{hue}/default":
+    default: "palette/{hue}/50"
+  "surface/subtle/special/{hue}/hover":
+    default: "palette/{hue}/100"
+  "surface/subtle/special/{hue}/active":
+    default: "palette/{hue}/200"
+  "surface/subtle/special/{hue}/disabled":
+    default: "palette/slate/25"
+  "text/special/{hue}":
+    light: "palette/{hue}/700"
+    dark: "palette/{hue}/800"
+  "background/special/{hue}":
+    default: "palette/{hue}/50"
+  "border/special/{hue}":
+    light: "palette/{hue}/700"
+    dark: "palette/{hue}/800"
