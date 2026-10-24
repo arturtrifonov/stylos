@@ -91,11 +91,18 @@ and CSS imports have an explicit migration table in the package guide.
 
 ## 2. The three flows
 
+**Amended 2026-10-24 — Accordion review.** The owner approved Accordion and
+Accordion Header as `ready` after their component review. The other ten urgent
+contracts remain draft. This scoped decision is recorded in the registry and
+[review evidence](packages/ui/verification/accordion-2026-10-24.md); deferred
+release-wide accessibility and publication checks still gate 0.3.0.
+
 **Amended 2026-10-17 — urgent product integration under draft contracts.** The
 owner expanded the starting set with Accordion, Alert Inline/Popup/Popup Timer,
 Input Search, Progress Bar, Switcher, Tabs Horizontal and Text Area. Their public
-contracts, plus Accordion Header, Switcher Item and Tab Item, remain `draft` even
-when implemented and exported. Contract status, implementation presence and core
+contracts, plus Accordion Header, Switcher Item and Tab Item, were introduced
+as `draft` even when implemented and exported; later owner reviews may promote
+individual contracts. Contract status, implementation presence and core
 membership are separate facts. Current Figma designs are the provisional visual
 reference; limitations record obsolete nested definitions and unresolved design
 choices. Search and Text Area share the field layer and native forms. Switcher

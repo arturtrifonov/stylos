@@ -6,6 +6,9 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Added
 
+- Accordion and Accordion Header accept `expandIcon="chevron|plus|dropdown"`
+  with paired collapsed/expanded marks. Accordion adds `headingLevel` for its
+  native section heading, independent of visual size.
 - **Categorical colours for every palette hue.** Each hue group except `mono`
   now has bold and subtle surfaces with all four states, text, background and
   border roles — 242 roles in total, for example
@@ -24,6 +27,9 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Changed
 
+- Accordion and Accordion Header are ready after the owner's component review;
+  the other ten urgent starting-set contracts remain draft. Update the
+  contracts, package guide, review evidence and generated workshop status.
 - Dropdown list padding now uses `gap/g-0_500` (4 px) on all sides at every
   size, matching Figma. The existing six-and-a-half-row formula gives default
   maximum heights of 186/225/264/303/342 px for XS/S/M/L/XL.
@@ -44,6 +50,13 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Fixed
 
+- Align Accordion insets, header/content spacing and optical icon placement
+  with the reviewed Figma geometry; prevent clipped title descenders and
+  double borders between consecutive sections. Remove the built-in disclosure
+  icon wrapper. Disclosure stays immediate, and the Review playground no
+  longer runs scripted interactions on load.
+- Release verification checks Accordion's `headingLevel` against its native
+  heading tag in both server and browser readers.
 - Emit explicit dark token values for `[data-theme="dark"]` on any element,
   including a section inside a light page. Preserve root-level automatic theme
   selection and rebind all semantic colours, shadows and focus effects locally.

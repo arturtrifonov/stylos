@@ -52,6 +52,9 @@ export function markupReader(html) {
 export function variantChecks(entry) {
   const root = `stylos-${entry.id.toLowerCase().replaceAll(" ", "-")}`;
   return entry.api.filter(property => property.kind === "variant" && property.name !== "placement").map(property => {
+    if (entry.id === "Accordion" && property.name === "heading level") {
+      return { prop: "headingLevel", className: "stylos-accordion-heading", tagName: true };
+    }
     let className = root;
     let attribute = `data-${property.name.replaceAll(" ", "-")}`;
     if (property.name === "type" && ["Button", "Button Icon"].includes(entry.id)) attribute = "type";

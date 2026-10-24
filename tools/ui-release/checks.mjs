@@ -46,7 +46,10 @@ export function verifyVariantCase(component, args, read) {
     if (check.prop === "sortDirection" && !args.isSorted) expected = null;
     if (check.prop === "validation" && ["Input Text", "Select", "Input Search", "Text Area"].includes(component.id) && args.state !== "default") expected = "off";
     if (check.prop === "interaction") expected = expected === "option" ? "option" : null;
-    const actual = read(check.className, check.attribute);
+    if (check.tagName) expected = `h${expected}`;
+    const actual = check.tagName
+      ? read(check.className)?.tagName?.toLowerCase()
+      : read(check.className, check.attribute);
     if (actual !== expected) throw new Error(`${check.prop}: expected ${expected}, received ${actual}`);
   }
 }

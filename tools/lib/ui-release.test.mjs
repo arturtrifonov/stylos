@@ -56,3 +56,23 @@ test("a fixture cannot silently drop a group role or descending aria-sort", () =
     { size: "medium", alignment: "start", isSorted: true, sortDirection: "descending" },
     markupReader('<table><tr><th class="stylos-table-cell-heading" data-size="medium" data-alignment="start"></th></tr></table>')), /sortDirection/);
 });
+
+test("Accordion heading levels are checked against native tags rather than data attributes", () => {
+  const entry = loadRegistry(fileURLToPath(new URL("../..", import.meta.url)))
+    .find(entry => entry.id === "Accordion");
+  const checks = variantChecks(entry).filter(check => check.prop === "headingLevel");
+  assert.equal(checks.length, 1);
+  const component = { id: entry.id, selector: ".stylos-accordion", variantChecks: checks };
+  for (const headingLevel of ["1", "2", "3", "4", "5", "6"]) {
+    verifyVariantCase(component, { headingLevel }, markupReader(
+      `<section class="stylos-accordion"><h${headingLevel} class="stylos-accordion-heading"><button>Section</button></h${headingLevel}></section>`));
+  }
+  for (const heading of ['<h3 class="stylos-accordion-heading"></h3>',
+    '<div class="stylos-accordion-heading"></div>', '']) {
+    assert.throws(() => verifyVariantCase(component, { headingLevel: "2" }, markupReader(
+      `<section class="stylos-accordion" data-heading-level="2">${heading}</section>`)), /headingLevel/);
+  }
+  // The browser reader returns uppercase HTML tag names; parse5 uses lowercase.
+  verifyVariantCase(component, { headingLevel: "2" }, className =>
+    className === "stylos-accordion" ? {} : { tagName: "H2" });
+});

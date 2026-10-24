@@ -1,7 +1,21 @@
 @import "../accordion-header/accordion-header.css";
 .stylos-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--_stylos-input-gap);
   min-width: 0;
   border-block: var(--stylos-border-width-normal) solid var(--stylos-color-border-secondary);
-  padding-block: var(--stylos-dimension-gap-g-0_500);
+  /* Figma's inside stroke is part of the outer inset, not extra height. */
+  padding-block: calc(var(--stylos-dimension-gap-g-0_500) - var(--stylos-border-width-normal));
 }
-.stylos-accordion-body:not([hidden]) { padding: var(--_stylos-input-gap) var(--_stylos-input-padding); }
+.stylos-accordion-heading { margin: 0; }
+/* Consecutive siblings form a list with one divider at each shared edge. */
+.stylos-accordion + .stylos-accordion {
+  border-block-start: 0;
+  padding-block-start: var(--stylos-dimension-gap-g-0_500);
+}
+.stylos-accordion-body:not([hidden]) {
+  padding: var(--_stylos-accordion-body-padding, var(--_stylos-input-gap)) var(--_stylos-input-padding);
+}
+/* The current medium Figma slot uses g-0_625 rather than the header gap. */
+.stylos-accordion[data-size="medium"] { --_stylos-accordion-body-padding: var(--stylos-dimension-gap-g-0_625); }

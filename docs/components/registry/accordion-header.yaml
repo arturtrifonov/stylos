@@ -18,19 +18,19 @@ children:
   - "Loader"
 parents:
   - "Accordion"
-notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
+notes: "Reviewed with Accordion and approved ready by the owner on 2026-10-24. Native availability and disclosure state remain independent of decorative icon presence. Implementation evidence: [Accordion review](../../../packages/ui/verification/accordion-2026-10-24.md)."
 import:
   batch: 1
   ready: true
-status: "draft"
+status: "ready"
 html: "<button type=\"button\">Section title</button>"
 summary: "The native disclosure button for an Accordion."
 purpose: "Expose a section title and whether its content is expanded."
 use_when:
-  - "The native disclosure button for an Accordion."
+  - "A collapsible section needs a titled button that exposes its expanded state."
 do_not_use_when:
   -
-    text: "A disclosure needs its controlled body and state relationship."
+    text: "A complete collapsible section should own its heading, body and disclosure relationship."
     instead: "Accordion"
 api:
   -
@@ -67,13 +67,28 @@ api:
   -
     name: "expand icon position"
     kind: "variant"
-    description: "Position of the disclosure chevron."
+    description: "Position of the expand/collapse icon."
     default: "leading"
     values:
       -
         value: "leading"
       -
         value: "trailing"
+  -
+    name: "expand icon"
+    kind: "variant"
+    description: "The paired expand/collapse marks, independent of their leading or trailing position."
+    default: "chevron"
+    values:
+      -
+        value: "chevron"
+        note: "Expand More / Expand Less."
+      -
+        value: "plus"
+        note: "Add / Dash."
+      -
+        value: "dropdown"
+        note: "Drop Down / Drop Up."
   -
     name: "label text"
     kind: "text"
@@ -153,6 +168,9 @@ a11y:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4381:718"
-  last_verified: "2026-10-17"
+  last_verified: "2026-10-24"
 limitations:
-  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+  - "A standalone Header does not create or hide a content panel. Its owner supplies the controlled panel and keeps its visibility in sync, or uses Accordion for the complete section."
+figma_notes:
+  - "expand icon selects one of the three existing instance-swap pairs: Expand More / Expand Less, Add / Dash or Drop Down / Drop Up."
+  - "Figma is focused toggles the shared Focus instance for documentation and composition. Web focus follows native :focus-visible; it is not a component prop."
