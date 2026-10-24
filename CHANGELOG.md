@@ -27,6 +27,9 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Changed
 
+- Accordion and Accordion Header are ready after the owner's component review;
+  the other ten urgent starting-set contracts remain draft. Update the
+  contracts, package guide, review evidence and generated workshop status.
 - Dropdown list padding now uses `gap/g-0_500` (4 px) on all sides at every
   size, matching Figma. The existing six-and-a-half-row formula gives default
   maximum heights of 186/225/264/303/342 px for XS/S/M/L/XL.

@@ -3,7 +3,8 @@
 The Svelte 5 component package, built to SPEC 0009 against the contracts in [`docs/components/registry/`](../../docs/components/registry/). The stack and the layering are ADR 0002; the version is the system's, in lockstep ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §9).
 
 **0.2.0 is an early integration release, authorized 2026-10-17.** The urgent
-starting-set contracts remain draft. All unfinished component acceptance,
+starting-set contracts are reviewed one by one; Accordion and Accordion Header
+are now ready, while ten remain draft. All unfinished release acceptance,
 including Linux Chrome + Orca, incomplete axe review, visual/contrast coverage
 and Figma synchronization, gates [0.3.0](verification/0.3.0.md). Product proof
 and consumer materials move to 0.4.0. Automated measurements are scoped evidence,
@@ -214,18 +215,20 @@ existing ID when changing its group so saved links continue to work.
 
 Per SPEC 0009 §5, contract first: the entry's `api` is corrected to describe the web component in the same session the `.svelte` is written. Then a directory under `src/components/` named by the entry's slug, the authored CSS and wrapper, an export in `src/index.ts` — and the generators produce the props type and the workshop story.
 
-### Starting-set additions — draft integration
+### Starting-set additions — component review
 
 The owner expanded the starting set on 2026-10-17 with `Accordion`, `AlertInline`,
 `AlertPopup`, `AlertPopupTimer`, `InputSearch`, `ProgressBar`, `Switcher`,
 `TabsHorizontal` and `TextArea`. `AccordionHeader`, `SwitcherItem` and `TabItem`
-are their compositional dependencies. All twelve contracts remain **draft**:
-the exports are available for early product integration, and their API and design
-may change during review. Builds and examples do not promote readiness.
+are their compositional dependencies. The owner approved **Accordion** and
+**Accordion Header** as **ready** after their 2026-10-24 review. The other ten
+contracts remain **draft** and are available for early product integration;
+their API and design may change during review. Builds and examples do not
+promote readiness.
 
 Import components from `@stylos/ui` and the usual tokens/fonts. Each has an
 independent CSS export, for example `@stylos/ui/css/text-area.css`. Generated
-Default workshop pages expose their draft status and registry-derived Controls.
+Default workshop pages expose each contract's status and registry-derived Controls.
 The browser-acceptance inspector includes **Starting set form**, composing the
 new controls and notifications for keyboard and form checks.
 
@@ -287,7 +290,9 @@ in the surrounding layout when they need independent outer borders.
 **Interaction checks** runs the keyboard, retained-state and heading checks
 separately. **Densities** and **Expand icons** check measured geometry across
 all five sizes and the disclosure glyph pairs. The
-[component review](verification/accordion-2026-10-24.md) records the verified fixes and the remaining review scope; the contract is still draft.
+[component review](verification/accordion-2026-10-24.md) records the verified
+fixes, owner approval of both contracts as ready, and the remaining release-wide
+accessibility checks.
 
 Alerts expose bindable `isOpen`, optional heading/content/actions, native close
 and Undo callbacks, and consumer-selected announcement urgency. Their host owns

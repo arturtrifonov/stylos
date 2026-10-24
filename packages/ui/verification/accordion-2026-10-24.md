@@ -1,8 +1,10 @@
 # Accordion — component review, 2026-10-24
 
 Scope: Accordion and its composed Header, reviewed one component at a time.
-The contract remains draft. This record does not close the release-wide
-[0.3.0 acceptance](0.3.0.md) or promote Accordion Header independently.
+The owner approved both Accordion and Accordion Header as ready on 2026-10-24,
+after reviewing the implementation and its Figma representation. This scoped
+readiness decision does not close the release-wide [0.3.0 acceptance](0.3.0.md)
+or claim unperformed assistive-technology or contrast checks.
 
 ## References
 
@@ -15,8 +17,8 @@ needed for the web-only heading level. Added `is focused` to Accordion Header
 using the existing shared Focus component in all 80 variants. A
 [five-density focus review](https://www.figma.com/design/WUc07ZBtjRvypXtsOlbVut?node-id=5500-417)
 shows the result. The owner's `has top border` property is preserved; web
-composition uses an adjacent-sibling selector instead. The historical
-`last_verified` date is unchanged.
+composition uses an adjacent-sibling selector instead. Both registry entries
+record this comparison as `last_verified: 2026-10-24`.
 
 ## Findings and fixes
 
@@ -70,8 +72,8 @@ those scripted interactions live in the separate **Interaction checks** story.
 These story checks ran in the local Chromium preview. They are scoped component
 checks, not a new whole-library accessibility assessment.
 
-The owner accepted the reviewed Accordion changes for a pull request on
-2026-10-24.
+The owner accepted the reviewed changes for a pull request and explicitly
+approved promoting both Accordion contracts from draft on 2026-10-24.
 
 ## Still to review
 

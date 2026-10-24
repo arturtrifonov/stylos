@@ -17,8 +17,13 @@ current implementation, move every unfinished acceptance check to `0.3.0`, and
 shift the former `0.3.0` proof/consumer stage to `0.4.0` (its follow-up `0.3.1`
 becomes `0.4.1`). Completed measurements remain evidence with their original
 scope/date; deferred checks are not recorded as passed. The twelve urgent
-contracts remain `draft`. This explicit decision replaces the earlier Stage 5
-release gate and authorizes the agent to merge and release through GitHub.
+contracts were retained as `draft` at this release. This explicit decision
+replaces the earlier Stage 5 release gate and authorizes the agent to merge and release through GitHub.
+
+**Component review, 2026-10-24:** the owner approved Accordion and Accordion
+Header as ready after reviewing their code and Figma representation. Ten urgent
+contracts remain draft and will be reviewed individually. This promotion does
+not close the deferred 0.3.0 acceptance.
 
 The release ladder now separates early integration, acceptance and product proof.
 

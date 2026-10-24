@@ -91,12 +91,13 @@ notes: "Initial integration: 2026-10-17. Content disclosure is immediate through
 import:
   batch: 1
   ready: true
-status: "draft"
+status: "ready"
 html: "<section><h3><button>Section title</button></h3><div>Content</div></section>"
 summary: "A titled section that can reveal or hide its content."
 purpose: "Keep related product content in one section without making the product invent its own disclosure."
 use_when:
-  - "A titled section that can reveal or hide its content."
+  - "Related content can be collapsed under a clear section title to keep a page easier to scan."
+  - "A list of independently expandable sections needs consistent disclosure, headings and shared dividers."
 do_not_use_when:
   -
     text: "The section must always remain visible. Do not conceal essential instructions in a disclosure."
@@ -136,7 +137,7 @@ api:
   -
     name: "expand icon position"
     kind: "variant"
-    description: "Position of the disclosure chevron; Accordion Figma composition uses trailing."
+    description: "Position of the expand/collapse icon; Accordion Figma composition uses trailing."
     default: "trailing"
     values:
       -
@@ -260,7 +261,7 @@ a11y:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4384:1292"
-  last_verified: "2026-10-17"
+  last_verified: "2026-10-24"
 limitations:
   - "Each Accordion owns its expansion independently. Exclusive groups and animated disclosure are not included."
   - "Consecutive sibling Accordions share a single border at their common edge. The following sibling omits its top border automatically while preserving the title inset."

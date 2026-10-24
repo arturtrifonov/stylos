@@ -55,7 +55,7 @@ A Figma representation is mandatory for `ready`: a single `figma.node_id` links 
 
 **The value is `ready`, not `published`, and the reason is not taste.** Figma publishes a *file*: everything in it goes out at once, and there is no per-component publish state to mirror. A `published` value would have been a fact maintained by hand about something the tool does not have, and it would have gone stale the first time the file was published without it being updated. Which release a component's API shipped in is answered by `version`; what moved in the library at that release is answered by `CHANGELOG.md`. `status` answers the one question neither of those does — can this be built against.
 
-**Thirty-nine entries say `ready`** — the `0.1.0` core set, each assessed against both gates on 2026-09-05. The rest say `draft` or say nothing: the inventory rows were never set at all, and setting one is an assessment rather than a default.
+The `0.1.0` core was assessed against both gates on 2026-09-05. Later reviews promote individual contracts explicitly: Accordion and Accordion Header were approved on 2026-10-24. Each registry entry records its current status; inventory rows without one have not been assessed.
 
 #### `version` is the release the API shipped in
 
