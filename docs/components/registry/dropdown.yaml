@@ -1,4 +1,4 @@
-# Verified against the live Figma set on 2026-10-10.
+# List spacing verified against all ten live Figma variants on 2026-10-24.
 id: "Dropdown"
 name: "Dropdown"
 level: "widget"
@@ -59,7 +59,7 @@ sizing_model:
   adjustable:
     horizontal: true
     vertical: true
-  intent: "Width is supplied by the owner. The panel hugs its bands until its maximum; only the options scroll. Default maxima are derived from 6.5 plain row heights, five row gaps, block padding on both sides and the panel border. In Figma the inline list padding is gap/g-0_500 at every size, while the block padding steps with size."
+  intent: "Width is supplied by the owner. The panel hugs its bands until its maximum; only the options scroll. Default maxima are derived from 6.5 plain row heights, five row gaps, block padding on both sides and the panel border. List padding on all four sides and the gap between rows are gap/g-0_500 at every size."
   sizes:
     -
       size: "extra small"
@@ -74,7 +74,7 @@ sizing_model:
       list_padding_block: "gap/g-0_500"
     -
       size: "small"
-      max_height: 229
+      max_height: 225
       list_gap: "gap/g-0_500"
       search_padding: "gap/g-1_250"
       buttons_padding: "gap/g-1_250"
@@ -82,10 +82,10 @@ sizing_model:
       back_padding_block: "gap/g-0_875"
       back_padding_inline: "gap/g-0_375"
       list_padding_inline: "gap/g-0_500"
-      list_padding_block: "gap/g-0_750"
+      list_padding_block: "gap/g-0_500"
     -
       size: "medium"
-      max_height: 272
+      max_height: 264
       list_gap: "gap/g-0_500"
       search_padding: "gap/g-1_500"
       buttons_padding: "gap/g-1_500"
@@ -93,10 +93,10 @@ sizing_model:
       back_padding_block: "gap/g-1_000"
       back_padding_inline: "gap/g-0_500"
       list_padding_inline: "gap/g-0_500"
-      list_padding_block: "gap/g-1_000"
+      list_padding_block: "gap/g-0_500"
     -
       size: "large"
-      max_height: 315
+      max_height: 303
       list_gap: "gap/g-0_500"
       search_padding: "gap/g-1_750"
       buttons_padding: "gap/g-1_750"
@@ -104,10 +104,10 @@ sizing_model:
       back_padding_block: "gap/g-1_000"
       back_padding_inline: "gap/g-0_625"
       list_padding_inline: "gap/g-0_500"
-      list_padding_block: "gap/g-1_250"
+      list_padding_block: "gap/g-0_500"
     -
       size: "extra large"
-      max_height: 358
+      max_height: 342
       list_gap: "gap/g-0_500"
       search_padding: "gap/g-2_000"
       buttons_padding: "gap/g-2_000"
@@ -115,7 +115,7 @@ sizing_model:
       back_padding_block: "gap/g-1_250"
       back_padding_inline: "gap/g-0_750"
       list_padding_inline: "gap/g-0_500"
-      list_padding_block: "gap/g-1_500"
+      list_padding_block: "gap/g-0_500"
 api:
   -
     name: "size"
@@ -182,6 +182,7 @@ limitations:
   - "One search field and one back row, both at the top and both in a fixed order. Nothing reorders the bands."
   - "dropdownBehavior supports plain single selection; dropdownControlsBehavior supports a group of native Checkbox/Toggle rows. dropdownNavigationBehavior uses the Back band for navigation within one popup. Search and actions slots remain owner-supplied bands for future searchable or staged-selection behaviour. None of those bands can be combined with dropdownBehavior."
 figma_notes:
+  - "Amended 2026-10-24: all ten size/height variants use gap/g-0_500 for list padding on all four sides and for the gap between rows. Web default maxima follow the existing 6.5-row formula with the new padding: 186/225/264/303/342 px for XS/S/M/L/XL. The manually authored fixed-height Figma examples remain 186/229/272/315/358 px; they are not the web maximum-height contract."
   - "Amended 2026-10-12 at the owner’s request: navigation levels slide out then slide in across their own width, without fading, over one continuous Figma frame and shadow. Forward exits left and arrives from the right; Back reverses it. Incoming travel and height adjustment start as soon as outgoing travel finishes. Arrival and expansion use motion/duration/medium/enter with enter easing; departure and contraction use medium/exit with exit easing. Interruptions continue from presented translation and height; returning to a level already on screen reverses it immediately. Reduced motion changes levels immediately. This internal transition is separate from the shared layer-3 surface entry."
   - "Elevation checked on 2026-10-11: all ten size/height variants use shadow/elevation 3 (style key 1f7004d54f790d3624f31d20a58a9a6543ab2470). Web CSS now matches that binding; the earlier elevation-4 implementation was incorrect."
   - "The maximum height has no property in the set. Figma cannot hold a maximum and keep the buttons band pinned beneath it, so the two ends are variants instead: hug is the panel under its maximum, and fixed is a height a designer sets by hand to see the list clipped with the buttons still in place. Neither value is part of the component — it has one adjustable maximum and no such switch."
@@ -194,7 +195,7 @@ figma_notes:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4857:3786"
-  last_verified: "2026-10-10"
+  last_verified: "2026-10-24"
 notes: "Level 3, control attachment under FND-LAYERS-01 and FND-LAYERS-02; shadow selection follows FND-EFFECTS-05 and surface motion follows FND-MOTION-19. The shared surface-motion adapter implements panel entry and exit. Closed panels are inert and hidden from accessibility immediately; selection, dismissal and focus do not wait for animation. The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."
 import:
   batch: 1
