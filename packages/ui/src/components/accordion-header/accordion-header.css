@@ -2,6 +2,7 @@
 @import "../../behaviors/field.css";
 
 .stylos-accordion-header {
+  --stylos-icon-footprint: var(--_stylos-input-icon-size);
   display: flex;
   align-items: center;
   box-sizing: border-box;
@@ -19,19 +20,36 @@
   font-weight: var(--stylos-font-weight-emphasis);
   font-size: var(--_stylos-accordion-font);
   line-height: var(--_stylos-accordion-line);
+  transition: background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
 }
-.stylos-accordion-title { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.stylos-accordion-header[data-expand-icon-position="trailing"] .stylos-accordion-chevron { order: 2; }
-:is(.stylos-accordion-chevron,.stylos-accordion-icon) {
-  --stylos-icon-footprint: var(--_stylos-input-icon-size);
+.stylos-accordion-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  /* Preserve horizontal ellipsis while giving glyph ink room above/below the line box. */
+  padding-block: var(--stylos-dimension-gap-g-0_500);
+  margin-block: calc(-1 * var(--stylos-dimension-gap-g-0_500));
+}
+/* A negative outer margin retains the optical overhang without a slot wrapper. */
+.stylos-accordion-header > .stylos-icon {
+  margin-inline-start: calc(-1 * var(--_stylos-input-optical, var(--stylos-dimension-gap-g-0_250)));
+}
+.stylos-accordion-header[data-expand-icon-position="trailing"] > .stylos-icon {
+  order: 2;
+  margin-inline-start: 0;
+  margin-inline-end: calc(-1 * var(--_stylos-input-optical, var(--stylos-dimension-gap-g-0_250)));
+}
+.stylos-accordion-icon {
   position: relative;
   display: flex;
   align-items: center;
   flex: none;
-  width: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical));
+  width: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical, var(--stylos-dimension-gap-g-0_250)));
   height: var(--_stylos-input-icon-size);
 }
-:is(.stylos-accordion-chevron,.stylos-accordion-icon) > * { position: absolute; right: 0; }
+.stylos-accordion-icon > * { position: absolute; inset-inline-end: 0; }
 .stylos-accordion-header:enabled:hover { background: var(--stylos-color-surface-subtle-base-hover); }
 .stylos-accordion-header:enabled:active { background: var(--stylos-color-surface-subtle-base-active); }
 .stylos-accordion-header:focus-visible { outline: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary); outline-offset: var(--stylos-border-width-thick); }
@@ -41,3 +59,7 @@
 .stylos-accordion-header[data-size="medium"] { --_stylos-accordion-font: var(--stylos-font-size-1_375); --_stylos-accordion-line: var(--stylos-font-line-height-string-1_375); }
 .stylos-accordion-header[data-size="large"] { --_stylos-accordion-font: var(--stylos-font-size-1_625); --_stylos-accordion-line: var(--stylos-font-line-height-string-1_625); }
 .stylos-accordion-header[data-size="extra large"] { --_stylos-accordion-font: var(--stylos-font-size-1_875); --_stylos-accordion-line: var(--stylos-font-line-height-string-1_875); }
+
+@media (prefers-reduced-motion: reduce) {
+  .stylos-accordion-header { transition: none; }
+}

@@ -267,7 +267,27 @@ corresponding `@stylos/ui/behaviors/*` paths.
 
 Accordion owns bindable `isExpanded`, a native Accordion Header button and a
 mounted body hidden while collapsed. Independent sections may be open together.
-Exclusive groups and animated body height remain outside this first slice.
+Exclusive groups and animated disclosure remain outside this first slice.
+Content switches immediately through native `hidden`; collapse also sets
+`inert` and `aria-hidden`. The body stays mounted and retains form state.
+The header button sits inside a native heading. Set `headingLevel` (`"1"` through
+`"6"`, default `"3"`) to fit the page outline; `size` controls the appearance
+independently. That heading element remains present when the panel is collapsed.
+`expandIcon` selects `"chevron"` (default), `"plus"` or `"dropdown"`; each preset
+includes the collapsed and expanded glyph. `expandIconPosition` places it at
+the leading or trailing edge. The component fills its parent's available width;
+the built-in disclosure SVG uses a negative logical margin for its optical
+overhang, with no wrapper. The optional custom icon keeps its own slot because
+its snippet may contain arbitrary markup.
+Consecutive direct Accordion siblings automatically share one divider: the
+following sibling omits its top border while retaining its header inset. No
+wrapper or manual border prop is needed for a contiguous list. Separate groups
+in the surrounding layout when they need independent outer borders.
+**Review** is a passive playground: it does not toggle sections or type on load.
+**Interaction checks** runs the keyboard, retained-state and heading checks
+separately. **Densities** and **Expand icons** check measured geometry across
+all five sizes and the disclosure glyph pairs. The
+[component review](verification/accordion-2026-10-24.md) records the verified fixes and the remaining review scope; the contract is still draft.
 
 Alerts expose bindable `isOpen`, optional heading/content/actions, native close
 and Undo callbacks, and consumer-selected announcement urgency. Their host owns

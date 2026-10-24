@@ -75,6 +75,21 @@ api:
       -
         value: "trailing"
   -
+    name: "expand icon"
+    kind: "variant"
+    description: "The paired expand/collapse marks, independent of their leading or trailing position."
+    default: "chevron"
+    values:
+      -
+        value: "chevron"
+        note: "Expand More / Expand Less."
+      -
+        value: "plus"
+        note: "Add / Dash."
+      -
+        value: "dropdown"
+        note: "Drop Down / Drop Up."
+  -
     name: "label text"
     kind: "text"
     description: "Visible accessible disclosure name."
@@ -156,3 +171,6 @@ figma:
   last_verified: "2026-10-17"
 limitations:
   - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+figma_notes:
+  - "expand icon selects one of the three existing instance-swap pairs: Expand More / Expand Less, Add / Dash or Drop Down / Drop Up."
+  - "Figma is focused toggles the shared Focus instance for documentation and composition. Web focus follows native :focus-visible; it is not a component prop."

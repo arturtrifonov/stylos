@@ -8,8 +8,17 @@ export function startingSetPreview(entry, props, { cls, attr, esc, icon, button 
   const disabled = props.state === "disabled" ? " disabled" : "";
   if (entry.id.startsWith("Accordion")) {
     const expanded = !!props["is expanded"];
-    const heading = `<button type="button" class="stylos-accordion-header" data-size="${esc(size)}" data-state="${esc(props.state ?? "default")}" data-expand-icon-position="${esc(props["expand icon position"] ?? "trailing")}" aria-expanded="${expanded}" aria-controls="${id}-body"${disabled}><span class="stylos-accordion-chevron" aria-hidden="true">${icon(expanded ? "expand_less" : "expand_more")}</span><span class="stylos-accordion-title">${esc(props["label text"] ?? "Accordion title")}</span></button>`;
-    return entry.id === "Accordion Header" ? heading : `<section class="${cls}"${attr}>${heading}<div class="stylos-accordion-body" id="${id}-body"${expanded ? "" : " hidden"}>${props["content slot"] ?? ""}</div></section>`;
+    const standalone = entry.id === "Accordion Header";
+    const base = props.id ?? id;
+    const headerId = standalone ? props.id : `${base}-heading`;
+    const controls = standalone ? props.controls : `${base}-body`;
+    const iconPosition = props["expand icon position"] ?? (standalone ? "leading" : "trailing");
+    const association = `${headerId ? ` id="${esc(headerId)}"` : ""}${controls ? ` aria-controls="${esc(controls)}"` : ""}`;
+    const pair = { chevron: ["expand_more", "expand_less"], plus: ["add", "remove"], dropdown: ["arrow_drop_down", "arrow_drop_up"] }[props["expand icon"] ?? "chevron"];
+    const heading = `<button type="button" class="stylos-accordion-header" data-size="${esc(size)}" data-state="${esc(props.state ?? "default")}" data-is-expanded="${expanded}" data-expand-icon-position="${esc(iconPosition)}" data-expand-icon="${esc(props["expand icon"] ?? "chevron")}" aria-expanded="${expanded}"${association}${disabled}>${icon(pair[expanded ? 1 : 0])}<span class="stylos-accordion-title">${esc(props["label text"] ?? "Accordion title")}</span></button>`;
+    if (standalone) return heading;
+    const headingTag = `h${props["heading level"] ?? "3"}`;
+    return `<section class="${cls}"${attr} aria-labelledby="${esc(headerId)}"><${headingTag} class="stylos-accordion-heading">${heading}</${headingTag}><div class="stylos-accordion-body" id="${esc(controls)}"${expanded ? ' aria-hidden="false"' : ' hidden inert aria-hidden="true"'}>${props["content slot"] ?? ""}</div></section>`;
   }
   if (entry.id === "Progress Bar") {
     const numeric = Number(props.value);

@@ -6,6 +6,9 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Added
 
+- Accordion and Accordion Header accept `expandIcon="chevron|plus|dropdown"`
+  with paired collapsed/expanded marks. Accordion adds `headingLevel` for its
+  native section heading, independent of visual size.
 - **Categorical colours for every palette hue.** Each hue group except `mono`
   now has bold and subtle surfaces with all four states, text, background and
   border roles — 242 roles in total, for example
@@ -44,6 +47,11 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Fixed
 
+- Align Accordion insets, header/content spacing and optical icon placement
+  with the reviewed Figma geometry; prevent clipped title descenders and
+  double borders between consecutive sections. Remove the built-in disclosure
+  icon wrapper. Disclosure stays immediate, and the Review playground no
+  longer runs scripted interactions on load.
 - Emit explicit dark token values for `[data-theme="dark"]` on any element,
   including a section inside a light page. Preserve root-level automatic theme
   selection and rebind all semantic colours, shadows and focus effects locally.

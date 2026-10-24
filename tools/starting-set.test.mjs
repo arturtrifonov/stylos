@@ -50,3 +50,39 @@ test("every draft independent preview exposes its component root", () => {
     assert.ok(markupReader(sampleHtml(entry, defaultAssignment(entry)))(`stylos-${id.toLowerCase().replaceAll(" ", "-")}`), id);
   }
 });
+
+test("Accordion preview keeps the same heading and panel associations in both disclosure states", () => {
+  const entry = entries.find(entry => entry.id === "Accordion");
+  assert.match(sampleHtml(entry, {}), /data-expand-icon-position="trailing"/);
+  for (const expanded of [false, true]) {
+    const html = sampleHtml(entry, { ...defaultAssignment(entry), id: "review", "heading level": "2", "is expanded": expanded, "label text": "Read <more>" });
+    assert.match(html, /aria-labelledby="review-heading"/);
+    assert.match(html, /<h2 class="stylos-accordion-heading"><button/);
+    assert.match(html, /id="review-heading" aria-controls="review-body"/);
+    assert.match(html, /Read &lt;more&gt;/);
+    assert.ok(html.includes(`aria-expanded="${expanded}"`));
+    assert.ok(html.includes(`id="review-body"${expanded ? "" : " hidden"}`));
+  }
+});
+
+test("standalone Accordion Header preview only references a supplied controlled panel", () => {
+  const entry = entries.find(entry => entry.id === "Accordion Header");
+  assert.doesNotMatch(sampleHtml(entry, defaultAssignment(entry)), /aria-controls=/);
+  assert.match(sampleHtml(entry, {}), /data-expand-icon-position="leading"/);
+  const html = sampleHtml(entry, { ...defaultAssignment(entry), id: "heading", controls: "panel" });
+  assert.match(html, /id="heading" aria-controls="panel"/);
+});
+
+test("Accordion and Header previews render all three paired expand icons in both states", () => {
+  const iconEntry = entries.find(entry => entry.id === "Icon");
+  const pairs = { chevron: ["expand_more", "expand_less"], plus: ["add", "remove"], dropdown: ["arrow_drop_down", "arrow_drop_up"] };
+  for (const id of ["Accordion", "Accordion Header"]) {
+    const entry = entries.find(entry => entry.id === id);
+    for (const [choice, pair] of Object.entries(pairs)) {
+      for (const expanded of [false, true]) {
+        const html = sampleHtml(entry, { ...defaultAssignment(entry), "expand icon": choice, "is expanded": expanded });
+        assert.ok(html.includes(sampleHtml(iconEntry, { name: pair[Number(expanded)] })), `${id}: ${choice}, expanded=${expanded}`);
+      }
+    }
+  }
+});

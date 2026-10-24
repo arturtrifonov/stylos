@@ -1,7 +1,7 @@
 id: "Accordion"
 name: "Accordion"
 level: "widget"
-role: "toolbar"
+role: "container"
 flow_behavior:
   - "fill"
 children:
@@ -87,12 +87,12 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
+notes: "Initial integration: 2026-10-17. Content disclosure is immediate through native hidden; no height, opacity, padding or gap animation runs on load or expansion. The mounted body becomes inert and aria-hidden on collapse. Implementation review, fixes and remaining checks: [Accordion review](../../../packages/ui/verification/accordion-2026-10-24.md)."
 import:
   batch: 1
   ready: true
 status: "draft"
-html: "<section><button>Section title</button><div>Content</div></section>"
+html: "<section><h3><button>Section title</button></h3><div>Content</div></section>"
 summary: "A titled section that can reveal or hide its content."
 purpose: "Keep related product content in one section without making the product invent its own disclosure."
 use_when:
@@ -144,6 +144,39 @@ api:
       -
         value: "trailing"
   -
+    name: "expand icon"
+    kind: "variant"
+    description: "The paired expand/collapse marks. The mark changes with the expanded state independently of its leading or trailing position."
+    default: "chevron"
+    values:
+      -
+        value: "chevron"
+        note: "Expand More / Expand Less."
+      -
+        value: "plus"
+        note: "Add / Dash."
+      -
+        value: "dropdown"
+        note: "Drop Down / Drop Up."
+  -
+    name: "heading level"
+    kind: "variant"
+    description: "The section title's heading level, chosen to fit the surrounding page hierarchy. This is a semantic choice and does not change the title's visual size."
+    default: "3"
+    values:
+      -
+        value: "1"
+      -
+        value: "2"
+      -
+        value: "3"
+      -
+        value: "4"
+      -
+        value: "5"
+      -
+        value: "6"
+  -
     name: "label text"
     kind: "text"
     description: "Forwarded to Accordion Header."
@@ -178,12 +211,13 @@ sizing_model:
   adjustable:
     horizontal: true
     vertical: false
-  intent: "Fill available width; constant outer vertical padding with size-dependent header and content gap."
+  intent: "Fill available width; the inside border is included in the constant outer vertical inset. Size controls the header height and the gap before the content. The recorded horizontal padding applies to header and body; vertical padding rows describe the body. Medium retains the current Figma body's distinct vertical-padding token."
   sizes:
     -
       size: "extra small"
       box: "size/s-3_000"
       padding_x: "gap/g-1_000"
+      padding_y: "gap/g-0_500"
       gap: "gap/g-0_500"
       font_size: "size/0_875"
       line_height: "line height/string/0_875"
@@ -191,6 +225,7 @@ sizing_model:
       size: "small"
       box: "size/s-4_000"
       padding_x: "gap/g-1_250"
+      padding_y: "gap/g-0_625"
       gap: "gap/g-0_625"
       font_size: "size/1_125"
       line_height: "line height/string/1_125"
@@ -198,6 +233,7 @@ sizing_model:
       size: "medium"
       box: "size/s-5_000"
       padding_x: "gap/g-1_500"
+      padding_y: "gap/g-0_625"
       gap: "gap/g-0_750"
       font_size: "size/1_375"
       line_height: "line height/string/1_375"
@@ -205,6 +241,7 @@ sizing_model:
       size: "large"
       box: "size/s-6_000"
       padding_x: "gap/g-2_000"
+      padding_y: "gap/g-0_875"
       gap: "gap/g-0_875"
       font_size: "size/1_625"
       line_height: "line height/string/1_625"
@@ -212,17 +249,23 @@ sizing_model:
       size: "extra large"
       box: "size/s-7_000"
       padding_x: "gap/g-2_500"
+      padding_y: "gap/g-1_000"
       gap: "gap/g-1_000"
       font_size: "size/1_875"
       line_height: "line height/string/1_875"
 a11y:
   -
     status: "requires"
-    note: "Supply meaningful names and content. Keyboard and native semantics are implemented, but manual Chrome/Orca evaluation and contrast review are pending."
+    note: "Supply a meaningful section title and content, and choose a heading level that fits the page hierarchy. Manual Chrome/Orca evaluation and contrast review remain pending."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4384:1292"
   last_verified: "2026-10-17"
 limitations:
-  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
-  - "Each Accordion owns its expansion independently. Exclusive groups and animated height transitions are not included."
+  - "Each Accordion owns its expansion independently. Exclusive groups and animated disclosure are not included."
+  - "Consecutive sibling Accordions share a single border at their common edge. The following sibling omits its top border automatically while preserving the title inset."
+figma_notes:
+  - "heading level is a web semantic property; it has no visual variant or Figma control."
+  - "The medium content slot is bound to gap/g-0_625 for vertical padding, while its header/content gap is gap/g-0_750. The implementation preserves those distinct bindings."
+  - "Figma exposes has top border for manual composition; web composition handles consecutive siblings automatically."
+  - "The expand icon choice maps to the existing expand more icon / expand less icon instance-swap pairs on Accordion Header; it adds no Figma variant axis."
