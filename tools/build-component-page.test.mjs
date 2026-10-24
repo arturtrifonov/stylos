@@ -869,7 +869,11 @@ test("the real Link contract previews a medium native destination and removes it
   assert.match(html, /^<a class="stylos-link"/);
   assert.match(html, /data-size="medium"/);
   assert.match(html, /href="\/destination"/);
-  assert.match(html, /stylos-link-label">Read &lt;more&gt;<\/span>/);
+  assert.match(html, /<span class="stylos-link-content">Read &lt;more&gt;<\/span><\/a>$/);
+  assert.doesNotMatch(html, /stylos-link-label|stylos-link-icon/);
+
+  const expanded = sampleHtml(entry, {...defaultAssignment(entry), "has expanded hit area":true, "label text":"Read <more>"});
+  assert.match(expanded, /<span class="stylos-link-content">Read &lt;more&gt;<\/span><\/a>$/);
 
   const disabled = sampleHtml(entry, {...defaultAssignment(entry), state:"disabled", href:"/destination"});
   assert.doesNotMatch(disabled, /href=/);

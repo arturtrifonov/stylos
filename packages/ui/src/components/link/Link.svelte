@@ -6,6 +6,7 @@
     tone = "primary",
     size = "medium",
     state = "default",
+    hasExpandedHitArea = false,
     hasLeadingIcon = false,
     leadingIcon,
     hasTrailingIcon = false,
@@ -22,16 +23,19 @@
   data-tone={tone}
   data-size={size}
   data-state={state}
+  data-has-expanded-hit-area={hasExpandedHitArea}
   href={disabled ? undefined : href}
   role={disabled ? "link" : undefined}
   aria-disabled={disabled ? "true" : undefined}
   tabindex={disabled ? -1 : undefined}
 >
-  {#if hasLeadingIcon && leadingIcon}
-    <span class="stylos-link-icon" aria-hidden="true">{@render leadingIcon()}</span>
-  {/if}
-  <span class="stylos-link-label">{labelText}</span>
-  {#if hasTrailingIcon && trailingIcon}
-    <span class="stylos-link-icon" aria-hidden="true">{@render trailingIcon()}</span>
-  {/if}
+  <span class="stylos-link-content">
+    {#if hasLeadingIcon && leadingIcon}
+      {@render leadingIcon()}
+    {/if}
+    {labelText}
+    {#if hasTrailingIcon && trailingIcon}
+      {@render trailingIcon()}
+    {/if}
+  </span>
 </a>

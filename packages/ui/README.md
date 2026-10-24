@@ -16,6 +16,43 @@ not a general accessibility or visual-parity claim. Distribution stays private.
 3. **Behaviour** (`src/behaviors/`, when a component needs one) — framework-free, operating on elements.
 4. **`.svelte` wrapper** — takes the contract's props, writes the data attributes the CSS reads. The only Svelte-specific file; layers 1–3 survive a framework change.
 
+## Component markup
+
+### Keep shared structure stable
+
+Use one shared DOM hierarchy that supports every state and property value.
+If an existing part needs a wrapper in any supported mode, keep that wrapper
+in the shared structure whenever that part is present. A wrapper may therefore
+remain in a mode that could work without it; removing it in that mode is not
+a reason to rebuild the component's hierarchy.
+
+Conditional rendering may add or remove elements belonging to the optional
+part that a property controls. For example, `hasLeadingIcon` may add or remove
+the icon together with a wrapper needed specifically by that icon. It must not
+insert or remove wrappers around the label, reparent surviving siblings, or
+change the tags of unrelated parts. The parts that remain keep their shared
+structure, whether the property controls presence, state or behaviour.
+
+Link follows this rule: its content span remains present in both hit-area
+modes, while `hasExpandedHitArea` enables the card-sized pseudo-element.
+The [Link implementation notes](#link) explain why that span is needed.
+
+### Keep only elements with a concrete purpose
+
+Every additional DOM element must serve a concrete semantic, accessibility,
+layout, positioning or behaviour requirement that an existing element cannot
+meet. Reuse native elements, text nodes and existing component roots before
+adding a wrapper. Adding a class or making the markup easier to style is not
+enough reason to wrap each piece of text or each icon.
+
+For example, apply text decoration to an existing content container and size
+an Icon on its SVG root when those elements already provide the required
+behaviour. Add a wrapper only when it supplies a missing function, such as a
+separate containing block for local visuals. Review the final rendered DOM,
+including elements produced by child components, rather than only the source
+template. Minimise that common structure across all supported modes, within
+the stable-structure rule above.
+
 ## Generated, never hand-written
 
 - `src/components/<name>/props.ts` — from the entry's `api` by `tools/build-ui-types.mjs`, so props ↔ `api` is checked by the compiler.
@@ -36,6 +73,27 @@ The registry holds the public contract; the generator converts its property name
 Both `kind: text` (textual content) and `kind: string` (a non-text string value such as an icon identifier) generate TypeScript `string`. The distinction remains in the registry; `Icon.name` stays the `name` prop.
 
 These conversions are implemented in `tools/build-ui-types.mjs`; they change spelling, not the property's meaning.
+
+## Local stacking contexts
+
+When a component or composition layers internal elements with `z-index`, its
+owning container must establish a local stacking context with
+`position: relative; z-index: 0`. Internal layer numbers then stay inside that
+container; a control in one card cannot appear above a neighbouring card just
+because it has a larger internal number. These numbers describe local paint
+order, independently of the visual depth levels in FND-LAYERS-01.
+
+Use the smallest local sequence needed by the composition. For expanded links,
+the card owns level `0`, the transparent hit area uses `1`, and independent
+controls use `2`. Put the raised layer on the control's wrapper when the control
+already owns a stacking context. Raising a descendant inside a lower stacking
+context cannot lift it above a sibling outside that context.
+
+Overlay windows and portaled panels follow the ownership order in
+BEH-OVERLAYS-01 through BEH-OVERLAYS-04 and the existing window adapters. Local
+layer numbers are not a page-wide overlay scale. See the
+[CSS stacking-context reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Positioned_layout/Stacking_context)
+for how nested contexts participate in their parent's paint order.
 
 ## Theme scopes
 
@@ -538,6 +596,67 @@ Optional `leadingIcon` and `trailingIcon` accept snippets containing configured 
 show them with `hasLeadingIcon` and `hasTrailingIcon`. Their footprint follows the Link size.
 Hover and focus surfaces extend outside the layout box as in Figma. Motion uses the
 shared micro/linear profile and changes immediately under reduced motion.
+
+All links use the same structure: an anchor containing one `.stylos-link-content`
+span, with text and optional Icon SVGs directly inside that span. The span owns
+the local hover surface, focus ring and text underline; the SVG drawings keep
+their existing appearance. There are no separate label or icon wrapper spans.
+Icon supplies its own `aria-hidden` and accepts the footprint from Link CSS;
+a custom icon snippet supplies equivalent decorative semantics and sizing on
+its own root.
+
+#### Expanded hit area
+
+Set `hasExpandedHitArea` on the card's primary `Link` and apply
+`.stylos-link-area` to the card. This class supplies the containing block and
+stacking boundary required by [Local stacking contexts](#local-stacking-contexts).
+Apply `.stylos-link-area-action` to wrappers around independent controls or
+secondary links so they receive their own pointer input.
+
+```svelte
+<article class="project-card stylos-link-area">
+  <h3><Link href="/projects/atlas" labelText="Atlas" hasExpandedHitArea /></h3>
+  <p>Shared project files and activity.</p>
+  <div class="stylos-link-area-action">
+    <Button labelText="Save project" onclick={saveProject} />
+  </div>
+</article>
+```
+
+The wrapper should hug the control: an unnecessarily wide wrapper also removes
+that space from the primary link's target. Use one expanded link per card;
+controls are siblings of the anchor, with their own native semantics and tab
+stops. No card click handler or extra tab stop is added. Navigation, modifier
+clicks, context menus and Enter remain native anchor behaviour. The accessible
+name stays the link's label. Hovering or pressing uncovered parts of the card
+activates the link's usual label surface; keyboard focus remains around the
+link content, including its icons.
+
+The anchor becomes `position: static; z-index: auto` in expanded mode. Its
+transparent `::after` has `position: absolute; inset: 0; z-index: 1`, covering
+the card's padding box. The permanent inner `.stylos-link-content` owns the
+hover surface and focus ring, keeping those aligned to the text and icons while
+the anchor's pseudo-element is positioned against the card. The property only
+adds the hit-area pseudo-element; it does not change the component's DOM structure.
+`state="disabled"` generates no expanded pseudo-element and removes `href`
+and the tab stop. The normal `hasExpandedHitArea={false}` mode keeps the
+original text-sized target.
+
+Keep ancestors between the anchor and `.stylos-link-area` from establishing
+another containing block or stacking context: positioning, transforms, filters,
+containment or a flex/grid item with a non-auto `z-index` can constrain the area.
+The Link itself clears its `z-index` so it also works as a direct flex/grid item.
+Normal text selection is unavailable under the transparent hit area; use the
+ordinary link mode when selecting the card's text matters. The helper classes
+ship with Link CSS, including the independent `@stylos/ui/css/link.css` export.
+Static HTML uses `data-has-expanded-hit-area="true"` to enable the area, with
+the same single `.stylos-link-content` wrapper in both modes.
+
+The workshop's **Expanded hit area** story covers card hit testing, independent
+controls, adjacent stacking contexts, disabled mode and native keyboard activation.
+The expanded area is a web interaction pattern with no additional visual variant
+or Figma property; Figma documentation can refer to this card pattern. The Link
+contract remains ready.
 
 ### Checkbox Input
 

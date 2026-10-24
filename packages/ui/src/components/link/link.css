@@ -20,8 +20,22 @@
   transition: color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
 }
 
-.stylos-link::before,
-.stylos-link::after {
+/* Keep label/icon visuals local while the anchor's hit area covers the card. */
+.stylos-link-content {
+  position: relative;
+  z-index: 0;
+  display: inline-flex;
+  align-items: inherit;
+  height: inherit;
+  gap: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+  text-decoration-skip-ink: auto;
+}
+
+.stylos-link-content::before,
+.stylos-link-content::after {
   position: absolute;
   z-index: -1;
   inset: calc(-1 * var(--_stylos-link-surface-block)) calc(-1 * var(--_stylos-link-surface-inline));
@@ -29,7 +43,7 @@
   pointer-events: none;
 }
 
-.stylos-link::before {
+.stylos-link-content::before {
   content: "";
   background-color: var(--_stylos-link-surface);
   transition: background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
@@ -39,9 +53,33 @@
   outline: none;
 }
 
-.stylos-link:focus-visible::after {
+.stylos-link:focus-visible > .stylos-link-content::after {
   content: "";
   border: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary);
+}
+
+/* Keep the containing block and stacking context on the consumer's card. */
+.stylos-link-area {
+  position: relative;
+  z-index: 0;
+}
+
+.stylos-link[data-has-expanded-hit-area="true"] {
+  position: static;
+  z-index: auto;
+}
+
+.stylos-link[data-has-expanded-hit-area="true"]:not([aria-disabled="true"])::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+}
+
+/* Apply to a wrapper when a component owns its own position/z-index. */
+.stylos-link-area-action {
+  position: relative;
+  z-index: 2;
 }
 
 .stylos-link:is(:hover, [data-state="hover"]):not([aria-disabled="true"]) {
@@ -62,21 +100,7 @@
   cursor: default;
 }
 
-.stylos-link-label {
-  text-decoration-line: underline;
-  text-decoration-thickness: 0.08em;
-  text-underline-offset: 0.2em;
-  text-decoration-skip-ink: auto;
-}
-
-.stylos-link-icon {
-  display: inline-flex;
-  flex: none;
-  width: var(--_stylos-link-box);
-  height: var(--_stylos-link-box);
-}
-
-.stylos-link-icon > .stylos-icon {
+.stylos-link-content > .stylos-icon {
   --stylos-icon-footprint: var(--_stylos-link-box);
 }
 
@@ -127,7 +151,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .stylos-link,
-  .stylos-link::before {
+  .stylos-link-content::before {
     transition: none;
   }
 }
