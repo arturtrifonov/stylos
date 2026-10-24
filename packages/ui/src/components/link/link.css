@@ -20,8 +20,17 @@
   transition: color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
 }
 
-.stylos-link::before,
-.stylos-link::after {
+.stylos-link-content {
+  position: relative;
+  z-index: 0;
+  display: inline-flex;
+  align-items: inherit;
+  height: inherit;
+  gap: inherit;
+}
+
+.stylos-link-content::before,
+.stylos-link-content::after {
   position: absolute;
   z-index: -1;
   inset: calc(-1 * var(--_stylos-link-surface-block)) calc(-1 * var(--_stylos-link-surface-inline));
@@ -29,7 +38,7 @@
   pointer-events: none;
 }
 
-.stylos-link::before {
+.stylos-link-content::before {
   content: "";
   background-color: var(--_stylos-link-surface);
   transition: background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
@@ -39,9 +48,33 @@
   outline: none;
 }
 
-.stylos-link:focus-visible::after {
+.stylos-link:focus-visible > .stylos-link-content::after {
   content: "";
   border: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary);
+}
+
+/* Keep the containing block and stacking context on the consumer's card. */
+.stylos-link-area {
+  position: relative;
+  z-index: 0;
+}
+
+.stylos-link[data-has-expanded-hit-area="true"] {
+  position: static;
+  z-index: auto;
+}
+
+.stylos-link[data-has-expanded-hit-area="true"]:not([aria-disabled="true"])::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+}
+
+/* Apply to a wrapper when a component owns its own position/z-index. */
+.stylos-link-area-action {
+  position: relative;
+  z-index: 2;
 }
 
 .stylos-link:is(:hover, [data-state="hover"]):not([aria-disabled="true"]) {
@@ -127,7 +160,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .stylos-link,
-  .stylos-link::before {
+  .stylos-link-content::before {
     transition: none;
   }
 }

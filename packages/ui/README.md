@@ -37,6 +37,27 @@ Both `kind: text` (textual content) and `kind: string` (a non-text string value 
 
 These conversions are implemented in `tools/build-ui-types.mjs`; they change spelling, not the property's meaning.
 
+## Local stacking contexts
+
+When a component or composition layers internal elements with `z-index`, its
+owning container must establish a local stacking context with
+`position: relative; z-index: 0`. Internal layer numbers then stay inside that
+container; a control in one card cannot appear above a neighbouring card just
+because it has a larger internal number. These numbers describe local paint
+order, independently of the visual depth levels in FND-LAYERS-01.
+
+Use the smallest local sequence needed by the composition. For expanded links,
+the card owns level `0`, the transparent hit area uses `1`, and independent
+controls use `2`. Put the raised layer on the control's wrapper when the control
+already owns a stacking context. Raising a descendant inside a lower stacking
+context cannot lift it above a sibling outside that context.
+
+Overlay windows and portaled panels follow the ownership order in
+BEH-OVERLAYS-01 through BEH-OVERLAYS-04 and the existing window adapters. Local
+layer numbers are not a page-wide overlay scale. See the
+[CSS stacking-context reference](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Positioned_layout/Stacking_context)
+for how nested contexts participate in their parent's paint order.
+
 ## Theme scopes
 
 Import `@stylos/ui/tokens.css` once. Set `data-theme="dark"` on any element to
@@ -538,6 +559,57 @@ Optional `leadingIcon` and `trailingIcon` accept snippets containing configured 
 show them with `hasLeadingIcon` and `hasTrailingIcon`. Their footprint follows the Link size.
 Hover and focus surfaces extend outside the layout box as in Figma. Motion uses the
 shared micro/linear profile and changes immediately under reduced motion.
+
+#### Expanded hit area
+
+Set `hasExpandedHitArea` on the card's primary `Link` and apply
+`.stylos-link-area` to the card. This class supplies the containing block and
+stacking boundary required by [Local stacking contexts](#local-stacking-contexts).
+Apply `.stylos-link-area-action` to wrappers around independent controls or
+secondary links so they receive their own pointer input.
+
+```svelte
+<article class="project-card stylos-link-area">
+  <h3><Link href="/projects/atlas" labelText="Atlas" hasExpandedHitArea /></h3>
+  <p>Shared project files and activity.</p>
+  <div class="stylos-link-area-action">
+    <Button labelText="Save project" onclick={saveProject} />
+  </div>
+</article>
+```
+
+The wrapper should hug the control: an unnecessarily wide wrapper also removes
+that space from the primary link's target. Use one expanded link per card;
+controls are siblings of the anchor, with their own native semantics and tab
+stops. No card click handler or extra tab stop is added. Navigation, modifier
+clicks, context menus and Enter remain native anchor behaviour. The accessible
+name stays the link's label. Hovering or pressing uncovered parts of the card
+activates the link's usual label surface; keyboard focus remains around the
+link content, including its icons.
+
+The anchor becomes `position: static; z-index: auto` in expanded mode. Its
+transparent `::after` has `position: absolute; inset: 0; z-index: 1`, covering
+the card's padding box. The inner `.stylos-link-content` owns the existing
+hover surface and focus ring, so those stay aligned to the text and icons.
+`state="disabled"` generates no expanded pseudo-element and removes `href`
+and the tab stop. The normal `hasExpandedHitArea={false}` mode keeps the
+original text-sized target.
+
+Keep ancestors between the anchor and `.stylos-link-area` from establishing
+another containing block or stacking context: positioning, transforms, filters,
+containment or a flex/grid item with a non-auto `z-index` can constrain the area.
+The Link itself clears its `z-index` so it also works as a direct flex/grid item.
+Normal text selection is unavailable under the transparent hit area; use the
+ordinary link mode when selecting the card's text matters. The helper classes
+ship with Link CSS, including the independent `@stylos/ui/css/link.css` export.
+Static HTML uses `data-has-expanded-hit-area="true"` and the same
+`.stylos-link-content` wrapper as the Svelte component.
+
+The workshop's **Expanded hit area** story covers card hit testing, independent
+controls, adjacent stacking contexts, disabled mode and native keyboard activation.
+The expanded area is a web interaction pattern with no additional visual variant
+or Figma property; Figma documentation can refer to this card pattern. The Link
+contract remains ready.
 
 ### Checkbox Input
 

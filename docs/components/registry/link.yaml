@@ -9,12 +9,13 @@ level: "element"
 role: "trigger"
 html: "<a href=\"…\">Label text</a>"
 status: "ready"
-version: "0.1.0"
+version: "0.2.0"
 summary: "An underlined text control that takes the person somewhere rather than acting on what is in front of them."
 purpose: "A link goes somewhere. What this component settles is how it behaves in a dense interface: it takes only the room its own text needs, it is sized from the same run as the text around it, and it carries no fill, border or reserved footprint that would make it compete with the actions on the view."
 use_when:
   - "The control takes the person somewhere — another view, an external destination, a record — rather than changing something in place."
   - "The control has to occupy no more room than its own text, because the space belongs to the content it sits in."
+  - "A card has one primary destination and its whole area should activate the link, while any separate controls retain their own actions."
 do_not_use_when:
   -
     text: "The control performs an action rather than going somewhere — submitting, saving, deleting, applying. A control whose appearance promises navigation and then acts is the one mistake a link can make that a person cannot recover from."
@@ -165,6 +166,11 @@ api:
         value: "disabled"
         note: "The label drops to the disabled text role and both tones render identically; no surface appears. The link keeps its place in the line and stops being a destination."
   -
+    name: "has expanded hit area"
+    kind: "boolean"
+    default: false
+    description: "Extends the link's pointer target to its containing card without changing its layout size or accessible name. Use one expanded link per card; separate interactive elements remain independently operable above this area. Hovering or pressing the expanded area gives the link its usual feedback. Disabled removes the expanded target as well as the destination."
+  -
     name: "has leading icon"
     kind: "boolean"
     default: false
@@ -201,11 +207,13 @@ api:
     default: "#"
     description: "The destination written to the native anchor. Disabled removes href rather than intercepting navigation after activation."
 limitations:
+  - "An expanded hit area requires the container setup described in the [UI package guide](../../../packages/ui/README.md#expanded-hit-area). The container has one primary expanded link; additional controls and secondary links need their own area above it. Covered content is part of the pointer target, so normal text selection there is unavailable."
   - "The hover and active surface extends outside the layout box. Figma leaves these insets unbound; CSS maps the measured insets to semantic gap tokens. Parent layout reserves no room for them, so adjacent lines can have overlapping surfaces at a tight line height."
   - "Hover and active are the surface and nothing else. The label keeps its colour, its weight and its underline through both, so the component has no second channel for either state."
   - "No visited state. The one distinction a browser gives a link for free is not modelled, and there is no property to carry it."
   - "The label is a single line. The text layer resizes on both axes and the box height is derived from one line box, so a link that wraps is outside what this component describes."
 figma_notes:
+  - "The expanded hit area is a web interaction pattern documented for card compositions. It does not add a visual variant or require a Figma property; the link keeps its existing appearance."
   - "Vertical trim checked on 2026-10-10: leadingTrim=NONE on all 40 text layers across 40 variants. Preserve the normal text boxes; this component does not use text-box trimming."
   - "Underline rechecked on 2026-10-10 across both tones and all five sizes: solid, 20% font-size offset, 8% thickness and skip-ink. CSS uses 0.2em and 0.08em; these are recorded component text-decoration values, not new shared tokens."
   - "Web Motion follows duration/micro and easing/linear, with immediate changes under reduced motion. Icon instances are configured through Svelte snippets and are decorative. Components are placed inside those snippets."
