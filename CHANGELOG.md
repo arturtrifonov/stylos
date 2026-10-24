@@ -55,6 +55,8 @@ All notable changes to the Stylos Design System project (foundations, components
   double borders between consecutive sections. Remove the built-in disclosure
   icon wrapper. Disclosure stays immediate, and the Review playground no
   longer runs scripted interactions on load.
+- Release verification checks Accordion's `headingLevel` against its native
+  heading tag in both server and browser readers.
 - Emit explicit dark token values for `[data-theme="dark"]` on any element,
   including a section inside a light page. Preserve root-level automatic theme
   selection and rebind all semantic colours, shadows and focus effects locally.

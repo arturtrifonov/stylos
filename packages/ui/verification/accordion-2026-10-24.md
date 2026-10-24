@@ -62,6 +62,10 @@ those scripted interactions live in the separate **Interaction checks** story.
 ## Checked
 
 - Registry validation, Svelte checking, CSS lint and the repository test suite.
+- Full `ui:verify`: 46 core components and 3,040 server-rendered cases passed.
+  Heading-level verification checks the native `h1`–`h6` tag, rather than
+  expecting a root data attribute. Regression cases reject missing headings,
+  incorrect heading levels and a non-heading element with the same class.
 - Storybook **Densities**: all five header and collapsed-root heights, outer
   inset, chevron width/edge, header/body gap and body vertical padding.
 - Storybook **Densities** also checks that title text bounds fit their clipping
