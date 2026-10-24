@@ -400,7 +400,8 @@ not submit a value; Select supplies form integration.
 configured content. Navigation below uses the Back band; search and staged
 selection require their own behaviour. The current `dropdownBehavior` rejects those
 bands. The normal single-choice example contains only `contentSlot`. A panel's
-default maximum is derived from its six-and-a-half-row profile; `maxHeight`
+list uses `gap/g-0_500` (4 px) for padding on all sides and between rows at
+every size. Its default maximum is derived from its six-and-a-half-row profile; `maxHeight`
 accepts an owner-supplied CSS length. Overflow uses the Figma small/absolute treatment on the native scrollbar. Text has no Vertical trim, as in Figma.
 
 Independent CSS exports are `@stylos/ui/css/dropdown.css` and

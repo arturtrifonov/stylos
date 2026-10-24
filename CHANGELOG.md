@@ -24,6 +24,9 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Changed
 
+- Dropdown list padding now uses `gap/g-0_500` (4 px) on all sides at every
+  size, matching Figma. The existing six-and-a-half-row formula gives default
+  maximum heights of 186/225/264/303/342 px for XS/S/M/L/XL.
 - **Breaking:** `--stylos-color-surface-special-<hue>` is withdrawn. Use
   `--stylos-color-surface-bold-special-<hue>-default`, which in light mode is
   one step lighter (600).
