@@ -18,6 +18,18 @@
   const button = expanded.querySelector<HTMLButtonElement>("button")!;
   const secondary = expanded.querySelector<HTMLAnchorElement>('a[href="#activity"]')!;
   const disabled = card("disabled").querySelector<HTMLAnchorElement>("a")!;
+  const ordinary = card("ordinary").querySelector<HTMLAnchorElement>("a")!;
+  // Both modes keep the same single wrapper and size the SVG itself.
+  for (const anchor of [link, ordinary]) {
+    await expect([...anchor.children].map(element => element.className)).toEqual(["stylos-link-content"]);
+    await expect([...anchor.firstElementChild!.children].map(element => element.tagName.toLowerCase())).toEqual(["svg"]);
+    const icon = anchor.querySelector("svg")!;
+    const footprint = parseFloat(getComputedStyle(anchor).height);
+    await expect(icon.getBoundingClientRect().width).toBeCloseTo(footprint, 1);
+    await expect(icon.getBoundingClientRect().height).toBeCloseTo(footprint, 1);
+    await expect(icon).toHaveAttribute("aria-hidden", "true");
+    await expect(anchor).toHaveAccessibleName(anchor.textContent!.trim());
+  }
   // Native hit testing includes pseudo-elements: the returned element is their anchor.
   const hit = (element: HTMLElement) => {
     element.scrollIntoView({ block: "center" });

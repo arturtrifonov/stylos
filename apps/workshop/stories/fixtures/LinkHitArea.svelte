@@ -21,7 +21,7 @@
     <div class="stylos-link-area-action"><Button labelText="Request access" /></div>
   </article>
   <article class="card stylos-link-area" data-example="ordinary">
-    <h3><Link href="#ordinary" labelText="Ordinary link" /></h3>
+    <h3><Link href="#ordinary" labelText="Ordinary link" hasTrailingIcon trailingIcon={arrow} /></h3>
     <p>Only the ordinary link itself is a target.</p>
   </article>
 </div>

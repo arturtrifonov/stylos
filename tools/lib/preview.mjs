@@ -336,7 +336,7 @@ export function sampleHtml(entry, props = {}) {
     const disabled = props.state === "disabled";
     const href = disabled ? "" : ` href="${esc(props.href ?? "#")}"`;
     const semantics = disabled ? ' role="link" aria-disabled="true" tabindex="-1"' : "";
-    return `<a class="${cls}"${attr}${href}${semantics}><span class="stylos-link-content"><span class="stylos-link-label">${esc(props["label text"] ?? "Link")}</span></span></a>`;
+    return `<a class="${cls}"${attr}${href}${semantics}><span class="stylos-link-content">${esc(props["label text"] ?? "Link")}</span></a>`;
   }
 
   if (entry.id === "Button") {

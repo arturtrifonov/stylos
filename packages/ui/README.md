@@ -560,6 +560,14 @@ show them with `hasLeadingIcon` and `hasTrailingIcon`. Their footprint follows t
 Hover and focus surfaces extend outside the layout box as in Figma. Motion uses the
 shared micro/linear profile and changes immediately under reduced motion.
 
+All links use the same structure: an anchor containing one `.stylos-link-content`
+span, with text and optional Icon SVGs directly inside that span. The span owns
+the local hover surface, focus ring and text underline; the SVG drawings keep
+their existing appearance. There are no separate label or icon wrapper spans.
+Icon supplies its own `aria-hidden` and accepts the footprint from Link CSS;
+a custom icon snippet supplies equivalent decorative semantics and sizing on
+its own root.
+
 #### Expanded hit area
 
 Set `hasExpandedHitArea` on the card's primary `Link` and apply
@@ -589,8 +597,10 @@ link content, including its icons.
 
 The anchor becomes `position: static; z-index: auto` in expanded mode. Its
 transparent `::after` has `position: absolute; inset: 0; z-index: 1`, covering
-the card's padding box. The inner `.stylos-link-content` owns the existing
-hover surface and focus ring, so those stay aligned to the text and icons.
+the card's padding box. The permanent inner `.stylos-link-content` owns the
+hover surface and focus ring, keeping those aligned to the text and icons while
+the anchor's pseudo-element is positioned against the card. The property only
+adds the hit-area pseudo-element; it does not change the component's DOM structure.
 `state="disabled"` generates no expanded pseudo-element and removes `href`
 and the tab stop. The normal `hasExpandedHitArea={false}` mode keeps the
 original text-sized target.
@@ -602,8 +612,8 @@ The Link itself clears its `z-index` so it also works as a direct flex/grid item
 Normal text selection is unavailable under the transparent hit area; use the
 ordinary link mode when selecting the card's text matters. The helper classes
 ship with Link CSS, including the independent `@stylos/ui/css/link.css` export.
-Static HTML uses `data-has-expanded-hit-area="true"` and the same
-`.stylos-link-content` wrapper as the Svelte component.
+Static HTML uses `data-has-expanded-hit-area="true"` to enable the area, with
+the same single `.stylos-link-content` wrapper in both modes.
 
 The workshop's **Expanded hit area** story covers card hit testing, independent
 controls, adjacent stacking contexts, disabled mode and native keyboard activation.

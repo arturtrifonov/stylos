@@ -31,11 +31,11 @@
 >
   <span class="stylos-link-content">
     {#if hasLeadingIcon && leadingIcon}
-      <span class="stylos-link-icon" aria-hidden="true">{@render leadingIcon()}</span>
+      {@render leadingIcon()}
     {/if}
-    <span class="stylos-link-label">{labelText}</span>
+    {labelText}
     {#if hasTrailingIcon && trailingIcon}
-      <span class="stylos-link-icon" aria-hidden="true">{@render trailingIcon()}</span>
+      {@render trailingIcon()}
     {/if}
   </span>
 </a>
