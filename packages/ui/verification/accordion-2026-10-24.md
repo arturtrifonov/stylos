@@ -20,6 +20,14 @@ shows the result. The owner's `has top border` property is preserved; web
 composition uses an adjacent-sibling selector instead. Both registry entries
 record this comparison as `last_verified: 2026-10-24`.
 
+Both Figma component-set descriptions were empty. They are now synchronized
+with the pushed registry using `stylos-description-sync`: `summary`, every
+`use_when` item and every `do_not_use_when` item, including alternatives.
+The write targeted sets `4384:1292` and `4381:718`; read-back matched the
+composed `descriptionMarkdown` on both. Existing instances need no migration:
+the focus control defaults to false, and the existing size, expansion and
+icon-swap properties remain available.
+
 ## Findings and fixes
 
 | Finding | Evidence | Result |
