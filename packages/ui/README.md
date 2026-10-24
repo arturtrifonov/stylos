@@ -16,6 +16,43 @@ not a general accessibility or visual-parity claim. Distribution stays private.
 3. **Behaviour** (`src/behaviors/`, when a component needs one) — framework-free, operating on elements.
 4. **`.svelte` wrapper** — takes the contract's props, writes the data attributes the CSS reads. The only Svelte-specific file; layers 1–3 survive a framework change.
 
+## Component markup
+
+### Keep shared structure stable
+
+Use one shared DOM hierarchy that supports every state and property value.
+If an existing part needs a wrapper in any supported mode, keep that wrapper
+in the shared structure whenever that part is present. A wrapper may therefore
+remain in a mode that could work without it; removing it in that mode is not
+a reason to rebuild the component's hierarchy.
+
+Conditional rendering may add or remove elements belonging to the optional
+part that a property controls. For example, `hasLeadingIcon` may add or remove
+the icon together with a wrapper needed specifically by that icon. It must not
+insert or remove wrappers around the label, reparent surviving siblings, or
+change the tags of unrelated parts. The parts that remain keep their shared
+structure, whether the property controls presence, state or behaviour.
+
+Link follows this rule: its content span remains present in both hit-area
+modes, while `hasExpandedHitArea` enables the card-sized pseudo-element.
+The [Link implementation notes](#link) explain why that span is needed.
+
+### Keep only elements with a concrete purpose
+
+Every additional DOM element must serve a concrete semantic, accessibility,
+layout, positioning or behaviour requirement that an existing element cannot
+meet. Reuse native elements, text nodes and existing component roots before
+adding a wrapper. Adding a class or making the markup easier to style is not
+enough reason to wrap each piece of text or each icon.
+
+For example, apply text decoration to an existing content container and size
+an Icon on its SVG root when those elements already provide the required
+behaviour. Add a wrapper only when it supplies a missing function, such as a
+separate containing block for local visuals. Review the final rendered DOM,
+including elements produced by child components, rather than only the source
+template. Minimise that common structure across all supported modes, within
+the stable-structure rule above.
+
 ## Generated, never hand-written
 
 - `src/components/<name>/props.ts` — from the entry's `api` by `tools/build-ui-types.mjs`, so props ↔ `api` is checked by the compiler.
