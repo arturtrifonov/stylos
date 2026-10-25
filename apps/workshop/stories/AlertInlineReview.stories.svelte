@@ -33,6 +33,10 @@
     for (const button of root.querySelectorAll(".stylos-alert-actions button")) {
       await expect(button).toHaveAttribute("data-size", "extra small");
     }
+    const close = root.querySelector<HTMLButtonElement>(":scope > .stylos-button-inner")!;
+    const closeBox = close.getBoundingClientRect();
+    await expect(closeBox.width).toBeCloseTo(closeBox.height, 1);
+    await expect(closeBox.top + closeBox.height / 2).toBeCloseTo(heading.getBoundingClientRect().top + line / 2, 1);
     await expect(root.scrollWidth).toBeLessThanOrEqual(root.clientWidth);
   }
 }}>
@@ -56,7 +60,7 @@
     const heading = root.querySelector<HTMLElement>(".stylos-alert-heading")!;
     const line = parseFloat(getComputedStyle(heading).lineHeight);
     await expect(line % 2).toBe(0);
-    for (const slot of root.querySelectorAll<HTMLElement>(".stylos-alert-icon, .stylos-alert-close")) {
+    for (const slot of root.querySelectorAll<HTMLElement>(".stylos-alert-icon")) {
       const box = slot.getBoundingClientRect();
       const icon = slot.querySelector("svg")!.getBoundingClientRect();
       await expect(box.height).toBeCloseTo(line, 1);
@@ -71,6 +75,10 @@
       const outline = root.querySelector<HTMLElement>(".stylos-button-outline")!;
       await expect(getComputedStyle(root).borderColor).toBe(getComputedStyle(outline, "::before").borderColor);
     }
+    const close = root.querySelector<HTMLButtonElement>(":scope > .stylos-button-inner")!;
+    const closeBox = close.getBoundingClientRect();
+    await expect(closeBox.width).toBeCloseTo(closeBox.height, 1);
+    await expect(closeBox.top + closeBox.height / 2).toBeCloseTo(heading.getBoundingClientRect().top + line / 2, 1);
     await expect(root.scrollWidth).toBeLessThanOrEqual(root.clientWidth);
   }
 }}>
@@ -94,7 +102,8 @@
   const heading = wrapped.querySelector<HTMLElement>(".stylos-alert-heading")!;
   const line = parseFloat(getComputedStyle(heading).lineHeight);
   await expect(heading.getBoundingClientRect().height).toBeGreaterThan(line);
-  await expect(wrapped.querySelector(".stylos-alert-close")!.getBoundingClientRect().height).toBeCloseTo(line, 1);
+  const closeBox = wrapped.querySelector(":scope > .stylos-button-inner")!.getBoundingClientRect();
+  await expect(closeBox.top + closeBox.height / 2).toBeCloseTo(heading.getBoundingClientRect().top + line / 2, 1);
   await expect(noHeading.querySelector(".stylos-alert-heading")).toBeNull();
   const body = noHeading.querySelector(".stylos-alert-body")!.getBoundingClientRect();
   await expect(noHeading.querySelector(".stylos-alert-content")!.getBoundingClientRect().top).toBeCloseTo(body.top, 1);

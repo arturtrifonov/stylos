@@ -181,7 +181,7 @@ test("says nothing about version when there is no package.json version to check 
 
 test("fails a property kind outside the supported vocabulary", () => {
   const entry = withApi((api) => [{ ...api[0], kind: "enum" }, api[1]]);
-  assert.match(check(entry).errors.join("\n"), /kind "enum", not one of variant, text, string, boolean, instance, slot/);
+  assert.match(check(entry).errors.join("\n"), /kind "enum", not one of variant, text, string, number, boolean, instance, slot/);
 });
 
 test("fails an a11y status outside the four, wherever the finding hangs", () => {

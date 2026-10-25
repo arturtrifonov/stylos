@@ -17,11 +17,11 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: "Owner-directed starting-set expansion, 2026-10-17. Updated to the simplified Figma component on 2026-10-25; this is not a Ready to publish assessment."
+notes: "Owner-directed starting-set expansion, 2026-10-17. Updated to the simplified Figma component on 2026-10-25; reviewed for component readiness on 2026-10-25; release-wide acceptance remains separate."
 import:
   batch: 2
   ready: false
-status: "draft"
+status: "ready"
 html: "<progress></progress>"
 summary: "A determinate or indeterminate indicator of task completion."
 purpose: "Show process completion independently of loading content."
@@ -93,7 +93,7 @@ figma:
   node_id: "3417:15594"
   last_verified: "2026-10-25"
 limitations:
-  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+  - "Component review completed on 2026-10-25; release-wide accessibility and publication acceptance remain tracked in packages/ui/verification/0.3.0.md."
 figma_notes:
   - "The simplified Figma set exposes value (0% through 100% in 10% examples, plus unknown), has label and label text. Web value is continuous; type, state and has icon are removed."
   - "The bar uses surface/subtle/base/default and surface/bold/primary/default; the unknown tile alternates primary with surface/subtle/primary/default. The visible label uses label/base/extra small."

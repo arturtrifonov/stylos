@@ -31,17 +31,19 @@ export function startingSetPreview(entry, props, { cls, attr, esc, icon, button 
   if (entry.id.startsWith("Alert ")) {
     const timer = entry.id === "Alert Popup Timer";
     const inline = entry.id === "Alert Inline";
-    const close = props["has close button"] ? `<span class="stylos-alert-close"><button class="stylos-button-inner" type="button" aria-label="${esc(props["close accessible name"] || "Close")}"><span class="stylos-button-inner-icon">${icon("close")}</span></button></span>` : "";
+    const close = props["has close button"] ? `<button class="stylos-button-inner" type="button" aria-label="${esc(props["close accessible name"] || "Close")}"><span class="stylos-button-inner-icon">${icon("close")}</span></button>` : "";
     const content = props["has content"] ? `<div class="stylos-alert-content">${props["content slot"] ?? ""}</div>` : "";
-    const heading = props["has heading"] ? `<p class="stylos-alert-heading">${esc(props["heading text"] ?? "Heading Text")}</p>` : "";
+    const heading = (timer || props["has heading"]) ? `<p class="stylos-alert-heading">${esc(props["heading text"] ?? "Heading Text")}</p>` : "";
     if (!timer) {
       const actions = props["has buttons"] ? `<div class="stylos-alert-actions">${button(props["primary button text"] || "Accept", "base", size)}${button(props["secondary button text"] || "Cancel", "outline", size)}</div>` : "";
-      return `<section class="stylos-alert ${cls}"${attr} data-surface-layer="${inline ? 1 : 6}" data-surface-attachment="${inline ? "in-layout" : "free"}"${props["is open"] === false ? " hidden" : ""}><div class="stylos-alert-body">${heading}${content}${actions}</div>${close}</section>`;
+      return `<section class="stylos-alert ${cls}"${attr} data-surface-layer="${inline ? 1 : 4}" data-surface-attachment="${inline ? "in-layout" : "free"}"${props["is open"] === false ? " hidden" : ""}><div class="stylos-alert-body">${heading}${content}${actions}</div>${close}</section>`;
     }
-    const undo = props["has undo button"] ? button(props["undo button text"] || "Undo", "outline", "extra small") : "";
-    const counter = props["has timer counter"] ? `<span class="stylos-alert-timer-count">${esc(props["timer text"])}</span>` : "";
-    const progress = startingSetPreview({ id: "Progress Bar" }, { value: props["progress value"] ?? "30", "has label": false }, { cls: "stylos-progress-bar", attr: "", esc, icon, button });
-    return `<section class="stylos-alert ${cls}"${attr} data-surface-layer="6" data-surface-attachment="free"${props["is open"] === false ? " hidden" : ""}><div class="stylos-alert-body"><div class="stylos-alert-heading-row">${counter}${heading}${undo}${close}</div>${content}</div><div class="stylos-alert-timer-progress" aria-hidden="true">${progress}</div></section>`;
+    const undo = props["has undo button"] ? button(props["undo button text"] || "Undo", "outline", size) : "";
+    const total = Number.isFinite(props.duration) ? Math.max(0, props.duration) : 0;
+    const remaining = Number.isFinite(props["remaining time"]) ? Math.min(total, Math.max(0, props["remaining time"])) : 0;
+    const counter = props["has timer counter"] ? `<span class="stylos-alert-timer-count">${Math.ceil(remaining)}${esc(props["time unit"] ?? "")}</span>` : "";
+    const progress = startingSetPreview({ id: "Progress Bar" }, { value: String(total > 0 ? remaining / total * 100 : 0), "has label": false }, { cls: "stylos-progress-bar", attr: "", esc, icon, button });
+    return `<section class="stylos-alert ${cls}"${attr} data-surface-layer="4" data-surface-attachment="free"${props["is open"] === false ? " hidden" : ""}><div class="stylos-alert-body"><div class="stylos-alert-heading-row"><div class="stylos-alert-timer-header">${counter}${heading}${undo}</div>${close}</div>${content}</div><div class="stylos-alert-timer-progress" aria-hidden="true">${progress}</div></section>`;
   }
   const segment = (label, checked = false) => `<label class="stylos-switcher-item" data-size="${esc(size)}" data-tone="${esc(props.tone ?? "base")}" data-state="${esc(props.state ?? "default")}" data-is-selected="${checked}"><input type="radio" name="${id}" value="${esc(label)}"${checked ? " checked" : ""}${disabled}><span>${esc(label)}</span></label>`;
   if (entry.id === "Switcher Item") return segment(props["label text"] ?? "Option");

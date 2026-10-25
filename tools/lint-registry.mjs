@@ -356,6 +356,17 @@ function checkContract(entry, byId, errors, resolveToken, systemVersion) {
       errors.push(`${file}: ${where} has kind "boolean" but its default is not true or false`);
     }
 
+    if (property.kind === "number") {
+      if (property.default !== undefined && (typeof property.default !== "number" || !Number.isFinite(property.default))) {
+        errors.push(`${file}: ${where} has kind "number" but its default is not a finite number`);
+      }
+      for (const value of values) {
+        if (typeof value?.value !== "number" || !Number.isFinite(value.value)) {
+          errors.push(`${file}: ${where} has kind "number" but an example value is not a finite number`);
+        }
+      }
+    }
+
     if (property.kind === "text" || property.kind === "string") {
       if (property.default !== undefined && typeof property.default !== "string") {
         errors.push(`${file}: ${where} has kind "${property.kind}" but its default is not a string`);

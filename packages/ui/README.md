@@ -3,8 +3,9 @@
 The Svelte 5 component package, built to SPEC 0009 against the contracts in [`docs/components/registry/`](../../docs/components/registry/). The stack and the layering are ADR 0002; the version is the system's, in lockstep ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §9).
 
 **0.2.0 is an early integration release, authorized 2026-10-17.** The urgent
-starting-set contracts are reviewed one by one; Accordion and Accordion Header
-are now ready, while ten remain draft. All unfinished release acceptance,
+starting-set contracts are reviewed one by one; Accordion, Accordion Header,
+Alert Inline, Alert Popup, Alert Popup Timer and Progress Bar are now ready,
+while six remain draft. All unfinished release acceptance,
 including Linux Chrome + Orca, incomplete axe review, visual/contrast coverage
 and Figma synchronization, gates [0.3.0](verification/0.3.0.md). Product proof
 and consumer materials move to 0.4.0. Automated measurements are scoped evidence,
@@ -220,11 +221,12 @@ Per SPEC 0009 §5, contract first: the entry's `api` is corrected to describe th
 The owner expanded the starting set on 2026-10-17 with `Accordion`, `AlertInline`,
 `AlertPopup`, `AlertPopupTimer`, `InputSearch`, `ProgressBar`, `Switcher`,
 `TabsHorizontal` and `TextArea`. `AccordionHeader`, `SwitcherItem` and `TabItem`
-are their compositional dependencies. The owner approved **Accordion** and
-**Accordion Header** as **ready** after their 2026-10-24 review. The other ten
-contracts remain **draft** and are available for early product integration;
+are their compositional dependencies. Component reviews marked **Accordion** and **Accordion Header** as **ready**
+on 2026-10-24, followed by **Alert Inline**, **Alert Popup**, **Alert Popup Timer**
+and **Progress Bar** on 2026-10-25. The other six contracts remain **draft** and are available for early product integration;
 their API and design may change during review. Builds and examples do not
-promote readiness.
+promote readiness. The [alert and progress review](verification/alerts-progress-2026-10-25.md)
+records the documentation and DOM audit, fixes and outstanding release checks.
 
 Import components from `@stylos/ui` and the usual tokens/fonts. Each has an
 independent CSS export, for example `@stylos/ui/css/text-area.css`. Generated
@@ -297,16 +299,16 @@ accessibility checks.
 Alerts expose bindable `isOpen`, optional heading/content/actions, native close
 callbacks, and consumer-selected announcement urgency. Their host owns
 placement, stacking and focus after dismissal. Popup is non-modal. Timer takes
-`timerText` and `progressValue` from its host: the component does not start a clock,
+`duration` and `remainingTime` in seconds from its host: the component does not start a clock,
 dismiss automatically, or decide when undo expires. Only Timer exposes a separate
 Undo action and callback. Its counter is outside the
 live heading so second-by-second updates do not repeat the notification.
 
 Popup uses the current five-size Figma composition, including heading/h6
-through heading/h2 and matching-size action buttons. Its icon and close slots
-use the heading's line-height token as their height and centre the marks within
-that first line. A wrapping or hidden heading does not change those slot
-dimensions. The heading sits directly in the body; hiding it leaves no empty
+through heading/h2 and matching-size action buttons. Its decorative icon slot uses the heading's line-height token as its height.
+The native Close button centres on that first line with block margins, without
+an alignment wrapper; its square icon and focus geometry stay unchanged.
+A wrapping or hidden heading preserves this alignment. Popup uses elevation 4. The heading sits directly in the body; hiding it leaves no empty
 heading row or extra gap. Spacing and typography come from shared tokens.
 
 Inline shares Popup's five density presets through the same CSS size profile;
@@ -314,6 +316,27 @@ Inline shares Popup's five density presets through the same CSS size profile;
 shadow and default or semantic border from Figma. Primary and secondary buttons
 follow `size`.
 The heading is a direct body child, so no empty header row survives hiding it.
+
+Timer follows its own five-size profile from the current Figma design. It is a
+neutral level-4 notification with a required heading; the former `type` and
+`hasHeading` props are removed. `size` defaults to `extra small` and
+`hasCloseButton` to `false`. `duration` and `remainingTime` are numbers in seconds,
+both defaulting to 3. The remaining value clamps to 0–duration; the counter rounds
+up while the track follows the precise remaining fraction. `timerText` and
+`progressValue` are removed. Set `timeUnit="s"` or another localized suffix when
+needed; the default empty string adds no unit. Counter and Close footprints match Undo's
+24/32/40/48/56-unit height. The counter uses the subtle base surface, emphasis
+text and tabular lining figures. Padding and the gap before Progress Bar follow
+12/14/16/20/24; the counter/heading/Undo cluster has a separate 6/8/10/12/14 gap.
+Content follows the matching body-text size. Progress Bar stays 8 high, with its
+label hidden and outside the live heading. The cluster wrapper keeps the distinct
+Close spacing in every state; heading padding is applied directly to the text.
+The single **default** story is a user-started countdown with editable duration,
+Start, Pause/Resume and Reset. Controls configure the same component. There is no
+autoplay: expiry stays visible at 0, Undo stops the countdown, and Close dismisses
+only when clicked. The fixture owns elapsed time; the component owns no clock.
+The [implementation review](verification/alert-popup-timer-2026-10-25.md) records
+the Figma comparison and browser results.
 
 Progress Bar uses native `progress` with an 8-unit track, a 4-unit label gap and
 the shared `label/base/extra small` style. `value` accepts numeric strings with
