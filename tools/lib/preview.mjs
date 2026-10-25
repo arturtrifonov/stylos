@@ -82,12 +82,18 @@ export function sampleHtml(entry, props = {}) {
         throw new Error(`preview: "${entry.id}" property "${name}" is a boolean; got "${value}"`);
       }
       attrs.push(`data-${kebab(name)}="${value}"`);
+    } else if (property.kind === "number") {
+      if (typeof value !== "number" || !Number.isFinite(value)) {
+        throw new Error(`preview: "${entry.id}" property "${name}" is a finite number; got "${value}"`);
+      }
     } else if (property.kind === "string") {
       if (typeof value !== "string") {
         throw new Error(`preview: "${entry.id}" property "${name}" is a string; got "${value}"`);
       }
       // String properties need their own renderer; they are not text content.
-      if (entry.id === "Tooltip" && name === "content width") {
+      if (entry.id === "Alert Popup Timer" && name === "time unit") {
+        // The Timer renderer appends the consumer-supplied unit to its count.
+      } else if (entry.id === "Tooltip" && name === "content width") {
         styles.push(`--_stylos-tooltip-width:${value}`);
       } else if (entry.id === "Dropdown" && name === "max height") {
         styles.push(`--_stylos-dropdown-height-limit:${value}`);
@@ -279,10 +285,18 @@ export function sampleHtml(entry, props = {}) {
       const nativeSelect = `<select data-select-native id="${esc(id)}-native"${native}${formSemantics} aria-hidden="true" tabindex="-1"><option value=""${filled ? "" : " selected"}></option>${filled ? `<option value="${esc(props.value)}" selected>${esc(display)}</option>` : ""}</select>`;
       return `<div class="${cls}"${attr} data-is-filled="${filled}">${label}<div class="stylos-select-field" data-surface-layer="1" data-surface-attachment="in-layout"><button type="button" class="stylos-select-trigger" id="${esc(id)}" role="combobox" aria-haspopup="listbox" aria-expanded="false"${triggerSemantics}><span class="stylos-select-value"><span>${esc(display)}</span></span></button>${nativeSelect}<div class="stylos-select-adornments"><span class="stylos-select-leading">${icon("leading").replaceAll("stylos-input-text", "stylos-select")}</span><span class="stylos-select-trailing">${suffix.replaceAll("stylos-input-text", "stylos-select")}${clear}${validation.replaceAll("stylos-input-text", "stylos-select")}${chevron}</span></div></div></div>`;
     }
-    const trailing = entry.id === "Input Search" && props["has trailing icon"] && !props["trailing icon"]
-      ? `<span class="stylos-input-text-icon" data-position="trailing" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: "search" })}</span>` : icon("trailing");
+    const trailing = icon("trailing");
+    if (["Input Text", "Input Search"].includes(entry.id)) {
+      const search = entry.id === "Input Search";
+      const svg = name => sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name });
+      const clear = search && props.value && state === "default"
+        ? `<button class="stylos-button-inner" data-state="default" type="button" aria-label="${esc(props["clear accessible name"] || `Clear ${accessibleName || "search"}`)}"><span class="stylos-button-inner-icon" aria-hidden="true">${svg("close")}</span></button>` : "";
+      const leading = icon("leading").replace('class="stylos-input-text-icon"', 'class="stylos-input-text-leading"');
+      const trailingParts = suffix + clear + validation + (search ? svg("search") : trailing);
+      const field = `<div class="stylos-input-text-field" data-surface-layer="1" data-surface-attachment="in-layout"><input type="${search ? "search" : "text"}" id="${esc(id)}" value="${esc(props.value ?? "")}"${native}${semantics}${placeholder}>${leading}${trailingParts ? `<span class="stylos-input-text-trailing">${trailingParts}</span>` : ""}</div>`;
+      return `<div class="${cls}"${attr} data-is-filled="${!!props.value}">${label}${search ? field.replaceAll("stylos-input-text-", "stylos-input-search-") : field}</div>`;
+    }
     let html = `<div class="${cls}"${attr} data-is-filled="${!!props.value}">${label}<div class="stylos-input-text-field" data-surface-layer="1" data-surface-attachment="in-layout"><input type="${entry.id === "Input Search" ? "search" : "text"}" id="${esc(id)}" value="${esc(props.value ?? "")}"${native}${semantics}${placeholder}><div class="stylos-input-text-adornments"><span class="stylos-input-text-leading">${icon("leading")}</span><span class="stylos-input-text-trailing">${suffix}${validation}${trailing}</span></div></div></div>`;
-    if (entry.id === "Input Search") html = html.replaceAll("stylos-input-text-", "stylos-input-search-");
     if (entry.id === "Text Area") {
       const counterId = `${id}-counter`;
       const areaSemantics = props["has counter text"]

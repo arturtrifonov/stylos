@@ -6,18 +6,21 @@
   import Icon from "../icon/Icon.svelte";
   import type { InputSearchProps } from "./props.ts";
   import { inputTextBehavior } from "../../behaviors/input-text.ts";
+  import { clearSearchInput } from "../../behaviors/input-search.ts";
+  import ButtonInner from "../button-inner/ButtonInner.svelte";
 
   let {
-    size = "extra small", state = "default", validation = "off",
+    size = "medium", state = "default", validation = "off",
     value = $bindable(""), hasLabel = true, labelText = "Label",
     hasAdditionalText = false, additionalText = "Additional text",
-    hasPlaceholder = true, placeholderText = "Placeholder text",
-    hasLeadingIcon = false, leadingIcon, hasTrailingIcon = true, trailingIcon,
+    hasPlaceholder = false, placeholderText = "Placeholder text",
+    hasLeadingIcon = false, leadingIcon, clearAccessibleName,
     hasSuffixText = false, suffixText = "Suffix", isRequired = false,
     id, name, form, autocomplete, accessibleName, labelIds, descriptionIds,
     oninput, onchange,
   }: InputSearchProps = $props();
 
+  let input: HTMLInputElement;
   const instanceId = $props.id();
   const initialValue = untrack(() => value);
   const controlId = $derived(id ?? `input-search-${instanceId}`);
@@ -31,7 +34,20 @@
     hasSuffixText && suffixText ? suffixId : undefined,
   ].filter(Boolean).join(" ") || undefined);
   const validationIcon = $derived({ error: "error", warning: "warning", success: "check_circle", off: "" }[outcome]);
+
+  const showsClear = $derived(value !== "" && state === "default");
+  const clearName = $derived(clearAccessibleName || `Clear ${hasLabel ? labelText : accessibleName || "search"}`);
+
+  // Attach after optional groups mount and release measurements when they leave.
+  // Search always has a trailing group; it measures changes including clear.
+  function measureAdornments(parts: boolean[]) {
+    return parts.some(Boolean)
+      ? (field: HTMLElement) => inputTextBehavior(field).destroy
+      : undefined;
+  }
 </script>
+
+{#snippet clearIcon()}<Icon name="close" />{/snippet}
 
 <div
   class="stylos-input-search"
@@ -52,8 +68,10 @@
   {:else if showsMessage}
     <span id={messageId} hidden>{additionalText}</span>
   {/if}
-  <div class="stylos-input-search-field" data-surface-layer="1" data-surface-attachment="in-layout" use:inputTextBehavior>
+  <div class="stylos-input-search-field" data-surface-layer="1" data-surface-attachment="in-layout"
+    {@attach measureAdornments([hasLeadingIcon && !!leadingIcon, true])}>
     <input
+      bind:this={input}
       type="search"
       id={controlId}
       {name} {form}
@@ -70,9 +88,12 @@
       aria-invalid={outcome === "error" ? "true" : undefined}
       {oninput} {onchange}
     />
-    <div class="stylos-input-search-adornments">
-      <span class="stylos-input-search-leading">{#if hasLeadingIcon && leadingIcon}<span class="stylos-input-search-icon" data-position="leading" aria-hidden="true">{@render leadingIcon()}</span>{/if}</span>
-      <span class="stylos-input-search-trailing">{#if hasSuffixText}<span class="stylos-input-search-suffix" id={suffixId}>{suffixText}</span>{/if}{#if outcome !== "off"}<span class="stylos-input-search-validation" aria-hidden="true"><Icon name={validationIcon} /></span>{/if}{#if hasTrailingIcon}<span class="stylos-input-search-icon" data-position="trailing" aria-hidden="true">{#if trailingIcon}{@render trailingIcon()}{:else}<Icon name="search" />{/if}</span>{/if}</span>
-    </div>
+    {#if hasLeadingIcon && leadingIcon}<span class="stylos-input-search-leading" data-position="leading" aria-hidden="true">{@render leadingIcon()}</span>{/if}
+    <span class="stylos-input-search-trailing">
+      {#if hasSuffixText}<span class="stylos-input-search-suffix" id={suffixId}>{suffixText}</span>{/if}
+      {#if showsClear}<ButtonInner accessibleName={clearName} icon={clearIcon} onclick={() => clearSearchInput(input)} />{/if}
+      {#if outcome !== "off"}<span class="stylos-input-search-validation" aria-hidden="true"><Icon name={validationIcon} /></span>{/if}
+      <Icon name="search" />
+    </span>
   </div>
 </div>

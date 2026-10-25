@@ -58,14 +58,14 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: "Owner-directed starting-set expansion, 2026-10-17. Inline was aligned with all five reviewed Popup size profiles on 2026-10-25. This is not a Ready to publish assessment."
+notes: "Owner-directed starting-set expansion, 2026-10-17. Inline was aligned with all five reviewed Popup size profiles on 2026-10-25. Reviewed for component readiness on 2026-10-25; release-wide acceptance remains separate."
 import:
   batch: 1
   ready: true
-status: "draft"
+status: "ready"
 html: "<section>Notification and actions</section>"
 summary: "A notification in document flow."
-purpose: "Give product notifications a shared visual and interaction contract while their designs remain provisional."
+purpose: "Present contextual notifications and optional actions within document flow."
 use_when:
   - "A notification in document flow."
 do_not_use_when:
@@ -254,7 +254,7 @@ figma:
   node_id: "4462:2882"
   last_verified: "2026-10-25"
 limitations:
-  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+  - "Component review completed on 2026-10-25; release-wide accessibility and publication acceptance remain tracked in packages/ui/verification/0.3.0.md."
   - "Manual Chrome/Orca evaluation and contrast review remain pending."
 family: "Alert"
 figma_notes:

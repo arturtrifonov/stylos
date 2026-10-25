@@ -76,6 +76,7 @@ export function fieldFor(property, { soleSlot = false } = {}) {
     variant: () => union(property),
     text: () => "string",
     string: () => "string",
+    number: () => "number",
     boolean: () => "boolean",
     instance: () => {
       if (property.svelte_type === undefined) return "Component | Snippet";

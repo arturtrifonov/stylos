@@ -38,7 +38,7 @@ Why: a complete record supplies the decisions a consumer needs, including how pu
 Required data:
 
 - `level`, `role`, `summary`, `purpose`, at least one `use_when` and at least one `do_not_use_when`.
-- Each public property in `api` has a name, kind and description. Variant properties declare their supported values; a variant default belongs to that vocabulary. Boolean defaults are true or false; text and string defaults are strings, and their listed values are examples. Component and slot properties follow their schema.
+- Each public property in `api` has a name, kind and description. Variant properties declare their supported values; a variant default belongs to that vocabulary. Boolean defaults are true or false; number defaults and examples are finite numbers; text and string defaults are strings, and their listed values are examples. Component and slot properties follow their schema.
 - `sizing_model` records default sizing and adjustment permission for each axis, plus an `intent`. When the API has a size variant, its rows match that vocabulary in order. Applicable dimensions and text measures refer to tokens; text parts can have different roles and mappings, and components without text need none.
 - Unsupported combinations are recorded where they are constrained. Each value carrying an accessibility finding has a `rationale`. Named alternatives and token references resolve.
 

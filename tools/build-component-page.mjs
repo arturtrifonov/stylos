@@ -383,6 +383,7 @@ const KIND_GLYPHS = {
   boolean: "◧",
   text: "T",
   string: "S",
+  number: "N",
   instance: "▣",
   event: "↗",
 };

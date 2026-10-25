@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
 import { loadRegistry } from "./registry.mjs";
 import { buildPreviewAssets, defaultAssignment, sampleHtml } from "./preview.mjs";
+import { markupReader } from "./ui-release.mjs";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const entries = loadRegistry(root);
@@ -68,4 +69,49 @@ test("static examples get unique IDs and only configured decorative icons", () =
   assert.match(html, /data-position="leading" aria-hidden="true"><svg[^>]*data-name="person"/);
   assert.match(html, /data-position="trailing" aria-hidden="true"><svg[^>]*data-name="search"/);
   assert.doesNotMatch(render({ "has leading icon": true }), /<svg/);
+});
+
+test("plain fields have no empty side slots and optional parts retain their own groups", () => {
+  const read = markupReader(render({}));
+  const elements = node => node.childNodes?.filter(child => child.tagName) ?? [];
+  const count = node => 1 + elements(node).reduce((sum, child) => sum + count(child), 0);
+  assert.equal(count(read("stylos-input-text")), 4);
+  assert.equal(read("stylos-input-text-field").childNodes.filter(child => child.tagName).length, 1);
+  const decorated = markupReader(render({ "has leading icon": true, "leading icon": "person",
+    "has trailing icon": true, "trailing icon": "search", "has suffix text": true, "suffix text": "USD" }));
+  assert.equal(decorated("stylos-input-text-leading").parentNode, decorated("stylos-input-text-field"));
+  assert.equal(decorated("stylos-input-text-suffix").parentNode, decorated("stylos-input-text-trailing"));
+  assert.equal(decorated("stylos-input-text-adornments"), undefined);
+});
+
+const searchEntry = entries.find(entry => entry.id === "Input Search");
+const searchDefaults = defaultAssignment(searchEntry);
+const search = props => sampleHtml(searchEntry, { ...searchDefaults, ...props });
+
+test("Search shares Text defaults and always shows its fixed decorative search mark", () => {
+  assert.equal(searchDefaults.size, defaults.size);
+  assert.equal(searchDefaults["has placeholder"], defaults["has placeholder"]);
+  const html = search({});
+  const read = markupReader(html);
+  const count = node => 1 + (node.childNodes?.filter(child => child.tagName) ?? []).reduce((sum, child) => sum + count(child), 0);
+  assert.equal(count(read("stylos-input-search")), 7);
+  assert.match(html, /<input type="search"/);
+  assert.match(html, /data-name="search"/);
+  assert.doesNotMatch(html, / placeholder=|<button|adornments|search-icon/);
+  assert.throws(() => search({ "has trailing icon": false }), /no api property/);
+  assert.throws(() => search({ "trailing icon": "close" }), /no api property/);
+});
+
+test("only filled editable Search fields have a named non-submit clear action", () => {
+  const filled = search({ value: "query", "label text": "Products", validation: "error", "has suffix text": true, "suffix text": "items" });
+  assert.match(filled, /type="button" aria-label="Clear Products"/);
+  assert.match(filled, /search-suffix[\s\S]*stylos-button-inner[\s\S]*search-validation[\s\S]*data-name="search"/);
+  assert.match(search({ value: "query", "clear accessible name": 'Очистить "поиск"' }), /aria-label="Очистить &quot;поиск&quot;"/);
+  assert.match(search({ value: "query", "has label": false, "accessible name": "Catalog" }), /aria-label="Clear Catalog"/);
+  for (const state of ["read only", "disabled"]) {
+    const html = search({ state, value: "query", validation: "error" });
+    assert.doesNotMatch(html, /<button|aria-invalid|search-validation/);
+    assert.match(html, /data-name="search"/);
+    assert.match(html, state === "disabled" ? /<input[^>]* disabled/ : /<input[^>]* readonly/);
+  }
 });

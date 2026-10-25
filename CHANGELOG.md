@@ -27,6 +27,39 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Changed
 
+- Mark Input Search ready after owner review of its Input Text alignment,
+  compact DOM, native clear action and five-size geometry. Update its contract,
+  accessibility conditions, provisional API migration notes and readiness
+  documentation; five urgent starting-set contracts remain draft.
+
+- Align Input Search with Input Text: medium size and no placeholder by
+  default, shared compact field structure and styles, native ellipsis, a
+  permanent Search icon, and Button Inner clear action for filled editable
+  values. Clear updates binding, emits input/change and restores focus.
+  Remove the draft-only configurable trailing icon props; document the new
+  behaviour and refresh HTML previews and the interactive Storybook example.
+
+- Simplify Input Text's DOM: remove the shared adornments overlay, merge the
+  leading icon's two containers, and omit absent side groups. A plain labelled
+  field uses four elements instead of seven. Keep the full native input hit
+  area, optical geometry, descriptions and focus effects; refresh and clean up
+  reserved text padding when optional parts mount or unmount.
+
+- Mark Alert Inline, Alert Popup, Alert Popup Timer and Progress Bar ready after
+  component review; keep release-wide accessibility and publication gates open.
+  Remove redundant Close wrappers from all three alerts and correct Popup's
+  elevation from 6 to the Figma and foundation level 4.
+
+- Align Alert Popup Timer with its refined five-size Figma component: neutral
+  surface, level-4 shadow, subtle counter, matching-size Undo and Close, separate
+  header gaps and a fixed 8-unit Progress Bar. Add `size`; remove legacy `type`
+  and `hasHeading`. Default `hasCloseButton` to `false`. Replace formatted
+  `timerText` and independent `progressValue` with numeric `duration` and
+  `remainingTime` in seconds, deriving both the counter and remaining fraction.
+  Add an optional localized `timeUnit` suffix. Replace the Timer review/test
+  pages with one manually controlled countdown example.
+  Update its contract, documentation previews and review stories together.
+
 - Simplify Progress Bar to match the updated Figma component: an 8-unit primary
   track, optional compact label and continuously moving striped `value="unknown"`
   treatment with a static reduced-motion alternative. Known completion follows

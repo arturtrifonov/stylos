@@ -55,7 +55,7 @@ A Figma representation is mandatory for `ready`: a single `figma.node_id` links 
 
 **The value is `ready`, not `published`, and the reason is not taste.** Figma publishes a *file*: everything in it goes out at once, and there is no per-component publish state to mirror. A `published` value would have been a fact maintained by hand about something the tool does not have, and it would have gone stale the first time the file was published without it being updated. Which release a component's API shipped in is answered by `version`; what moved in the library at that release is answered by `CHANGELOG.md`. `status` answers the one question neither of those does — can this be built against.
 
-The `0.1.0` core was assessed against both gates on 2026-09-05. Later reviews promote individual contracts explicitly: Accordion and Accordion Header were approved on 2026-10-24. Each registry entry records its current status; inventory rows without one have not been assessed.
+The `0.1.0` core was assessed against both gates on 2026-09-05. Later reviews promote individual contracts explicitly: Accordion and Accordion Header were approved on 2026-10-24; Alert Inline, Alert Popup, Alert Popup Timer, Progress Bar and Input Search were reviewed as ready on 2026-10-25. Each registry entry records its current status; inventory rows without one have not been assessed.
 
 #### `version` is the release the API shipped in
 
@@ -191,7 +191,7 @@ A **sequence**, because property order is part of the public API (FND-NAMING-18,
 api:
   -
     name: "size"
-    kind: "variant"          # variant | text | string | boolean | instance | slot | event
+    kind: "variant"          # variant | text | string | number | boolean | instance | slot | event
     default: "extra small"
     description: "What the property means and what it governs."
     a11y:                     # optional, property-level finding
@@ -221,6 +221,8 @@ api:
 An `instance` may specify `svelte_type: "snippet"` when its web implementation renders configured content through `{@render}`. This narrows its generated Svelte prop to `Snippet` without changing the instance name or multiplicity; place a configured component inside the snippet. Existing entries without this field retain their generated component/snippet union.
 
 **`text` and `string` use the same storage type but carry different things.** `text` supplies textual content: a label, heading, message, placeholder or input value. Its name follows FND-NAMING-12. `string` supplies an identifier or other non-text string value: `Icon.name` selects a mark rather than displaying the name as copy. A string property is named for its role and does not acquire the `text` suffix just because its value is stored as a string. Both kinds have string defaults and string example values, and both generate TypeScript `string` props.
+
+**`number` supplies a finite numeric value**, such as a duration or remaining time. Its default and examples are YAML numbers, and it generates a TypeScript `number` prop and a numeric Storybook control. The property description specifies units and bounds.
 
 **`event` supplies a native callback.** It has no default or values. `onclick`, `onprimaryclick`, `onsecondaryclick`, `ontertiaryclick` and `onundoclick` receive a `MouseEvent`; named actions forward clicks from their composed Button. Keyboard activation of a native button also dispatches click. `onclose` receives a close `Event` (native for windows; emitted after dismissing an Alert). `oninput` receives a native form event. `onchange` receives the activation event after a value or disclosure changes, or a native form change event. Event handlers are web integration properties and do not become Figma controls. The generator rejects an unsupported event name.
 

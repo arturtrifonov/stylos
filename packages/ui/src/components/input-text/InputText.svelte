@@ -31,6 +31,14 @@
     hasSuffixText && suffixText ? suffixId : undefined,
   ].filter(Boolean).join(" ") || undefined);
   const validationIcon = $derived({ error: "error", warning: "warning", success: "check_circle", off: "" }[outcome]);
+
+  // Attach after optional groups mount and release measurements when they leave.
+  // A plain field needs neither empty measurement slots nor a ResizeObserver.
+  function measureAdornments(parts: boolean[]) {
+    return parts.some(Boolean)
+      ? (field: HTMLElement) => inputTextBehavior(field).destroy
+      : undefined;
+  }
 </script>
 
 <div
@@ -52,7 +60,8 @@
   {:else if showsMessage}
     <span id={messageId} hidden>{additionalText}</span>
   {/if}
-  <div class="stylos-input-text-field" data-surface-layer="1" data-surface-attachment="in-layout" use:inputTextBehavior>
+  <div class="stylos-input-text-field" data-surface-layer="1" data-surface-attachment="in-layout"
+    {@attach measureAdornments([hasLeadingIcon && !!leadingIcon, hasSuffixText, outcome !== "off", hasTrailingIcon && !!trailingIcon])}>
     <input
       type="text"
       id={controlId}
@@ -70,9 +79,9 @@
       aria-invalid={outcome === "error" ? "true" : undefined}
       {oninput} {onchange}
     />
-    <div class="stylos-input-text-adornments">
-      <span class="stylos-input-text-leading">{#if hasLeadingIcon && leadingIcon}<span class="stylos-input-text-icon" data-position="leading" aria-hidden="true">{@render leadingIcon()}</span>{/if}</span>
+    {#if hasLeadingIcon && leadingIcon}<span class="stylos-input-text-leading" data-position="leading" aria-hidden="true">{@render leadingIcon()}</span>{/if}
+    {#if hasSuffixText || outcome !== "off" || (hasTrailingIcon && trailingIcon)}
       <span class="stylos-input-text-trailing">{#if hasSuffixText}<span class="stylos-input-text-suffix" id={suffixId}>{suffixText}</span>{/if}{#if outcome !== "off"}<span class="stylos-input-text-validation" aria-hidden="true"><Icon name={validationIcon} /></span>{/if}{#if hasTrailingIcon && trailingIcon}<span class="stylos-input-text-icon" data-position="trailing" aria-hidden="true">{@render trailingIcon()}</span>{/if}</span>
-    </div>
+    {/if}
   </div>
 </div>

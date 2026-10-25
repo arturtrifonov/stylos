@@ -3,8 +3,9 @@
 The Svelte 5 component package, built to SPEC 0009 against the contracts in [`docs/components/registry/`](../../docs/components/registry/). The stack and the layering are ADR 0002; the version is the system's, in lockstep ([`ARCHITECTURE.md`](../../ARCHITECTURE.md) §9).
 
 **0.2.0 is an early integration release, authorized 2026-10-17.** The urgent
-starting-set contracts are reviewed one by one; Accordion and Accordion Header
-are now ready, while ten remain draft. All unfinished release acceptance,
+starting-set contracts are reviewed one by one; Accordion, Accordion Header,
+Alert Inline, Alert Popup, Alert Popup Timer, Progress Bar and Input Search are
+now ready, while five remain draft. All unfinished release acceptance,
 including Linux Chrome + Orca, incomplete axe review, visual/contrast coverage
 and Figma synchronization, gates [0.3.0](verification/0.3.0.md). Product proof
 and consumer materials move to 0.4.0. Automated measurements are scoped evidence,
@@ -220,11 +221,14 @@ Per SPEC 0009 §5, contract first: the entry's `api` is corrected to describe th
 The owner expanded the starting set on 2026-10-17 with `Accordion`, `AlertInline`,
 `AlertPopup`, `AlertPopupTimer`, `InputSearch`, `ProgressBar`, `Switcher`,
 `TabsHorizontal` and `TextArea`. `AccordionHeader`, `SwitcherItem` and `TabItem`
-are their compositional dependencies. The owner approved **Accordion** and
-**Accordion Header** as **ready** after their 2026-10-24 review. The other ten
-contracts remain **draft** and are available for early product integration;
+are their compositional dependencies. Component reviews marked **Accordion** and **Accordion Header** as **ready**
+on 2026-10-24, followed by **Alert Inline**, **Alert Popup**, **Alert Popup Timer**
+and **Progress Bar** on 2026-10-25. The owner also approved **Input Search**
+as **ready** on 2026-10-25 after its Input Text alignment and native clear
+review. The other five contracts remain **draft** and are available for early product integration;
 their API and design may change during review. Builds and examples do not
-promote readiness.
+promote readiness. The [alert and progress review](verification/alerts-progress-2026-10-25.md)
+records the documentation and DOM audit, fixes and outstanding release checks.
 
 Import components from `@stylos/ui` and the usual tokens/fonts. Each has an
 independent CSS export, for example `@stylos/ui/css/text-area.css`. Generated
@@ -297,16 +301,16 @@ accessibility checks.
 Alerts expose bindable `isOpen`, optional heading/content/actions, native close
 callbacks, and consumer-selected announcement urgency. Their host owns
 placement, stacking and focus after dismissal. Popup is non-modal. Timer takes
-`timerText` and `progressValue` from its host: the component does not start a clock,
+`duration` and `remainingTime` in seconds from its host: the component does not start a clock,
 dismiss automatically, or decide when undo expires. Only Timer exposes a separate
 Undo action and callback. Its counter is outside the
 live heading so second-by-second updates do not repeat the notification.
 
 Popup uses the current five-size Figma composition, including heading/h6
-through heading/h2 and matching-size action buttons. Its icon and close slots
-use the heading's line-height token as their height and centre the marks within
-that first line. A wrapping or hidden heading does not change those slot
-dimensions. The heading sits directly in the body; hiding it leaves no empty
+through heading/h2 and matching-size action buttons. Its decorative icon slot uses the heading's line-height token as its height.
+The native Close button centres on that first line with block margins, without
+an alignment wrapper; its square icon and focus geometry stay unchanged.
+A wrapping or hidden heading preserves this alignment. Popup uses elevation 4. The heading sits directly in the body; hiding it leaves no empty
 heading row or extra gap. Spacing and typography come from shared tokens.
 
 Inline shares Popup's five density presets through the same CSS size profile;
@@ -314,6 +318,27 @@ Inline shares Popup's five density presets through the same CSS size profile;
 shadow and default or semantic border from Figma. Primary and secondary buttons
 follow `size`.
 The heading is a direct body child, so no empty header row survives hiding it.
+
+Timer follows its own five-size profile from the current Figma design. It is a
+neutral level-4 notification with a required heading; the former `type` and
+`hasHeading` props are removed. `size` defaults to `extra small` and
+`hasCloseButton` to `false`. `duration` and `remainingTime` are numbers in seconds,
+both defaulting to 3. The remaining value clamps to 0–duration; the counter rounds
+up while the track follows the precise remaining fraction. `timerText` and
+`progressValue` are removed. Set `timeUnit="s"` or another localized suffix when
+needed; the default empty string adds no unit. Counter and Close footprints match Undo's
+24/32/40/48/56-unit height. The counter uses the subtle base surface, emphasis
+text and tabular lining figures. Padding and the gap before Progress Bar follow
+12/14/16/20/24; the counter/heading/Undo cluster has a separate 6/8/10/12/14 gap.
+Content follows the matching body-text size. Progress Bar stays 8 high, with its
+label hidden and outside the live heading. The cluster wrapper keeps the distinct
+Close spacing in every state; heading padding is applied directly to the text.
+The single **default** story is a user-started countdown with editable duration,
+Start, Pause/Resume and Reset. Controls configure the same component. There is no
+autoplay: expiry stays visible at 0, Undo stops the countdown, and Close dismisses
+only when clicked. The fixture owns elapsed time; the component owns no clock.
+The [implementation review](verification/alert-popup-timer-2026-10-25.md) records
+the Figma comparison and browser results.
 
 Progress Bar uses native `progress` with an 8-unit track, a 4-unit label gap and
 the shared `label/base/extra small` style. `value` accepts numeric strings with
@@ -352,6 +377,26 @@ attaches it automatically. Consumers of the independent HTML/CSS export
 import it from `@stylos/ui/behaviors/input-text`, attach it to
 `.stylos-input-text-field` and call its `destroy` method on removal.
 
+The plain component has four elements: its root, native Label, field container
+and input. The field container positions optional side parts directly; there
+is no shared adornments overlay or empty leading/trailing slot. The leading
+slot itself supplies the decorative snippet's optical overhang. A trailing
+group exists while suffix, validation or a trailing icon is present and keeps
+their common parent when other parts are toggled. These changes leave the
+native input in the same place in the DOM.
+
+The field container remains necessary for the local surface/focus effects;
+the outer root groups Label with that field. Icon and validation containers
+provide optical alignment, decorative semantics and the validation backdrop.
+Label's text is a bare text node; its optional spans are the required marker
+and supporting message. The [DOM review](verification/input-text-dom-2026-10-25.md)
+records element counts and geometry checks.
+
+Svelte attaches measurement only when side parts exist and refreshes it after
+their presence changes. Plain HTML consumers call the adapter's `update()`
+after adding or removing a side group. Existing groups resize automatically;
+`destroy()` disconnects observation and removes reserved-width overrides.
+
 ```svelte
 <script>
   let reference = $state("");
@@ -377,6 +422,49 @@ they are not action slots. Storybook offers Default followed by Icons
 playground with the registered icon set. Vertical trim stays off,
 matching all 140 Figma variants. `Label.htmlFor` and `additionalTextId`
 provide native associations without changing Label's CSS.
+
+### Input Search
+
+`InputSearch` follows Input Text's native field geometry, semantics and compact
+DOM. Both default to `size="medium"`, an empty value and no placeholder. The
+unfocused value uses ellipsis; focus exposes native horizontal text scrolling.
+The permanent Search icon is decorative. Submit or execute a query in the
+consumer's form or input handler; there is no configurable trailing icon.
+
+A nonempty editable value adds `ButtonInner` with Close before validation and
+Search. Its footprint is 12/14/16/18/20 across the five sizes; Search remains
+16/20/24/28/32. Clear commits an empty bound value, emits one bubbling `input`
+event followed by one `change`, and focuses the native input without submitting
+its form. Set `clearAccessibleName` for localization; its default is `Clear`
+followed by the field's label or accessible name. Read-only and disabled retain
+the value and omit Clear; a disabled fieldset also disables the native action.
+
+The right group is part of Search's common structure. Clear and Search use the
+button and SVG themselves for optical alignment, without extra slot wrappers.
+Optional leading content uses the same single measured slot as Input Text.
+Shared compact-field CSS keeps densities, side positioning and disabled
+colours consistent. Svelte attaches width measurement automatically. Plain
+HTML consumers use `inputTextBehavior` on `.stylos-input-search-field` and
+`clearSearchInput` from `@stylos/ui/behaviors/input-search` on the clear button's
+click, passing the native input. Call the measurement adapter's `update()` if
+adding or removing the leading group and `destroy()` when removing the field.
+
+```svelte
+<script>
+  let query = $state("");
+</script>
+
+<InputSearch name="query" labelText="Search products" bind:value={query}
+  clearAccessibleName="Clear search" />
+```
+
+The contract and generated Storybook documentation include these properties.
+Input Search is **ready**, approved by the owner on 2026-10-25. When migrating
+from its provisional API, remove `hasTrailingIcon` and `trailingIcon`. Use
+`size="extra small"` and `hasPlaceholder` explicitly to retain the former
+defaults; Input Text remains the option for a configurable trailing mark. The
+[Search verification record](verification/input-search-2026-10-25.md) records
+its focused checks.
 
 ### Button Icon
 
