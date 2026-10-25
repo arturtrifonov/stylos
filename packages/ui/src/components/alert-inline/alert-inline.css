@@ -1,1 +1,10 @@
-@import "../../behaviors/alert.css";
+@import "../../behaviors/alert-layout.css";
+
+.stylos-alert.stylos-alert-inline {
+  border-color: var(--stylos-color-border-default);
+  box-shadow: var(--_stylos-surface-shadow);
+}
+
+.stylos-alert-inline[data-type="warning"] { border-color: var(--stylos-color-border-warning); }
+.stylos-alert-inline[data-type="danger"] { border-color: var(--stylos-color-border-danger); }
+.stylos-alert-inline[data-type="success"] { border-color: var(--stylos-color-border-success); }

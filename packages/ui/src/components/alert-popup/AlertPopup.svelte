@@ -20,9 +20,7 @@
   aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={hasHeading ? titleId : undefined}>
   {#if hasIcon && icon}<span class="stylos-alert-icon" aria-hidden="true">{@render icon()}</span>{/if}
   <div class="stylos-alert-body">
-    <div class="stylos-alert-heading-row">
-      {#if hasHeading}<p class="stylos-alert-heading" id={titleId}>{headingText}</p>{/if}
-    </div>
+    {#if hasHeading}<p class="stylos-alert-heading" id={titleId}>{headingText}</p>{/if}
     {#if hasContent}<div class="stylos-alert-content">{@render children?.()}</div>{/if}
     {#if hasButtons}<div class="stylos-alert-actions"><Button size={size} tone="primary" labelText={primaryButtonText} onclick={onprimaryclick} /><Button size={size} variant="outline" tone="base" labelText={secondaryButtonText} onclick={onsecondaryclick} /></div>{/if}
   </div>

@@ -27,5 +27,5 @@
     </div>
     {#if hasContent}<div class="stylos-alert-content">{@render children?.()}</div>{/if}
   </div>
-  <div class="stylos-alert-timer-progress" aria-hidden="true"><ProgressBar {type} value={progressValue} hasLabel={false} hasIcon={false} /></div>
+  <div class="stylos-alert-timer-progress" aria-hidden="true"><ProgressBar value={progressValue} hasLabel={false} /></div>
 </section>

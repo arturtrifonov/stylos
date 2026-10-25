@@ -27,6 +27,23 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Changed
 
+- Simplify Progress Bar to match the updated Figma component: an 8-unit primary
+  track, optional compact label and continuously moving striped `value="unknown"`
+  treatment with a static reduced-motion alternative. Known completion follows
+  externally supplied values without an artificial transition duration.
+  Remove its type, icon and skeleton-state props; timer alerts reuse this API.
+  Add optional `labelWidth` with tabular numerals to keep percentage updates
+  from resizing the track, and explicitly constrain native track geometry.
+- Alert Inline accepts the same five `size` presets as Popup. Both variants
+  share one CSS sizing profile; Inline's Undo button follows the selected size
+  and remains independent of the heading and main actions. Match Inline's
+  updated base background, default border and elevation 1.
+- Refresh the Figma font collection and text-style record, including even
+  heading and code line heights. Components and content typography consume
+  the updated shared tokens under FND-TYPOGRAPHY-14.
+- Align Alert Popup's five sizes with the current Figma composition. Match
+  icon and close slots to the heading's first-line height and remove the
+  redundant heading row.
 - Accordion and Accordion Header are ready after the owner's component review;
   the other ten urgent starting-set contracts remain draft. Update the
   contracts, package guide, review evidence and generated workshop status.

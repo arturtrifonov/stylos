@@ -143,43 +143,48 @@ sizing_model:
   adjustable:
     horizontal: true
     vertical: false
-  intent: "Current Figma composition; Inline and Timer have one authored density, Popup has five. Width follows the host. Floating placement, stacking and lifetime belong to the consumer."
+  intent: "Five Popup densities; width follows the host and height hugs the content. Each row records the icon footprint and heading typography. The icon and close containers take the heading's single-line height and centre their marks within it, even when the title wraps or is hidden. Body text uses text/base at the matching size; actions use matching-size Buttons and Modal's button-gap profile. Floating placement, stacking and lifetime belong to the consumer."
   sizes:
     -
       size: "extra small"
-      padding_x: "gap/g-2_000"
-      padding_y: "gap/g-2_000"
-      gap: "gap/g-0_750"
-      font_size: "size/0_750"
-      line_height: "line height/text/0_750"
+      box: "size/s-2_500"
+      padding_x: "gap/g-1_500"
+      padding_y: "gap/g-1_500"
+      gap: "gap/g-1_000"
+      font_size: "size/1_125"
+      line_height: "line height/heading/1_125"
     -
       size: "small"
-      padding_x: "gap/g-2_250"
-      padding_y: "gap/g-2_250"
-      gap: "gap/g-0_875"
-      font_size: "size/0_875"
-      line_height: "line height/text/0_875"
+      box: "size/s-3_000"
+      padding_x: "gap/g-1_750"
+      padding_y: "gap/g-1_750"
+      gap: "gap/g-1_000"
+      font_size: "size/1_250"
+      line_height: "line height/heading/1_250"
     -
       size: "medium"
-      padding_x: "gap/g-2_500"
-      padding_y: "gap/g-2_500"
-      gap: "gap/g-1_000"
-      font_size: "size/1_000"
-      line_height: "line height/text/1_000"
+      box: "size/s-3_500"
+      padding_x: "gap/g-2_000"
+      padding_y: "gap/g-2_000"
+      gap: "gap/g-1_250"
+      font_size: "size/1_500"
+      line_height: "line height/heading/1_500"
     -
       size: "large"
-      padding_x: "gap/g-3_000"
-      padding_y: "gap/g-3_000"
+      box: "size/s-4_000"
+      padding_x: "gap/g-2_500"
+      padding_y: "gap/g-2_500"
       gap: "gap/g-1_250"
-      font_size: "size/1_125"
-      line_height: "line height/text/1_125"
+      font_size: "size/1_750"
+      line_height: "line height/heading/1_750"
     -
       size: "extra large"
-      padding_x: "gap/g-3_500"
-      padding_y: "gap/g-3_500"
+      box: "size/s-4_500"
+      padding_x: "gap/g-3_000"
+      padding_y: "gap/g-3_000"
       gap: "gap/g-1_500"
-      font_size: "size/1_250"
-      line_height: "line height/text/1_250"
+      font_size: "size/2_000"
+      line_height: "line height/heading/2_000"
 a11y:
   -
     status: "requires"
@@ -187,12 +192,12 @@ a11y:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "1820:140371"
-  last_verified: "2026-10-17"
+  last_verified: "2026-10-25"
 limitations:
   - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
   - "Popup is a notification surface, not a modal dialog; it neither traps focus nor implements an overlay queue."
-  - "Inline and Timer retain legacy Figma geometry. Existing Stylos Buttons and fonts replace their obsolete nested button/font definitions."
-notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
+  - "Timer retains legacy Figma geometry. Existing Stylos Buttons and fonts replace its obsolete nested button/font definitions."
+notes: "Owner-directed starting-set expansion, 2026-10-17. Popup geometry reviewed against the redesigned XS and remaining variants on 2026-10-25. Heading line heights follow FND-TYPOGRAPHY-14; the adjacent icon and close containers bind to the same token. This is not a Ready to publish assessment."
 children:
   - "Avatar"
   - "Badge"
@@ -240,7 +245,7 @@ children:
   - "Progress Bar"
 family: "Alert"
 figma_notes:
-  - "Figma title-case Show properties become canonical has properties. Info/Error map to default/danger. Unconfigured Icon placeholders are supplied by the consumer, never traced or substituted. Current geometry is a reference, not a claim that old Figma token aliases are approved."
+  - "The current Figma set uses canonical size/type and has properties. Heading styles run from heading/h6 through heading/h2; side containers match one heading line. Unconfigured Icon placeholders are supplied by the consumer, never traced or substituted."
 parents:
   - "Accordion"
   - "Bottom Sheet"

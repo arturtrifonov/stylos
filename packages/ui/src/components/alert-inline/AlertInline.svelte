@@ -5,7 +5,7 @@
   import Icon from "../icon/Icon.svelte";
 
   import type { AlertInlineProps } from "./props.ts";
-  let { type = "default", isOpen = $bindable(true), hasHeading = true, headingText = "Heading Text",
+  let { size = "extra small", type = "default", isOpen = $bindable(true), hasHeading = true, headingText = "Heading Text",
     hasContent = true, children, hasCloseButton = false, closeAccessibleName = "Close",
     announcement = "polite", onclose,
     hasIcon = true, icon, hasButtons = true, primaryButtonText = "Accept", secondaryButtonText = "Cancel", onprimaryclick, onsecondaryclick,
@@ -15,18 +15,16 @@
 </script>
 
 {#snippet closeIcon()}<Icon name="close" />{/snippet}
-<section class="stylos-alert stylos-alert-inline" data-type={type}  data-announcement={announcement}
+<section class="stylos-alert stylos-alert-inline" data-size={size} data-type={type} data-announcement={announcement}
   data-surface-layer="1" data-surface-attachment="in-layout"
   hidden={!isOpen} role={announcement === "off" ? undefined : announcement === "assertive" ? "alert" : "status"}
   aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={hasHeading ? titleId : undefined}>
   {#if hasIcon && icon}<span class="stylos-alert-icon" aria-hidden="true">{@render icon()}</span>{/if}
   <div class="stylos-alert-body">
-    <div class="stylos-alert-heading-row">
-      {#if hasHeading}<p class="stylos-alert-heading" id={titleId}>{headingText}</p>{/if}
-      {#if hasUndoButton}<Button size="extra small" variant="outline" tone="base" labelText={undoButtonText} onclick={onundoclick} />{/if}
-    </div>
+    {#if hasHeading}<p class="stylos-alert-heading" id={titleId}>{headingText}</p>{/if}
     {#if hasContent}<div class="stylos-alert-content">{@render children?.()}</div>{/if}
-    {#if hasButtons}<div class="stylos-alert-actions"><Button size={"small"} tone="primary" labelText={primaryButtonText} onclick={onprimaryclick} /><Button size={"small"} variant="outline" tone="base" labelText={secondaryButtonText} onclick={onsecondaryclick} /></div>{/if}
+    {#if hasButtons}<div class="stylos-alert-actions"><Button {size} tone="primary" labelText={primaryButtonText} onclick={onprimaryclick} /><Button {size} variant="outline" tone="base" labelText={secondaryButtonText} onclick={onsecondaryclick} /></div>{/if}
   </div>
+  {#if hasUndoButton}<Button {size} variant="outline" tone="base" labelText={undoButtonText} onclick={onundoclick} />{/if}
   {#if hasCloseButton}<span class="stylos-alert-close"><ButtonInner accessibleName={closeAccessibleName} icon={closeIcon} onclick={close} /></span>{/if}
 </section>

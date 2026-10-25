@@ -21,19 +21,27 @@ export function startingSetPreview(entry, props, { cls, attr, esc, icon, button 
     return `<section class="${cls}"${attr} aria-labelledby="${esc(headerId)}"><${headingTag} class="stylos-accordion-heading">${heading}</${headingTag}><div class="stylos-accordion-body" id="${esc(controls)}"${expanded ? ' aria-hidden="false"' : ' hidden inert aria-hidden="true"'}>${props["content slot"] ?? ""}</div></section>`;
   }
   if (entry.id === "Progress Bar") {
-    const numeric = Number(props.value);
+    const raw = String(props.value ?? "0").trim();
+    const unknown = raw === "unknown";
+    const numeric = Number(raw.replace(/%$/, ""));
     const value = Number.isFinite(numeric) ? Math.min(100, Math.max(0, numeric)) : 0;
-    const mark = { warning: "warning", danger: "error", success: "check_circle" }[props.type];
-    return `<div class="${cls}"${attr}><progress max="100"${props.state === "skeleton" ? "" : ` value="${value}"`} aria-label="${esc(props["accessible name"] || "Progress")}"></progress>${props.state === "skeleton" ? "" : mark && props["has icon"] ? `<span class="stylos-progress-icon" aria-hidden="true">${icon(mark)}</span>` : props["has label"] ? `<span class="stylos-progress-label">${esc(props["label text"] || String(value))}</span>` : ""}</div>`;
+    const label = props["label text"] || (unknown ? "" : String(value));
+    return `<div class="${cls}"${attr}><progress max="100"${unknown ? "" : ` value="${value}"`} aria-label="${esc(props["accessible name"] || "Progress Bar")}"${props["label text"] ? ` aria-valuetext="${esc(props["label text"])}"` : ""}></progress>${props["has label"] && label ? `<span class="stylos-progress-label" style="width: ${esc(props["label width"] || "auto")}" aria-hidden="true">${esc(label)}</span>` : ""}</div>`;
   }
   if (entry.id.startsWith("Alert ")) {
     const timer = entry.id === "Alert Popup Timer";
     const inline = entry.id === "Alert Inline";
     const close = props["has close button"] ? `<span class="stylos-alert-close"><button class="stylos-button-inner" type="button" aria-label="${esc(props["close accessible name"] || "Close")}"><span class="stylos-button-inner-icon">${icon("close")}</span></button></span>` : "";
-    const undo = props["has undo button"] ? button(props["undo button text"] || "Undo", "outline", "extra small") : "";
+    const undo = props["has undo button"] ? button(props["undo button text"] || "Undo", "outline", timer ? "extra small" : size) : "";
     const content = props["has content"] ? `<div class="stylos-alert-content">${props["content slot"] ?? ""}</div>` : "";
     const heading = props["has heading"] ? `<p class="stylos-alert-heading">${esc(props["heading text"] ?? "Heading Text")}</p>` : "";
-    return `<section class="stylos-alert ${cls}"${attr} data-surface-layer="${inline ? 1 : 6}" data-surface-attachment="${inline ? "in-layout" : "free"}"${props["is open"] === false ? " hidden" : ""}><div class="stylos-alert-body"><div class="stylos-alert-heading-row">${timer && props["has timer counter"] ? `<span class="stylos-alert-timer-count">${esc(props["timer text"])}</span>` : ""}${heading}${undo}${timer ? close : ""}</div>${content}${props["has buttons"] && !timer ? `<div class="stylos-alert-actions">${button(props["primary button text"] || "Accept", "base", inline ? "small" : size)}${button(props["secondary button text"] || "Cancel", "outline", inline ? "small" : size)}</div>` : ""}</div>${timer ? `<div class="stylos-alert-timer-progress"><div class="stylos-progress-bar"><progress max="100" value="${esc(props["progress value"] ?? "30")}"></progress></div></div>` : close}</section>`;
+    if (!timer) {
+      const actions = props["has buttons"] ? `<div class="stylos-alert-actions">${button(props["primary button text"] || "Accept", "base", size)}${button(props["secondary button text"] || "Cancel", "outline", size)}</div>` : "";
+      return `<section class="stylos-alert ${cls}"${attr} data-surface-layer="${inline ? 1 : 6}" data-surface-attachment="${inline ? "in-layout" : "free"}"${props["is open"] === false ? " hidden" : ""}><div class="stylos-alert-body">${heading}${content}${actions}</div>${undo}${close}</section>`;
+    }
+    const counter = props["has timer counter"] ? `<span class="stylos-alert-timer-count">${esc(props["timer text"])}</span>` : "";
+    const progress = startingSetPreview({ id: "Progress Bar" }, { value: props["progress value"] ?? "30", "has label": false }, { cls: "stylos-progress-bar", attr: "", esc, icon, button });
+    return `<section class="stylos-alert ${cls}"${attr} data-surface-layer="6" data-surface-attachment="free"${props["is open"] === false ? " hidden" : ""}><div class="stylos-alert-body"><div class="stylos-alert-heading-row">${counter}${heading}${undo}${close}</div>${content}</div><div class="stylos-alert-timer-progress" aria-hidden="true">${progress}</div></section>`;
   }
   const segment = (label, checked = false) => `<label class="stylos-switcher-item" data-size="${esc(size)}" data-tone="${esc(props.tone ?? "base")}" data-state="${esc(props.state ?? "default")}" data-is-selected="${checked}"><input type="radio" name="${id}" value="${esc(label)}"${checked ? " checked" : ""}${disabled}><span>${esc(label)}</span></label>`;
   if (entry.id === "Switcher Item") return segment(props["label text"] ?? "Option");

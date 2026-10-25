@@ -1,8 +1,8 @@
 # GENERATED FILE — do not edit. Written by tools/import-styles.mjs from a Plugin API read.
-# Read 2026-09-06 16:20Z from Stylos / Styles. Aliases into tokens/, never raw values.
+# Read 2026-10-25 11:59:58 UTC from Stylos / Styles. Aliases into tokens/, never raw values.
 collection: "text styles"
 source:
-  read: "2026-09-06 16:20Z"
+  read: "2026-10-25 11:59:58 UTC"
   figma_file: "Stylos / Styles"
   figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
 styles:
@@ -163,7 +163,6 @@ styles:
     "line height": "font/line height/heading/4_000"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
-    width: 110
   "heading/hl2":
     "font family": "font/family/display"
     "font weight": "font/weight/strong"
@@ -171,7 +170,6 @@ styles:
     "line height": "font/line height/heading/3_500"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
-    width: 110
   "heading/hl3":
     "font family": "font/family/display"
     "font weight": "font/weight/strong"
@@ -179,7 +177,6 @@ styles:
     "line height": "font/line height/heading/3_000"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
-    width: 110
   "heading/h1":
     "font family": "font/family/display"
     "font weight": "font/weight/strong"
@@ -187,7 +184,6 @@ styles:
     "line height": "font/line height/heading/2_500"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
-    width: 110
   "heading/h2":
     "font family": "font/family/display"
     "font weight": "font/weight/strong"
@@ -195,7 +191,6 @@ styles:
     "line height": "font/line height/heading/2_000"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
-    width: 110
   "heading/h3":
     "font family": "font/family/display"
     "font weight": "font/weight/strong"
@@ -203,7 +198,6 @@ styles:
     "line height": "font/line height/heading/1_750"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
-    width: 110
   "heading/h4":
     "font family": "font/family/display"
     "font weight": "font/weight/strong"
@@ -211,7 +205,6 @@ styles:
     "line height": "font/line height/heading/1_500"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
-    width: 110
   "heading/h5":
     "font family": "font/family/display"
     "font weight": "font/weight/strong"
@@ -219,7 +212,6 @@ styles:
     "line height": "font/line height/heading/1_250"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
-    width: 110
   "heading/h6":
     "font family": "font/family/display"
     "font weight": "font/weight/strong"
@@ -227,7 +219,6 @@ styles:
     "line height": "font/line height/heading/1_125"
     "letter spacing": "font/letter spacing/style/normal"
     "text case": "original"
-    width: 110
   "code/small":
     "font family": "font/family/code"
     "font weight": "font/weight/base"
