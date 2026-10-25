@@ -11,7 +11,7 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const entries = loadRegistry(root);
 const additions = ["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Input Search", "Progress Bar", "Switcher", "Switcher Item", "Tabs Horizontal", "Tab Item", "Text Area"];
 
-const reviewedReady = new Set(["Accordion", "Accordion Header"]);
+const reviewedReady = new Set(["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Progress Bar"]);
 
 test("urgent product components keep their reviewed status, complete contracts and one core wave", () => {
   const plan = readPlan(root);
@@ -74,6 +74,42 @@ test("alert previews share the reviewed heading anatomy and matching-size action
   assert.equal(read("stylos-alert-heading"), undefined);
   assert.equal(read("stylos-alert-actions"), undefined);
   assert.equal(read("stylos-button-outline"), undefined);
+});
+
+test("timer previews compose matching-size controls and controlled progress outside the heading", () => {
+  const entry = entries.find(entry => entry.id === "Alert Popup Timer");
+  for (const size of ["extra small", "small", "medium", "large", "extra large"]) {
+    const read = markupReader(sampleHtml(entry, { ...defaultAssignment(entry), size,
+      "has close button": true, "has content": true, duration: 10, "remaining time": 7 }));
+    assert.equal(read("stylos-alert-popup-timer", "data-surface-layer"), "4");
+    const header = read("stylos-alert-timer-header");
+    assert.equal(read("stylos-alert-heading").parentNode, header);
+    assert.equal(read("stylos-alert-timer-count").parentNode, header);
+    assert.equal(read("stylos-button-outline").parentNode, header);
+    assert.equal(read("stylos-button-outline", "data-size"), size);
+    assert.equal(read("stylos-button-inner").parentNode, read("stylos-alert-heading-row"));
+    assert.equal(read("stylos-alert-timer-progress", "aria-hidden"), "true");
+    assert.match(sampleHtml(entry, { ...defaultAssignment(entry), size, duration: 10, "remaining time": 7 }), /<progress[^>]* value="70"/);
+  }
+  const minimal = markupReader(sampleHtml(entry, { ...defaultAssignment(entry),
+    "has timer counter": false, "has undo button": false }));
+  assert.ok(minimal("stylos-alert-heading"));
+  assert.equal(minimal("stylos-alert-timer-count"), undefined);
+  assert.equal(minimal("stylos-button-outline"), undefined);
+});
+
+test("timer count and progress derive from numeric remaining seconds", () => {
+  const entry = entries.find(entry => entry.id === "Alert Popup Timer");
+  for (const [remaining, percent, count] of [[7.2,72,8],[0,0,0],[-1,0,0],[12,100,10]]) {
+    const html = sampleHtml(entry, { ...defaultAssignment(entry), duration: 10, "remaining time": remaining });
+    assert.match(html, new RegExp(`<progress[^>]* value="${percent}"`));
+    assert.match(html, new RegExp(`class="stylos-alert-timer-count">${count}</span>`));
+  }
+  const unit = sampleHtml(entry, { ...defaultAssignment(entry), "time unit": "s" });
+  assert.match(unit, /class="stylos-alert-timer-count">3s<\/span>/);
+  const zero = sampleHtml(entry, { ...defaultAssignment(entry), duration: 0 });
+  assert.match(zero, /<progress[^>]* value="0"/);
+  assert.match(zero, /class="stylos-alert-timer-count">0<\/span>/);
 });
 
 test("every starting-set independent preview exposes its component root", () => {

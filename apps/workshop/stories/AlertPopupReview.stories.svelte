@@ -21,7 +21,7 @@
     const heading = root.querySelector<HTMLElement>(".stylos-alert-heading")!;
     const line = parseFloat(getComputedStyle(heading).lineHeight);
     await expect(line % 2).toBe(0);
-    for (const slot of root.querySelectorAll<HTMLElement>(".stylos-alert-icon, .stylos-alert-close")) {
+    for (const slot of root.querySelectorAll<HTMLElement>(".stylos-alert-icon")) {
       const box = slot.getBoundingClientRect();
       const icon = slot.querySelector("svg")!.getBoundingClientRect();
       await expect(box.height).toBeCloseTo(line, 1);
@@ -29,6 +29,10 @@
       await expect(icon.top - box.top).toBeCloseTo(box.bottom - icon.bottom, 1);
     }
     await expect(root.querySelector(".stylos-alert-heading-row")).toBeNull();
+    const close = root.querySelector<HTMLButtonElement>(":scope > .stylos-button-inner")!;
+    const closeBox = close.getBoundingClientRect();
+    await expect(closeBox.width).toBeCloseTo(closeBox.height, 1);
+    await expect(closeBox.top + closeBox.height / 2).toBeCloseTo(heading.getBoundingClientRect().top + line / 2, 1);
     await expect(root.scrollWidth).toBeLessThanOrEqual(root.clientWidth);
   }
 }}>

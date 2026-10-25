@@ -24,5 +24,5 @@
     {#if hasContent}<div class="stylos-alert-content">{@render children?.()}</div>{/if}
     {#if hasButtons}<div class="stylos-alert-actions"><Button {size} tone="primary" labelText={primaryButtonText} onclick={onprimaryclick} /><Button {size} variant="outline" tone="base" labelText={secondaryButtonText} onclick={onsecondaryclick} /></div>{/if}
   </div>
-  {#if hasCloseButton}<span class="stylos-alert-close"><ButtonInner accessibleName={closeAccessibleName} icon={closeIcon} onclick={close} /></span>{/if}
+  {#if hasCloseButton}<ButtonInner accessibleName={closeAccessibleName} icon={closeIcon} onclick={close} />{/if}
 </section>

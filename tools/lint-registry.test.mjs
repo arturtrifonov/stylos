@@ -384,3 +384,10 @@ test("native callbacks reject unimplemented events and serialized defaults", () 
     assert.ok(checkRegistry([entry("Button Base",{api:[property]})]).errors.some(error => /native event|event callback/.test(error)));
   }
 });
+
+test("numeric properties reject formatted strings and non-finite defaults", () => {
+  for (const value of ["3s", Infinity, NaN]) {
+    const result = checkRegistry([entry("Timer", { api: [{name:"duration",kind:"number",default:value}] })]);
+    assert.ok(result.errors.some(message => message.includes("finite number")));
+  }
+});

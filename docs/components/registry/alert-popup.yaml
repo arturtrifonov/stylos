@@ -1,11 +1,11 @@
 id: "Alert Popup"
 name: "Alert Popup"
 level: "object"
-role: "trigger"
-status: "draft"
+role: "output"
+status: "ready"
 html: "<section>Notification and actions</section>"
 summary: "A floating notification."
-purpose: "Give product notifications a shared visual and interaction contract while their designs remain provisional."
+purpose: "Present non-modal floating notifications and optional actions."
 use_when:
   - "A floating notification."
 do_not_use_when:
@@ -194,10 +194,9 @@ figma:
   node_id: "1820:140371"
   last_verified: "2026-10-25"
 limitations:
-  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+  - "Component review completed on 2026-10-25; release-wide accessibility and publication acceptance remain tracked in packages/ui/verification/0.3.0.md."
   - "Popup is a notification surface, not a modal dialog; it neither traps focus nor implements an overlay queue."
-  - "Timer retains legacy Figma geometry. Existing Stylos Buttons and fonts replace its obsolete nested button/font definitions."
-notes: "Owner-directed starting-set expansion, 2026-10-17. Popup geometry reviewed against the redesigned XS and remaining variants on 2026-10-25. Heading line heights follow FND-TYPOGRAPHY-14; the adjacent icon and close containers bind to the same token. This is not a Ready to publish assessment."
+notes: "Owner-directed starting-set expansion, 2026-10-17. Popup geometry reviewed against the redesigned XS and remaining variants on 2026-10-25. The surface uses elevation 4, matching Figma and FND-LAYERS-01. Heading line heights follow FND-TYPOGRAPHY-14; the adjacent icon and close containers bind to the same token. Reviewed for component readiness on 2026-10-25; release-wide acceptance remains separate."
 children:
   - "Avatar"
   - "Badge"

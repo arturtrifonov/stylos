@@ -114,3 +114,8 @@ test("window actions retain native click events and dialog closing retains Event
   }
   assert.equal(fieldFor({ name: "onclose", kind: "event" }).type, "(event: Event) => void");
 });
+
+test("numeric time remains a number rather than formatted copy", () => {
+  const result = renderProps({ id: "Timer", api: [{name:"remaining time",kind:"number",default:3}] });
+  assert.match(result, /remainingTime\?: number;/);
+});

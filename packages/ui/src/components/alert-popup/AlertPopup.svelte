@@ -15,7 +15,7 @@
 
 {#snippet closeIcon()}<Icon name="close" />{/snippet}
 <section class="stylos-alert stylos-alert-popup" data-type={type} data-size={size} data-announcement={announcement}
-  data-surface-layer="6" data-surface-attachment="free"
+  data-surface-layer="4" data-surface-attachment="free"
   hidden={!isOpen} role={announcement === "off" ? undefined : announcement === "assertive" ? "alert" : "status"}
   aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={hasHeading ? titleId : undefined}>
   {#if hasIcon && icon}<span class="stylos-alert-icon" aria-hidden="true">{@render icon()}</span>{/if}
@@ -24,5 +24,5 @@
     {#if hasContent}<div class="stylos-alert-content">{@render children?.()}</div>{/if}
     {#if hasButtons}<div class="stylos-alert-actions"><Button size={size} tone="primary" labelText={primaryButtonText} onclick={onprimaryclick} /><Button size={size} variant="outline" tone="base" labelText={secondaryButtonText} onclick={onsecondaryclick} /></div>{/if}
   </div>
-  {#if hasCloseButton}<span class="stylos-alert-close"><ButtonInner accessibleName={closeAccessibleName} icon={closeIcon} onclick={close} /></span>{/if}
+  {#if hasCloseButton}<ButtonInner accessibleName={closeAccessibleName} icon={closeIcon} onclick={close} />{/if}
 </section>
