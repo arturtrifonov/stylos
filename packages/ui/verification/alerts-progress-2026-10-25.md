@@ -78,4 +78,6 @@ This read-back verified descriptions, public variant sets and alert elevation;
 it was not a fresh exhaustive Figma component-integrity or naming-cleanup pass.
 Those authoring checks and library publication remain part of Figma release
 acceptance. Historical import.ready flags are unchanged and do not represent
-current readiness. Six urgent starting-set contracts remain draft.
+current readiness. At this review, six urgent starting-set contracts remained
+draft. The later [Input Search review](input-search-2026-10-25.md) promotes one
+more; current counts are maintained in the registry and release checklist.

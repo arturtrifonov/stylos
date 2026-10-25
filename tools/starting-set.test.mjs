@@ -11,7 +11,7 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const entries = loadRegistry(root);
 const additions = ["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Input Search", "Progress Bar", "Switcher", "Switcher Item", "Tabs Horizontal", "Tab Item", "Text Area"];
 
-const reviewedReady = new Set(["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Progress Bar"]);
+const reviewedReady = new Set(["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Input Search", "Progress Bar"]);
 
 test("urgent product components keep their reviewed status, complete contracts and one core wave", () => {
   const plan = readPlan(root);

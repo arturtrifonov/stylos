@@ -1,4 +1,34 @@
-@import "../../behaviors/field.css";
+@import "../../behaviors/compact-field.css";
+@import "../button-inner/button-inner.css";
 
-/* One configured search mark; no browser-specific duplicate cancel action. */
+/* Search owns one fixed mark; the native browser cancel action is replaced. */
 .stylos-input-search input::-webkit-search-cancel-button { appearance: none; }
+
+/* Before measurement, reserve the known icon footprints without extra slots. */
+.stylos-input-search .stylos-input-search-field {
+  --_stylos-input-trailing-reserve: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical) + var(--_stylos-input-gap) + var(--_stylos-search-clear-reserve, 0rem) + var(--_stylos-search-validation-reserve, 0rem));
+}
+
+.stylos-input-search-field:has(> .stylos-input-search-trailing > .stylos-button-inner) {
+  --_stylos-search-clear-reserve: calc(var(--_stylos-input-validation-size) - var(--_stylos-input-optical) + var(--_stylos-input-gap));
+}
+
+.stylos-input-search-field:has(.stylos-input-search-validation) {
+  --_stylos-search-validation-reserve: calc(var(--_stylos-input-validation-size) - var(--_stylos-input-optical) + var(--_stylos-input-gap));
+}
+
+/* The known SVG and native button supply their own optical layout boxes. */
+.stylos-input-search-trailing > .stylos-icon {
+  --stylos-icon-footprint: var(--_stylos-input-icon-size);
+  flex: none;
+  margin-inline-end: calc(-1 * var(--_stylos-input-optical));
+}
+
+.stylos-input-search-trailing > .stylos-button-inner {
+  --stylos-button-inner-footprint: var(--_stylos-input-validation-size);
+  --stylos-button-inner-color: var(--stylos-color-text-base);
+  margin-inline-end: calc(-1 * var(--_stylos-input-optical));
+  pointer-events: auto;
+}
+
+.stylos-input-search-field:has(> input:disabled) .stylos-button-inner { display: none; }

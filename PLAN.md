@@ -25,6 +25,13 @@ Header as ready after reviewing their code and Figma representation. Ten urgent
 contracts remain draft and will be reviewed individually. This promotion does
 not close the deferred 0.3.0 acceptance.
 
+**Component review, 2026-10-25:** Alert Inline, Alert Popup, Alert Popup Timer,
+Progress Bar and Input Search are also approved as ready. Input Search follows
+the reviewed Input Text geometry and adds its permanent Search mark and native
+clear action. Five urgent contracts remain draft. Evidence and outstanding
+release checks are recorded in
+[deferred acceptance](packages/ui/verification/0.3.0.md).
+
 The release ladder now separates early integration, acceptance and product proof.
 
 | Tag | The decision it makes | Cut at |

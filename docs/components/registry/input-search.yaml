@@ -1,5 +1,6 @@
 id: "Input Search"
 name: "Input Search"
+family: "Input"
 level: "object"
 role: "input"
 flow_behavior:
@@ -29,14 +30,14 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
+notes: "Aligned with Input Text and the reviewed Figma variants on 2026-10-25. The owner approved component readiness on 2026-10-25 after the compact DOM, native clear action, five sizes and form semantics were reviewed. Release-wide accessibility acceptance remains separate."
 import:
   batch: 1
   ready: true
-status: "draft"
-html: "<label><input type=\"search\"></label>"
+status: "ready"
+html: "<label>Label text <span>Additional text</span></label><input type=\"search\"><button type=\"button\">Clear</button>"
 summary: "A single-line search query field with a persistent label."
-purpose: "Provide the product with a native search field now, reusing Input Text density, field effects and form semantics."
+purpose: "A native search input with Input Text sizing, defaults, ellipsis, field effects and form semantics. The search icon is always visible; filled editable fields include a local clear button."
 use_when:
   - "A single-line search query field with a persistent label."
 do_not_use_when:
@@ -47,7 +48,7 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
+    default: "medium"
     description: "Field height, padding, text and icon sizes. Width belongs to the consumer."
     values:
       -
@@ -116,7 +117,7 @@ api:
   -
     name: "has placeholder"
     kind: "boolean"
-    default: true
+    default: false
     description: "Enables the native placeholder. A hint in the supporting line remains visible while typing."
     controls:
       - "placeholder text"
@@ -138,17 +139,9 @@ api:
     svelte_type: "snippet"
     description: "Decorative snippet before the value, normally Icon."
   -
-    name: "has trailing icon"
-    kind: "boolean"
-    default: true
-    description: "Shows the supplied trailing decorative mark."
-    controls:
-      - "trailing icon"
-  -
-    name: "trailing icon"
-    kind: "instance"
-    svelte_type: "snippet"
-    description: "Decorative snippet after validation. Not an action slot."
+    name: "clear accessible name"
+    kind: "text"
+    description: "Accessible name of the clear button, for localization. Defaults to Clear followed by the field label or accessible name. The button appears only for a nonempty editable value; it clears value, emits input then change, and returns focus to the input without submitting the form."
   -
     name: "has suffix text"
     kind: "boolean"
@@ -197,18 +190,18 @@ api:
   -
     name: "oninput"
     kind: "event"
-    description: "Native input event; value binding is already updated when the callback runs."
+    description: "Native input event; value binding is already updated when the callback runs. Clearing emits one bubbling input event with an empty value."
   -
     name: "onchange"
     kind: "event"
-    description: "Native change event when the edited value is committed."
+    description: "Native change event when the edited value is committed. Clearing commits the empty value with one bubbling change event after input."
 sizing_model:
   horizontal: "fixed"
   vertical: "hug"
   adjustable:
     horizontal: true
     vertical: false
-  intent: "Same five field heights and text/icon geometry as Input Text. Width belongs to the consumer."
+  intent: "Same five field heights and text/icon geometry as Input Text. Clear uses the validation_icon footprint for its density; Search uses icon. Width follows the parent layout and has no component width token. The complete value remains available: ellipsis applies outside focus and the native input scrolls while editing."
   sizes:
     -
       size: "extra small"
@@ -293,13 +286,20 @@ sizing_model:
 a11y:
   -
     status: "requires"
-    note: "Supply meaningful names and content. Keyboard and native semantics are implemented, but manual Chrome/Orca evaluation and contrast review are pending."
+    note: "Supply an associated visible label or, with has label false, label ids or accessible name. Placeholder text is optional guidance and never supplies the accessible name."
+  -
+    status: "requires"
+    note: "Localize clear accessible name when needed. Search and Close drawings are decorative; the native clear button carries the action name and is keyboard reachable while available."
+  -
+    status: "requires"
+    note: "Supply a meaningful validation message. Error alone sets aria-invalid; error and warning expose their supporting text through aria-describedby. Read-only and disabled suppress outcomes and Clear while retaining the value."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4833:15163"
-  last_verified: "2026-10-17"
+  last_verified: "2026-10-25"
 limitations:
-  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+  - "Whole-release Chrome/Orca, contrast, two-theme visual and accessibility acceptance remain in packages/ui/verification/0.3.0.md; component readiness does not close that release gate."
   - "Search execution belongs to the enclosing form or oninput/onchange consumer. The trailing search mark is decorative."
+  - "Migration from the provisional API: remove has trailing icon and trailing icon; Search is permanent. To retain the former defaults, set size to extra small and has placeholder to true explicitly. Use Input Text when the trailing decorative mark needs to be configurable."
 figma_notes:
-  - "Figma input text becomes bindable value; is filled follows the value; hover/focus follow the browser. The default trailing mark is search. Optional additional text inside the Figma field maps to suffix text; Label supporting text remains additional text in the web API. No result popup, filtering, debounce, submit action or clear action is invented."
+  - "Figma input text becomes bindable value; is filled follows the value; hover/focus follow the browser. The permanent trailing Search mark is decorative and cannot be hidden or replaced. Button Inner with Close appears before validation and Search for a filled editable value; its footprint follows validation size (12/14/16/18/20 px). Optional suffix text remains distinct from Label supporting text. No result popup, filtering, debounce or submit action belongs to this component."

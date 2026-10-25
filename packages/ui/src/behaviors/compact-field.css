@@ -1,0 +1,38 @@
+@import "./field.css";
+
+/* The existing field positions its side parts; no overlay wrapper is needed. */
+:is(.stylos-input-text-field, .stylos-input-search-field) { z-index: 0; }
+
+/* One slot both measures the leading mark and supplies its optical overhang. */
+:is(.stylos-input-text-leading, .stylos-input-search-leading) {
+  --stylos-icon-footprint: var(--_stylos-input-icon-size);
+  position: absolute;
+  inset-inline-start: var(--_stylos-input-padding);
+  top: calc((100% - var(--_stylos-input-icon-size)) / 2);
+  width: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical));
+  height: var(--_stylos-input-icon-size);
+  color: var(--stylos-color-text-base);
+  pointer-events: none;
+}
+
+:is(.stylos-input-text-leading, .stylos-input-search-leading) > * {
+  position: absolute;
+  top: 0;
+  inset-inline-end: 0;
+  width: var(--_stylos-input-icon-size);
+  height: var(--_stylos-input-icon-size);
+}
+
+:is(.stylos-input-text-trailing, .stylos-input-search-trailing) {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: var(--_stylos-input-padding);
+  color: var(--stylos-color-text-base);
+  pointer-events: none;
+}
+
+/* The slots inherit disabled colour even without the old overlay container. */
+:is(.stylos-input-text-field, .stylos-input-search-field):has(> input:disabled)
+  > :is(.stylos-input-text-leading, .stylos-input-text-trailing, .stylos-input-search-leading, .stylos-input-search-trailing) {
+  color: var(--stylos-color-text-disabled);
+}

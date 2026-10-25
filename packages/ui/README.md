@@ -4,8 +4,8 @@ The Svelte 5 component package, built to SPEC 0009 against the contracts in [`do
 
 **0.2.0 is an early integration release, authorized 2026-10-17.** The urgent
 starting-set contracts are reviewed one by one; Accordion, Accordion Header,
-Alert Inline, Alert Popup, Alert Popup Timer and Progress Bar are now ready,
-while six remain draft. All unfinished release acceptance,
+Alert Inline, Alert Popup, Alert Popup Timer, Progress Bar and Input Search are
+now ready, while five remain draft. All unfinished release acceptance,
 including Linux Chrome + Orca, incomplete axe review, visual/contrast coverage
 and Figma synchronization, gates [0.3.0](verification/0.3.0.md). Product proof
 and consumer materials move to 0.4.0. Automated measurements are scoped evidence,
@@ -223,7 +223,9 @@ The owner expanded the starting set on 2026-10-17 with `Accordion`, `AlertInline
 `TabsHorizontal` and `TextArea`. `AccordionHeader`, `SwitcherItem` and `TabItem`
 are their compositional dependencies. Component reviews marked **Accordion** and **Accordion Header** as **ready**
 on 2026-10-24, followed by **Alert Inline**, **Alert Popup**, **Alert Popup Timer**
-and **Progress Bar** on 2026-10-25. The other six contracts remain **draft** and are available for early product integration;
+and **Progress Bar** on 2026-10-25. The owner also approved **Input Search**
+as **ready** on 2026-10-25 after its Input Text alignment and native clear
+review. The other five contracts remain **draft** and are available for early product integration;
 their API and design may change during review. Builds and examples do not
 promote readiness. The [alert and progress review](verification/alerts-progress-2026-10-25.md)
 records the documentation and DOM audit, fixes and outstanding release checks.
@@ -375,6 +377,26 @@ attaches it automatically. Consumers of the independent HTML/CSS export
 import it from `@stylos/ui/behaviors/input-text`, attach it to
 `.stylos-input-text-field` and call its `destroy` method on removal.
 
+The plain component has four elements: its root, native Label, field container
+and input. The field container positions optional side parts directly; there
+is no shared adornments overlay or empty leading/trailing slot. The leading
+slot itself supplies the decorative snippet's optical overhang. A trailing
+group exists while suffix, validation or a trailing icon is present and keeps
+their common parent when other parts are toggled. These changes leave the
+native input in the same place in the DOM.
+
+The field container remains necessary for the local surface/focus effects;
+the outer root groups Label with that field. Icon and validation containers
+provide optical alignment, decorative semantics and the validation backdrop.
+Label's text is a bare text node; its optional spans are the required marker
+and supporting message. The [DOM review](verification/input-text-dom-2026-10-25.md)
+records element counts and geometry checks.
+
+Svelte attaches measurement only when side parts exist and refreshes it after
+their presence changes. Plain HTML consumers call the adapter's `update()`
+after adding or removing a side group. Existing groups resize automatically;
+`destroy()` disconnects observation and removes reserved-width overrides.
+
 ```svelte
 <script>
   let reference = $state("");
@@ -400,6 +422,49 @@ they are not action slots. Storybook offers Default followed by Icons
 playground with the registered icon set. Vertical trim stays off,
 matching all 140 Figma variants. `Label.htmlFor` and `additionalTextId`
 provide native associations without changing Label's CSS.
+
+### Input Search
+
+`InputSearch` follows Input Text's native field geometry, semantics and compact
+DOM. Both default to `size="medium"`, an empty value and no placeholder. The
+unfocused value uses ellipsis; focus exposes native horizontal text scrolling.
+The permanent Search icon is decorative. Submit or execute a query in the
+consumer's form or input handler; there is no configurable trailing icon.
+
+A nonempty editable value adds `ButtonInner` with Close before validation and
+Search. Its footprint is 12/14/16/18/20 across the five sizes; Search remains
+16/20/24/28/32. Clear commits an empty bound value, emits one bubbling `input`
+event followed by one `change`, and focuses the native input without submitting
+its form. Set `clearAccessibleName` for localization; its default is `Clear`
+followed by the field's label or accessible name. Read-only and disabled retain
+the value and omit Clear; a disabled fieldset also disables the native action.
+
+The right group is part of Search's common structure. Clear and Search use the
+button and SVG themselves for optical alignment, without extra slot wrappers.
+Optional leading content uses the same single measured slot as Input Text.
+Shared compact-field CSS keeps densities, side positioning and disabled
+colours consistent. Svelte attaches width measurement automatically. Plain
+HTML consumers use `inputTextBehavior` on `.stylos-input-search-field` and
+`clearSearchInput` from `@stylos/ui/behaviors/input-search` on the clear button's
+click, passing the native input. Call the measurement adapter's `update()` if
+adding or removing the leading group and `destroy()` when removing the field.
+
+```svelte
+<script>
+  let query = $state("");
+</script>
+
+<InputSearch name="query" labelText="Search products" bind:value={query}
+  clearAccessibleName="Clear search" />
+```
+
+The contract and generated Storybook documentation include these properties.
+Input Search is **ready**, approved by the owner on 2026-10-25. When migrating
+from its provisional API, remove `hasTrailingIcon` and `trailingIcon`. Use
+`size="extra small"` and `hasPlaceholder` explicitly to retain the former
+defaults; Input Text remains the option for a configurable trailing mark. The
+[Search verification record](verification/input-search-2026-10-25.md) records
+its focused checks.
 
 ### Button Icon
 

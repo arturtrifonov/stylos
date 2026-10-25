@@ -27,6 +27,24 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Changed
 
+- Mark Input Search ready after owner review of its Input Text alignment,
+  compact DOM, native clear action and five-size geometry. Update its contract,
+  accessibility conditions, provisional API migration notes and readiness
+  documentation; five urgent starting-set contracts remain draft.
+
+- Align Input Search with Input Text: medium size and no placeholder by
+  default, shared compact field structure and styles, native ellipsis, a
+  permanent Search icon, and Button Inner clear action for filled editable
+  values. Clear updates binding, emits input/change and restores focus.
+  Remove the draft-only configurable trailing icon props; document the new
+  behaviour and refresh HTML previews and the interactive Storybook example.
+
+- Simplify Input Text's DOM: remove the shared adornments overlay, merge the
+  leading icon's two containers, and omit absent side groups. A plain labelled
+  field uses four elements instead of seven. Keep the full native input hit
+  area, optical geometry, descriptions and focus effects; refresh and clean up
+  reserved text padding when optional parts mount or unmount.
+
 - Mark Alert Inline, Alert Popup, Alert Popup Timer and Progress Bar ready after
   component review; keep release-wide accessibility and publication gates open.
   Remove redundant Close wrappers from all three alerts and correct Popup's
