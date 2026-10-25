@@ -70,11 +70,10 @@ test("alert previews share the reviewed heading anatomy and matching-size action
   }
   const inline = entries.find(entry => entry.id === "Alert Inline");
   const read = markupReader(sampleHtml(inline, { ...defaultAssignment(inline), size: "large",
-    "has heading": false, "has buttons": false, "has undo button": true }));
+    "has heading": false, "has buttons": false }));
   assert.equal(read("stylos-alert-heading"), undefined);
   assert.equal(read("stylos-alert-actions"), undefined);
-  assert.equal(read("stylos-button-outline").parentNode, read("stylos-alert-inline"));
-  assert.equal(read("stylos-button-outline", "data-size"), "large");
+  assert.equal(read("stylos-button-outline"), undefined);
 });
 
 test("every starting-set independent preview exposes its component root", () => {

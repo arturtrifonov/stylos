@@ -35,8 +35,8 @@ All notable changes to the Stylos Design System project (foundations, components
   Add optional `labelWidth` with tabular numerals to keep percentage updates
   from resizing the track, and explicitly constrain native track geometry.
 - Alert Inline accepts the same five `size` presets as Popup. Both variants
-  share one CSS sizing profile; Inline's Undo button follows the selected size
-  and remains independent of the heading and main actions. Match Inline's
+  share one CSS sizing profile, including matching-size primary and secondary
+  actions. Remove Inline's unsupported Undo props and action. Match Inline's
   updated base background, default border and elevation 1.
 - Refresh the Figma font collection and text-style record, including even
   heading and code line heights. Components and content typography consume
