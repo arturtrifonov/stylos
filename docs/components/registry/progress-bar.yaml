@@ -4,13 +4,6 @@ level: "object"
 role: "content"
 flow_behavior:
   - "fill"
-children:
-  - "Badge"
-  - "Button Inner"
-  - "Icon"
-  - "Indicator Status"
-  - "Indicator Special"
-  - "Loader"
 parents:
   - "Accordion"
   - "Alert Inline"
@@ -24,7 +17,7 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
+notes: "Owner-directed starting-set expansion, 2026-10-17. Updated to the simplified Figma component on 2026-10-25; this is not a Ready to publish assessment."
 import:
   batch: 2
   ready: false
@@ -40,55 +33,46 @@ do_not_use_when:
     instead: "Indicator Status"
 api:
   -
-    name: "type"
-    kind: "variant"
-    description: "Semantic notification type. Legacy Figma Info maps to default and Error maps to danger."
-    default: "default"
-    values:
-      -
-        value: "default"
-      -
-        value: "warning"
-      -
-        value: "danger"
-      -
-        value: "success"
-  -
-    name: "state"
-    kind: "variant"
-    description: "Static exposes a determinate value; skeleton is indeterminate and does not claim a percentage."
-    default: "static"
-    values:
-      -
-        value: "static"
-      -
-        value: "skeleton"
-  -
     name: "value"
     kind: "string"
-    description: "Numeric percentage from 0 to 100; invalid values clamp to 0."
+    description: "Completion from 0 to 100, with an optional trailing percent sign; unknown is indeterminate. Finite values clamp to the range; invalid numbers become 0."
     default: "0"
+    values:
+      -
+        value: "0"
+      -
+        value: "37.5"
+      -
+        value: "100%"
+      -
+        value: "unknown"
   -
     name: "has label"
     kind: "boolean"
-    description: "Show the derived percentage number or supplied label."
+    description: "Show the derived number or supplied label. Unknown has no numeric fallback."
     default: true
     controls:
       - "label text"
+      - "label width"
   -
     name: "label text"
     kind: "text"
-    description: "Optional visible label override; empty derives the numeric value."
+    description: "Optional label override. Empty derives the clamped number; unknown stays unlabelled unless text is supplied."
     default: ""
   -
-    name: "has icon"
-    kind: "boolean"
-    description: "Show a decorative semantic icon for warning, danger or success."
-    default: true
+    name: "label width"
+    kind: "string"
+    description: "CSS width reserved for the optional label. Auto hugs its text; use a width such as 5ch for integer percentages 0%–100% so updates do not resize the track. Reserve enough space for the supplied text."
+    default: "auto"
+    values:
+      -
+        value: "auto"
+      -
+        value: "5ch"
   -
     name: "accessible name"
     kind: "text"
-    description: "Accessible name describing the operation being measured."
+    description: "Accessible name describing the operation being measured, independently of the visible label."
     default: "Progress Bar"
 sizing_model:
   horizontal: "fill"
@@ -96,7 +80,10 @@ sizing_model:
   adjustable:
     horizontal: true
     vertical: false
-  intent: "One authored density: fixed thin track and a compact label or semantic mark; width belongs to the consumer."
+  intent: "One authored density: an 8-unit track, 2-unit radius, 4-unit label gap and label/base/extra small typography. The label is vertically centred and may extend above and below the thin track. Width follows the host; the component does not shrink its fixed height in a flex parent. Label width defaults to auto; a fixed CSS label width reserves space independently of the current text. Numeric labels use tabular figures and align to the end. Unknown uses a repeating 12-unit diagonal primary/subtle-primary tile and never implies numerical completion."
+motion:
+  loop: true
+  intent: "Owner review, 2026-10-25: known completion follows externally supplied value immediately, without a component clock, fixed-duration interpolation or easing. The external producer determines elapsed time and update cadence. Unknown moves its diagonal stripes continuously by one tile per motion/duration/cycle using motion/easing/linear, only while value is unknown. Reduced motion keeps the static stripe pattern and native indeterminate semantics (FND-MOTION-12, FND-MOTION-13)."
 a11y:
   -
     status: "requires"
@@ -104,8 +91,10 @@ a11y:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "3417:15594"
-  last_verified: "2026-10-17"
+  last_verified: "2026-10-25"
 limitations:
   - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
 figma_notes:
-  - "Legacy Figma percentage variants are examples; the web accepts every numeric percentage. Skeleton is indeterminate. Figma default text 20 is independent of its 0% bar: the web derives a consistent label unless explicitly overridden. Legacy hardcoded Roboto is mapped to the existing normal font role; no unrecorded font is added."
+  - "The simplified Figma set exposes value (0% through 100% in 10% examples, plus unknown), has label and label text. Web value is continuous; type, state and has icon are removed."
+  - "The bar uses surface/subtle/base/default and surface/bold/primary/default; the unknown tile alternates primary with surface/subtle/primary/default. The visible label uses label/base/extra small."
+  - "Figma's example label remains 20 on every variant. The web derives a consistent number unless label text overrides it; unknown never invents a percentage."

@@ -122,7 +122,7 @@ sizing_model:
   adjustable:
     horizontal: true
     vertical: false
-  intent: "Current Figma composition; Inline and Timer have one authored density, Popup has five. Width follows the host. Floating placement, stacking and lifetime belong to the consumer."
+  intent: "Current Figma composition; Timer has one authored density; Inline and Popup each have five. Width follows the host. Floating placement, stacking and lifetime belong to the consumer."
 a11y:
   -
     status: "requires"
@@ -134,7 +134,7 @@ figma:
 limitations:
   - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
   - "Popup is a notification surface, not a modal dialog; it neither traps focus nor implements an overlay queue."
-  - "Inline and Timer retain legacy Figma geometry. Existing Stylos Buttons and fonts replace their obsolete nested button/font definitions."
+  - "Timer retains legacy Figma geometry. Existing Stylos Buttons and fonts replace its obsolete nested button/font definitions."
   - "Controlled presentation only: the consumer owns the clock, pause/resume, expiry, undo and persistence. No automatic dismissal or per-second screen-reader announcement is introduced."
 notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
 children:

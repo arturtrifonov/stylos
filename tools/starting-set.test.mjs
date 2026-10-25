@@ -38,12 +38,43 @@ test("draft native-field previews preserve multiline values, escaping and disabl
   assert.match(html, /A\n&lt;\/textarea&gt;/);
 });
 
-test("progress preview clamps real values and removes a numerical claim in skeleton mode", () => {
+test("progress preview accepts percentages, clamps values and leaves unknown indeterminate", () => {
   const entry = entries.find(entry => entry.id === "Progress Bar");
   const html = sampleHtml(entry, { ...defaultAssignment(entry), value: "140" });
   assert.match(html, /<progress[^>]* value="100"/);
-  const skeleton = sampleHtml(entry, { ...defaultAssignment(entry), state: "skeleton", value: "40" });
-  assert.doesNotMatch(skeleton, /<progress[^>]* value=/);
+  assert.match(sampleHtml(entry, { ...defaultAssignment(entry), value: "37.5%" }), /<progress[^>]* value="37.5"/);
+  for (const value of ["-10", "invalid", "Infinity"]) {
+    assert.match(sampleHtml(entry, { ...defaultAssignment(entry), value }), /<progress[^>]* value="0"/);
+  }
+  const unknown = sampleHtml(entry, { ...defaultAssignment(entry), value: "unknown" });
+  assert.doesNotMatch(unknown, /<progress[^>]* value=/);
+  assert.doesNotMatch(unknown, /stylos-progress-label/);
+  const labelled = sampleHtml(entry, { ...defaultAssignment(entry), value: "unknown", "label text": "Preparing" });
+  assert.match(labelled, /aria-valuetext="Preparing"/);
+  assert.match(labelled, /class="stylos-progress-label"[^>]*>Preparing/);
+  const fixed = sampleHtml(entry, { ...defaultAssignment(entry), value: "100", "label text": "100%", "label width": "5ch" });
+  assert.equal(markupReader(fixed)("stylos-progress-label", "style"), "width: 5ch");
+});
+
+test("alert previews share the reviewed heading anatomy and matching-size actions", () => {
+  for (const id of ["Alert Inline", "Alert Popup"]) {
+    const entry = entries.find(entry => entry.id === id);
+    for (const size of ["extra small", "small", "medium", "large", "extra large"]) {
+      const read = markupReader(sampleHtml(entry, { ...defaultAssignment(entry), size }));
+      assert.equal(read("stylos-alert-heading").parentNode, read("stylos-alert-body"));
+      assert.equal(read("stylos-alert-heading-row"), undefined);
+      const buttons = read("stylos-alert-actions").childNodes.filter(node => node.tagName === "button");
+      assert.equal(buttons.length, 2);
+      for (const button of buttons) assert.equal(button.attrs.find(attr => attr.name === "data-size").value, size);
+    }
+  }
+  const inline = entries.find(entry => entry.id === "Alert Inline");
+  const read = markupReader(sampleHtml(inline, { ...defaultAssignment(inline), size: "large",
+    "has heading": false, "has buttons": false, "has undo button": true }));
+  assert.equal(read("stylos-alert-heading"), undefined);
+  assert.equal(read("stylos-alert-actions"), undefined);
+  assert.equal(read("stylos-button-outline").parentNode, read("stylos-alert-inline"));
+  assert.equal(read("stylos-button-outline", "data-size"), "large");
 });
 
 test("every starting-set independent preview exposes its component root", () => {

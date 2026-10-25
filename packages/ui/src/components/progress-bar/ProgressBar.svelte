@@ -1,18 +1,23 @@
 <script lang="ts">
   import "./progress-bar.css";
-  import Icon from "../icon/Icon.svelte";
   import type { ProgressBarProps } from "./props.ts";
-  let { type = "default", state = "static", value = "0", hasLabel = true,
-    labelText = "", hasIcon = true, accessibleName = "Progress" }: ProgressBarProps = $props();
-  const percent = $derived(Number.isFinite(Number(value)) ? Math.min(100, Math.max(0, Number(value))) : 0);
-  const mark = $derived({ default: "", warning: "warning", danger: "error", success: "check_circle" }[type]);
+  let { value = "0", hasLabel = true, labelText = "", labelWidth = "auto", accessibleName = "Progress Bar" }: ProgressBarProps = $props();
+  const unknown = $derived(value.trim() === "unknown");
+  const numeric = $derived(Number(value.trim().replace(/%$/, "")));
+  const percent = $derived(Number.isFinite(numeric) ? Math.min(100, Math.max(0, numeric)) : 0);
+  const label = $derived(labelText || (unknown ? "" : String(percent)));
+  function syncValue(node: HTMLProgressElement) {
+    // Native progress is indeterminate only while value is absent. Svelte's
+    // property setter otherwise coerces the removed value to 0 on updates.
+    $effect(() => {
+      if (unknown) node.removeAttribute("value");
+      else node.setAttribute("value", String(percent));
+    });
+  }
 </script>
 
-<div class="stylos-progress-bar" data-type={type} data-state={state}>
-  <progress max="100" value={state === "skeleton" ? undefined : percent} aria-label={accessibleName}
-    aria-valuetext={state === "skeleton" ? undefined : labelText || (type === "default" ? undefined : `${type === "danger" ? "Error" : type}, ${percent}%`)}></progress>
-  {#if state === "static"}
-    {#if mark && hasIcon}<span class="stylos-progress-icon" aria-hidden="true"><Icon name={mark} /></span>
-    {:else if hasLabel}<span class="stylos-progress-label" aria-hidden="true">{labelText || String(percent)}</span>{/if}
-  {/if}
+<div class="stylos-progress-bar">
+  <progress max="100" value={unknown ? undefined : percent} {@attach syncValue} aria-label={accessibleName}
+    aria-valuetext={labelText || undefined}></progress>
+  {#if hasLabel && label}<span class="stylos-progress-label" style:width={labelWidth} aria-hidden="true">{label}</span>{/if}
 </div>

@@ -160,3 +160,15 @@ Why: each text style already defines its paragraph rhythm.
 The gap uses the style's `font/paragraph spacing` token and follows FND-TYPOGRAPHY-12. In Figma, use native paragraph spacing within a text layer or one gap between separate layers; applying both would double the interval.
 
 Checked by: the workshop's `Foundations/Typography` play checks across all five base body sizes.
+
+## Heading line heights
+
+### FND-TYPOGRAPHY-14 — Heading line heights use even pixel values
+
+**MUST.** Author heading line-height tokens as even whole-pixel values.
+
+Why: an even line box lets adjacent icons be centred with whole-pixel insets.
+
+A heading may wrap to multiple lines. Components that align an icon with its
+first line use the selected heading line-height token for the icon container,
+rather than the total height of the wrapped heading.

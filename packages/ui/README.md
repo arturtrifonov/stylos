@@ -301,11 +301,36 @@ placement, stacking and focus after dismissal. Popup is non-modal. Timer takes
 dismiss automatically, or decide when undo expires. Its counter is outside the
 live heading so second-by-second updates do not repeat the notification.
 
-Progress Bar uses native `progress`, clamps numeric string `value` to 0–100, and
-uses indeterminate semantics for `state="skeleton"`. The visible label derives
-from the value unless overridden. The consumer names the operation through
-`accessibleName`. Figma's independent label and legacy font definitions remain
-recorded design issues, rather than becoming new tokens or a false API guarantee.
+Popup uses the current five-size Figma composition, including heading/h6
+through heading/h2 and matching-size action buttons. Its icon and close slots
+use the heading's line-height token as their height and centre the marks within
+that first line. A wrapping or hidden heading does not change those slot
+dimensions. The heading sits directly in the body; hiding it leaves no empty
+heading row or extra gap. Spacing and typography come from shared tokens.
+
+Inline shares Popup's five density presets through the same CSS size profile;
+`size` defaults to `extra small`. It uses the base background, elevation 1
+shadow and default or semantic border from Figma. All buttons, including Undo,
+follow `size`. Undo sits at the top right and remains available when the heading
+or main action row is hidden.
+The heading is a direct body child, so no empty header row survives hiding it.
+
+Progress Bar uses native `progress` with an 8-unit track, a 4-unit label gap and
+the shared `label/base/extra small` style. `value` accepts numeric strings with
+an optional percent sign and clamps them to 0–100. `value="unknown"` omits the
+native value and continuously moves the diagonal pattern from Figma using the
+shared cycle and linear tokens; reduced motion leaves the pattern static.
+It never invents a completion number. Known progress follows external values
+immediately, without a component clock or fixed-duration transition.
+The visible label derives from the clamped value unless
+overridden; unknown only shows a supplied label. The consumer names the operation
+through `accessibleName`. The simplified API has no type, icon or skeleton-state
+properties. Labels use tabular numbers and align to the end. Set
+`labelWidth="5ch"` to reserve space for integer percentages from 0% to 100%;
+the track then keeps its width as the number changes. The default `"auto"`
+hugs arbitrary label text; larger/custom labels need an appropriate CSS width.
+The **Filling** story starts a controllable external simulation only
+after pressing Start; **Interaction checks** covers value changes separately.
 
 The registry replaces the unimplemented inventory identities `Alert` and
 `Progress` with their concrete names. No previously exported Svelte component is

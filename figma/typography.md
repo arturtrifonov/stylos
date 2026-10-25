@@ -14,7 +14,14 @@ FND-TYPOGRAPHY-10 defines when to apply complete styles and when a component imp
 
 ## Heading width
 
-Author heading styles at the typeface's normal width, following FND-TYPOGRAPHY-09. The older [style record](text-styles.yaml) contains heading width metadata from its dated read; it records what was observed then, rather than the current contract. The frontend projection disregards that historical width metadata for heading styles.
+Author heading styles at the typeface's normal width, following FND-TYPOGRAPHY-09. The [style record](text-styles.yaml) reflects the current normal-width headings. The frontend projection also disregards heading width metadata if an older record is supplied.
+
+## Heading line heights
+
+FND-TYPOGRAPHY-14 defines even heading line heights. Bind a heading and an
+adjacent icon container to the same `font/line height/heading/[measure]`
+variable when the icon aligns with the first line. Keep the icon centred in
+that container; the heading itself still hugs all of its lines.
 
 ## Document spacing reference
 

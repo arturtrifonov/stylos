@@ -1,9 +1,9 @@
 # GENERATED FILE — do not edit. Written by tools/import-tokens.mjs from a Figma export.
-# Imported 2026-09-06 15:40Z from Stylos / Styles.
+# Imported 2026-10-25 11:58Z from Stylos / Styles.
 collection: "font"
 layer: "primitive"
 source:
-  imported: "2026-09-06 15:40Z"
+  imported: "2026-10-25 11:58Z"
   figma_file: "Stylos / Styles"
   figma_key: "2OJYDoTE9EAdQKaJAJK9Kt"
 modes:
@@ -449,7 +449,7 @@ tokens:
     scopes:
       - "LINE_HEIGHT"
     values:
-      default: 15
+      default: 16
   "line height/heading/0_875":
     type: "number"
     id: "VariableID:2610:811"
@@ -470,14 +470,14 @@ tokens:
     scopes:
       - "LINE_HEIGHT"
     values:
-      default: 23
+      default: 24
   "line height/heading/1_250":
     type: "number"
     id: "VariableID:2610:814"
     scopes:
       - "LINE_HEIGHT"
     values:
-      default: 25
+      default: 26
   "line height/heading/1_500":
     type: "number"
     id: "VariableID:2610:815"
@@ -491,7 +491,7 @@ tokens:
     scopes:
       - "LINE_HEIGHT"
     values:
-      default: 35
+      default: 36
   "line height/heading/2_000":
     type: "number"
     id: "VariableID:2610:817"
@@ -533,21 +533,21 @@ tokens:
     scopes:
       - "LINE_HEIGHT"
     values:
-      default: 11
+      default: 12
   "line height/code/0_625":
     type: "number"
     id: "VariableID:2610:823"
     scopes:
       - "LINE_HEIGHT"
     values:
-      default: 13
+      default: 14
   "line height/code/0_750":
     type: "number"
     id: "VariableID:2610:824"
     scopes:
       - "LINE_HEIGHT"
     values:
-      default: 17
+      default: 18
   "line height/code/0_875":
     type: "number"
     id: "VariableID:2610:825"
@@ -568,7 +568,7 @@ tokens:
     scopes:
       - "LINE_HEIGHT"
     values:
-      default: 25
+      default: 26
   "line height/code/1_250":
     type: "number"
     id: "VariableID:2610:828"
@@ -582,7 +582,7 @@ tokens:
     scopes:
       - "LINE_HEIGHT"
     values:
-      default: 33
+      default: 34
   "line height/code/1_750":
     type: "number"
     id: "VariableID:2610:830"
@@ -603,7 +603,7 @@ tokens:
     scopes:
       - "LINE_HEIGHT"
     values:
-      default: 55
+      default: 56
   "line height/code/3_000":
     type: "number"
     id: "VariableID:2610:833"
@@ -617,7 +617,7 @@ tokens:
     scopes:
       - "LINE_HEIGHT"
     values:
-      default: 77
+      default: 78
   "line height/code/4_000":
     type: "number"
     id: "VariableID:2610:835"
