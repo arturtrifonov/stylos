@@ -406,6 +406,21 @@ after adding or removing a side group. Existing groups resize automatically;
   hasAdditionalText additionalText="Use the invoice reference" isRequired />
 ```
 
+`type` selects native `text` (default), `password`, `email`, `tel` or `url`.
+The same native input and string binding remain in place when the type
+changes; `password` masks the displayed characters. Native browser value
+handling follows the selected type. Email and URL participate
+in native browser validity, while `validation` remains the consumer's visual
+outcome and message. Other input types use their own contracts. Dedicated
+Password/Email component boundaries remain a separate inventory decision.
+The [native-type verification](verification/input-text-native-types-2026-10-25.md)
+records masking, type changes and native form checks.
+
+```svelte
+<InputText type="password" name="figma-token" labelText="Figma token"
+  autocomplete="off" bind:value={token} />
+```
+
 `value` determines filledness. `state` accepts `default`, `read only` and
 `disabled`; hover and focus are browser states. Validation is supplied by the
 consumer: error sets `aria-invalid`, error and warning show the associated

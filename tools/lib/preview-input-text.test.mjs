@@ -30,6 +30,24 @@ test("the text field has an associated native label and escaped form attributes"
   assert.throws(() => render({ state: "hover" }), /no value/);
 });
 
+test("Input Text maps its restricted native types without changing value or field anatomy", () => {
+  assert.equal(defaults.type, "text");
+  for (const type of ["text", "password", "email", "tel", "url"]) {
+    const read = markupReader(render({ type, value: "example-token", name: "credential", "is required": true }));
+    const input = read("stylos-input-text-field").childNodes.find(node => node.tagName === "input");
+    const attributes = Object.fromEntries(input.attrs.map(attr => [attr.name, attr.value]));
+    assert.equal(attributes.type, type);
+    assert.equal(attributes.value, "example-token");
+    assert.equal(attributes.name, "credential");
+    assert.equal(attributes.required, "");
+    assert.equal(read("stylos-input-text", "data-type"), type);
+    assert.equal(read("stylos-input-text-field").childNodes.filter(node => node.tagName).length, 1);
+  }
+  for (const type of ["number", "checkbox", "file", "date", "search"]) {
+    assert.throws(() => render({ type }), /no value/);
+  }
+});
+
 test("editable validation associates messages and marks only errors invalid", () => {
   for (const outcome of ["off", "error", "warning", "success"]) {
     const html = render({ id: "field", validation: outcome, "additional text": "Check this value" });

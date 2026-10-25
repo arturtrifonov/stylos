@@ -8,7 +8,7 @@
   import { inputTextBehavior } from "../../behaviors/input-text.ts";
 
   let {
-    size = "medium", state = "default", validation = "off",
+    type = "text", size = "medium", state = "default", validation = "off",
     value = $bindable(""), hasLabel = true, labelText = "Label",
     hasAdditionalText = false, additionalText = "Additional text",
     hasPlaceholder = false, placeholderText = "Placeholder text",
@@ -43,6 +43,7 @@
 
 <div
   class="stylos-input-text"
+  data-type={type}
   data-size={size}
   data-state={state}
   data-validation={outcome}
@@ -63,7 +64,7 @@
   <div class="stylos-input-text-field" data-surface-layer="1" data-surface-attachment="in-layout"
     {@attach measureAdornments([hasLeadingIcon && !!leadingIcon, hasSuffixText, outcome !== "off", hasTrailingIcon && !!trailingIcon])}>
     <input
-      type="text"
+      {type}
       id={controlId}
       {name} {form}
       autocomplete={autocomplete as HTMLInputAttributes["autocomplete"]}

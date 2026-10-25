@@ -6,6 +6,11 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Added
 
+- Input Text accepts native `type="text|password|email|tel|url"`, defaulting to
+  text. Password masks the existing input; supported type changes preserve its
+  string binding and DOM structure. Update the contract, generated Controls,
+  HTML previews and native form verification.
+
 - Accordion and Accordion Header accept `expandIcon="chevron|plus|dropdown"`
   with paired collapsed/expanded marks. Accordion adds `headingLevel` for its
   native section heading, independent of visual size.
