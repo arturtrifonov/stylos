@@ -9,7 +9,7 @@ level: "object"
 role: "input"
 html: "<label>Label text <span>Additional text</span></label><input type=\"text\">"
 status: "ready"
-version: "0.1.0"
+version: "0.2.0"
 summary: "A single-line text field with its label, for building forms."
 purpose: "A text field is a label, a box, and a message that appears when the value is checked, with room inside the box for a mark and for a unit. They are one component because a field assembled from separate parts spaces itself differently in every form, and because a field built without a place for the message has nowhere to put one when validation is added."
 use_when:
@@ -25,13 +25,13 @@ do_not_use_when:
       - "Select"
       - "Multiselect"
   -
-    text: "The value has a type the browser and the platform already know how to collect, mask, or offer a picker for."
+    text: "The value requires a non-text control, such as numeric stepping or a date picker."
     instead:
-      - "Input Email"
-      - "Input Password"
       - "Input Number"
       - "Input Date"
-      - "Input Search"
+  -
+    text: "The field needs the permanent Search mark and the local query clear action."
+    instead: "Input Search"
 children:
   - "Avatar"
   - "Badge"
@@ -165,6 +165,22 @@ sizing_model:
       icon: "size/s-4_000"
       validation_icon: "size/s-2_500"
 api:
+  -
+    name: "type"
+    kind: "variant"
+    default: "text"
+    description: "Native text-like input type: text, password, email, tel or url. Password masks the displayed characters; every supported type uses the same input, string binding, field structure and form semantics. Native browser value handling and validity follow the selected type. Email and URL use native browser validity; validation remains the consumer-supplied visual outcome."
+    values:
+      -
+        value: "text"
+      -
+        value: "password"
+      -
+        value: "email"
+      -
+        value: "tel"
+      -
+        value: "url"
   -
     name: "size"
     kind: "variant"
@@ -332,6 +348,7 @@ limitations:
   - "The disabled value measures 2.05:1 in light mode. SC 1.4.3 exempts disabled controls, so this fails nothing, and it is the system-wide disabled contrast already known to need lifting."
   - "The label's own size run diverges from the field's at large and extra large — the field goes to 1_250 and 1_500 where the label goes to 1_125 and 1_250. That belongs to Label and is recorded here only as measured."
 figma_notes:
+  - "The web-only type property selects native text, password, email, tel or url semantics without adding Figma variants. Dedicated Input Password, Input Email and related inventory identities remain unassessed; this change makes no decision about their future component boundaries."
   - "Vertical trim checked on 2026-10-10: leadingTrim=NONE on all 480 text layers across 140 variants. No text-box trimming is applied."
   - "Web mapping: hover/focus follow the native input; value replaces input text and determines is filled. Nested Label properties are forwarded through the field API."
   - "read only is modelled as a value of state because a separate property would need none of hover, focus or validation and would have to exclude every state but default. It is a mode, and state is where Figma can hold it cheaply."

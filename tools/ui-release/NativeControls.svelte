@@ -8,6 +8,8 @@
   let disabled = $state(false);
   let value = $state("Workspace");
   let submitted = $state("");
+  let token = $state("example-token");
+  let showToken = $state(false);
   let query = $state("Components");
   let searchEvents = $state("");
   function recordSearch(event) {
@@ -26,10 +28,13 @@
       <RadioLabel labelText="Pro" name="plan" value="pro" bind:isChecked={pro} />
     </fieldset>
     <InputText labelText="Workspace" name="workspace" bind:value />
+    <InputText labelText="Figma token" name="token" type={showToken ? "text" : "password"}
+      autocomplete="off" bind:value={token} />
     <InputSearch labelText="Search" name="query" bind:value={query}
       oninput={recordSearch} onchange={recordSearch} />
   </fieldset>
   <p>Checkbox: {checked}; Toggle: {switched}; Standard: {standard}; Pro: {pro}</p>
+  <Button labelText={showToken ? "Mask token" : "Show token"} variant="outline" onclick={() => { showToken = !showToken; }} />
   <Button labelText="Submit" type="submit" />
   <Button labelText="Reset" type="reset" variant="outline" />
   <Button labelText={disabled ? "Enable fieldset" : "Disable fieldset"} variant="outline" onclick={() => { disabled = !disabled; }} />
