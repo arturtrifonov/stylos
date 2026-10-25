@@ -8,8 +8,7 @@
   let { size = "extra small", type = "default", isOpen = $bindable(true), hasHeading = true, headingText = "Heading Text",
     hasContent = true, children, hasCloseButton = false, closeAccessibleName = "Close",
     announcement = "polite", onclose,
-    hasIcon = true, icon, hasButtons = true, primaryButtonText = "Accept", secondaryButtonText = "Cancel", onprimaryclick, onsecondaryclick,
-    hasUndoButton = false, undoButtonText = "Undo", onundoclick }: AlertInlineProps = $props();
+    hasIcon = true, icon, hasButtons = true, primaryButtonText = "Accept", secondaryButtonText = "Cancel", onprimaryclick, onsecondaryclick }: AlertInlineProps = $props();
   function close() { isOpen = false; onclose?.(new Event("close")); }
   const titleId = $props.id();
 </script>
@@ -25,6 +24,5 @@
     {#if hasContent}<div class="stylos-alert-content">{@render children?.()}</div>{/if}
     {#if hasButtons}<div class="stylos-alert-actions"><Button {size} tone="primary" labelText={primaryButtonText} onclick={onprimaryclick} /><Button {size} variant="outline" tone="base" labelText={secondaryButtonText} onclick={onsecondaryclick} /></div>{/if}
   </div>
-  {#if hasUndoButton}<Button {size} variant="outline" tone="base" labelText={undoButtonText} onclick={onundoclick} />{/if}
   {#if hasCloseButton}<span class="stylos-alert-close"><ButtonInner accessibleName={closeAccessibleName} icon={closeIcon} onclick={close} /></span>{/if}
 </section>

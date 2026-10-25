@@ -32,13 +32,13 @@ export function startingSetPreview(entry, props, { cls, attr, esc, icon, button 
     const timer = entry.id === "Alert Popup Timer";
     const inline = entry.id === "Alert Inline";
     const close = props["has close button"] ? `<span class="stylos-alert-close"><button class="stylos-button-inner" type="button" aria-label="${esc(props["close accessible name"] || "Close")}"><span class="stylos-button-inner-icon">${icon("close")}</span></button></span>` : "";
-    const undo = props["has undo button"] ? button(props["undo button text"] || "Undo", "outline", timer ? "extra small" : size) : "";
     const content = props["has content"] ? `<div class="stylos-alert-content">${props["content slot"] ?? ""}</div>` : "";
     const heading = props["has heading"] ? `<p class="stylos-alert-heading">${esc(props["heading text"] ?? "Heading Text")}</p>` : "";
     if (!timer) {
       const actions = props["has buttons"] ? `<div class="stylos-alert-actions">${button(props["primary button text"] || "Accept", "base", size)}${button(props["secondary button text"] || "Cancel", "outline", size)}</div>` : "";
-      return `<section class="stylos-alert ${cls}"${attr} data-surface-layer="${inline ? 1 : 6}" data-surface-attachment="${inline ? "in-layout" : "free"}"${props["is open"] === false ? " hidden" : ""}><div class="stylos-alert-body">${heading}${content}${actions}</div>${undo}${close}</section>`;
+      return `<section class="stylos-alert ${cls}"${attr} data-surface-layer="${inline ? 1 : 6}" data-surface-attachment="${inline ? "in-layout" : "free"}"${props["is open"] === false ? " hidden" : ""}><div class="stylos-alert-body">${heading}${content}${actions}</div>${close}</section>`;
     }
+    const undo = props["has undo button"] ? button(props["undo button text"] || "Undo", "outline", "extra small") : "";
     const counter = props["has timer counter"] ? `<span class="stylos-alert-timer-count">${esc(props["timer text"])}</span>` : "";
     const progress = startingSetPreview({ id: "Progress Bar" }, { value: props["progress value"] ?? "30", "has label": false }, { cls: "stylos-progress-bar", attr: "", esc, icon, button });
     return `<section class="stylos-alert ${cls}"${attr} data-surface-layer="6" data-surface-attachment="free"${props["is open"] === false ? " hidden" : ""}><div class="stylos-alert-body"><div class="stylos-alert-heading-row">${counter}${heading}${undo}${close}</div>${content}</div><div class="stylos-alert-timer-progress" aria-hidden="true">${progress}</div></section>`;

@@ -6,7 +6,8 @@
 
   const types = ["default", "warning", "danger", "success"] as const;
   const sizes = ["extra small", "small", "medium", "large", "extra large"] as const;
-  const undo = fn();
+  const primary = fn();
+  const secondary = fn();
   const close = fn();
   const { Story } = defineMeta({
     id: "components-alert-inline",
@@ -87,39 +88,9 @@
   {/snippet}
 </Story>
 
-<Story name="Undo sizes" play={async ({ canvasElement }) => {
-  await canvasElement.ownerDocument.fonts.ready;
-  const roots = canvasElement.querySelectorAll<HTMLElement>(".stylos-alert-inline");
-  await expect(roots).toHaveLength(sizes.length);
-  for (const root of roots) {
-    const undoButton = within(root).getByRole("button", { name: "Undo" });
-    await expect(undoButton).toBeVisible();
-    await expect(undoButton).toHaveAttribute("data-size", root.dataset.size!);
-    const body = root.querySelector<HTMLElement>(".stylos-alert-body")!;
-    for (const button of body.querySelectorAll("button")) {
-      const box = button.getBoundingClientRect();
-      const container = body.getBoundingClientRect();
-      await expect(box.left).toBeGreaterThanOrEqual(container.left);
-      await expect(box.right).toBeLessThanOrEqual(container.right);
-    }
-    await expect(root.scrollWidth).toBeLessThanOrEqual(root.clientWidth);
-  }
-}}>
-  {#snippet template()}
-    <div class="inline-densities">
-      {#each sizes as size, index}
-        <div class="inline-density" style:width={`${400 + index * 20}px`}>
-          <p class="stylos-label-base-small">{size} / Undo</p>
-          <Example {size} hasUndoButton={true} hasCloseButton={true} />
-        </div>
-      {/each}
-    </div>
-  {/snippet}
-</Story>
-
 <Story name="Optional content" play={async ({ canvasElement }) => {
   await canvasElement.ownerDocument.fonts.ready;
-  const [wrapped, noHeading, undoOnly, noIcon] = canvasElement.querySelectorAll<HTMLElement>(".stylos-alert-inline");
+  const [wrapped, noHeading, noIcon] = canvasElement.querySelectorAll<HTMLElement>(".stylos-alert-inline");
   const heading = wrapped.querySelector<HTMLElement>(".stylos-alert-heading")!;
   const line = parseFloat(getComputedStyle(heading).lineHeight);
   await expect(heading.getBoundingClientRect().height).toBeGreaterThan(line);
@@ -127,28 +98,28 @@
   await expect(noHeading.querySelector(".stylos-alert-heading")).toBeNull();
   const body = noHeading.querySelector(".stylos-alert-body")!.getBoundingClientRect();
   await expect(noHeading.querySelector(".stylos-alert-content")!.getBoundingClientRect().top).toBeCloseTo(body.top, 1);
-  await expect(within(noHeading).getByRole("button", { name: "Undo" })).toBeVisible();
-  await expect(within(undoOnly).getByRole("button", { name: "Undo" })).toBeVisible();
-  await expect(undoOnly.querySelector(".stylos-alert-actions")).toBeNull();
+  await expect(noHeading.querySelector(".stylos-alert-actions")).toBeNull();
   await expect(noIcon.querySelector(".stylos-alert-icon")).toBeNull();
 }}>
   {#snippet template()}
     <div class="inline-review-grid">
       <Example headingText="Workspace settings and notification preferences for everyone on the team" hasCloseButton={true} />
-      <Example hasHeading={false} hasUndoButton={true} hasCloseButton={true} hasButtons={false} />
-      <Example hasHeading={false} hasContent={false} hasButtons={false} hasUndoButton={true} />
+      <Example hasHeading={false} hasCloseButton={true} hasButtons={false} />
       <Example hasIcon={false} hasButtons={false} />
     </div>
   {/snippet}
 </Story>
 
 <Story name="Interaction checks" play={async ({ canvasElement }) => {
-  undo.mockClear();
+  primary.mockClear();
+  secondary.mockClear();
   close.mockClear();
   const canvas = within(canvasElement);
   const root = canvasElement.querySelector<HTMLElement>(".stylos-alert-inline")!;
-  await userEvent.click(canvas.getByRole("button", { name: "Undo" }));
-  await expect(undo).toHaveBeenCalledTimes(1);
+  await userEvent.click(canvas.getByRole("button", { name: "Accept" }));
+  await expect(primary).toHaveBeenCalledTimes(1);
+  await userEvent.click(canvas.getByRole("button", { name: "Cancel" }));
+  await expect(secondary).toHaveBeenCalledTimes(1);
   await expect(root).toBeVisible();
   await userEvent.click(canvas.getByRole("button", { name: "Close" }));
   await expect(close).toHaveBeenCalledTimes(1);
@@ -156,7 +127,7 @@
 }}>
   {#snippet template()}
     <div class="inline-review-grid">
-      <Example size="extra large" hasHeading={false} hasButtons={false} hasUndoButton={true} hasCloseButton={true} onundoclick={undo} onclose={close} />
+      <Example size="extra large" hasHeading={false} hasCloseButton={true} onprimaryclick={primary} onsecondaryclick={secondary} onclose={close} />
     </div>
   {/snippet}
 </Story>

@@ -197,29 +197,13 @@ api:
     name: "onclose"
     kind: "event"
     description: "Close event after the bound is open becomes false."
-  -
-    name: "has undo button"
-    kind: "boolean"
-    description: "Show a consumer-owned Undo action at the top right, independently of the heading and primary/secondary actions."
-    default: false
-    controls:
-      - "undo button text"
-  -
-    name: "undo button text"
-    kind: "text"
-    description: "Label for the undo action."
-    default: "Undo"
-  -
-    name: "onundoclick"
-    kind: "event"
-    description: "Native click; restoring product state belongs to the consumer."
 sizing_model:
   horizontal: "fill"
   vertical: "hug"
   adjustable:
     horizontal: true
     vertical: false
-  intent: "Five density presets matching Alert Popup. Width follows the host and height hugs the content. Each row records the icon footprint and heading typography; body text uses text/base at the matching size. Icon and close slots match the heading first-line height. Primary, secondary and Undo buttons follow size. Undo remains an independent top-right action. The surface uses background/base, border/default (or the semantic border for its type) and shadow/elevation 1."
+  intent: "Five density presets matching Alert Popup. Width follows the host and height hugs the content. Each row records the icon footprint and heading typography; body text uses text/base at the matching size. Icon and close slots match the heading first-line height. Primary and secondary buttons follow size. The surface uses background/base, border/default (or the semantic border for its type) and shadow/elevation 1."
   sizes:
     -
       size: "extra small"

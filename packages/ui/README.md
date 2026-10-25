@@ -295,10 +295,11 @@ fixes, owner approval of both contracts as ready, and the remaining release-wide
 accessibility checks.
 
 Alerts expose bindable `isOpen`, optional heading/content/actions, native close
-and Undo callbacks, and consumer-selected announcement urgency. Their host owns
+callbacks, and consumer-selected announcement urgency. Their host owns
 placement, stacking and focus after dismissal. Popup is non-modal. Timer takes
 `timerText` and `progressValue` from its host: the component does not start a clock,
-dismiss automatically, or decide when undo expires. Its counter is outside the
+dismiss automatically, or decide when undo expires. Only Timer exposes a separate
+Undo action and callback. Its counter is outside the
 live heading so second-by-second updates do not repeat the notification.
 
 Popup uses the current five-size Figma composition, including heading/h6
@@ -310,9 +311,8 @@ heading row or extra gap. Spacing and typography come from shared tokens.
 
 Inline shares Popup's five density presets through the same CSS size profile;
 `size` defaults to `extra small`. It uses the base background, elevation 1
-shadow and default or semantic border from Figma. All buttons, including Undo,
-follow `size`. Undo sits at the top right and remains available when the heading
-or main action row is hidden.
+shadow and default or semantic border from Figma. Primary and secondary buttons
+follow `size`.
 The heading is a direct body child, so no empty header row survives hiding it.
 
 Progress Bar uses native `progress` with an 8-unit track, a 4-unit label gap and
