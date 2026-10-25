@@ -1,11 +1,11 @@
 id: "Alert Popup Timer"
 name: "Alert Popup Timer"
 level: "object"
-role: "trigger"
-status: "draft"
+role: "output"
+status: "ready"
 html: "<section>Notification and actions</section>"
 summary: "A floating notification with a controlled time indicator."
-purpose: "Give product notifications a shared visual and interaction contract while their designs remain provisional."
+purpose: "Present a non-modal notification with remaining time and an optional consumer-owned Undo action."
 use_when:
   - "A floating notification with a controlled time indicator."
 do_not_use_when:
@@ -14,35 +14,30 @@ do_not_use_when:
     instead: "Alert Popup"
 api:
   -
-    name: "type"
+    name: "size"
     kind: "variant"
-    description: "Semantic notification type. Legacy Figma Info maps to default and Error maps to danger."
-    default: "default"
+    description: "Five density presets. Typography, spacing, the counter, Undo and Close follow size; available width belongs to the host."
+    default: "extra small"
     values:
       -
-        value: "default"
+        value: "extra small"
       -
-        value: "warning"
+        value: "small"
       -
-        value: "danger"
+        value: "medium"
       -
-        value: "success"
+        value: "large"
+      -
+        value: "extra large"
   -
     name: "is open"
     kind: "boolean"
     description: "Bindable presence. Closing hides this notification and does not steal focus."
     default: true
   -
-    name: "has heading"
-    kind: "boolean"
-    description: "Show the heading."
-    default: true
-    controls:
-      - "heading text"
-  -
     name: "heading text"
     kind: "text"
-    description: "Notification heading."
+    description: "Required notification heading; only this text participates in live announcements."
     default: "Heading Text"
   -
     name: "has content"
@@ -59,7 +54,7 @@ api:
     name: "has close button"
     kind: "boolean"
     description: "Show the native dismiss action."
-    default: true
+    default: false
     controls:
       - "close accessible name"
   -
@@ -102,27 +97,73 @@ api:
   -
     name: "has timer counter"
     kind: "boolean"
-    description: "Show the supplied remaining-time label."
+    description: "Show the rounded remaining seconds and optional unit."
     default: true
     controls:
-      - "timer text"
+      - "time unit"
   -
-    name: "timer text"
-    kind: "text"
-    description: "Consumer-owned remaining time; it is not a clock or a live region."
-    default: "3"
-  -
-    name: "progress value"
+    name: "time unit"
     kind: "string"
-    description: "Remaining percentage from 0 to 100; the consumer updates this with its timer."
-    default: "30"
+    description: "Optional consumer-localized suffix, such as s or с. Empty shows only the number; no unit or uppercase conversion is added automatically."
+    default: ""
+  -
+    name: "duration"
+    kind: "number"
+    description: "Total duration in seconds. Non-finite or negative values normalize to 0. Zero duration displays 0 with an empty progress track. The host owns the clock and expiry."
+    default: 3
+  -
+    name: "remaining time"
+    kind: "number"
+    description: "Remaining seconds, including fractions. Clamped to 0 through duration; invalid values become 0. The count rounds up to a whole second while progress follows the precise remaining fraction. The component does not start a clock or dismiss itself."
+    default: 3
 sizing_model:
   horizontal: "fill"
   vertical: "hug"
   adjustable:
     horizontal: true
     vertical: false
-  intent: "Current Figma composition; Timer has one authored density; Inline and Popup each have five. Width follows the host. Floating placement, stacking and lifetime belong to the consumer."
+  intent: "Five Timer densities. Width fills the host and height hugs the content. Counter, heading and Undo form a cluster with its own gap; Close is separated by the outer padding. Counter and Close boxes match the size of Undo. The header-to-content gap is 8/8/10/12/14 and the content stack is 8/10/12/16/20 for XS through XL. The heading has 5 units of block padding. The 8-unit Progress Bar is separated from the body by the outer padding. Background/base, border/default and shadow/elevation 4 follow the independent-notification role (FND-LAYERS-01). Progress is derived from remaining time / duration. Placement, stacking, clock and expiry belong to the host."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-3_000"
+      padding_x: "gap/g-1_500"
+      padding_y: "gap/g-1_500"
+      gap: "gap/g-0_750"
+      font_size: "size/0_875"
+      line_height: "line height/string/0_875"
+    -
+      size: "small"
+      box: "size/s-4_000"
+      padding_x: "gap/g-1_750"
+      padding_y: "gap/g-1_750"
+      gap: "gap/g-1_000"
+      font_size: "size/1_000"
+      line_height: "line height/string/1_000"
+    -
+      size: "medium"
+      box: "size/s-5_000"
+      padding_x: "gap/g-2_000"
+      padding_y: "gap/g-2_000"
+      gap: "gap/g-1_250"
+      font_size: "size/1_125"
+      line_height: "line height/string/1_125"
+    -
+      size: "large"
+      box: "size/s-6_000"
+      padding_x: "gap/g-2_500"
+      padding_y: "gap/g-2_500"
+      gap: "gap/g-1_500"
+      font_size: "size/1_375"
+      line_height: "line height/string/1_375"
+    -
+      size: "extra large"
+      box: "size/s-7_000"
+      padding_x: "gap/g-3_000"
+      padding_y: "gap/g-3_000"
+      gap: "gap/g-1_750"
+      font_size: "size/1_625"
+      line_height: "line height/string/1_625"
 a11y:
   -
     status: "requires"
@@ -130,13 +171,12 @@ a11y:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4462:2998"
-  last_verified: "2026-10-17"
+  last_verified: "2026-10-25"
 limitations:
-  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+  - "Component review completed on 2026-10-25; release-wide accessibility and publication acceptance remain tracked in packages/ui/verification/0.3.0.md."
   - "Popup is a notification surface, not a modal dialog; it neither traps focus nor implements an overlay queue."
-  - "Timer retains legacy Figma geometry. Existing Stylos Buttons and fonts replace its obsolete nested button/font definitions."
   - "Controlled presentation only: the consumer owns the clock, pause/resume, expiry, undo and persistence. No automatic dismissal or per-second screen-reader announcement is introduced."
-notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
+notes: "Five Timer sizes aligned with the owner-refined Figma component on 2026-10-25. The neutral design replaces the legacy type variants and always includes a heading. Reviewed for component readiness on 2026-10-25; release-wide acceptance remains separate."
 children:
   - "Avatar"
   - "Badge"
@@ -184,7 +224,9 @@ children:
   - "Progress Bar"
 family: "Alert"
 figma_notes:
-  - "Figma title-case Show properties become canonical has properties. Info/Error map to default/danger. Unconfigured Icon placeholders are supplied by the consumer, never traced or substituted. Current geometry is a reference, not a claim that old Figma token aliases are approved."
+  - "The current set exposes size, heading text, content slot and the has content/close button/undo button/timer counter switches. Its timer text is a drawing sample; the web accepts numeric duration and remaining time in seconds, derives progress, and appends only an explicitly supplied time unit. It has no semantic type or has heading property."
+  - "The counter uses matching-size text/emphasis typography, tabular lining figures and surface/subtle/base/default without a stroke. The heading uses normal-family emphasis with string line height: 14/16/18/22/26."
+  - "The web reuses Button Outline, Button Inner and Progress Bar. Close and its icon footprint run from 24 to 56; Progress Bar stays 8 high with no visible label. Figma's legacy gap/g-12 (XS) is represented by canonical gap/g-1_500 in code."
 parents:
   - "Accordion"
   - "Bottom Sheet"

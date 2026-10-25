@@ -82,12 +82,18 @@ export function sampleHtml(entry, props = {}) {
         throw new Error(`preview: "${entry.id}" property "${name}" is a boolean; got "${value}"`);
       }
       attrs.push(`data-${kebab(name)}="${value}"`);
+    } else if (property.kind === "number") {
+      if (typeof value !== "number" || !Number.isFinite(value)) {
+        throw new Error(`preview: "${entry.id}" property "${name}" is a finite number; got "${value}"`);
+      }
     } else if (property.kind === "string") {
       if (typeof value !== "string") {
         throw new Error(`preview: "${entry.id}" property "${name}" is a string; got "${value}"`);
       }
       // String properties need their own renderer; they are not text content.
-      if (entry.id === "Tooltip" && name === "content width") {
+      if (entry.id === "Alert Popup Timer" && name === "time unit") {
+        // The Timer renderer appends the consumer-supplied unit to its count.
+      } else if (entry.id === "Tooltip" && name === "content width") {
         styles.push(`--_stylos-tooltip-width:${value}`);
       } else if (entry.id === "Dropdown" && name === "max height") {
         styles.push(`--_stylos-dropdown-height-limit:${value}`);

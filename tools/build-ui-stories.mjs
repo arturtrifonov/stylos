@@ -52,6 +52,7 @@ export function storyArgTypes(entry) {
     const { propName } = fieldFor(property, { soleSlot });
     const control = property.kind === "variant" ? "inline-radio"
       : property.kind === "boolean" ? "boolean"
+      : property.kind === "number" ? "number"
       : ["text", "string"].includes(property.kind) ? "text" : false;
     return [propName, {
       control,

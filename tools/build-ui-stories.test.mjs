@@ -130,3 +130,9 @@ test("all built components and authored examples share page grouping and stable 
     assert.ok(source.includes(`id: "${storyMeta(component).id}"`), `Unstable ID in ${file}`);
   }
 });
+
+test("numeric properties receive numeric Controls and defaults", () => {
+  const entry = { id: "Timer", api: [{ name: "duration", kind: "number", default: 3 }] };
+  assert.equal(storyArgTypes(entry).duration.control, "number");
+  assert.equal(defaultArgs(entry).duration, 3);
+});

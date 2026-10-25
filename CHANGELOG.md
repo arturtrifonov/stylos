@@ -27,6 +27,21 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Changed
 
+- Mark Alert Inline, Alert Popup, Alert Popup Timer and Progress Bar ready after
+  component review; keep release-wide accessibility and publication gates open.
+  Remove redundant Close wrappers from all three alerts and correct Popup's
+  elevation from 6 to the Figma and foundation level 4.
+
+- Align Alert Popup Timer with its refined five-size Figma component: neutral
+  surface, level-4 shadow, subtle counter, matching-size Undo and Close, separate
+  header gaps and a fixed 8-unit Progress Bar. Add `size`; remove legacy `type`
+  and `hasHeading`. Default `hasCloseButton` to `false`. Replace formatted
+  `timerText` and independent `progressValue` with numeric `duration` and
+  `remainingTime` in seconds, deriving both the counter and remaining fraction.
+  Add an optional localized `timeUnit` suffix. Replace the Timer review/test
+  pages with one manually controlled countdown example.
+  Update its contract, documentation previews and review stories together.
+
 - Simplify Progress Bar to match the updated Figma component: an 8-unit primary
   track, optional compact label and continuously moving striped `value="unknown"`
   treatment with a static reduced-motion alternative. Known completion follows
