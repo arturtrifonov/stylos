@@ -15,6 +15,7 @@
 // preview's only to draw.
 
 import { readFileSync } from "node:fs";
+import { nativeLengthLimit, textAreaCounter } from "../../packages/ui/src/behaviors/text-area.ts";
 import { fileURLToPath } from "node:url";
 
 import { drawRegistered } from "./icon-preset.mjs";
@@ -56,7 +57,7 @@ function iconDrawings() {
 }
 
 export function sampleHtml(entry, props = {}) {
-  if (["Input Text", "Select", "Input Search", "Text Area"].includes(entry.id) && props.state && props.state !== "default") {
+  if (["Input Text", "Select", "Text Area"].includes(entry.id) && props.state && props.state !== "default") {
     props = { ...props, validation: "off" };
   }
   const api = new Map((entry.api ?? []).map((property) => [property.name, property]));
@@ -235,12 +236,14 @@ export function sampleHtml(entry, props = {}) {
     const id = props.id ?? `input-text-preview-${++inputPreviewCounter}`;
     const size = props.size ?? "medium";
     const state = props.state ?? "default";
-    const outcome = state === "default" ? props.validation ?? "off" : "off";
+    const outcome = entry.id !== "Input Search" && state === "default" ? props.validation ?? "off" : "off";
     const labelOutcome = ["error", "warning"].includes(outcome) ? outcome : "off";
     const hasLabel = props["has label"] ?? true;
     const showsMessage = labelOutcome !== "off" || props["has additional text"];
     const messageId = `${id}-message`;
     const suffixId = `${id}-suffix`;
+    const counterId = `${id}-counter`;
+    const counter = textAreaCounter(props.value ?? "", props.maxlength, props["counter text"]);
     const message = props["additional text"] ?? "Additional text";
     const labelProps = {
       size, state: state === "disabled" ? "disabled" : "default", validation: labelOutcome,
@@ -255,7 +258,8 @@ export function sampleHtml(entry, props = {}) {
       values: [{ value: labelProps[name] }],
     }))] }, labelProps) : showsMessage ? `<span id="${esc(messageId)}" hidden>${esc(message)}</span>` : "";
     const descriptions = [props["description ids"], showsMessage ? messageId : "",
-      props["has suffix text"] && props["suffix text"] ? suffixId : ""].filter(Boolean).join(" ");
+      props["has suffix text"] && props["suffix text"] ? suffixId : "",
+      entry.id === "Text Area" && props["has counter text"] && counter ? counterId : ""].filter(Boolean).join(" ");
     const native = ["name", "form", "autocomplete"].filter(name => props[name])
       .map(name => ` ${name}="${esc(props[name])}"`).join("");
     const accessibleName = hasLabel ? props["label text"] ?? "Label" : props["accessible name"];
@@ -286,26 +290,27 @@ export function sampleHtml(entry, props = {}) {
       return `<div class="${cls}"${attr} data-is-filled="${filled}">${label}<div class="stylos-select-field" data-surface-layer="1" data-surface-attachment="in-layout"><button type="button" class="stylos-select-trigger" id="${esc(id)}" role="combobox" aria-haspopup="listbox" aria-expanded="false"${triggerSemantics}><span class="stylos-select-value"><span>${esc(display)}</span></span></button>${nativeSelect}<div class="stylos-select-adornments"><span class="stylos-select-leading">${icon("leading").replaceAll("stylos-input-text", "stylos-select")}</span><span class="stylos-select-trailing">${suffix.replaceAll("stylos-input-text", "stylos-select")}${clear}${validation.replaceAll("stylos-input-text", "stylos-select")}${chevron}</span></div></div></div>`;
     }
     const trailing = icon("trailing");
-    if (["Input Text", "Input Search"].includes(entry.id)) {
+    if (["Input Text", "Input Search", "Text Area"].includes(entry.id)) {
       const search = entry.id === "Input Search";
+      const area = entry.id === "Text Area";
       const svg = name => sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name });
       const clear = search && props.value && state === "default"
         ? `<button class="stylos-button-inner" data-state="default" type="button" aria-label="${esc(props["clear accessible name"] || `Clear ${accessibleName || "search"}`)}"><span class="stylos-button-inner-icon" aria-hidden="true">${svg("close")}</span></button>` : "";
       const leading = icon("leading").replace('class="stylos-input-text-icon"', 'class="stylos-input-text-leading"');
-      const trailingParts = suffix + clear + validation + (search ? svg("search") : trailing);
-      const field = `<div class="stylos-input-text-field" data-surface-layer="1" data-surface-attachment="in-layout"><input type="${search ? "search" : esc(props.type ?? "text")}" id="${esc(id)}" value="${esc(props.value ?? "")}"${native}${semantics}${placeholder}>${leading}${trailingParts ? `<span class="stylos-input-text-trailing">${trailingParts}</span>` : ""}</div>`;
-      return `<div class="${cls}"${attr} data-is-filled="${!!props.value}">${label}${search ? field.replaceAll("stylos-input-text-", "stylos-input-search-") : field}</div>`;
+      const trailingParts = suffix + clear + (area ? "" : validation) + (search ? svg("search") : trailing);
+      const limits = ["maxlength", "minlength"].flatMap(name => {
+        const limit = nativeLengthLimit(props[name]);
+        return limit === undefined ? [] : [` ${name}="${limit}"`];
+      }).join("");
+      const control = area
+        ? `<textarea class="stylos-scrollbar" data-scrollbar-size="small" data-scrollbar-position="absolute" id="${esc(id)}"${native}${semantics}${placeholder}${limits}>${esc(props.value ?? "")}</textarea>`
+        : `<input type="${search ? "search" : esc(props.type ?? "text")}" id="${esc(id)}" value="${esc(props.value ?? "")}"${native}${semantics}${placeholder}>`;
+      const right = area ? trailing.replace('class="stylos-input-text-icon"', 'class="stylos-input-text-trailing stylos-input-text-icon"') : trailingParts ? `<span class="stylos-input-text-trailing">${trailingParts}</span>` : "";
+      const field = `<div class="stylos-input-text-field" data-surface-layer="1" data-surface-attachment="in-layout">${control}${leading}${right}${area ? validation : ""}</div>`;
+      const prefix = area ? "stylos-text-area-" : search ? "stylos-input-search-" : "stylos-input-text-";
+      const count = area && props["has counter text"] ? `<span class="stylos-text-area-counter" id="${esc(counterId)}">${esc(counter)}</span>` : "";
+      return `<div class="${cls}"${attr} data-is-filled="${!!props.value}">${label}${field.replaceAll("stylos-input-text-", prefix)}${count}</div>`;
     }
-    let html = `<div class="${cls}"${attr} data-is-filled="${!!props.value}">${label}<div class="stylos-input-text-field" data-surface-layer="1" data-surface-attachment="in-layout"><input type="${entry.id === "Input Search" ? "search" : "text"}" id="${esc(id)}" value="${esc(props.value ?? "")}"${native}${semantics}${placeholder}><div class="stylos-input-text-adornments"><span class="stylos-input-text-leading">${icon("leading")}</span><span class="stylos-input-text-trailing">${suffix}${validation}${trailing}</span></div></div></div>`;
-    if (entry.id === "Text Area") {
-      const counterId = `${id}-counter`;
-      const areaSemantics = props["has counter text"]
-        ? semantics.replace(/ aria-describedby="([^"]*)"/, (_, ids) => ` aria-describedby="${ids} ${counterId}"`) + (descriptions ? "" : ` aria-describedby="${counterId}"`) : semantics;
-      html = html.replace(/<input[^>]*>/, `<textarea id="${esc(id)}"${native}${areaSemantics}${placeholder}>${esc(props.value ?? "")}</textarea>`)
-        .replaceAll("stylos-input-text-", "stylos-text-area-");
-      if (props["has counter text"]) html = html.replace(/<\/div>$/, `<span class="stylos-text-area-counter" id="${counterId}">${esc(props["counter text"])}</span></div>`);
-    }
-    return html;
   }
 
   if (["Tag", "Tag Interactive"].includes(entry.id)) {

@@ -5,20 +5,23 @@
   import Label from "../label/Label.svelte";
   import Icon from "../icon/Icon.svelte";
   import type { TextAreaProps } from "./props.ts";
-  import "../../behaviors/scrollbar.css";
+  import { nativeLengthLimit, textAreaCounter } from "../../behaviors/text-area.ts";
   import { inputTextBehavior } from "../../behaviors/input-text.ts";
 
   let {
-    size = "extra small", state = "default", validation = "off",
+    size = "medium", state = "default", validation = "off",
     value = $bindable(""), hasLabel = true, labelText = "Label",
     hasAdditionalText = false, additionalText = "Additional text",
-    hasPlaceholder = true, placeholderText = "Placeholder text",
+    hasPlaceholder = false, placeholderText = "Placeholder text",
     hasLeadingIcon = false, leadingIcon, hasTrailingIcon = false, trailingIcon,
-    hasCounterText = true, counterText = "0 / 1000", maxlength, minlength, isRequired = false,
+    hasCounterText = false, counterText, maxlength, minlength, isRequired = false,
     id, name, form, autocomplete, accessibleName, labelIds, descriptionIds,
     oninput, onchange,
   }: TextAreaProps = $props();
 
+  const maxLength = $derived(nativeLengthLimit(maxlength));
+  const minLength = $derived(nativeLengthLimit(minlength));
+  const counter = $derived(textAreaCounter(value, maxLength, counterText));
   const instanceId = $props.id();
   const initialValue = untrack(() => value);
   const controlId = $derived(id ?? `text-area-${instanceId}`);
@@ -29,9 +32,15 @@
   const showsMessage = $derived(labelOutcome !== "off" || hasAdditionalText);
   const describedBy = $derived([
     descriptionIds, showsMessage ? messageId : undefined,
-    hasCounterText && counterText ? counterId : undefined,
+    hasCounterText && counter ? counterId : undefined,
   ].filter(Boolean).join(" ") || undefined);
   const validationIcon = $derived({ error: "error", warning: "warning", success: "check_circle", off: "" }[outcome]);
+
+  function measureAdornments(parts: boolean[]) {
+    return parts.some(Boolean)
+      ? (field: HTMLElement) => inputTextBehavior(field).destroy
+      : undefined;
+  }
 </script>
 
 <div
@@ -53,10 +62,10 @@
   {:else if showsMessage}
     <span id={messageId} hidden>{additionalText}</span>
   {/if}
-  <div class="stylos-text-area-field" data-surface-layer="1" data-surface-attachment="in-layout" use:inputTextBehavior>
+  <div class="stylos-text-area-field" data-surface-layer="1" data-surface-attachment="in-layout" {@attach measureAdornments([hasLeadingIcon && !!leadingIcon, hasTrailingIcon && !!trailingIcon])}>
     <textarea
       class="stylos-scrollbar" data-scrollbar-size="small" data-scrollbar-position="absolute"
-      maxlength={maxlength ? Number(maxlength) : undefined} minlength={minlength ? Number(minlength) : undefined}
+      maxlength={maxLength} minlength={minLength}
       id={controlId}
       {name} {form}
       autocomplete={autocomplete as HTMLInputAttributes["autocomplete"]}
@@ -72,10 +81,11 @@
       aria-invalid={outcome === "error" ? "true" : undefined}
       {oninput} {onchange}
     ></textarea>
-    <div class="stylos-text-area-adornments">
-      <span class="stylos-text-area-leading">{#if hasLeadingIcon && leadingIcon}<span class="stylos-text-area-icon" data-position="leading" aria-hidden="true">{@render leadingIcon()}</span>{/if}</span>
-      <span class="stylos-text-area-trailing">{#if outcome !== "off"}<span class="stylos-text-area-validation" aria-hidden="true"><Icon name={validationIcon} /></span>{/if}{#if hasTrailingIcon && trailingIcon}<span class="stylos-text-area-icon" data-position="trailing" aria-hidden="true">{@render trailingIcon()}</span>{/if}</span>
-    </div>
+    {#if hasLeadingIcon && leadingIcon}<span class="stylos-text-area-leading" data-position="leading" aria-hidden="true">{@render leadingIcon()}</span>{/if}
+    {#if hasTrailingIcon && trailingIcon}
+      <span class="stylos-text-area-trailing stylos-text-area-icon" data-position="trailing" aria-hidden="true">{@render trailingIcon()}</span>
+    {/if}
+    {#if outcome !== "off"}<span class="stylos-text-area-validation" aria-hidden="true"><Icon name={validationIcon} /></span>{/if}
   </div>
-  {#if hasCounterText}<span class="stylos-text-area-counter" id={counterId}>{counterText}</span>{/if}
+  {#if hasCounterText}<span class="stylos-text-area-counter" id={counterId}>{counter}</span>{/if}
 </div>

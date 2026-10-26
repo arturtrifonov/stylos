@@ -11,7 +11,7 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const entries = loadRegistry(root);
 const additions = ["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Input Search", "Progress Bar", "Switcher", "Switcher Item", "Tabs Horizontal", "Tab Item", "Text Area"];
 
-const reviewedReady = new Set(["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Input Search", "Progress Bar"]);
+const reviewedReady = new Set(["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Input Search", "Progress Bar", "Text Area"]);
 
 test("urgent product components keep their reviewed status, complete contracts and one core wave", () => {
   const plan = readPlan(root);
@@ -29,7 +29,7 @@ test("urgent product components keep their reviewed status, complete contracts a
   assert.ok(!entries.some(entry => ["Alert", "Progress"].includes(entry.id)));
 });
 
-test("draft native-field previews preserve multiline values, escaping and disabled validation suppression", () => {
+test("native-field previews preserve multiline values, escaping and disabled validation suppression", () => {
   const entry = entries.find(entry => entry.id === "Text Area");
   const html = sampleHtml(entry, { ...defaultAssignment(entry), state: "disabled", validation: "error", value: "A\n</textarea><script>bad</script>" });
   assert.match(html, /<textarea[^>]* disabled/);

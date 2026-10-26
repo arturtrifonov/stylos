@@ -5,6 +5,14 @@ Reference: Figma Components, Input Search 4833:15163; medium filled default
 Button Inner / Close before Search. Use the existing registered Search and
 Close drawings; no copied Figma asset URLs or replacement drawings ship.
 
+## Follow-up, 2026-10-25
+
+The owner removed validation from the completed Figma Search set. The current
+API, wrapper, previews and Controls remove it too; hints and native clear
+remain. Earlier validation-related observations below describe the prior
+revision. Current field-family evidence is in
+[text-area-2026-10-26.md](text-area-2026-10-26.md).
+
 ## Readiness
 
 The owner approved Input Search as **ready** on 2026-10-25 after reviewing its

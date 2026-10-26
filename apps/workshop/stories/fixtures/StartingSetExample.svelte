@@ -18,7 +18,7 @@
     <section><h2>Switcher</h2><Switcher name="view" accessibleName="Workspace view" bind:value={mode}>
       <SwitcherItem value="list" labelText="List" /><SwitcherItem value="archived" labelText="Archived" state="disabled" /><SwitcherItem value="grid" labelText="Grid" />
     </Switcher><p>View: {mode}</p></section>
-    <section><h2>Text Area</h2><TextArea name="notes" labelText="Workspace notes" bind:value={notes} counterText={`${notes.length} / 1000`} maxlength="1000" /></section>
+    <section><h2>Text Area</h2><TextArea name="notes" labelText="Workspace notes" bind:value={notes} hasCounterText maxlength={1000} /></section>
     <section><h2>Progress Bar</h2><ProgressBar value="30" accessibleName="Workspace import" /></section>
     <section><h2>Accordion</h2><Accordion labelText="Advanced settings"><InputSearch labelText="Search advanced settings" /></Accordion></section>
     <section><h2>Tabs Horizontal</h2><TabsHorizontal bind:value={tab} accessibleName="Workspace details">

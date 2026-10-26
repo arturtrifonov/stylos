@@ -103,10 +103,10 @@
 :is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon)[data-position="trailing"]) {
   --_stylos-input-trailing-reserve: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical) + var(--_stylos-input-gap));
 }
-:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-input-search-validation, .stylos-text-area-validation)) {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-text-area-validation)) {
   --_stylos-input-trailing-reserve: calc(var(--_stylos-input-validation-size) - var(--stylos-dimension-gap-g-0_250) + var(--_stylos-input-gap));
 }
-:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-input-search-validation, .stylos-text-area-validation)):has(:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon)[data-position="trailing"]) {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-text-area-validation)):has(:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon)[data-position="trailing"]) {
   --_stylos-input-trailing-reserve: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical) + var(--_stylos-input-validation-size) - var(--stylos-dimension-gap-g-0_250) + 2 * var(--_stylos-input-gap));
 }
 
@@ -143,7 +143,7 @@
 :is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon)[data-position="leading"] > * { right: 0; }
 :is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon)[data-position="trailing"] > * { left: 0; }
 
-:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-input-search-validation, .stylos-text-area-validation) {
+:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-text-area-validation) {
   --stylos-icon-footprint: var(--_stylos-input-validation-size);
   position: relative;
   flex: none;
@@ -152,7 +152,7 @@
   color: var(--_stylos-input-border);
 }
 
-:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-input-search-validation, .stylos-text-area-validation)::before {
+:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-text-area-validation)::before {
   content: "";
   position: absolute;
   top: calc((var(--_stylos-input-validation-size) - var(--_stylos-input-icon-size)) / 2);
@@ -162,7 +162,7 @@
   background-color: var(--_stylos-input-validation-background);
   border-radius: var(--stylos-radius-round);
 }
-:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-input-search-validation, .stylos-text-area-validation) > .stylos-icon { position: relative; display: block; }
+:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-text-area-validation) > .stylos-icon { position: relative; display: block; }
 
 :is(.stylos-input-text, .stylos-select, .stylos-input-search, .stylos-text-area)[data-validation="error"] {
   --_stylos-input-border: var(--stylos-color-border-danger);

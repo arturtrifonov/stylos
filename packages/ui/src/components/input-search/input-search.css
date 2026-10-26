@@ -6,15 +6,11 @@
 
 /* Before measurement, reserve the known icon footprints without extra slots. */
 .stylos-input-search .stylos-input-search-field {
-  --_stylos-input-trailing-reserve: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical) + var(--_stylos-input-gap) + var(--_stylos-search-clear-reserve, 0rem) + var(--_stylos-search-validation-reserve, 0rem));
+  --_stylos-input-trailing-reserve: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical) + var(--_stylos-input-gap) + var(--_stylos-search-clear-reserve, 0rem));
 }
 
 .stylos-input-search-field:has(> .stylos-input-search-trailing > .stylos-button-inner) {
   --_stylos-search-clear-reserve: calc(var(--_stylos-input-validation-size) - var(--_stylos-input-optical) + var(--_stylos-input-gap));
-}
-
-.stylos-input-search-field:has(.stylos-input-search-validation) {
-  --_stylos-search-validation-reserve: calc(var(--_stylos-input-validation-size) - var(--_stylos-input-optical) + var(--_stylos-input-gap));
 }
 
 /* The known SVG and native button supply their own optical layout boxes. */
