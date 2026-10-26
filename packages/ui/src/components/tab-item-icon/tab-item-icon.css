@@ -1,0 +1,14 @@
+@import "../tab-item/tab-item.css";
+/* Tab Item Icon — docs/components/registry/tab-item-icon.yaml. The tab's
+ * states and icon ramp. Padding and the icon–badge gap are half the free
+ * height, so the tab is square without a badge and widens with one. */
+.stylos-tab-item.stylos-tab-item-icon {
+  --_stylos-tab-icon-inset: calc((var(--_stylos-selection-height) - var(--_stylos-selection-icon)) / 2);
+  gap: var(--_stylos-tab-icon-inset);
+  padding: 0 var(--_stylos-tab-icon-inset);
+}
+@supports not (anchor-name: --stylos-tab-selection) {
+  .stylos-tab-item-icon[aria-selected="true"]::after {
+    inset-inline: calc((var(--_stylos-selection-height) - var(--_stylos-selection-icon) + var(--_stylos-tab-optical)) / 2);
+  }
+}

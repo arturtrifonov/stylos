@@ -22,6 +22,8 @@ export type SingleSelectOptions = {
   oninput?: (event: Event) => void;
   onchange?: (event: Event) => void;
   placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end";
+  /** Match the panel to the trigger's width (default). A compact trigger lets the panel size to its rows. */
+  sameWidth?: boolean;
 };
 
 // The owner supplies the trigger and the value. This adapter supports only
@@ -72,7 +74,7 @@ export function singleSelectBehavior(root: HTMLElement, options: SingleSelectOpt
     required: options.required, name: options.name, form: options.form, autoComplete: options.autocomplete, multiple: false, closeOnSelect: true,
     getRootNode: () => doc,
     ids: { hiddenSelect: native?.id, trigger: trigger.id || `dropdown-trigger-${options.id}`, content: content.id || `dropdown-options-${options.id}` },
-    positioning: { placement: options.placement ?? "bottom-start", sameWidth: true,
+    positioning: { placement: options.placement ?? "bottom-start", sameWidth: options.sameWidth ?? true,
       gutter: Number.parseFloat(doc.defaultView!.getComputedStyle(trigger).getPropertyValue("--stylos-dimension-gap-g-0_500")) },
     onValueChange: ({ value }: { value: string[] }) => options.onValueChange(value[0] ?? ""),
   });

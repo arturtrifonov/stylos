@@ -10,11 +10,11 @@ children:
 parents:
   - "Tabs Horizontal"
   - "Tabs Vertical"
-notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
+notes: "Owner approved as ready on 2026-10-26 after alignment with the finished Figma set: one button per tab without slot wrappers, state surfaces for both selection states, icon overhang and a Badge that follows size and state. Scoped evidence: packages/ui/verification/tabs-2026-10-26.md."
 import:
   batch: 1
   ready: true
-status: "draft"
+status: "ready"
 html: "<button role=\"tab\">Tab name</button>"
 summary: "One horizontal tab with an associated panel."
 purpose: "Expose a named peer view and its selected state inside Tabs Horizontal."
@@ -24,12 +24,15 @@ do_not_use_when:
   -
     text: "An individual tab has no containing tab list or associated panel."
     instead: "Tabs Horizontal"
+  -
+    text: "The tab shows only an icon."
+    instead: "Tab Item Icon"
 api:
   -
     name: "size"
     kind: "variant"
     description: "The five current Figma density presets; the consumer owns available width."
-    default: "extra small"
+    default: "medium"
     values:
       -
         value: "extra small"
@@ -72,7 +75,7 @@ api:
   -
     name: "has badge"
     kind: "boolean"
-    description: "Show the configured count."
+    description: "Show the configured count in a Badge that follows the tab size and selection."
     default: false
     controls:
       - "number text"
@@ -91,7 +94,7 @@ api:
   -
     name: "leading icon"
     kind: "instance"
-    description: "Decorative leading icon snippet."
+    description: "Decorative Icon snippet rendered directly before the label text, without a wrapper. Also shown beside the label in the overflow menu."
     svelte_type: "snippet"
   -
     name: "has trailing icon"
@@ -103,7 +106,7 @@ api:
   -
     name: "trailing icon"
     kind: "instance"
-    description: "Decorative trailing icon snippet."
+    description: "Decorative Icon snippet rendered directly after the label and badge, without a wrapper."
     svelte_type: "snippet"
 sizing_model:
   horizontal: "hug"
@@ -111,36 +114,46 @@ sizing_model:
   adjustable:
     horizontal: true
     vertical: false
-  intent: "Inherits the group size; five label heights plus the size-specific underline band."
+  intent: "Inherits the group size. The tab is its label box, 24/32/40/48/56 units high; Tabs Horizontal adds the band below it. Icons occupy 16/20/24/28/32 units with a 2/2/2/3/3-unit optical overhang; the Badge uses the same size name."
   sizes:
     -
       size: "extra small"
       box: "size/s-3_000"
+      padding_x: "gap/g-1_000"
       gap: "gap/g-0_500"
+      icon: "size/s-2_000"
       font_size: "size/0_750"
       line_height: "line height/string/0_750"
     -
       size: "small"
       box: "size/s-4_000"
+      padding_x: "gap/g-1_250"
       gap: "gap/g-0_625"
+      icon: "size/s-2_500"
       font_size: "size/0_875"
       line_height: "line height/string/0_875"
     -
       size: "medium"
       box: "size/s-5_000"
+      padding_x: "gap/g-1_500"
       gap: "gap/g-0_750"
+      icon: "size/s-3_000"
       font_size: "size/1_000"
       line_height: "line height/string/1_000"
     -
       size: "large"
       box: "size/s-6_000"
+      padding_x: "gap/g-2_000"
       gap: "gap/g-0_875"
+      icon: "size/s-3_500"
       font_size: "size/1_250"
       line_height: "line height/string/1_250"
     -
       size: "extra large"
       box: "size/s-7_000"
+      padding_x: "gap/g-2_500"
       gap: "gap/g-1_000"
+      icon: "size/s-4_000"
       font_size: "size/1_500"
       line_height: "line height/string/1_500"
 a11y:
@@ -150,7 +163,13 @@ a11y:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4451:16154"
-  last_verified: "2026-10-17"
+  last_verified: "2026-10-26"
 limitations:
-  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
-  - "This draft implements the current horizontal text tab; icon-only and vertical Figma treatments are deferred. Use inside Tabs Horizontal."
+  - "Whole-release Chrome/Orca, contrast and two-theme accessibility acceptance remain in packages/ui/verification/0.3.0.md; this component review does not close those gates."
+  - "Migration: Medium replaces extra small as the default size (owner decision, 2026-10-26)."
+  - "Use inside Tabs Horizontal, which draws the band, the selection indicator and keyboard focus; an icon-only tab is Tab Item Icon. Vertical tabs are outside this slice."
+  - "Each icon snippet should render one Icon. The tab sets its footprint and gives up padding for the optical overhang; it does not wrap or hide arbitrary content."
+figma_notes:
+  - "Figma hover and active are drawing states; the web derives them from the browser. Figma is focused on the item is exploratory and not implemented; Tabs Horizontal draws focus."
+  - "Figma draws each icon in a container narrower than the icon by the optical overhang (2/2/2/3/3 units). The web keeps the full Icon footprint and reduces the padding on that side instead."
+  - "The Badge follows the tab size and takes the primary tone when selected, base when not and disabled when the tab is disabled."

@@ -1,0 +1,145 @@
+id: "Tab Item Icon"
+name: "Tab Item Icon"
+level: "object"
+role: "trigger"
+status: "ready"
+html: "<button role=\"tab\" aria-label=\"Calendar\"><svg aria-hidden=\"true\"></svg></button>"
+summary: "One icon-only horizontal tab with an associated panel."
+purpose: "Offer a peer view that a recognised icon represents in a compact square tab, while the tab keeps a spoken name."
+use_when:
+  - "A tab is recognised by its icon and there is no room for visible words."
+do_not_use_when:
+  -
+    text: "The tab needs visible words, or its icon is unfamiliar."
+    instead: "Tab Item"
+  -
+    text: "An individual tab has no containing tab list or associated panel."
+    instead: "Tabs Horizontal"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    description: "The square tab and its centred icon. Inherited from Tabs Horizontal when nested."
+    default: "medium"
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "state"
+    kind: "variant"
+    description: "Native availability. The browser derives hover and pressing; disabled tabs are skipped by arrow navigation."
+    default: "default"
+    values:
+      -
+        value: "default"
+      -
+        value: "disabled"
+  -
+    name: "value"
+    kind: "string"
+    description: "Unique non-empty value within the tab list."
+    default: "tab"
+  -
+    name: "accessible name"
+    kind: "text"
+    description: "Required name of the tab for aria-label, such as Calendar. It names the view rather than the glyph and labels the tab in the overflow menu."
+    values:
+      -
+        value: "Calendar"
+        note: "Example view name; consumers supply their own."
+  -
+    name: "id"
+    kind: "string"
+    description: "Native id referenced by the panel's aria-labelledby."
+  -
+    name: "controls"
+    kind: "string"
+    description: "ID of the associated tab panel for aria-controls."
+  -
+    name: "has badge"
+    kind: "boolean"
+    description: "Show the configured count in a Badge after the icon; the tab widens to hold it."
+    default: false
+    controls:
+      - "number text"
+  -
+    name: "number text"
+    kind: "text"
+    description: "Badge count; include its meaning in the accessible name or the surrounding context."
+    default: "1"
+  -
+    name: "icon"
+    kind: "instance"
+    svelte_type: "snippet"
+    description: "Decorative Icon snippet rendered directly in the tab, without a wrapper. No icon is supplied by the component."
+    values:
+      -
+        value: "calendar_month"
+        note: "Sample icon, not a component default or a closed list."
+sizing_model:
+  horizontal: "hug"
+  vertical: "fixed"
+  adjustable:
+    horizontal: false
+    vertical: false
+  intent: "The Tab Item height, 24/32/40/48/56 units, with a 16/20/24/28/32-unit icon. Inline padding and the icon–badge gap are both half the difference, 4/6/8/10/12 units, so without a badge the tab is square. The indicator keeps a fixed inset of half the height less the icon's optical width (5/7/9/11.5/13.5) and widens with a badge."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-3_000"
+      icon: "size/s-2_000"
+      padding_x: "gap/g-0_500"
+      gap: "gap/g-0_500"
+    -
+      size: "small"
+      box: "size/s-4_000"
+      icon: "size/s-2_500"
+      padding_x: "gap/g-0_750"
+      gap: "gap/g-0_750"
+    -
+      size: "medium"
+      box: "size/s-5_000"
+      icon: "size/s-3_000"
+      padding_x: "gap/g-1_000"
+      gap: "gap/g-1_000"
+    -
+      size: "large"
+      box: "size/s-6_000"
+      icon: "size/s-3_500"
+      padding_x: "gap/g-1_250"
+      gap: "gap/g-1_250"
+    -
+      size: "extra large"
+      box: "size/s-7_000"
+      icon: "size/s-4_000"
+      padding_x: "gap/g-1_500"
+      gap: "gap/g-1_500"
+a11y:
+  -
+    status: "requires"
+    note: "Supply a non-empty accessible name for each tab; the decorative icon contributes no name. Make the name available to sighted readers too, normally through a surrounding Tooltip."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4848:4130"
+  last_verified: "2026-10-26"
+limitations:
+  - "Whole-release Chrome/Orca, contrast and two-theme accessibility acceptance remain in packages/ui/verification/0.3.0.md; this component review does not close those gates."
+  - "Use inside Tabs Horizontal, which draws the band, the selection indicator and keyboard focus."
+  - "The icon snippet should render one Icon. The tab sets its footprint; it does not wrap or hide arbitrary content."
+figma_notes:
+  - "Figma hover and active are drawing states; the web derives them from the browser. Figma is focused on the item is exploratory and not implemented."
+  - "The Badge follows the tab size and takes the primary tone when selected, base when not and disabled when the tab is disabled. The overflow menu repeats the icon and name, not the badge."
+  - "Figma's icon is a Placeholder instance swap with no web default; consumers provide snippets and documentation samples select active-set icons."
+notes: "Added at the owner's direction on 2026-10-26 to match the separate Figma set, alongside the Tab Item alignment, and approved as ready the same day after the owner's badge fix. Scoped evidence: packages/ui/verification/tabs-2026-10-26.md."
+children:
+  - "Icon"
+parents:
+  - "Tabs Horizontal"

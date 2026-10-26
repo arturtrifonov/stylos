@@ -1,6 +1,6 @@
 // Static instances of the draft DOM contracts, using the component CSS.
 // The CSS-only page deliberately has no behaviour or live announcements.
-export const startingSetIds = new Set(["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Progress Bar", "Switcher", "Switcher Item", "Switcher Item Icon", "Tabs Horizontal", "Tab Item"]);
+export const startingSetIds = new Set(["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Progress Bar", "Switcher", "Switcher Item", "Switcher Item Icon", "Tabs Horizontal", "Tab Item", "Tab Item Icon"]);
 let sequence = 0;
 export function startingSetPreview(entry, props, { cls, attr, esc, icon, button }) {
   const id = `starting-preview-${++sequence}`;
@@ -58,7 +58,23 @@ export function startingSetPreview(entry, props, { cls, attr, esc, icon, button 
     trailing: props["has trailing icon"] ? mark(props["trailing icon"]) : "" });
   if (entry.id === "Switcher Item Icon") return segment(props["accessible name"] || "Option", false, { glyph: mark(props.icon) });
   if (entry.id === "Switcher") return `<fieldset class="${cls}"${attr} aria-label="${esc(props["accessible name"] || "Options")}"${disabled}>${props["content slot"] || ["Option 1", "Option 2", "Option 3", "Option 4"].map((s,i) => segment(s, i === 0)).join("")}</fieldset>`;
-  const tab = (label, selected = false) => `<button type="button" role="tab" class="stylos-tab-item" data-size="${esc(size)}" data-state="${esc(props.state ?? "default")}" data-is-selected="${selected}" aria-selected="${selected}" tabindex="${selected ? 0 : -1}"${disabled}><span class="stylos-tab-label">${esc(label)}</span></button>`;
-  if (entry.id === "Tab Item") return `<div role="tablist" aria-label="Tabs">${tab(props["label text"] || "Tab item", true)}</div>`;
-  if (entry.id === "Tabs Horizontal") return `<div class="${cls}"${attr}><div class="stylos-tabs-list" role="tablist" aria-label="${esc(props["accessible name"] || "Tabs")}">${props["tabs slot"] || ["Tab item 1", "Tab item 2", "Tab item 3"].map((s,i) => tab(s, i === 0)).join("")}</div>${props["panels slot"] || ""}</div>`;
+  // A tab is its button: label text, Icon and Badge are direct children. The
+  // row draws the band and, with anchor positioning, the travelling indicator.
+  const tab = (label, selected = false, { leading = "", trailing = "", badge = "", glyph } = {}) => {
+    const only = glyph !== undefined;
+    const flags = `${leading ? " data-leading-icon" : ""}${trailing ? " data-trailing-icon" : ""}`;
+    const tone = props.state === "disabled" ? "disabled" : selected ? "primary" : "base";
+    const count = badge ? `<span class="stylos-badge" data-tone="${tone}" data-size="${esc(size)}">${esc(badge)}</span>` : "";
+    return `<button type="button" role="tab" class="stylos-tab-item${only ? " stylos-tab-item-icon" : ""}" data-size="${esc(size)}" data-state="${esc(props.state ?? "default")}" data-value="${esc(label)}"${flags}${only ? ` aria-label="${esc(label)}"` : ""} aria-selected="${selected}" tabindex="${selected ? 0 : -1}"${disabled}>${only ? `${glyph}${count}` : `${leading}${esc(label)}${count}${trailing}`}</button>`;
+  };
+  const row = (tabs, name = "Tabs", rootAttrs = ` class="stylos-tabs-horizontal" data-size="${esc(size)}"`) =>
+    `<div${rootAttrs}><div class="stylos-tabs-list" role="tablist" aria-label="${esc(name)}" aria-orientation="horizontal">${tabs}</div></div>`;
+  if (entry.id === "Tab Item") return row(tab(props["label text"] || "Tab item", true, {
+    leading: props["has leading icon"] ? mark(props["leading icon"]) : "",
+    trailing: props["has trailing icon"] ? mark(props["trailing icon"]) : "",
+    badge: props["has badge"] ? String(props["number text"] ?? "1") : "" }));
+  if (entry.id === "Tab Item Icon") return row(tab(props["accessible name"] || "Tab", true, { glyph: mark(props.icon),
+    badge: props["has badge"] ? String(props["number text"] ?? "1") : "" }));
+  if (entry.id === "Tabs Horizontal") return row(props["tabs slot"] || ["Tab item 1", "Tab item 2", "Tab item 3"].map((s,i) => tab(s, i === 0)).join(""),
+    props["accessible name"] || "Tabs", ` class="${cls}"${attr}`) + (props["panels slot"] || "");
 }

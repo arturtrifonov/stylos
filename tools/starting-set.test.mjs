@@ -9,9 +9,9 @@ import { markupReader } from "./lib/ui-release.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const entries = loadRegistry(root);
-const additions = ["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Input Search", "Progress Bar", "Switcher", "Switcher Item", "Switcher Item Icon", "Tabs Horizontal", "Tab Item", "Text Area"];
+const additions = ["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Input Search", "Progress Bar", "Switcher", "Switcher Item", "Switcher Item Icon", "Tabs Horizontal", "Tab Item", "Tab Item Icon", "Text Area"];
 
-const reviewedReady = new Set(["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Input Search", "Progress Bar", "Switcher", "Switcher Item", "Switcher Item Icon", "Text Area"]);
+const reviewedReady = new Set(["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Input Search", "Progress Bar", "Switcher", "Switcher Item", "Switcher Item Icon", "Tabs Horizontal", "Tab Item", "Tab Item Icon", "Text Area"]);
 
 test("urgent product components keep their reviewed status, complete contracts and one core wave", () => {
   const plan = readPlan(root);
@@ -180,4 +180,36 @@ test("Switcher previews keep native segments without wrappers or mirrored select
   assert.equal(segments.length, 4);
   assert.ok(segments.every(node => node.tagName === "label" && node.childNodes.filter(child => child.tagName).length === 1));
   assert.equal(segments.filter(node => node.childNodes[0].attrs.some(attr => attr.name === "checked")).length, 1);
+});
+
+test("Tabs previews render one button per tab inside the row's tablist", () => {
+  const read = html => markupReader(html);
+  const item = entries.find(entry => entry.id === "Tab Item");
+  const tab = read(sampleHtml(item, { ...defaultAssignment(item), "has leading icon": true, "leading icon": "home",
+    "has badge": true, "number text": "3" }))("stylos-tab-item");
+  assert.equal(tab.tagName, "button");
+  assert.deepEqual(tab.childNodes.filter(node => node.tagName).map(node => node.tagName), ["svg", "span"]);
+  assert.equal(tab.childNodes.find(node => node.tagName === "span").attrs.find(attr => attr.name === "class").value, "stylos-badge");
+  assert.equal(tab.attrs.find(attr => attr.name === "data-size").value, "medium");
+  assert.ok(tab.attrs.some(attr => attr.name === "data-leading-icon"));
+
+  const iconItem = entries.find(entry => entry.id === "Tab Item Icon");
+  const square = read(sampleHtml(iconItem, { ...defaultAssignment(iconItem), "accessible name": "Calendar" }))("stylos-tab-item-icon");
+  assert.deepEqual(square.childNodes.filter(node => node.tagName).map(node => node.tagName), ["svg"]);
+  const counted = read(sampleHtml(iconItem, { ...defaultAssignment(iconItem), "has badge": true, "number text": "12" }))("stylos-tab-item-icon");
+  assert.deepEqual(counted.childNodes.filter(node => node.tagName).map(node => node.tagName), ["svg", "span"]);
+  assert.equal(square.attrs.find(attr => attr.name === "aria-label").value, "Calendar");
+
+  const group = entries.find(entry => entry.id === "Tabs Horizontal");
+  const html = sampleHtml(group, defaultAssignment(group));
+  const reader = read(html);
+  const root = reader("stylos-tabs-horizontal");
+  const list = reader("stylos-tabs-list");
+  assert.equal(list.parentNode, root);
+  assert.equal(list.attrs.find(attr => attr.name === "role").value, "tablist");
+  const tabs = list.childNodes.filter(node => node.tagName);
+  assert.equal(tabs.length, 3);
+  assert.ok(tabs.every(node => node.tagName === "button" && node.childNodes.every(child => !child.tagName)));
+  assert.equal(tabs.filter(node => node.attrs.some(attr => attr.name === "aria-selected" && attr.value === "true")).length, 1);
+  assert.doesNotMatch(html, /stylos-tab-label|stylos-selection-icon|data-is-selected/);
 });

@@ -7,6 +7,8 @@ export type DropdownBehaviorOptions = {
   onValueChange: (value: string) => void;
   disabled?: boolean;
   placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end";
+  /** Match the panel to the trigger's width (default). */
+  sameWidth?: boolean;
 };
 
 // Select shares this adapter internally; Dropdown's external-trigger contract

@@ -114,8 +114,9 @@ the registry; no version is bumped and no readiness or accessibility assessment
 is inferred from a build.
 Switcher Item Icon joined these dependencies on 2026-10-26 by owner decision,
 as a separate icon-only segment matching its own Figma set. The owner approved
-Switcher, Switcher Item and Switcher Item Icon as `ready` the same day; Tabs
-Horizontal and Tab Item remain draft.
+Switcher, Switcher Item and Switcher Item Icon as `ready` the same day. Tab
+Item Icon joined Tabs Horizontal's dependencies on 2026-10-26 by the same
+reasoning, and the owner approved the Tabs family as `ready` the same day.
 
 **Amended 2026-10-12 — Modal and Drawer together, selected by the owner.** The two layouts compose one private window frame with the verified five size profiles and native Button/Button Inner controls. Their native dialog adapter owns bindable visibility, interrupted Motion, Escape, focus restoration and modal scroll locks. Modal uses the browser top layer and level-6 free motion; Drawer is non-modal with physical left/right edge travel and owner-confirmed elevation 5. Drawer scrolls only its content, using the verified medium/absolute scrollbar. Anchored adapters portal into the owning dialog outside its clipped panel and close with that owner. Explicit window action callbacks retain native click events. No dimming colour is invented for the absent Figma backdrop.
 

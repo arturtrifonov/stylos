@@ -6,6 +6,9 @@ flow_behavior:
   - "fill"
 children:
   - "Tab Item"
+  - "Tab Item Icon"
+  - "Dropdown"
+  - "Icon"
 parents:
   - "Accordion"
   - "Bottom Sheet"
@@ -15,12 +18,12 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
+notes: "Owner approved as ready on 2026-10-26 after alignment with the finished Figma set: geometry, group focus, automatic overflow and a travelling indicator. Motion (FND-MOTION-15): the indicator travels to the selected tab with medium/enter and the enter easing where the browser animates anchor changes, as Switcher; tab tints and the focus crossfade use micro/linear; reduced motion makes changes immediate. Scoped evidence: packages/ui/verification/tabs-2026-10-26.md."
 import:
   batch: 1
   ready: true
-status: "draft"
-html: "<div role=\"tablist\"><button role=\"tab\">Tab</button></div>"
+status: "ready"
+html: "<div><div role=\"tablist\"><button role=\"tab\">Tab</button></div><button aria-haspopup=\"listbox\" aria-label=\"More tabs\"></button></div>"
 summary: "A horizontal tab list selecting one associated content panel."
 purpose: "Organise peer product views while preserving a predictable keyboard path."
 use_when:
@@ -33,8 +36,8 @@ api:
   -
     name: "size"
     kind: "variant"
-    description: "The five current Figma density presets; the consumer owns available width."
-    default: "extra small"
+    description: "The five Figma density presets for the row, its tabs, the overflow trigger and its menu. Width belongs to the consumer."
+    default: "medium"
     values:
       -
         value: "extra small"
@@ -54,8 +57,13 @@ api:
   -
     name: "accessible name"
     kind: "text"
-    description: "Accessible name of the group."
+    description: "Accessible name of the tablist."
     default: "Options"
+  -
+    name: "more accessible name"
+    kind: "text"
+    description: "Accessible name of the overflow trigger and its menu, shown only while tabs do not fit."
+    default: "More tabs"
   -
     name: "onchange"
     kind: "event"
@@ -63,7 +71,7 @@ api:
   -
     name: "tabs slot"
     kind: "slot"
-    description: "Tab Item children in display order."
+    description: "Tab Item and Tab Item Icon children in display order, with unique non-empty values."
   -
     name: "panels slot"
     kind: "slot"
@@ -74,36 +82,51 @@ sizing_model:
   adjustable:
     horizontal: true
     vertical: false
-  intent: "Fill width; five verified tab heights with an underline below the label band. Overflow uses native horizontal scrolling."
+  intent: "Fills its width. The row is the tab height plus the band that carries the indicator, 28/36/46/54/64 units, over a bottom line. The tablist hangs its first and last label padding outside the row so label text aligns with it; adjacent tabs are gap/g-0_125 apart. Tabs that do not fit move into the overflow menu, whose square trigger is the tab height; the selected tab always stays in the row."
   sizes:
     -
       size: "extra small"
       box: "size/s-3_000"
-      gap: "gap/g-0_500"
+      padding_x: "gap/g-1_000"
+      gap: "gap/g-0_125"
+      band: "gap/g-0_500"
+      indicator: "gap/g-0_250"
       font_size: "size/0_750"
       line_height: "line height/string/0_750"
     -
       size: "small"
       box: "size/s-4_000"
-      gap: "gap/g-0_625"
+      padding_x: "gap/g-1_250"
+      gap: "gap/g-0_125"
+      band: "gap/g-0_500"
+      indicator: "gap/g-0_250"
       font_size: "size/0_875"
       line_height: "line height/string/0_875"
     -
       size: "medium"
       box: "size/s-5_000"
-      gap: "gap/g-0_750"
+      padding_x: "gap/g-1_500"
+      gap: "gap/g-0_125"
+      band: "gap/g-0_750"
+      indicator: "gap/g-0_375"
       font_size: "size/1_000"
       line_height: "line height/string/1_000"
     -
       size: "large"
       box: "size/s-6_000"
-      gap: "gap/g-0_875"
+      padding_x: "gap/g-2_000"
+      gap: "gap/g-0_125"
+      band: "gap/g-0_750"
+      indicator: "gap/g-0_375"
       font_size: "size/1_250"
       line_height: "line height/string/1_250"
     -
       size: "extra large"
       box: "size/s-7_000"
-      gap: "gap/g-1_000"
+      padding_x: "gap/g-2_500"
+      gap: "gap/g-0_125"
+      band: "gap/g-1_000"
+      indicator: "gap/g-0_500"
       font_size: "size/1_500"
       line_height: "line height/string/1_500"
 a11y:
@@ -113,7 +136,14 @@ a11y:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4451:19901"
-  last_verified: "2026-10-17"
+  last_verified: "2026-10-26"
 limitations:
-  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
-  - "The consumer supplies mounted panels, IDs, aria-labelledby and hidden state. Activation is automatic on arrow navigation; disabled tabs are skipped. Vertical tabs and router navigation are outside this slice."
+  - "Whole-release Chrome/Orca, contrast and two-theme accessibility acceptance remain in packages/ui/verification/0.3.0.md; this component review does not close those gates."
+  - "Migration: Medium replaces extra small as the default size (owner decision, 2026-10-26). Panels render after the row instead of inside the component root."
+  - "The consumer supplies mounted panels, IDs, aria-labelledby and hidden state. Activation is automatic on arrow navigation (APG automatic activation, panels displayed without latency); disabled tabs are skipped. Vertical tabs and router navigation are outside this slice."
+  - "Overflow is measured by the tabs behaviour; static HTML without it scrolls the row instead. The menu offers each hidden tab's label and leading icon; badges are not repeated there."
+  - "The travel is a CSS transition of anchor() positions. Chromium animates it; Firefox (156) moves the indicator instantly until Mozilla bug 1924226; without anchor positioning each selected tab draws its own indicator. No script-measured fallback (owner decision, 2026-10-26)."
+figma_notes:
+  - "Figma is focused is a drawing state. The web shows it while a tab has keyboard focus (:focus-visible): a frame around the row in the field focus treatment, gap/g-0_375 outside the outer labels and above them, its lower edge on the bottom line. The overflow trigger is its own tab stop and frames itself."
+  - "Figma has overflow is a drawing state: the web shows the trigger only while tabs do not fit. The trigger is drawn as Tab Item Icon with the more_horiz mark; its menu is Dropdown with Dropdown Item Default rows, which Figma does not draw."
+  - "Figma draws the indicator on each tab. The web paints the same indicator once per list, anchored to the selected tab, so it can travel; the static result is identical."
