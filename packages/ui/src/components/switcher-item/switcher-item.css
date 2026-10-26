@@ -44,9 +44,6 @@
 .stylos-switcher-item:has(> input:checked) { background: var(--_stylos-switcher-selection, var(--_stylos-switcher-bold)); color: var(--stylos-color-text-inverted); }
 .stylos-switcher-item:has(> input:checked:enabled):hover { background: var(--_stylos-switcher-selection, var(--_stylos-switcher-bold-hover)); }
 .stylos-switcher-item:has(> input:checked:enabled):active { background: var(--_stylos-switcher-selection, var(--_stylos-switcher-bold-active)); }
-/* Switcher draws keyboard focus on the group. A focused radio that is not the
- * checked one (Tab skips a disabled checked radio) shows the hover surface. */
-.stylos-switcher-item:has(> input:focus-visible:not(:checked)) { background: var(--_stylos-switcher-subtle-hover); }
 .stylos-switcher-item:has(> input:disabled) { background: var(--_stylos-switcher-subtle-disabled); color: var(--stylos-color-text-disabled); }
 .stylos-switcher-item:has(> input:checked:disabled) { background: var(--_stylos-switcher-selection, var(--_stylos-switcher-bold-disabled)); }
 

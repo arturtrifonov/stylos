@@ -145,7 +145,7 @@ figma:
 limitations:
   - "Migration: Medium replaces extra small as the default size (owner decision, 2026-10-26)."
   - "Whole-release Chrome/Orca, contrast and two-theme accessibility acceptance remain in packages/ui/verification/0.3.0.md; this component review does not close those gates."
-  - "Keyboard focus is drawn by Switcher on the whole group; the segment draws no focus ring of its own. A focused segment that is not the checked one, reached when the checked radio is disabled, shows the hover surface."
+  - "Keyboard focus is drawn by Switcher on the whole group; the segment draws no focus mark of its own. When the checked radio is disabled, Tab focuses the first available radio (Shift+Tab the last) without selecting it, until Space or an arrow selects. Owner decision, 2026-10-26: keep the native behaviour, with no custom cue."
   - "Use inside Switcher; size and tone are inherited from the group. An icon-only segment is Switcher Item Icon."
   - "Each icon snippet should render one Icon. The segment sets its footprint and gives up padding for the optical overhang; it does not wrap or hide arbitrary content."
 figma_notes:
