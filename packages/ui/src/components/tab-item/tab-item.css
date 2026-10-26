@@ -1,8 +1,48 @@
 @import "../../behaviors/selection.css";
 @import "../badge/badge.css";
-.stylos-tab-item { padding: 0 0 var(--_stylos-tab-band); }
-.stylos-tab-item:focus-visible { outline-offset: calc(-1 * var(--stylos-border-width-thick)); }
-.stylos-tab-label { display: inline-flex; align-items: center; gap: var(--_stylos-selection-gap); height: var(--_stylos-selection-height); padding-inline: var(--_stylos-selection-padding); border-radius: var(--stylos-radius-medium); }
-.stylos-tab-item[data-is-selected="true"] { color: var(--stylos-color-text-primary); }
-.stylos-tab-item[data-is-selected="true"]::after { content: ""; position: absolute; bottom: 0; inset-inline: var(--_stylos-tab-band); height: var(--_stylos-tab-line); background: var(--stylos-color-surface-bold-primary-default); border-start-start-radius: var(--stylos-radius-small); border-start-end-radius: var(--stylos-radius-small); }
-.stylos-tab-item:enabled:hover .stylos-tab-label { background: var(--stylos-color-surface-subtle-base-hover); }
+/* Tab Item — docs/components/registry/tab-item.yaml. The button is the label
+ * box: label text is a text node, and a supplied Icon and the Badge render
+ * directly. The band below the row, the selection indicator and keyboard
+ * focus belong to Tabs Horizontal. */
+.stylos-tab-item {
+  --stylos-icon-footprint: var(--_stylos-selection-icon);
+  gap: var(--_stylos-selection-gap);
+  height: var(--_stylos-selection-height);
+  padding: 0 var(--_stylos-selection-padding);
+  border-radius: var(--stylos-radius-medium);
+  transition:
+    background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear),
+    color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+}
+.stylos-tab-item:focus-visible { outline: none; }
+/* Figma's optical overhang: the icon keeps its footprint and the padding on its side gives way. */
+.stylos-tab-item[data-leading-icon] { padding-inline-start: calc(var(--_stylos-selection-padding) - var(--_stylos-tab-optical)); }
+.stylos-tab-item[data-trailing-icon] { padding-inline-end: calc(var(--_stylos-selection-padding) - var(--_stylos-tab-optical)); }
+
+.stylos-tab-item[aria-selected="true"] { color: var(--stylos-color-text-primary); }
+.stylos-tab-item:enabled:hover { background: var(--stylos-color-surface-subtle-base-hover); }
+.stylos-tab-item:enabled:active { background: var(--stylos-color-surface-subtle-base-active); }
+.stylos-tab-item[aria-selected="true"]:enabled:hover { background: var(--stylos-color-surface-subtle-primary-hover); }
+.stylos-tab-item[aria-selected="true"]:enabled:active { background: var(--stylos-color-surface-subtle-primary-active); }
+.stylos-tab-item[aria-selected="true"]:disabled { color: var(--stylos-color-text-disabled); }
+
+/* Without anchor positioning each selected tab draws its own indicator in the band. */
+@supports not (anchor-name: --stylos-tab-selection) {
+  .stylos-tab-item[aria-selected="true"]::after {
+    content: "";
+    position: absolute;
+    inset-inline: var(--_stylos-selection-padding);
+    bottom: calc(-1 * var(--_stylos-tab-band));
+    height: var(--_stylos-tab-line);
+    border-start-start-radius: var(--stylos-radius-small);
+    border-start-end-radius: var(--stylos-radius-small);
+    background: var(--stylos-color-surface-bold-primary-default);
+  }
+  .stylos-tab-item[aria-selected="true"]:enabled:hover::after { background: var(--stylos-color-surface-bold-primary-hover); }
+  .stylos-tab-item[aria-selected="true"]:enabled:active::after { background: var(--stylos-color-surface-bold-primary-active); }
+  .stylos-tab-item[aria-selected="true"]:disabled::after { background: var(--stylos-color-surface-bold-primary-disabled); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stylos-tab-item { transition: none; }
+}

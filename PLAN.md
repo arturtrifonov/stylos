@@ -31,8 +31,10 @@ the reviewed Input Text geometry and adds its permanent Search mark and native
 clear action. Text Area was finalized on 2026-10-26 after its owner-directed
 Figma, typography, native-field and DOM review. Switcher, Switcher Item and
 Switcher Item Icon, added by owner decision, were approved as ready on
-2026-10-26 after their Figma, DOM, focus and motion review. Tabs Horizontal and
-Tab Item remain draft pending design work. Evidence and outstanding
+2026-10-26 after their Figma, DOM, focus and motion review. Tabs Horizontal,
+Tab Item and Tab Item Icon were aligned with the finished Figma set and
+approved as ready the same day, so every urgent starting-set contract is
+ready. Evidence and outstanding
 release checks are recorded in
 [deferred acceptance](packages/ui/verification/0.3.0.md).
 
@@ -65,7 +67,7 @@ warning. Never fabricate or hand-edit an export to make a release pass.
 
 ### `0.3.0`
 
-Complete every outstanding Stage 5 check against the expanded 47-entry core,
+Complete every outstanding Stage 5 check against the expanded 48-entry core,
 including the draft additions. The complete hand-off is
 [0.3.0 acceptance](packages/ui/verification/0.3.0.md). Retain these original gates:
 
@@ -146,7 +148,7 @@ The `0.1` milestone's checklist, and the membership record for every entry the w
 | 4 | Input | Input Text, Select, Dropdown Item Default / Parent / Checkbox / Toggle, Dropdown | a toolbar and filters above that table | 1 wk |
 | 5 | The Button family | Button, Button Icon | every action on the screen | 2 wk |
 | 6 | The shell | Modal, Drawer, Tooltip | the Stage 6 proof screen, composed | 1 wk |
-| 7 | Urgent product dependencies | Accordion, Accordion Header, Alert Inline, Alert Popup, Alert Popup Timer, Input Search, Progress Bar, Switcher, Switcher Item, Switcher Item Icon, Tabs Horizontal, Tab Item, Text Area | the first product consumes provisional library components rather than inventing replacements | immediate |
+| 7 | Urgent product dependencies | Accordion, Accordion Header, Alert Inline, Alert Popup, Alert Popup Timer, Input Search, Progress Bar, Switcher, Switcher Item, Switcher Item Icon, Tabs Horizontal, Tab Item, Tab Item Icon, Text Area | the first product consumes provisional library components rather than inventing replacements | immediate |
 
 *Amended 2026-10-17 — urgent starting-set expansion, explicitly requested by the owner.*
 Wave 7 is the immediate implementation priority, ahead of finishing Stage 5
@@ -168,6 +170,12 @@ Switcher Item and Tab Item accompany their parent components.
 separate icon-only set becomes its own draft entry, **Switcher Item Icon**,
 mirroring Button and Button Icon rather than a mode of Switcher Item. It joins
 wave 7 as a third Switcher dependency, so the expanded core has 47 entries.
+
+*Amended 2026-10-26 — owner decisions during the Tabs review.* Figma's
+icon-only tab set becomes its own draft entry, **Tab Item Icon**, as with
+Switcher; the expanded core has 48 entries. Tabs Horizontal measures its row
+and moves tabs that do not fit into a Dropdown menu, keeping the selected tab
+in the row; its default size becomes Medium.
 
 *Amended 2026-09-07:* **Tooltip was built out of order**, ahead of the seven elements still open in wave 1 and the rest of wave 2 — the owner chose it explicitly. The table is a sequence rather than a gate, and nothing in it depends on the order being kept: the waves are grouped by what a screen needs next, not by what compiles after what. Wave 6's other two entries, Modal and Drawer, are untouched.
 

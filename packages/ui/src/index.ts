@@ -131,6 +131,9 @@ export type { TabsHorizontalProps } from "./components/tabs-horizontal/props.ts"
 export { default as TabItem } from "./components/tab-item/TabItem.svelte";
 export type { TabItemProps } from "./components/tab-item/props.ts";
 
+export { default as TabItemIcon } from "./components/tab-item-icon/TabItemIcon.svelte";
+export type { TabItemIconProps } from "./components/tab-item-icon/props.ts";
+
 export { default as TextArea } from "./components/text-area/TextArea.svelte";
 export type { TextAreaProps } from "./components/text-area/props.ts";
 export { tabsBehavior } from "./behaviors/tabs.ts";

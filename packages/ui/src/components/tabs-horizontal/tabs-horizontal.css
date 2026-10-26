@@ -1,4 +1,114 @@
-@import "../tab-item/tab-item.css";
-@import "../../behaviors/scrollbar.css";
-.stylos-tabs-horizontal { min-width: 0; }
-.stylos-tabs-list { display: flex; gap: var(--_stylos-selection-gap); overflow-x: auto; border-block-end: var(--stylos-border-width-normal) solid var(--stylos-color-border-secondary); }
+@import "../tab-item-icon/tab-item-icon.css";
+@import "../dropdown/dropdown.css";
+@import "../dropdown-item-default/dropdown-item-default.css";
+/* Tabs Horizontal — docs/components/registry/tabs-horizontal.yaml. The root is
+ * the row: it draws the bottom line and keyboard focus, and holds the tablist
+ * and the overflow trigger, which may not live inside a tablist. The list hangs
+ * its first and last label padding outside the row so text aligns with it. */
+.stylos-tabs-horizontal {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+  /* The bottom line sits inside the row, under the band and its indicator, as in Figma. */
+  box-shadow: inset 0 calc(-1 * var(--stylos-border-width-normal)) 0 var(--stylos-color-border-secondary);
+}
+.stylos-tabs-list {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: var(--stylos-dimension-gap-g-0_125);
+  margin-inline: calc(-1 * var(--_stylos-selection-padding));
+  padding-block-end: var(--_stylos-tab-band);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.stylos-tabs-horizontal[data-overflowing] > .stylos-tabs-list { margin-inline-end: 0; }
+.stylos-tabs-list > .stylos-tab-item[data-overflowed] { display: none; }
+.stylos-tabs-overflow { display: contents; }
+
+/* Focus belongs to the tablist, a single tab stop (Figma is focused): a frame
+ * around the row in the field focus treatment, crossfaded as in fields. The
+ * focused tab is the selected one, which the indicator shows. */
+.stylos-tabs-horizontal::before {
+  content: "";
+  position: absolute;
+  inset-block: calc(-1 * var(--stylos-dimension-gap-g-0_375)) 0;
+  inset-inline: calc(-1 * (var(--_stylos-selection-padding) + var(--stylos-dimension-gap-g-0_375)));
+  z-index: -1;
+  box-sizing: border-box;
+  border: var(--stylos-border-width-normal) solid var(--stylos-color-border-primary);
+  border-radius: var(--stylos-radius-large);
+  background: var(--stylos-color-background-base);
+  box-shadow: var(--stylos-focus-base);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+}
+.stylos-tabs-horizontal:has(> .stylos-tabs-list > .stylos-tab-item:focus-visible)::before { opacity: 1; }
+/* The overflow trigger is its own tab stop and frames itself. */
+.stylos-tabs-more:focus-visible {
+  box-shadow: inset 0 0 0 var(--stylos-border-width-normal) var(--stylos-color-border-primary), var(--stylos-focus-base);
+}
+
+/* One indicator per list, anchored to the selected tab so that it travels
+ * (owner request; motion as Switcher). Selection stays aria-selected on the
+ * tab; the pseudo-element adds no DOM and needs no script. Engines that do
+ * not animate an anchor change yet (Firefox, bug 1924226) move it instantly;
+ * without anchor positioning each tab draws its own indicator (tab-item.css). */
+@supports (anchor-name: --stylos-tab-selection) {
+  .stylos-tabs-list {
+    --_stylos-tab-indicator-inset: var(--_stylos-selection-padding);
+    anchor-scope: --stylos-tab-selection;
+  }
+  .stylos-tabs-list:has(> .stylos-tab-item-icon[aria-selected="true"]) {
+    --_stylos-tab-indicator-inset: calc((var(--_stylos-selection-height) - var(--_stylos-selection-icon) + var(--_stylos-tab-optical)) / 2);
+  }
+  .stylos-tabs-list > .stylos-tab-item[aria-selected="true"] { anchor-name: --stylos-tab-selection; }
+  .stylos-tabs-list:has(> .stylos-tab-item[aria-selected="true"])::after {
+    content: "";
+    position: absolute;
+    position-anchor: --stylos-tab-selection;
+    bottom: 0;
+    left: calc(anchor(left) + var(--_stylos-tab-indicator-inset));
+    width: calc(anchor-size(width) - 2 * var(--_stylos-tab-indicator-inset));
+    height: var(--_stylos-tab-line);
+    border-start-start-radius: var(--stylos-radius-small);
+    border-start-end-radius: var(--stylos-radius-small);
+    background: var(--stylos-color-surface-bold-primary-default);
+    transition:
+      left var(--stylos-motion-duration-medium-enter) var(--stylos-motion-easing-enter),
+      width var(--stylos-motion-duration-medium-enter) var(--stylos-motion-easing-enter),
+      background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+  }
+  .stylos-tabs-list:has(> .stylos-tab-item[aria-selected="true"]:enabled:hover)::after { background: var(--stylos-color-surface-bold-primary-hover); }
+  .stylos-tabs-list:has(> .stylos-tab-item[aria-selected="true"]:enabled:active)::after { background: var(--stylos-color-surface-bold-primary-active); }
+  .stylos-tabs-list:has(> .stylos-tab-item[aria-selected="true"]:disabled)::after { background: var(--stylos-color-surface-bold-primary-disabled); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stylos-tabs-list:has(> .stylos-tab-item[aria-selected="true"])::after { transition: none; }
+  }
+  /* stylelint-disable scale-unlimited/declaration-strict-value */
+  @media (forced-colors: active) {
+    .stylos-tabs-list:has(> .stylos-tab-item[aria-selected="true"])::after,
+    .stylos-tabs-list:has(> .stylos-tab-item[aria-selected="true"]:is(:hover, :active, :disabled))::after { background: Highlight; }
+  }
+  /* stylelint-enable scale-unlimited/declaration-strict-value */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stylos-tabs-horizontal::before { transition: none; }
+}
+/* stylelint-disable scale-unlimited/declaration-strict-value */
+@media (forced-colors: active) {
+  .stylos-tab-item[aria-selected="true"]::after,
+  .stylos-tab-item[aria-selected="true"]:is(:hover, :active, :disabled)::after { background: Highlight; }
+  .stylos-tabs-horizontal:has(> .stylos-tabs-list > .stylos-tab-item:focus-visible) {
+    outline: var(--stylos-border-width-thick) solid Highlight;
+    outline-offset: var(--stylos-border-width-thick);
+  }
+  .stylos-tabs-more:focus-visible { outline: var(--stylos-border-width-thick) solid Highlight; }
+}
+/* stylelint-enable scale-unlimited/declaration-strict-value */

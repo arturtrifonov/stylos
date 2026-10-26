@@ -6,6 +6,14 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Added
 
+- **Tab Item Icon**, an icon-only tab matching its own Figma set: a
+  square tab named by a required `accessibleName`, with the Tab Item states
+  and an optional Badge that widens it.
+- Tabs Horizontal moves tabs that do not fit into a Dropdown behind a
+  "More tabs" trigger, keeping the selected tab in the row; choosing from the
+  menu selects the tab and moves focus to it. `dropdownBehavior` accepts
+  `sameWidth: false` for compact triggers.
+
 - **Switcher Item Icon**, an icon-only segment for Switcher matching its
   own Figma set: a square native radio named by a required `accessibleName`,
   with the Switcher Item states and a 14–22 px icon.
@@ -36,6 +44,17 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Changed
 
+- Align Tabs Horizontal and Tab Item with the finished Figma set. A tab is one
+  button: label text, Icon snippets and a size- and state-matched Badge render
+  without wrappers. The row hangs its outer label padding, spaces tabs 1 unit
+  apart, draws its bottom line inside and corrects the small/large band and
+  large indicator. Hover and press surfaces follow selection. Keyboard focus is
+  a frame around the row in the field focus treatment; tabs draw no ring of
+  their own. The indicator is one anchored pseudo-element that travels like
+  Switcher's (instantly in Firefox until bug 1924226). Medium replaces extra
+  small as the default size and panels render after the row. Mark Tabs
+  Horizontal, Tab Item and Tab Item Icon ready after owner review.
+
 - Align Switcher and Switcher Item with the updated Figma set. Primary groups
   get a primary border and primary unselected labels; segment gaps follow
   1/1/2/3/4, icons 14/16/18/20/22 with the trailing overhang mirrored, and
@@ -51,8 +70,7 @@ All notable changes to the Stylos Design System project (foundations, components
   anchor positioning the segment changes in place. Keyboard focus is drawn on the
   whole group, the tab stop, with the field focus effect and a primary
   border; segments no longer draw their own focus ring. Mark Switcher,
-  Switcher Item and Switcher Item Icon ready after owner review; Tabs
-  Horizontal and Tab Item remain draft.
+  Switcher Item and Switcher Item Icon ready after owner review.
 
 - Mark Text Area ready after its owner-directed review. Align with Figma:
   Georama typography, five-size spacing, Label messages and 10/10/12/12/14 counter text. Default to Medium,

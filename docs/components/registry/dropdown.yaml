@@ -32,6 +32,7 @@ parents:
   - "Multiselect"
   - "Select Cascade"
   - "Button Dropdown"
+  - "Tabs Horizontal"
 uses:
   - "Dropdown Item Default"
   - "Input Search"

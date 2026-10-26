@@ -75,6 +75,8 @@ parents:
   - "Table Cell Image"
   - "Table Cell Heading"
   - "Tab Item"
+  - "Tab Item Icon"
+  - "Tabs Horizontal"
   - "Switcher Item"
   - "Switcher Item Icon"
   - "Alert Inline"

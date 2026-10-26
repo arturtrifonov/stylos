@@ -5,8 +5,8 @@ The Svelte 5 component package, built to SPEC 0009 against the contracts in [`do
 **0.2.0 is an early integration release, authorized 2026-10-17.** The urgent
 starting-set contracts are reviewed one by one; Accordion, Accordion Header,
 Alert Inline, Alert Popup, Alert Popup Timer, Progress Bar, Input Search, Text Area,
-Switcher, Switcher Item and Switcher Item Icon are now ready, while Tabs
-Horizontal and Tab Item remain draft. All unfinished release acceptance,
+Switcher, Switcher Item, Switcher Item Icon, Tabs Horizontal, Tab Item and
+Tab Item Icon are now ready. All unfinished release acceptance,
 including Linux Chrome + Orca, incomplete axe review, visual/contrast coverage
 and Figma synchronization, gates [0.3.0](verification/0.3.0.md). Product proof
 and consumer materials move to 0.4.0. Automated measurements are scoped evidence,
@@ -229,8 +229,9 @@ as **ready** on 2026-10-25 after its Input Text alignment and native clear
 review. **Text Area** is **ready** after its 2026-10-26 typography, native-field
 and DOM review. Switcher and its two segments were aligned with the updated
 Figma set on 2026-10-26 and approved as **ready** ([evidence](verification/switcher-2026-10-26.md)).
-**Tabs Horizontal** and **Tab Item** remain **draft** and are available for early product integration;
-their API and design may change during review. Builds and examples do not
+**Tabs Horizontal**, **Tab Item** and **Tab Item Icon** were aligned with the
+finished Figma set and approved as **ready** on 2026-10-26
+([evidence](verification/tabs-2026-10-26.md)). Builds and examples do not
 promote readiness. The [alert and progress review](verification/alerts-progress-2026-10-25.md)
 records the documentation and DOM audit, fixes and outstanding release checks.
 
@@ -278,10 +279,16 @@ checked segment. It slides where the browser animates anchor changes
 Without anchor positioning the segment changes in place. Keyboard focus
 is drawn on the group, which is the tab stop, with the field focus effect;
 the focused radio is the checked segment. Medium is the default size. Tabs Horizontal instead composes Tab Item
-buttons in `tabsSlot`, with automatic arrow/Home/End activation and a single tab
-stop. It skips disabled tabs and handles RTL. The consumer supplies `panelsSlot`,
-panel IDs, `role="tabpanel"`, `aria-labelledby` and `hidden` bound to the current
-value. Standalone Tab Item is not a complete tabs interaction. Framework-free
+and Tab Item Icon buttons in `tabsSlot` (unique non-empty values), with automatic
+arrow/Home/End activation and a single tab stop. It skips disabled tabs and
+handles RTL. The consumer supplies `panelsSlot`, panel IDs, `role="tabpanel"`,
+`aria-labelledby` and `hidden` bound to the current value; panels render after
+the row. Tabs that do not fit move into a Dropdown behind a "More tabs" trigger
+(`moreAccessibleName`); the selected tab always stays in the row, and choosing
+from the menu moves focus to it. Keyboard focus on the tablist draws a frame
+around the row; the trigger frames itself. The indicator is one anchored
+pseudo-element that travels like Switcher's. Medium is the default size.
+Standalone Tab Item is not a complete tabs interaction. Framework-free
 adapters are exported as `tabsBehavior` / `switcherBehavior` and through the
 corresponding `@stylos/ui/behaviors/*` paths.
 
