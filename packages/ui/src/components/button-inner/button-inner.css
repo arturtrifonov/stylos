@@ -7,6 +7,7 @@
   --_stylos-button-inner-size: var(--stylos-button-inner-footprint, var(--stylos-dimension-size-s-5_000));
   --_stylos-button-inner-surface: transparent;
   --_stylos-button-inner-foreground: var(--stylos-button-inner-color, var(--stylos-color-text-base));
+  --stylos-icon-footprint: var(--_stylos-button-inner-size);
   position: relative;
   z-index: 0;
   display: inline-flex;
@@ -68,11 +69,8 @@
   pointer-events: none;
 }
 
-.stylos-button-inner-icon {
-  --stylos-icon-footprint: var(--_stylos-button-inner-size);
-  display: inline-flex;
-  width: var(--_stylos-button-inner-size);
-  height: var(--_stylos-button-inner-size);
+/* The Icon renders directly; clicks target the button itself. */
+.stylos-button-inner > * {
   pointer-events: none;
 }
 

@@ -7,6 +7,8 @@
     hasLeadingIcon = false, leadingIcon, hasTrailingIcon = false, trailingIcon,
     type = "button", id, name = "", value = "", form = "", descriptionIds = "", onclick,
   }: TagInteractiveProps = $props();
+  const leading = $derived(hasLeadingIcon ? leadingIcon : undefined);
+  const trailing = $derived(hasTrailingIcon ? trailingIcon : undefined);
 </script>
 
 <button
@@ -24,12 +26,6 @@
   data-text-case={textCase}
   data-state={state}
   disabled={state === "disabled"}
->
-  {#if hasLeadingIcon && leadingIcon}
-    <span class="stylos-tag-icon" data-position="leading" aria-hidden="true">{@render leadingIcon()}</span>
-  {/if}
-  <span class="stylos-tag-label">{labelText}</span>
-  {#if hasTrailingIcon && trailingIcon}
-    <span class="stylos-tag-icon" data-position="trailing" aria-hidden="true">{@render trailingIcon()}</span>
-  {/if}
-</button>
+  data-leading-icon={leading ? "" : undefined}
+  data-trailing-icon={trailing ? "" : undefined}
+>{@render leading?.()}<span class="stylos-tag-label">{labelText}</span>{@render trailing?.()}</button>

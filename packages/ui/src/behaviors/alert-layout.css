@@ -22,12 +22,9 @@
   overflow-wrap: anywhere;
 }
 
-/* The decorative slot tracks the first heading line, including when it wraps. */
-:is(.stylos-alert-popup, .stylos-alert-inline) .stylos-alert-icon {
-  align-items: center;
-  justify-content: center;
-  width: var(--_stylos-alert-icon);
-  height: var(--_stylos-alert-heading-line);
+/* The icon centres on the first heading line, including when it wraps. */
+:is(.stylos-alert-popup, .stylos-alert-inline) > :first-child:not(.stylos-alert-body) {
+  margin-block: calc((var(--_stylos-alert-heading-line) - var(--_stylos-alert-icon)) / 2);
 }
 
 /* Centre the native Close button without a separate alignment wrapper. */

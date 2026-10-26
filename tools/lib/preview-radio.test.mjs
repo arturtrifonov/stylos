@@ -12,7 +12,11 @@ test("Radio static previews preserve selection and escape label content without 
     const props = { ...defaultAssignment(entry), "is checked": "true", name: "delivery", value: "weekly", form: "settings" };
     if (id !== "Radio Input") props["label text"] = "<Weekly> & daily";
     const html = sampleHtml(entry, props);
-    assert.match(html, /stylos-radio-input-surface/);
+    // The Input root span is the surface; Label sets its text directly, Text keeps a copy box.
+    assert.match(html, /<span class="stylos-radio-input"[^>]*aria-hidden="true"><\/span>/);
+    assert.doesNotMatch(html, /input-surface/);
+    if (id.endsWith("Label")) assert.doesNotMatch(html, /stylos-radio-copy/);
+    if (id.endsWith("Text")) assert.match(html, /stylos-radio-copy/);
     assert.match(html, /data-is-checked="true"/);
     assert.doesNotMatch(html, /<input|<label|<Weekly>/);
     if (id !== "Radio Input") assert.match(html, /&lt;Weekly&gt; &amp; daily/);

@@ -14,7 +14,9 @@ test("table cells preserve native associations, full escaped strings and action 
   assert.match(html, /^<th /);
   assert.match(html, /id="amount&quot;" scope="col" data-constrained="true" aria-sort="descending"/);
   assert.match(html, /title="&lt;Amount&gt;">&lt;Amount&gt;/);
-  assert.match(html, /data-table-action="sort"/);
+  // Each action is its own Button Inner, directly in the frame.
+  assert.match(html, /<\/span><button type="button" class="stylos-button-inner"[^>]*aria-label="Sort &quot;amount&quot;"><svg/);
+  assert.doesNotMatch(html, /data-table-action|stylos-table-cell-action|button-inner-icon/);
   assert.match(html, /aria-label="Sort &quot;amount&quot;"/);
   assert.match(html, /data-name="arrow_upward"/);
   assert.match(html, /data-name="filter_list"/);

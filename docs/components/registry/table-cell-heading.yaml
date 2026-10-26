@@ -223,10 +223,15 @@ api:
     kind: "text"
     description: "Localized filter action name; defaults to Filter by followed by the column name."
   -
-    name: "onclick"
+    name: "onsortclick"
     kind: "event"
-    description: "Native click from either shown Button Inner action. Its nearest data-table-action wrapper identifies sort or filter. The owner applies the result."
+    description: "Native click on the sort action. The owner applies the result, usually by reversing sort direction."
+  -
+    name: "onfilterclick"
+    kind: "event"
+    description: "Native click on the filter action. The owner applies the result."
 limitations:
+  - "Owner decision 2026-10-26: sort and filter report separate events, onsortclick and onfilterclick. They replace the single onclick, whose consumer told the actions apart by a data-table-action wrapper; both wrappers are gone and each Button Inner renders directly in the cell."
   - "The controls here adjust a sort or a filter that is already applied. Starting one happens from a menu that is not part of this cell, which is why an untouched column shows no control — there is nothing yet to adjust."
   - "In Figma the constraint mark thickness is not bound to a variable. The web projection uses existing gap tokens for the measured sizes."
   - "One line, always. There is no wrapping header and no property to allow one."

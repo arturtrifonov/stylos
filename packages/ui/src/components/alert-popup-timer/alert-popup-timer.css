@@ -20,16 +20,8 @@
 .stylos-alert-popup-timer .stylos-alert-body,
 .stylos-alert-timer-progress { width: calc(100%); }
 
+/* The counter, heading and Undo share one gap; Close keeps the outer spacing. */
 .stylos-alert-popup-timer .stylos-alert-heading-row {
-  gap: var(--_stylos-alert-padding);
-}
-
-/* The counter, heading and Undo share one gap; Close has the outer spacing. */
-.stylos-alert-timer-header {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  min-width: 0;
   gap: var(--_stylos-timer-header-gap);
 }
 
@@ -57,6 +49,7 @@
 /* Scope Close sizing to its native root; content-slot controls keep their sizes. */
 .stylos-alert-popup-timer > .stylos-alert-body > .stylos-alert-heading-row > .stylos-button-inner {
   --stylos-button-inner-footprint: var(--_stylos-timer-box);
+  margin-inline-start: calc(var(--_stylos-alert-padding) - var(--_stylos-timer-header-gap));
 }
 
 .stylos-alert-popup-timer .stylos-alert-content {

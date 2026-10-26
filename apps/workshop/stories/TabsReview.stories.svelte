@@ -111,8 +111,9 @@
   await userEvent.click(trigger);
   const listbox = canvasElement.ownerDocument.getElementById(trigger.getAttribute("aria-controls")!)!;
   const options = [...listbox.querySelectorAll<HTMLElement>('[role="option"]')];
-  await expect(options.map(option => option.dataset.value)).toEqual(before);
-  const target = before.at(-1)!;
+  // Late font loading can return a tab to the row; the menu follows the current set.
+  await expect(options.map(option => option.dataset.value)).toEqual(hidden());
+  const target = options.at(-1)!.dataset.value!;
   await userEvent.click(options.at(-1)!);
   // The chosen tab joins the row as its last visible tab; one change event.
   await waitFor(() => expect(tabs().find(tab => tab.dataset.value === target)).toHaveAttribute("aria-selected", "true"));
