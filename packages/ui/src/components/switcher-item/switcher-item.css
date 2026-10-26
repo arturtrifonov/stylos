@@ -1,12 +1,90 @@
 @import "../../behaviors/selection.css";
+/* Switcher Item — docs/components/registry/switcher-item.yaml.
+ * The label is the segment and the transparent native radio covers it. Label
+ * text is a bare text node and a supplied Icon renders directly, so selection
+ * follows the native :checked state without mirrored attributes or slots. */
 .stylos-switcher-item {
+  --stylos-icon-footprint: var(--_stylos-switcher-icon);
+  --_stylos-switcher-subtle-hover: var(--stylos-color-surface-subtle-base-hover);
+  --_stylos-switcher-subtle-active: var(--stylos-color-surface-subtle-base-active);
+  --_stylos-switcher-subtle-disabled: var(--stylos-color-surface-subtle-base-disabled);
+  --_stylos-switcher-bold: var(--stylos-color-surface-bold-base-default);
+  --_stylos-switcher-bold-hover: var(--stylos-color-surface-bold-base-hover);
+  --_stylos-switcher-bold-active: var(--stylos-color-surface-bold-base-active);
+  --_stylos-switcher-bold-disabled: var(--stylos-color-surface-bold-base-disabled);
   gap: var(--_stylos-selection-gap);
-  height: var(--_stylos-segment-height);
-  padding: 0 var(--_stylos-segment-padding);
+  height: var(--_stylos-switcher-item-height);
+  padding: 0 var(--_stylos-switcher-item-padding);
   border-radius: var(--stylos-radius-small);
+  transition:
+    background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear),
+    color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
 }
+/* Compound selectors: selection.css is imported again by Tab Item, so its
+ * single-class rest colour can follow these rules in the cascade. */
+.stylos-switcher-item[data-tone="primary"] {
+  --_stylos-switcher-subtle-hover: var(--stylos-color-surface-subtle-primary-hover);
+  --_stylos-switcher-subtle-active: var(--stylos-color-surface-subtle-primary-active);
+  --_stylos-switcher-subtle-disabled: var(--stylos-color-surface-subtle-primary-disabled);
+  --_stylos-switcher-bold: var(--stylos-color-surface-bold-primary-default);
+  --_stylos-switcher-bold-hover: var(--stylos-color-surface-bold-primary-hover);
+  --_stylos-switcher-bold-active: var(--stylos-color-surface-bold-primary-active);
+  --_stylos-switcher-bold-disabled: var(--stylos-color-surface-bold-primary-disabled);
+  color: var(--stylos-color-text-primary);
+}
+/* Figma's optical overhang: the icon keeps its footprint and the padding on its side gives up gap/g-0_250. */
+.stylos-switcher-item[data-leading-icon] { padding-inline-start: calc(var(--_stylos-switcher-item-padding) - var(--stylos-dimension-gap-g-0_250)); }
+.stylos-switcher-item[data-trailing-icon] { padding-inline-end: calc(var(--_stylos-switcher-item-padding) - var(--stylos-dimension-gap-g-0_250)); }
 .stylos-switcher-item > input { position: absolute; inset: 0; width: calc(100%); height: calc(100%); opacity: 0; margin: 0; cursor: inherit; }
-.stylos-switcher-item[data-is-selected="true"] { background: var(--stylos-color-surface-bold-base-default); color: var(--stylos-color-text-inverted); }
-.stylos-switcher-item[data-tone="primary"][data-is-selected="true"] { background: var(--stylos-color-surface-bold-primary-default); }
-.stylos-switcher-item:not([data-is-selected="true"]):has(input:enabled):hover { background: var(--stylos-color-surface-subtle-base-hover); }
-.stylos-switcher-item:has(input:disabled) { background: var(--stylos-color-background-secondary); }
+
+.stylos-switcher-item:has(> input:enabled):hover { background: var(--_stylos-switcher-subtle-hover); }
+.stylos-switcher-item:has(> input:enabled):active { background: var(--_stylos-switcher-subtle-active); }
+/* A Switcher that can anchor its sliding selection sets --_stylos-switcher-selection
+ * to transparent and paints the bold surface itself; elsewhere the segment does. */
+.stylos-switcher-item:has(> input:checked) { background: var(--_stylos-switcher-selection, var(--_stylos-switcher-bold)); color: var(--stylos-color-text-inverted); }
+.stylos-switcher-item:has(> input:checked:enabled):hover { background: var(--_stylos-switcher-selection, var(--_stylos-switcher-bold-hover)); }
+.stylos-switcher-item:has(> input:checked:enabled):active { background: var(--_stylos-switcher-selection, var(--_stylos-switcher-bold-active)); }
+/* Switcher draws keyboard focus on the group. A focused radio that is not the
+ * checked one (Tab skips a disabled checked radio) shows the hover surface. */
+.stylos-switcher-item:has(> input:focus-visible:not(:checked)) { background: var(--_stylos-switcher-subtle-hover); }
+.stylos-switcher-item:has(> input:disabled) { background: var(--_stylos-switcher-subtle-disabled); color: var(--stylos-color-text-disabled); }
+.stylos-switcher-item:has(> input:checked:disabled) { background: var(--_stylos-switcher-selection, var(--_stylos-switcher-bold-disabled)); }
+
+.stylos-switcher-item[data-size="extra small"] {
+  --_stylos-switcher-item-height: var(--stylos-dimension-size-s-2_500);
+  --_stylos-switcher-item-padding: var(--stylos-dimension-gap-g-1_250);
+  --_stylos-switcher-icon: var(--stylos-dimension-size-s-1_750);
+}
+.stylos-switcher-item[data-size="small"] {
+  --_stylos-switcher-item-height: var(--stylos-dimension-size-s-3_250);
+  --_stylos-switcher-item-padding: var(--stylos-dimension-gap-g-1_500);
+  --_stylos-switcher-icon: var(--stylos-dimension-size-s-2_000);
+}
+.stylos-switcher-item[data-size="medium"] {
+  --_stylos-switcher-item-height: var(--stylos-dimension-size-s-4_000);
+  --_stylos-switcher-item-padding: var(--stylos-dimension-gap-g-1_750);
+  --_stylos-switcher-icon: var(--stylos-dimension-size-s-2_250);
+}
+.stylos-switcher-item[data-size="large"] {
+  --_stylos-switcher-item-height: var(--stylos-dimension-size-s-4_750);
+  --_stylos-switcher-item-padding: var(--stylos-dimension-gap-g-2_250);
+  --_stylos-switcher-icon: var(--stylos-dimension-size-s-2_500);
+}
+.stylos-switcher-item[data-size="extra large"] {
+  --_stylos-switcher-item-height: var(--stylos-dimension-size-s-5_500);
+  --_stylos-switcher-item-padding: var(--stylos-dimension-gap-g-2_500);
+  --_stylos-switcher-icon: var(--stylos-dimension-size-s-2_750);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stylos-switcher-item { transition: none; }
+}
+
+/* The native radio stays hidden; selection must follow the forced-colours palette. */
+/* stylelint-disable scale-unlimited/declaration-strict-value */
+@media (forced-colors: active) {
+  .stylos-switcher-item { --_stylos-switcher-selection: Highlight; }
+  .stylos-switcher-item:has(> input:checked) { color: HighlightText; }
+  .stylos-switcher-item:has(> input:disabled) { color: GrayText; }
+}
+/* stylelint-enable scale-unlimited/declaration-strict-value */

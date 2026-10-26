@@ -4,8 +4,9 @@ The Svelte 5 component package, built to SPEC 0009 against the contracts in [`do
 
 **0.2.0 is an early integration release, authorized 2026-10-17.** The urgent
 starting-set contracts are reviewed one by one; Accordion, Accordion Header,
-Alert Inline, Alert Popup, Alert Popup Timer, Progress Bar, Input Search and Text Area are
-now ready, while four remain draft. All unfinished release acceptance,
+Alert Inline, Alert Popup, Alert Popup Timer, Progress Bar, Input Search, Text Area,
+Switcher, Switcher Item and Switcher Item Icon are now ready, while Tabs
+Horizontal and Tab Item remain draft. All unfinished release acceptance,
 including Linux Chrome + Orca, incomplete axe review, visual/contrast coverage
 and Figma synchronization, gates [0.3.0](verification/0.3.0.md). Product proof
 and consumer materials move to 0.4.0. Automated measurements are scoped evidence,
@@ -220,13 +221,15 @@ Per SPEC 0009 §5, contract first: the entry's `api` is corrected to describe th
 
 The owner expanded the starting set on 2026-10-17 with `Accordion`, `AlertInline`,
 `AlertPopup`, `AlertPopupTimer`, `InputSearch`, `ProgressBar`, `Switcher`,
-`TabsHorizontal` and `TextArea`. `AccordionHeader`, `SwitcherItem` and `TabItem`
-are their compositional dependencies. Component reviews marked **Accordion** and **Accordion Header** as **ready**
+`TabsHorizontal` and `TextArea`. `AccordionHeader`, `SwitcherItem`,
+`SwitcherItemIcon` (added 2026-10-26) and `TabItem` are their compositional dependencies. Component reviews marked **Accordion** and **Accordion Header** as **ready**
 on 2026-10-24, followed by **Alert Inline**, **Alert Popup**, **Alert Popup Timer**
 and **Progress Bar** on 2026-10-25. The owner also approved **Input Search**
 as **ready** on 2026-10-25 after its Input Text alignment and native clear
 review. **Text Area** is **ready** after its 2026-10-26 typography, native-field
-and DOM review. The other four contracts remain **draft** and are available for early product integration;
+and DOM review. Switcher and its two segments were aligned with the updated
+Figma set on 2026-10-26 and approved as **ready** ([evidence](verification/switcher-2026-10-26.md)).
+**Tabs Horizontal** and **Tab Item** remain **draft** and are available for early product integration;
 their API and design may change during review. Builds and examples do not
 promote readiness. The [alert and progress review](verification/alerts-progress-2026-10-25.md)
 records the documentation and DOM audit, fixes and outstanding release checks.
@@ -265,7 +268,16 @@ indicator. Text Area suppresses its validation in read-only and disabled modes.
 
 Switcher composes native radios sharing one name and the group's size/tone.
 Arrow navigation, fieldset disabling, form data and reset retain native semantics.
-Use Switcher Item within its group. Tabs Horizontal instead composes Tab Item
+Use Switcher Item within its group, or Switcher Item Icon for an icon-only
+choice with a required `accessibleName`. Each segment is a label and its radio;
+selection styling follows `:checked`, so static HTML needs no script. Pass one
+`Icon` per snippet; it renders without a wrapper. With CSS anchor positioning
+the group's own pseudo-element carries the selected surface, anchored to the
+checked segment. It slides where the browser animates anchor changes
+(Chromium); Firefox does not yet (bug 1924226) and moves it instantly.
+Without anchor positioning the segment changes in place. Keyboard focus
+is drawn on the group, which is the tab stop, with the field focus effect;
+the focused radio is the checked segment. Medium is the default size. Tabs Horizontal instead composes Tab Item
 buttons in `tabsSlot`, with automatic arrow/Home/End activation and a single tab
 stop. It skips disabled tabs and handles RTL. The consumer supplies `panelsSlot`,
 panel IDs, `role="tabpanel"`, `aria-labelledby` and `hidden` bound to the current

@@ -4,7 +4,7 @@
   import { switcherBehavior } from "../../behaviors/switcher.ts";
   import "./switcher.css";
   import type { SwitcherProps } from "./props.ts";
-  let { size = "extra small", tone = "base", state = "default", value = $bindable(""),
+  let { size = "medium", tone = "base", state = "default", value = $bindable(""),
     accessibleName = "Options", children, name, form, onchange }: SwitcherProps = $props();
   const instanceId = $props.id();
   const initialValue = untrack(() => value);

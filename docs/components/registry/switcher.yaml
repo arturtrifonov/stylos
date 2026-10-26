@@ -13,11 +13,11 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
+notes: "Owner approved as ready on 2026-10-26 after alignment with the updated Figma set: segment gap, primary border and the direct fieldset layout. Motion (FND-MOTION-15): when the checked radio changes, one group surface travels to it where the browser animates anchor changes, animating position and width with medium/enter and the enter easing; segment text colours follow with the same profile so inverted text never precedes its surface (FND-MOTION-11). This departs from the micro/linear local-state profile because the change travels across segments (FND-MOTION-04). Hover and press tints and the group's focus crossfade stay micro/linear. Reduced motion makes the change immediate; forced colours return the surface to each segment. Scoped evidence: packages/ui/verification/switcher-2026-10-26.md."
 import:
   batch: 1
   ready: true
-status: "draft"
+status: "ready"
 html: "<fieldset><label><input type=\"radio\">Option</label></fieldset>"
 summary: "A compact single-choice segmented control."
 purpose: "Switch a product mode or value with native radio semantics and form participation."
@@ -32,7 +32,7 @@ api:
     name: "size"
     kind: "variant"
     description: "The five current Figma density presets; the consumer owns available width."
-    default: "extra small"
+    default: "medium"
     values:
       -
         value: "extra small"
@@ -47,7 +47,7 @@ api:
   -
     name: "tone"
     kind: "variant"
-    description: "Colour of the selected segment."
+    description: "Colour of the selected segment and the group border; primary also colours unselected labels."
     default: "base"
     values:
       -
@@ -67,7 +67,7 @@ api:
   -
     name: "content slot"
     kind: "slot"
-    description: "Configured selection items. The group does not invent product choices."
+    description: "Configured Switcher Item and Switcher Item Icon segments, laid out directly by the group. The group does not invent product choices."
   -
     name: "onchange"
     kind: "event"
@@ -96,14 +96,14 @@ sizing_model:
   adjustable:
     horizontal: true
     vertical: false
-  intent: "Five Figma outer heights; each segment inherits its group size and tone."
+  intent: "Five Figma outer heights of 24/32/40/48/56 units derive from the segment height, the inset on every side and the border. Gap separates adjacent segments; each segment inherits its group size and tone."
   sizes:
     -
       size: "extra small"
       box: "size/s-3_000"
       padding_x: "gap/g-0_125"
       padding_y: "gap/g-0_125"
-      gap: "gap/g-0_250"
+      gap: "gap/g-0_125"
       font_size: "size/0_750"
       line_height: "line height/string/0_750"
     -
@@ -111,7 +111,7 @@ sizing_model:
       box: "size/s-4_000"
       padding_x: "gap/g-0_250"
       padding_y: "gap/g-0_250"
-      gap: "gap/g-0_375"
+      gap: "gap/g-0_125"
       font_size: "size/0_875"
       line_height: "line height/string/0_875"
     -
@@ -119,7 +119,7 @@ sizing_model:
       box: "size/s-5_000"
       padding_x: "gap/g-0_375"
       padding_y: "gap/g-0_375"
-      gap: "gap/g-0_500"
+      gap: "gap/g-0_250"
       font_size: "size/1_000"
       line_height: "line height/string/1_000"
     -
@@ -127,7 +127,7 @@ sizing_model:
       box: "size/s-6_000"
       padding_x: "gap/g-0_500"
       padding_y: "gap/g-0_500"
-      gap: "gap/g-0_625"
+      gap: "gap/g-0_375"
       font_size: "size/1_250"
       line_height: "line height/string/1_250"
     -
@@ -135,7 +135,7 @@ sizing_model:
       box: "size/s-7_000"
       padding_x: "gap/g-0_625"
       padding_y: "gap/g-0_625"
-      gap: "gap/g-0_750"
+      gap: "gap/g-0_500"
       font_size: "size/1_500"
       line_height: "line height/string/1_500"
 a11y:
@@ -145,8 +145,16 @@ a11y:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4848:9616"
-  last_verified: "2026-10-17"
+  last_verified: "2026-10-26"
 limitations:
-  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+  - "Migration: Medium replaces extra small as the default size (owner decision, 2026-10-26)."
+  - "Whole-release Chrome/Orca, contrast and two-theme accessibility acceptance remain in packages/ui/verification/0.3.0.md; this component review does not close those gates."
+  - "The group hugs its segments and does not scroll, wrap or collapse them; the consumer provides enough width."
+  - "The travel is a CSS transition of anchor() positions, which css-anchor-position-1 resolves at computed-value time. Chromium animates the change; Firefox (156) supports anchor positioning but not this interleaving yet (Mozilla bug 1924226), so the surface moves instantly while colours still fade. Without anchor positioning the checked segment paints the surface in place. Owner decision, 2026-10-26: no script-measured fallback; the component follows the specification and engines catch up."
+figma_notes:
+  - "Figma's content slot frame has no web counterpart: the fieldset lays segments out directly. Figma clips the group; the web does not, so focus rings stay visible."
+  - "Figma is focused is a drawing state. The web shows it while any segment's radio has keyboard focus (:focus-visible); pointer focus draws nothing. The group, which is the single tab stop, takes border/primary and focus/base in place of its resting elevation, in both tones; segments draw no focus ring."
+  - "Figma paints the selected fill on the segment. The web paints the same surface once per group, as the fieldset's pseudo-element anchored to the checked segment, so it can travel; the static result is identical."
 children:
   - "Switcher Item"
+  - "Switcher Item Icon"

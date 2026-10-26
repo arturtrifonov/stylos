@@ -1,0 +1,131 @@
+id: "Switcher Item Icon"
+name: "Switcher Item Icon"
+level: "object"
+role: "trigger"
+status: "ready"
+html: "<label><input type=\"radio\" aria-label=\"Option\"><svg aria-hidden=\"true\"></svg></label>"
+summary: "One icon-only native radio segment inside Switcher."
+purpose: "Offer a choice that a recognised icon represents in a compact square segment, while the radio keeps a spoken name."
+use_when:
+  - "A Switcher choice is recognised by its icon, such as a calendar view beside a list view, and there is no room for visible words."
+do_not_use_when:
+  -
+    text: "The choice needs visible words, or its icon is unfamiliar."
+    instead: "Switcher Item"
+  -
+    text: "A segment is used outside its native radio group."
+    instead: "Switcher"
+api:
+  -
+    name: "size"
+    kind: "variant"
+    description: "The square segment and its centred icon. Inherited from Switcher when nested."
+    default: "medium"
+    values:
+      -
+        value: "extra small"
+      -
+        value: "small"
+      -
+        value: "medium"
+      -
+        value: "large"
+      -
+        value: "extra large"
+  -
+    name: "tone"
+    kind: "variant"
+    description: "Inherited from Switcher when nested. Base selects with a bold base surface; primary also colours unselected icons."
+    default: "base"
+    values:
+      -
+        value: "base"
+      -
+        value: "primary"
+  -
+    name: "state"
+    kind: "variant"
+    description: "Native item availability. The browser derives hover, pressing and focus; a disabled Switcher disables every item."
+    default: "default"
+    values:
+      -
+        value: "default"
+      -
+        value: "disabled"
+  -
+    name: "value"
+    kind: "string"
+    description: "Unique value within the group."
+    default: "option"
+  -
+    name: "accessible name"
+    kind: "text"
+    description: "Required name of the choice for the radio's aria-label, such as Calendar view. It names the choice rather than the glyph."
+    values:
+      -
+        value: "Calendar view"
+        note: "Example choice name; consumers supply their own."
+  -
+    name: "icon"
+    kind: "instance"
+    svelte_type: "snippet"
+    description: "Decorative Icon snippet rendered directly in the segment, without a wrapper. No icon is supplied by the component."
+    values:
+      -
+        value: "calendar_month"
+        note: "Sample icon, not a component default or a closed list."
+sizing_model:
+  horizontal: "fixed"
+  vertical: "fixed"
+  adjustable:
+    horizontal: false
+    vertical: false
+  intent: "A square whose side equals the Switcher Item height, 20/26/32/38/44 units, with the same 14/16/18/20/22-unit icon centred and no optical overhang."
+  sizes:
+    -
+      size: "extra small"
+      box: "size/s-2_500"
+      icon: "size/s-1_750"
+    -
+      size: "small"
+      box: "size/s-3_250"
+      icon: "size/s-2_000"
+    -
+      size: "medium"
+      box: "size/s-4_000"
+      icon: "size/s-2_250"
+    -
+      size: "large"
+      box: "size/s-4_750"
+      icon: "size/s-2_500"
+    -
+      size: "extra large"
+      box: "size/s-5_500"
+      icon: "size/s-2_750"
+a11y:
+  -
+    status: "requires"
+    note: "Supply a non-empty accessible name for each segment; the decorative icon contributes no name. Make the name available to sighted readers too, normally through a surrounding Tooltip."
+  -
+    status: "requires"
+    criterion: "WCAG 2.2 SC 2.5.8"
+    note: "The extra small segment is 20 by 20. The consumer verifies its spacing within the group or uses a larger size."
+figma:
+  file_key: "WUc07ZBtjRvypXtsOlbVut"
+  node_id: "4850:12490"
+  last_verified: "2026-10-26"
+limitations:
+  - "Migration: Medium replaces extra small as the default size (owner decision, 2026-10-26)."
+  - "Whole-release Chrome/Orca, contrast and two-theme accessibility acceptance remain in packages/ui/verification/0.3.0.md; this component review does not close those gates."
+  - "Keyboard focus is drawn by Switcher on the whole group; the segment draws no focus ring of its own. A focused segment that is not the checked one, reached when the checked radio is disabled, shows the hover surface."
+  - "Use inside Switcher; size and tone are inherited from the group. Tooltip composition belongs to the consumer."
+  - "The icon snippet should render one Icon. The segment sets its footprint; it does not wrap or hide arbitrary content."
+figma_notes:
+  - "Figma hover and active are drawing states; the web derives them from the browser. is selected follows the native radio's checked state."
+  - "Inside Switcher, where anchor positioning is supported, the group paints the selected surface as one indicator; it travels where the browser animates anchor changes (see Switcher). The segment keeps its inverted text and paints the surface itself elsewhere."
+  - "Figma's icon is a Placeholder instance swap with no web default; consumers provide snippets and documentation samples select active-set icons."
+notes: "Added at the owner's direction on 2026-10-26 to match the separate Figma set, alongside the Switcher Item alignment, and approved as ready the same day. Scoped evidence: packages/ui/verification/switcher-2026-10-26.md."
+children:
+  - "Icon"
+parents:
+  - "Switcher"

@@ -6,6 +6,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Added
 
+- **Switcher Item Icon**, an icon-only segment for Switcher matching its
+  own Figma set: a square native radio named by a required `accessibleName`,
+  with the Switcher Item states and a 14–22 px icon.
+
 - Input Text accepts native `type="text|password|email|tel|url"`, defaulting to
   text. Password masks the existing input; supported type changes preserve its
   string binding and DOM structure. Update the contract, generated Controls,
@@ -31,6 +35,24 @@ All notable changes to the Stylos Design System project (foundations, components
   `RegisteredIcon`, `IconDrawing` and `IconName` are exported.
 
 ### Changed
+
+- Align Switcher and Switcher Item with the updated Figma set. Primary groups
+  get a primary border and primary unselected labels; segment gaps follow
+  1/1/2/3/4, icons 14/16/18/20/22 with the trailing overhang mirrored, and
+  segments gain pressed, selected-hover and tone-specific disabled surfaces
+  with micro transitions. A segment is now its label and radio only: label
+  text and Icon snippets render without wrappers, and selection styling
+  follows native `:checked` instead of `data-is-selected`. Medium replaces
+  extra small as the default size. With CSS anchor positioning the selected
+  surface is one group indicator anchored to the checked segment, without
+  extra DOM or script. It slides (220 ms, `enter` easing; immediate with
+  reduced motion) where the browser animates anchor changes, currently
+  Chromium; Firefox moves it instantly until bug 1924226 is fixed. Without
+  anchor positioning the segment changes in place. Keyboard focus is drawn on the
+  whole group, the tab stop, with the field focus effect and a primary
+  border; segments no longer draw their own focus ring. Mark Switcher,
+  Switcher Item and Switcher Item Icon ready after owner review; Tabs
+  Horizontal and Tab Item remain draft.
 
 - Mark Text Area ready after its owner-directed review. Align with Figma:
   Georama typography, five-size spacing, Label messages and 10/10/12/12/14 counter text. Default to Medium,

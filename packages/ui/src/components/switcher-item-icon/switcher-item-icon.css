@@ -1,0 +1,8 @@
+@import "../switcher-item/switcher-item.css";
+/* Switcher Item Icon — docs/components/registry/switcher-item-icon.yaml.
+ * The text segment's surface, states and icon ramp in a square: the side
+ * equals the segment height and the centred Icon has no optical overhang. */
+.stylos-switcher-item.stylos-switcher-item-icon {
+  width: var(--_stylos-switcher-item-height);
+  padding: 0;
+}
