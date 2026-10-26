@@ -1,9 +1,17 @@
-@import "../../behaviors/surface.css";
-@import "../switcher-item/switcher-item.css";
+@import "../switcher-item-icon/switcher-item-icon.css";
+/* Switcher — docs/components/registry/switcher.yaml. The fieldset is the
+ * bordered group and lays its items out directly; Figma's content-slot frame
+ * has no web counterpart. Height follows the items, inset and border. */
 .stylos-switcher {
+  --_stylos-switcher-bold: var(--stylos-color-surface-bold-base-default);
+  --_stylos-switcher-bold-hover: var(--stylos-color-surface-bold-base-hover);
+  --_stylos-switcher-bold-active: var(--stylos-color-surface-bold-base-active);
+  --_stylos-switcher-bold-disabled: var(--stylos-color-surface-bold-base-disabled);
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
-  gap: calc(var(--_stylos-switcher-inset) + var(--stylos-dimension-gap-g-0_125));
+  gap: var(--_stylos-switcher-gap);
   min-width: 0;
   padding: var(--_stylos-switcher-inset);
   margin: 0;
@@ -12,4 +20,117 @@
   border-radius: var(--stylos-radius-medium);
   background: var(--stylos-color-background-base);
   box-shadow: var(--stylos-shadow-elevation-1);
+  transition:
+    border-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear),
+    box-shadow var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+}
+.stylos-switcher[data-tone="primary"] {
+  --_stylos-switcher-bold: var(--stylos-color-surface-bold-primary-default);
+  --_stylos-switcher-bold-hover: var(--stylos-color-surface-bold-primary-hover);
+  --_stylos-switcher-bold-active: var(--stylos-color-surface-bold-primary-active);
+  --_stylos-switcher-bold-disabled: var(--stylos-color-surface-bold-primary-disabled);
+  border-color: var(--stylos-color-border-primary);
+}
+
+/* Focus belongs to the group, which is the tab stop (Figma is focused): a
+ * keyboard-focused radio gives the group border/primary and focus/base in
+ * place of its resting elevation (effects.md, Focus), crossfaded as in fields.
+ * The focused radio is the checked one, which the selected surface shows. */
+.stylos-switcher::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--stylos-border-width-normal));
+  z-index: -1;
+  border-radius: var(--stylos-radius-medium);
+  box-shadow: var(--stylos-focus-base);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+}
+.stylos-switcher:has(> .stylos-switcher-item > input:focus-visible) {
+  border-color: var(--stylos-color-border-primary);
+  box-shadow: none;
+}
+.stylos-switcher:has(> .stylos-switcher-item > input:focus-visible)::before { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stylos-switcher,
+  .stylos-switcher::before { transition: none; }
+}
+/* Forced colours remove shadows; a system outline keeps the group's focus visible. */
+/* stylelint-disable scale-unlimited/declaration-strict-value */
+@media (forced-colors: active) {
+  .stylos-switcher:has(> .stylos-switcher-item > input:focus-visible) {
+    outline: var(--stylos-border-width-thick) solid Highlight;
+    outline-offset: var(--stylos-border-width-thick);
+  }
+}
+/* stylelint-enable scale-unlimited/declaration-strict-value */
+
+/* One selection surface per group, anchored to the checked segment so that it
+ * travels between segments. Selection stays the native radio's :checked state;
+ * the pseudo-element adds no DOM and needs no script. The travel is a
+ * transition of anchor() positions: engines that do not animate an anchor
+ * change yet (Firefox, bug 1924226) move it instantly. Without anchor
+ * positioning each checked segment paints the same surface in place. */
+@supports (anchor-name: --stylos-switcher-selection) {
+  .stylos-switcher {
+    --_stylos-switcher-selection: transparent;
+    anchor-scope: --stylos-switcher-selection;
+  }
+  .stylos-switcher > .stylos-switcher-item {
+    transition:
+      background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear),
+      color var(--stylos-motion-duration-medium-enter) var(--stylos-motion-easing-enter);
+  }
+  .stylos-switcher > .stylos-switcher-item:has(> input:checked) { anchor-name: --stylos-switcher-selection; }
+  .stylos-switcher:has(> .stylos-switcher-item > input:checked)::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    position-anchor: --stylos-switcher-selection;
+    top: anchor(top);
+    left: anchor(left);
+    width: anchor-size(width);
+    height: anchor-size(height);
+    border-radius: var(--stylos-radius-small);
+    background: var(--_stylos-switcher-bold);
+    transition:
+      left var(--stylos-motion-duration-medium-enter) var(--stylos-motion-easing-enter),
+      width var(--stylos-motion-duration-medium-enter) var(--stylos-motion-easing-enter),
+      background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
+  }
+  .stylos-switcher:has(> .stylos-switcher-item:hover > input:checked:enabled)::after { background: var(--_stylos-switcher-bold-hover); }
+  .stylos-switcher:has(> .stylos-switcher-item:active > input:checked:enabled)::after { background: var(--_stylos-switcher-bold-active); }
+  .stylos-switcher:has(> .stylos-switcher-item > input:checked:disabled)::after { background: var(--_stylos-switcher-bold-disabled); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stylos-switcher > .stylos-switcher-item,
+    .stylos-switcher:has(> .stylos-switcher-item > input:checked)::after { transition: none; }
+  }
+  /* Segments paint Highlight themselves (switcher-item.css). */
+  @media (forced-colors: active) {
+    .stylos-switcher:has(> .stylos-switcher-item > input:checked)::after { display: none; }
+  }
+}
+
+.stylos-switcher[data-size="extra small"] {
+  --_stylos-switcher-inset: var(--stylos-dimension-gap-g-0_125);
+  --_stylos-switcher-gap: var(--stylos-dimension-gap-g-0_125);
+}
+.stylos-switcher[data-size="small"] {
+  --_stylos-switcher-inset: var(--stylos-dimension-gap-g-0_250);
+  --_stylos-switcher-gap: var(--stylos-dimension-gap-g-0_125);
+}
+.stylos-switcher[data-size="medium"] {
+  --_stylos-switcher-inset: var(--stylos-dimension-gap-g-0_375);
+  --_stylos-switcher-gap: var(--stylos-dimension-gap-g-0_250);
+}
+.stylos-switcher[data-size="large"] {
+  --_stylos-switcher-inset: var(--stylos-dimension-gap-g-0_500);
+  --_stylos-switcher-gap: var(--stylos-dimension-gap-g-0_375);
+}
+.stylos-switcher[data-size="extra large"] {
+  --_stylos-switcher-inset: var(--stylos-dimension-gap-g-0_625);
+  --_stylos-switcher-gap: var(--stylos-dimension-gap-g-0_500);
 }

@@ -122,6 +122,9 @@ export type { SwitcherProps } from "./components/switcher/props.ts";
 export { default as SwitcherItem } from "./components/switcher-item/SwitcherItem.svelte";
 export type { SwitcherItemProps } from "./components/switcher-item/props.ts";
 
+export { default as SwitcherItemIcon } from "./components/switcher-item-icon/SwitcherItemIcon.svelte";
+export type { SwitcherItemIconProps } from "./components/switcher-item-icon/props.ts";
+
 export { default as TabsHorizontal } from "./components/tabs-horizontal/TabsHorizontal.svelte";
 export type { TabsHorizontalProps } from "./components/tabs-horizontal/props.ts";
 

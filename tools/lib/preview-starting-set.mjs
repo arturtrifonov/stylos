@@ -1,10 +1,10 @@
 // Static instances of the draft DOM contracts, using the component CSS.
 // The CSS-only page deliberately has no behaviour or live announcements.
-export const startingSetIds = new Set(["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Progress Bar", "Switcher", "Switcher Item", "Tabs Horizontal", "Tab Item"]);
+export const startingSetIds = new Set(["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Progress Bar", "Switcher", "Switcher Item", "Switcher Item Icon", "Tabs Horizontal", "Tab Item"]);
 let sequence = 0;
 export function startingSetPreview(entry, props, { cls, attr, esc, icon, button }) {
   const id = `starting-preview-${++sequence}`;
-  const size = props.size ?? "extra small";
+  const size = props.size ?? entry.api?.find(property => property.name === "size")?.default ?? "extra small";
   const disabled = props.state === "disabled" ? " disabled" : "";
   if (entry.id.startsWith("Accordion")) {
     const expanded = !!props["is expanded"];
@@ -45,8 +45,18 @@ export function startingSetPreview(entry, props, { cls, attr, esc, icon, button 
     const progress = startingSetPreview({ id: "Progress Bar" }, { value: String(total > 0 ? remaining / total * 100 : 0), "has label": false }, { cls: "stylos-progress-bar", attr: "", esc, icon, button });
     return `<section class="stylos-alert ${cls}"${attr} data-surface-layer="4" data-surface-attachment="free"${props["is open"] === false ? " hidden" : ""}><div class="stylos-alert-body"><div class="stylos-alert-heading-row"><div class="stylos-alert-timer-header">${counter}${heading}${undo}</div>${close}</div>${content}</div><div class="stylos-alert-timer-progress" aria-hidden="true">${progress}</div></section>`;
   }
-  const segment = (label, checked = false) => `<label class="stylos-switcher-item" data-size="${esc(size)}" data-tone="${esc(props.tone ?? "base")}" data-state="${esc(props.state ?? "default")}" data-is-selected="${checked}"><input type="radio" name="${id}" value="${esc(label)}"${checked ? " checked" : ""}${disabled}><span>${esc(label)}</span></label>`;
-  if (entry.id === "Switcher Item") return segment(props["label text"] ?? "Option");
+  // Selection is the native checked radio; label text and icons are direct children.
+  const mark = name => typeof name === "string" && name ? icon(name) : "";
+  const segment = (label, checked = false, { leading = "", trailing = "", glyph } = {}) => {
+    const only = glyph !== undefined;
+    const flags = `${leading ? " data-leading-icon" : ""}${trailing ? " data-trailing-icon" : ""}`;
+    const name = only ? ` aria-label="${esc(label)}"` : "";
+    return `<label class="stylos-switcher-item${only ? " stylos-switcher-item-icon" : ""}" data-size="${esc(size)}" data-tone="${esc(props.tone ?? "base")}" data-state="${esc(props.state ?? "default")}"${flags}><input type="radio" name="${id}" value="${esc(label)}"${checked ? " checked" : ""}${name}${disabled}>${only ? glyph : `${leading}${esc(label)}${trailing}`}</label>`;
+  };
+  if (entry.id === "Switcher Item") return segment(props["label text"] ?? "Option", false, {
+    leading: props["has leading icon"] ? mark(props["leading icon"]) : "",
+    trailing: props["has trailing icon"] ? mark(props["trailing icon"]) : "" });
+  if (entry.id === "Switcher Item Icon") return segment(props["accessible name"] || "Option", false, { glyph: mark(props.icon) });
   if (entry.id === "Switcher") return `<fieldset class="${cls}"${attr} aria-label="${esc(props["accessible name"] || "Options")}"${disabled}>${props["content slot"] || ["Option 1", "Option 2", "Option 3", "Option 4"].map((s,i) => segment(s, i === 0)).join("")}</fieldset>`;
   const tab = (label, selected = false) => `<button type="button" role="tab" class="stylos-tab-item" data-size="${esc(size)}" data-state="${esc(props.state ?? "default")}" data-is-selected="${selected}" aria-selected="${selected}" tabindex="${selected ? 0 : -1}"${disabled}><span class="stylos-tab-label">${esc(label)}</span></button>`;
   if (entry.id === "Tab Item") return `<div role="tablist" aria-label="Tabs">${tab(props["label text"] || "Tab item", true)}</div>`;

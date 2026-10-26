@@ -30,13 +30,13 @@
   height: var(--_stylos-selection-icon);
 }
 .stylos-selection-icon > * { position: absolute; left: calc(-1 * var(--stylos-dimension-gap-g-0_250)); }
-.stylos-tab-item:focus-visible,.stylos-switcher-item:has(input:focus-visible) {
+.stylos-tab-item:focus-visible {
   outline: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary);
   outline-offset: var(--stylos-border-width-thick);
 }
 .stylos-tab-item:disabled,.stylos-switcher-item:has(input:disabled) { color: var(--stylos-color-text-disabled); cursor: default; }
 
-:is(.stylos-tab-item,.stylos-tabs-horizontal,.stylos-switcher-item,.stylos-switcher)[data-size="extra small"] {
+:is(.stylos-tab-item,.stylos-tabs-horizontal,.stylos-switcher-item)[data-size="extra small"] {
   --_stylos-selection-height: var(--stylos-dimension-size-s-3_000);
   --_stylos-selection-padding: var(--stylos-dimension-gap-g-1_000);
   --_stylos-selection-gap: var(--stylos-dimension-gap-g-0_500);
@@ -45,12 +45,9 @@
   --_stylos-selection-icon: var(--stylos-dimension-size-s-2_000);
   --_stylos-tab-band: var(--stylos-dimension-gap-g-0_500);
   --_stylos-tab-line: var(--stylos-dimension-gap-g-0_250);
-  --_stylos-segment-height: var(--stylos-dimension-size-s-2_500);
-  --_stylos-segment-padding: var(--stylos-dimension-gap-g-1_250);
-  --_stylos-switcher-inset: var(--stylos-dimension-gap-g-0_125);
 }
 
-:is(.stylos-tab-item,.stylos-tabs-horizontal,.stylos-switcher-item,.stylos-switcher)[data-size="small"] {
+:is(.stylos-tab-item,.stylos-tabs-horizontal,.stylos-switcher-item)[data-size="small"] {
   --_stylos-selection-height: var(--stylos-dimension-size-s-4_000);
   --_stylos-selection-padding: var(--stylos-dimension-gap-g-1_250);
   --_stylos-selection-gap: var(--stylos-dimension-gap-g-0_625);
@@ -59,12 +56,9 @@
   --_stylos-selection-icon: var(--stylos-dimension-size-s-2_500);
   --_stylos-tab-band: var(--stylos-dimension-gap-g-0_625);
   --_stylos-tab-line: var(--stylos-dimension-gap-g-0_250);
-  --_stylos-segment-height: var(--stylos-dimension-size-s-3_250);
-  --_stylos-segment-padding: var(--stylos-dimension-gap-g-1_500);
-  --_stylos-switcher-inset: var(--stylos-dimension-gap-g-0_250);
 }
 
-:is(.stylos-tab-item,.stylos-tabs-horizontal,.stylos-switcher-item,.stylos-switcher)[data-size="medium"] {
+:is(.stylos-tab-item,.stylos-tabs-horizontal,.stylos-switcher-item)[data-size="medium"] {
   --_stylos-selection-height: var(--stylos-dimension-size-s-5_000);
   --_stylos-selection-padding: var(--stylos-dimension-gap-g-1_500);
   --_stylos-selection-gap: var(--stylos-dimension-gap-g-0_750);
@@ -73,12 +67,9 @@
   --_stylos-selection-icon: var(--stylos-dimension-size-s-3_000);
   --_stylos-tab-band: var(--stylos-dimension-gap-g-0_750);
   --_stylos-tab-line: var(--stylos-dimension-gap-g-0_375);
-  --_stylos-segment-height: var(--stylos-dimension-size-s-4_000);
-  --_stylos-segment-padding: var(--stylos-dimension-gap-g-1_750);
-  --_stylos-switcher-inset: var(--stylos-dimension-gap-g-0_375);
 }
 
-:is(.stylos-tab-item,.stylos-tabs-horizontal,.stylos-switcher-item,.stylos-switcher)[data-size="large"] {
+:is(.stylos-tab-item,.stylos-tabs-horizontal,.stylos-switcher-item)[data-size="large"] {
   --_stylos-selection-height: var(--stylos-dimension-size-s-6_000);
   --_stylos-selection-padding: var(--stylos-dimension-gap-g-2_000);
   --_stylos-selection-gap: var(--stylos-dimension-gap-g-0_875);
@@ -87,12 +78,9 @@
   --_stylos-selection-icon: var(--stylos-dimension-size-s-3_500);
   --_stylos-tab-band: var(--stylos-dimension-gap-g-0_875);
   --_stylos-tab-line: var(--stylos-dimension-gap-g-0_500);
-  --_stylos-segment-height: var(--stylos-dimension-size-s-4_750);
-  --_stylos-segment-padding: var(--stylos-dimension-gap-g-2_250);
-  --_stylos-switcher-inset: var(--stylos-dimension-gap-g-0_500);
 }
 
-:is(.stylos-tab-item,.stylos-tabs-horizontal,.stylos-switcher-item,.stylos-switcher)[data-size="extra large"] {
+:is(.stylos-tab-item,.stylos-tabs-horizontal,.stylos-switcher-item)[data-size="extra large"] {
   --_stylos-selection-height: var(--stylos-dimension-size-s-7_000);
   --_stylos-selection-padding: var(--stylos-dimension-gap-g-2_500);
   --_stylos-selection-gap: var(--stylos-dimension-gap-g-1_000);
@@ -101,7 +89,4 @@
   --_stylos-selection-icon: var(--stylos-dimension-size-s-4_000);
   --_stylos-tab-band: var(--stylos-dimension-gap-g-1_000);
   --_stylos-tab-line: var(--stylos-dimension-gap-g-0_500);
-  --_stylos-segment-height: var(--stylos-dimension-size-s-5_500);
-  --_stylos-segment-padding: var(--stylos-dimension-gap-g-2_500);
-  --_stylos-switcher-inset: var(--stylos-dimension-gap-g-0_625);
 }

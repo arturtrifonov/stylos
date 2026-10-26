@@ -2,7 +2,7 @@ id: "Switcher Item"
 name: "Switcher Item"
 level: "object"
 role: "trigger"
-status: "draft"
+status: "ready"
 html: "<label><input type=\"radio\">Option</label>"
 summary: "One selectable native radio segment inside Switcher."
 purpose: "Provide composable product choices without arbitrary options encoded in the group."
@@ -12,12 +12,15 @@ do_not_use_when:
   -
     text: "A segment is used outside its native radio group."
     instead: "Switcher"
+  -
+    text: "The segment shows only an icon."
+    instead: "Switcher Item Icon"
 api:
   -
     name: "size"
     kind: "variant"
     description: "The five current Figma density presets; the consumer owns available width."
-    default: "extra small"
+    default: "medium"
     values:
       -
         value: "extra small"
@@ -32,7 +35,7 @@ api:
   -
     name: "tone"
     kind: "variant"
-    description: "Inherited from Switcher when nested."
+    description: "Inherited from Switcher when nested. Base selects with a bold base surface; primary also colours unselected labels."
     default: "base"
     values:
       -
@@ -42,7 +45,7 @@ api:
   -
     name: "state"
     kind: "variant"
-    description: "Native item availability."
+    description: "Native item availability. The browser derives hover, pressing and focus; a disabled Switcher disables every item."
     default: "default"
     values:
       -
@@ -69,7 +72,7 @@ api:
   -
     name: "leading icon"
     kind: "instance"
-    description: "Decorative leading icon snippet."
+    description: "Decorative Icon snippet rendered directly before the label text, without a wrapper."
     svelte_type: "snippet"
   -
     name: "has trailing icon"
@@ -81,7 +84,7 @@ api:
   -
     name: "trailing icon"
     kind: "instance"
-    description: "Decorative trailing icon snippet."
+    description: "Decorative Icon snippet rendered directly after the label text, without a wrapper."
     svelte_type: "snippet"
 sizing_model:
   horizontal: "hug"
@@ -89,46 +92,46 @@ sizing_model:
   adjustable:
     horizontal: true
     vertical: false
-  intent: "Inherits group density and tone; isolated previews use the size prop."
+  intent: "Each segment hugs its label at a fixed height of 20/26/32/38/44 units; the group supplies size and tone. Icons occupy 14/16/18/20/22 units and keep the Figma optical overhang: the padding on an icon's side gives up gap/g-0_250. A consumer may widen a segment; its contents stay centred."
   sizes:
     -
       size: "extra small"
-      box: "size/s-3_000"
-      padding_x: "gap/g-0_125"
-      padding_y: "gap/g-0_125"
-      gap: "gap/g-0_250"
+      box: "size/s-2_500"
+      padding_x: "gap/g-1_250"
+      gap: "gap/g-0_500"
+      icon: "size/s-1_750"
       font_size: "size/0_750"
       line_height: "line height/string/0_750"
     -
       size: "small"
-      box: "size/s-4_000"
-      padding_x: "gap/g-0_250"
-      padding_y: "gap/g-0_250"
-      gap: "gap/g-0_375"
+      box: "size/s-3_250"
+      padding_x: "gap/g-1_500"
+      gap: "gap/g-0_625"
+      icon: "size/s-2_000"
       font_size: "size/0_875"
       line_height: "line height/string/0_875"
     -
       size: "medium"
-      box: "size/s-5_000"
-      padding_x: "gap/g-0_375"
-      padding_y: "gap/g-0_375"
-      gap: "gap/g-0_500"
+      box: "size/s-4_000"
+      padding_x: "gap/g-1_750"
+      gap: "gap/g-0_750"
+      icon: "size/s-2_250"
       font_size: "size/1_000"
       line_height: "line height/string/1_000"
     -
       size: "large"
-      box: "size/s-6_000"
-      padding_x: "gap/g-0_500"
-      padding_y: "gap/g-0_500"
-      gap: "gap/g-0_625"
+      box: "size/s-4_750"
+      padding_x: "gap/g-2_250"
+      gap: "gap/g-0_875"
+      icon: "size/s-2_500"
       font_size: "size/1_250"
       line_height: "line height/string/1_250"
     -
       size: "extra large"
-      box: "size/s-7_000"
-      padding_x: "gap/g-0_625"
-      padding_y: "gap/g-0_625"
-      gap: "gap/g-0_750"
+      box: "size/s-5_500"
+      padding_x: "gap/g-2_500"
+      gap: "gap/g-1_000"
+      icon: "size/s-2_750"
       font_size: "size/1_500"
       line_height: "line height/string/1_500"
 a11y:
@@ -138,11 +141,18 @@ a11y:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4848:7157"
-  last_verified: "2026-10-17"
+  last_verified: "2026-10-26"
 limitations:
-  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
-  - "Use inside Switcher; size and tone are inherited from the group."
-notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
+  - "Migration: Medium replaces extra small as the default size (owner decision, 2026-10-26)."
+  - "Whole-release Chrome/Orca, contrast and two-theme accessibility acceptance remain in packages/ui/verification/0.3.0.md; this component review does not close those gates."
+  - "Keyboard focus is drawn by Switcher on the whole group; the segment draws no focus mark of its own. When the checked radio is disabled, Tab focuses the first available radio (Shift+Tab the last) without selecting it, until Space or an arrow selects. Owner decision, 2026-10-26: keep the native behaviour, with no custom cue."
+  - "Use inside Switcher; size and tone are inherited from the group. An icon-only segment is Switcher Item Icon."
+  - "Each icon snippet should render one Icon. The segment sets its footprint and gives up padding for the optical overhang; it does not wrap or hide arbitrary content."
+figma_notes:
+  - "Figma hover and active are drawing states; the web derives them from the browser. is selected follows the native radio's checked state."
+  - "Inside Switcher, where anchor positioning is supported, the group paints the selected surface as one indicator; it travels where the browser animates anchor changes (see Switcher). The segment keeps its inverted text and paints the surface itself elsewhere."
+  - "Figma draws each icon in a container gap/g-0_250 narrower than the icon, overhanging outwards. The web keeps the full Icon footprint and reduces the padding on that side instead."
+notes: "Owner approved as ready on 2026-10-26 after alignment with the updated Figma set: state colours for both tones, icon sizes and overhang, and a two-element segment. Scoped evidence: packages/ui/verification/switcher-2026-10-26.md."
 children:
   - "Icon"
 parents:

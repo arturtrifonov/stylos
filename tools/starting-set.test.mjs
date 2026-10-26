@@ -9,9 +9,9 @@ import { markupReader } from "./lib/ui-release.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const entries = loadRegistry(root);
-const additions = ["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Input Search", "Progress Bar", "Switcher", "Switcher Item", "Tabs Horizontal", "Tab Item", "Text Area"];
+const additions = ["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Input Search", "Progress Bar", "Switcher", "Switcher Item", "Switcher Item Icon", "Tabs Horizontal", "Tab Item", "Text Area"];
 
-const reviewedReady = new Set(["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Input Search", "Progress Bar", "Text Area"]);
+const reviewedReady = new Set(["Accordion", "Accordion Header", "Alert Inline", "Alert Popup", "Alert Popup Timer", "Input Search", "Progress Bar", "Switcher", "Switcher Item", "Switcher Item Icon", "Text Area"]);
 
 test("urgent product components keep their reviewed status, complete contracts and one core wave", () => {
   const plan = readPlan(root);
@@ -153,4 +153,31 @@ test("Accordion and Header previews render all three paired expand icons in both
       }
     }
   }
+});
+
+test("Switcher previews keep native segments without wrappers or mirrored selection", () => {
+  const elements = html => markupReader(html)("stylos-switcher-item").childNodes.filter(node => node.tagName);
+  const item = entries.find(entry => entry.id === "Switcher Item");
+  const plain = sampleHtml(item, defaultAssignment(item));
+  assert.deepEqual(elements(plain).map(node => node.tagName), ["input"]);
+  assert.doesNotMatch(plain, /<span|data-is-selected|data-leading-icon|data-trailing-icon/);
+  const both = sampleHtml(item, { ...defaultAssignment(item), "has leading icon": true, "leading icon": "check",
+    "has trailing icon": true, "trailing icon": "arrow_forward", "label text": "A <b>" });
+  assert.deepEqual(elements(both).map(node => node.tagName), ["input", "svg", "svg"]);
+  assert.match(both, /data-leading-icon data-trailing-icon><input[^>]*><svg[^>]*data-name="check"[\s\S]*<\/svg>A &lt;b&gt;<svg[^>]*data-name="arrow_forward"/);
+
+  const iconItem = entries.find(entry => entry.id === "Switcher Item Icon");
+  const square = sampleHtml(iconItem, { ...defaultAssignment(iconItem), "accessible name": "Calendar view" });
+  assert.equal(markupReader(square)("stylos-switcher-item-icon").tagName, "label");
+  assert.deepEqual(elements(square).map(node => node.tagName), ["input", "svg"]);
+  assert.match(square, /<input type="radio"[^>]* aria-label="Calendar view">/);
+  assert.doesNotMatch(square, /<span/);
+
+  const group = entries.find(entry => entry.id === "Switcher");
+  const fieldset = markupReader(sampleHtml(group, { ...defaultAssignment(group), tone: "primary", state: "disabled" }))("stylos-switcher");
+  assert.equal(fieldset.tagName, "fieldset");
+  const segments = fieldset.childNodes.filter(node => node.tagName);
+  assert.equal(segments.length, 4);
+  assert.ok(segments.every(node => node.tagName === "label" && node.childNodes.filter(child => child.tagName).length === 1));
+  assert.equal(segments.filter(node => node.childNodes[0].attrs.some(attr => attr.name === "checked")).length, 1);
 });
