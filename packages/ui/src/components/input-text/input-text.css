@@ -1,1 +1,11 @@
 @import "../../behaviors/compact-field.css";
+
+/* Validation is a square glyph slot. Its larger backdrop has no optical
+ * compensation; the complete slot participates in the text reserve. */
+.stylos-input-text .stylos-input-text-validation { width: var(--_stylos-input-validation-size); }
+.stylos-input-text .stylos-input-text-field:has(.stylos-input-text-validation) {
+  --_stylos-input-trailing-reserve: calc(var(--_stylos-input-validation-size) + var(--_stylos-input-gap));
+}
+.stylos-input-text .stylos-input-text-field:has(.stylos-input-text-validation):has(.stylos-input-text-icon[data-position="trailing"]) {
+  --_stylos-input-trailing-reserve: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical) + var(--_stylos-input-validation-size) + 2 * var(--_stylos-input-gap));
+}

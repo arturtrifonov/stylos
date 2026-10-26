@@ -1,5 +1,6 @@
 id: "Text Area"
 name: "Text Area"
+family: "Input"
 level: "object"
 role: "input"
 flow_behavior:
@@ -29,12 +30,12 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: "Owner-directed starting-set expansion, 2026-10-17. Current Figma reference inspected; this is not a Ready to publish assessment."
+notes: "Owner-directed component review completed 2026-10-26 against the updated Figma set. Counter sizes 10/10/12/12/14 and the counter-off default were confirmed by the owner; Figma was left unchanged during implementation. Scoped evidence: packages/ui/verification/text-area-2026-10-26.md."
 import:
   batch: 1
   ready: true
-status: "draft"
-html: "<label><textarea></textarea></label>"
+status: "ready"
+html: "<label>Label text <span>Additional text</span></label><textarea></textarea>"
 summary: "A labelled, resizable multiline text field."
 purpose: "Collect multiline product content with native editing, form submission, validation and reset."
 use_when:
@@ -47,7 +48,7 @@ api:
   -
     name: "size"
     kind: "variant"
-    default: "extra small"
+    default: "medium"
     description: "Field height, padding, text and icon sizes. Width belongs to the consumer."
     values:
       -
@@ -76,7 +77,7 @@ api:
     name: "validation"
     kind: "variant"
     default: "off"
-    description: "Consumer-supplied checking result. Error and warning show supporting text; success shows only a mark. Read-only and disabled suppress the outcome. Only error sets aria-invalid; a warning is advisory."
+    description: "Consumer-supplied checking result, overlaid without reserving text width. Error and warning show supporting text; success shows only a mark. Read-only and disabled suppress the outcome. Only error sets aria-invalid; a warning is advisory."
     values:
       -
         value: "off"
@@ -116,7 +117,7 @@ api:
   -
     name: "has placeholder"
     kind: "boolean"
-    default: true
+    default: false
     description: "Enables the native placeholder. A hint in the supporting line remains visible while typing."
     controls:
       - "placeholder text"
@@ -148,7 +149,7 @@ api:
     name: "trailing icon"
     kind: "instance"
     svelte_type: "snippet"
-    description: "Decorative snippet after validation. Not an action slot."
+    description: "Decorative snippet at the upper trailing edge. Not an action slot."
   -
     name: "is required"
     kind: "boolean"
@@ -181,7 +182,7 @@ api:
   -
     name: "description ids"
     kind: "string"
-    description: "Additional description IDs, combined with the component's supporting text and suffix."
+    description: "Additional description IDs, combined with the component's supporting text and counter."
   -
     name: "oninput"
     kind: "event"
@@ -193,57 +194,91 @@ api:
   -
     name: "has counter text"
     kind: "boolean"
-    description: "Show the consumer-supplied counter beneath the textarea."
-    default: true
+    description: "Show the count beneath the textarea. By default it derives from the native value and optional maxlength; counter text can override its display."
+    default: false
     controls:
       - "counter text"
   -
     name: "counter text"
     kind: "text"
-    description: "Display text, not an enforced length limit. Update it from the bound value when needed."
-    default: "0 / 1000"
+    description: "Optional custom counter display. When omitted, show the UTF-16 length of the value, with / maxlength only when a valid limit exists. CR and CRLF count as native LF. This display never enforces a limit."
   -
     name: "maxlength"
-    kind: "string"
-    description: "Optional native maximum number of UTF-16 code units. A missing value imposes no limit."
+    kind: "number"
+    description: "Optional native maximum number of UTF-16 code units. Accepts nonnegative integers, including zero; missing, negative or fractional values impose no limit. Existing over-limit values are not silently truncated."
   -
     name: "minlength"
-    kind: "string"
-    description: "Optional native minimum length for validation."
+    kind: "number"
+    description: "Optional native minimum UTF-16 length for validation. Accepts nonnegative integers; missing, negative or fractional values are ignored. When both limits exist, supply minlength less than or equal to maxlength."
 sizing_model:
   horizontal: "fill"
   vertical: "hug"
   adjustable:
     horizontal: true
     vertical: true
-  intent: "Five Figma presets set initial body height and typography. The consumer controls width; the user may resize vertically. Native overflow replaces the Figma scrollbar drawing."
+  intent: "Five density presets set three initial native lines: two body line heights plus the matching single-line field height. Native vertical resizing can reduce the field to one line. The parent controls width. The validation indicator overlays the content without reserving text width; its glyph and backdrop align with Input Text. Optional leading and trailing snippets still reserve space. Icon gaps and top alignment follow the multiline design; native overflow and resizing replace its static scrollbar and handle drawings."
   sizes:
     -
       size: "extra small"
+      counter_height: "line height/string/0_625"
+      icon: "size/s-2_000"
+      validation_icon: "size/s-1_500"
+      gap: "gap/g-0_750"
+      stack_gap: "gap/g-0_500"
+      counter_font_size: "size/0_625"
+      counter_line_height: "line height/string/0_625"
       padding_x: "gap/g-1_000"
       padding_y: "gap/g-0_500"
       font_size: "size/0_875"
       line_height: "line height/text/0_875"
     -
       size: "small"
+      counter_height: "line height/string/0_750"
+      icon: "size/s-2_500"
+      validation_icon: "size/s-1_750"
+      gap: "gap/g-0_875"
+      stack_gap: "gap/g-0_625"
+      counter_font_size: "size/0_625"
+      counter_line_height: "line height/string/0_625"
       padding_x: "gap/g-1_250"
       padding_y: "gap/g-0_750"
       font_size: "size/1_125"
       line_height: "line height/text/1_125"
     -
       size: "medium"
+      counter_height: "line height/string/0_750"
+      icon: "size/s-3_000"
+      validation_icon: "size/s-2_000"
+      gap: "gap/g-1_000"
+      stack_gap: "gap/g-0_750"
+      counter_font_size: "size/0_750"
+      counter_line_height: "line height/string/0_750"
       padding_x: "gap/g-1_500"
       padding_y: "gap/g-1_000"
       font_size: "size/1_375"
       line_height: "line height/text/1_375"
     -
       size: "large"
+      counter_height: "line height/string/0_875"
+      icon: "size/s-3_500"
+      validation_icon: "size/s-2_250"
+      gap: "gap/g-1_250"
+      stack_gap: "gap/g-0_875"
+      counter_font_size: "size/0_750"
+      counter_line_height: "line height/string/0_750"
       padding_x: "gap/g-2_000"
       padding_y: "gap/g-1_250"
       font_size: "size/1_625"
       line_height: "line height/text/1_625"
     -
       size: "extra large"
+      counter_height: "line height/string/0_875"
+      icon: "size/s-4_000"
+      validation_icon: "size/s-2_500"
+      gap: "gap/g-1_500"
+      stack_gap: "gap/g-1_000"
+      counter_font_size: "size/0_875"
+      counter_line_height: "line height/string/0_875"
       padding_x: "gap/g-2_500"
       padding_y: "gap/g-1_500"
       font_size: "size/1_875"
@@ -251,12 +286,19 @@ sizing_model:
 a11y:
   -
     status: "requires"
-    note: "Supply meaningful names and content. Keyboard and native semantics are implemented, but manual Chrome/Orca evaluation and contrast review are pending."
+    note: "Supply an associated visible label or, with has label false, label ids or accessible name. Placeholder text never provides the accessible name."
+  -
+    status: "requires"
+    note: "Provide meaningful error and warning messages. Error sets aria-invalid; messages and an enabled nonempty counter join external description ids through aria-describedby. Counter text alone does not constrain input."
+  -
+    status: "requires"
+    note: "Read-only remains focusable and selectable; disabled follows native tab-order and form-data rules. The consumer chooses required, minlength and maxlength constraints and exposes any application validation result."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4780:26517"
-  last_verified: "2026-10-17"
+  last_verified: "2026-10-26"
 limitations:
-  - "Provisional product integration: status stays draft even when code exists. API, design alignment and accessibility require subsequent review."
+  - "Whole-release Chrome/Orca, contrast and two-theme accessibility acceptance remain in packages/ui/verification/0.3.0.md; this component review does not close those gates."
+  - "Migration: Medium replaces XS as default; placeholder and counter default off. Length limits are numeric props. Counter text is optional custom copy; omitting it derives a live count, with no implicit maximum."
 figma_notes:
-  - "Figma is filled and hover/focus are derived web states. Counter text remains consumer-supplied and independent of maxlength. Native scrollbars and resize affordance replace static Figma drawings; shared native scrollbar CSS is reused. Existing field effects and Label are composed."
+  - "Figma is filled and hover/focus are derived web states. Counter text is a Figma display sample; the web derives a live count unless a consumer supplies custom text. Only native maxlength enforces a maximum. Native scrollbars and resize affordance replace static Figma drawings; shared native scrollbar CSS is reused. Existing field effects and Label are composed. Validation overlays the text without changing its available width; optional trailing content keeps its own reserve and the status moves before it."

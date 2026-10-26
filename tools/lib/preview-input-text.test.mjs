@@ -118,18 +118,62 @@ test("Search shares Text defaults and always shows its fixed decorative search m
   assert.doesNotMatch(html, / placeholder=|<button|adornments|search-icon/);
   assert.throws(() => search({ "has trailing icon": false }), /no api property/);
   assert.throws(() => search({ "trailing icon": "close" }), /no api property/);
+  assert.throws(() => search({ validation: "error" }), /no api property/);
 });
 
 test("only filled editable Search fields have a named non-submit clear action", () => {
-  const filled = search({ value: "query", "label text": "Products", validation: "error", "has suffix text": true, "suffix text": "items" });
+  const filled = search({ value: "query", "label text": "Products", "has suffix text": true, "suffix text": "items" });
   assert.match(filled, /type="button" aria-label="Clear Products"/);
-  assert.match(filled, /search-suffix[\s\S]*stylos-button-inner[\s\S]*search-validation[\s\S]*data-name="search"/);
+  assert.match(filled, /search-suffix[\s\S]*stylos-button-inner[\s\S]*data-name="search"/);
   assert.match(search({ value: "query", "clear accessible name": 'Очистить "поиск"' }), /aria-label="Очистить &quot;поиск&quot;"/);
   assert.match(search({ value: "query", "has label": false, "accessible name": "Catalog" }), /aria-label="Clear Catalog"/);
   for (const state of ["read only", "disabled"]) {
-    const html = search({ state, value: "query", validation: "error" });
+    const html = search({ state, value: "query" });
     assert.doesNotMatch(html, /<button|aria-invalid|search-validation/);
     assert.match(html, /data-name="search"/);
     assert.match(html, state === "disabled" ? /<input[^>]* disabled/ : /<input[^>]* readonly/);
   }
+});
+
+const areaEntry = entries.find(entry => entry.id === "Text Area");
+const areaDefaults = defaultAssignment(areaEntry);
+const area = props => sampleHtml(areaEntry, { ...areaDefaults, ...props });
+
+test("Text Area follows reviewed defaults and has no empty decoration wrappers", () => {
+  assert.equal(areaDefaults.size, "medium");
+  assert.equal(areaDefaults["has placeholder"], false);
+  assert.equal(areaDefaults["has counter text"], false);
+  const read = markupReader(area({}));
+  const count = node => 1 + (node.childNodes?.filter(child => child.tagName) ?? []).reduce((sum, child) => sum + count(child), 0);
+  assert.equal(count(read("stylos-text-area")), 4);
+  assert.equal(read("stylos-text-area-field").childNodes.find(node => node.tagName)?.tagName, "textarea");
+  assert.equal(read("stylos-text-area-adornments"), undefined);
+  assert.equal(read("stylos-text-area-leading"), undefined);
+  assert.equal(read("stylos-text-area-trailing"), undefined);
+});
+
+test("Text Area keeps native constraints, live/custom counter descriptions and escaping", () => {
+  const html = area({ id: "notes", value: "A😀", maxlength: 10, minlength: 2,
+    "has counter text": true, "description ids": "help", validation: "warning" });
+  assert.match(html, /aria-describedby="help notes-message notes-counter"/);
+  assert.match(html, /maxlength="10" minlength="2"/);
+  assert.match(html, />3 \/ 10<\/span>/);
+  assert.match(area({ maxlength: 0, "has counter text": true }), /maxlength="0"/);
+  assert.match(area({ maxlength: 0, "has counter text": true }), />0 \/ 0<\/span>/);
+  assert.match(area({ "has counter text": true, "counter text": "<custom>" }), /&lt;custom&gt;/);
+  assert.doesNotMatch(area({ "has counter text": true, "counter text": "" }), /aria-describedby=/);
+  assert.match(area({ value: "line 1\n</textarea><script>" }), /line 1\n&lt;\/textarea&gt;&lt;script&gt;/);
+  for (const state of ["read only", "disabled"]) {
+    const markup = area({ state, validation: "error", value: "saved" });
+    assert.doesNotMatch(markup, /aria-invalid|text-area-validation|message/);
+    assert.match(markup, state === "disabled" ? / disabled/ : / readonly/);
+  }
+});
+
+
+test("Text Area status overlays the field independently of its optional trailing content", () => {
+  const read = markupReader(area({ validation: "error", "has trailing icon": true, "trailing icon": "edit" }));
+  assert.equal(read("stylos-text-area-validation").parentNode, read("stylos-text-area-field"));
+  assert.equal(read("stylos-text-area-icon"), read("stylos-text-area-trailing"));
+  assert.equal(read("stylos-text-area-trailing").parentNode, read("stylos-text-area-field"));
 });

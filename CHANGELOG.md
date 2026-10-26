@@ -32,6 +32,16 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Changed
 
+- Mark Text Area ready after its owner-directed review. Align with Figma:
+  Georama typography, five-size spacing, Label messages and 10/10/12/12/14 counter text. Default to Medium,
+  hide placeholder and counter, and remove empty decoration wrappers. Keep the
+  native textarea, resize, overflow and form semantics; derive an optional live
+  counter from value and numeric length limits.
+- Remove Input Search validation from its contract, wrapper, Controls and HTML
+  previews. Input Text validation now reserves its complete square glyph slot
+  without optical compensation. Text Area validation overlays the content,
+  with the same glyph/backdrop alignment, without shrinking the text area.
+
 - Mark Input Search ready after owner review of its Input Text alignment,
   compact DOM, native clear action and five-size geometry. Update its contract,
   accessibility conditions, provisional API migration notes and readiness

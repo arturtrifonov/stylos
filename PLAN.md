@@ -28,7 +28,8 @@ not close the deferred 0.3.0 acceptance.
 **Component review, 2026-10-25:** Alert Inline, Alert Popup, Alert Popup Timer,
 Progress Bar and Input Search are also approved as ready. Input Search follows
 the reviewed Input Text geometry and adds its permanent Search mark and native
-clear action. Five urgent contracts remain draft. Evidence and outstanding
+clear action. Text Area was finalized on 2026-10-26 after its owner-directed
+Figma, typography, native-field and DOM review. Four urgent contracts remain draft. Evidence and outstanding
 release checks are recorded in
 [deferred acceptance](packages/ui/verification/0.3.0.md).
 

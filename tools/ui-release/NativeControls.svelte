@@ -1,5 +1,5 @@
 <script>
-  import { Button, CheckboxLabel, RadioLabel, ToggleLabel, InputText, InputSearch } from "@stylos/ui";
+  import { Button, CheckboxLabel, RadioLabel, ToggleLabel, InputText, InputSearch, TextArea } from "@stylos/ui";
   let checked = $state("mixed");
   let switched = $state("false");
   let standard = $state("true");
@@ -11,6 +11,7 @@
   let token = $state("example-token");
   let showToken = $state(false);
   let query = $state("Components");
+  let notes = $state("Initial notes");
   let searchEvents = $state("");
   function recordSearch(event) {
     searchEvents += `${event.type}:${query}:${event.currentTarget.value};`;
@@ -32,12 +33,14 @@
       autocomplete="off" bind:value={token} />
     <InputSearch labelText="Search" name="query" bind:value={query}
       oninput={recordSearch} onchange={recordSearch} />
+    <TextArea labelText="Notes" name="notes" bind:value={notes} hasCounterText maxlength={40} minlength={2} />
   </fieldset>
   <p>Checkbox: {checked}; Toggle: {switched}; Standard: {standard}; Pro: {pro}</p>
   <Button labelText={showToken ? "Mask token" : "Show token"} variant="outline" onclick={() => { showToken = !showToken; }} />
   <Button labelText="Submit" type="submit" />
   <Button labelText="Reset" type="reset" variant="outline" />
   <Button labelText={disabled ? "Enable fieldset" : "Disable fieldset"} variant="outline" onclick={() => { disabled = !disabled; }} />
+  <p data-testid="notes-value">Notes value: {notes}</p>
   <p data-testid="search-value">Search value: {query}</p>
   <p data-testid="search-events">Search events: {searchEvents}</p>
   <p aria-live="polite">{submitted}</p>

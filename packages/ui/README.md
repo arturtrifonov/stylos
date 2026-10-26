@@ -4,8 +4,8 @@ The Svelte 5 component package, built to SPEC 0009 against the contracts in [`do
 
 **0.2.0 is an early integration release, authorized 2026-10-17.** The urgent
 starting-set contracts are reviewed one by one; Accordion, Accordion Header,
-Alert Inline, Alert Popup, Alert Popup Timer, Progress Bar and Input Search are
-now ready, while five remain draft. All unfinished release acceptance,
+Alert Inline, Alert Popup, Alert Popup Timer, Progress Bar, Input Search and Text Area are
+now ready, while four remain draft. All unfinished release acceptance,
 including Linux Chrome + Orca, incomplete axe review, visual/contrast coverage
 and Figma synchronization, gates [0.3.0](verification/0.3.0.md). Product proof
 and consumer materials move to 0.4.0. Automated measurements are scoped evidence,
@@ -225,7 +225,8 @@ are their compositional dependencies. Component reviews marked **Accordion** and
 on 2026-10-24, followed by **Alert Inline**, **Alert Popup**, **Alert Popup Timer**
 and **Progress Bar** on 2026-10-25. The owner also approved **Input Search**
 as **ready** on 2026-10-25 after its Input Text alignment and native clear
-review. The other five contracts remain **draft** and are available for early product integration;
+review. **Text Area** is **ready** after its 2026-10-26 typography, native-field
+and DOM review. The other four contracts remain **draft** and are available for early product integration;
 their API and design may change during review. Builds and examples do not
 promote readiness. The [alert and progress review](verification/alerts-progress-2026-10-25.md)
 records the documentation and DOM audit, fixes and outstanding release checks.
@@ -251,16 +252,16 @@ new controls and notifications for keyboard and form checks.
 </Switcher>
 <Accordion labelText="Advanced settings">
   <TextArea name="notes" labelText="Notes" bind:value={notes}
-    counterText={`${notes.length} / 1000`} maxlength="1000" />
+    hasCounterText maxlength={1000} />
 </Accordion>
 ```
 
 Search is a native `input type="search"`, with decorative search mark, native
 submission/reset and no invented results popup or debounce. Text Area is a native
 textarea with the Figma multiline ramp, vertical resizing, native overflow and
-optional counter copy. The consumer updates counter text and chooses native
-length constraints independently. Both reuse Label, validation and field effects;
-read-only and disabled modes suppress authored validation.
+an optional live counter. The consumer chooses native length constraints;
+custom counter text can override the display. Both reuse Label and field effects. Search has no validation property or status
+indicator. Text Area suppresses its validation in read-only and disabled modes.
 
 Switcher composes native radios sharing one name and the group's size/tone.
 Arrow navigation, fieldset disabling, form data and reset retain native semantics.
@@ -387,7 +388,9 @@ native input in the same place in the DOM.
 
 The field container remains necessary for the local surface/focus effects;
 the outer root groups Label with that field. Icon and validation containers
-provide optical alignment, decorative semantics and the validation backdrop.
+provide decorative semantics and the validation backdrop. Decorative icons
+retain optical alignment; validation uses a square slot without optical width
+compensation. Its larger round backdrop stays centred outside that square.
 Label's text is a bare text node; its optional spans are the required marker
 and supporting message. The [DOM review](verification/input-text-dom-2026-10-25.md)
 records element counts and geometry checks.
@@ -438,6 +441,56 @@ playground with the registered icon set. Vertical trim stays off,
 matching all 140 Figma variants. `Label.htmlFor` and `additionalTextId`
 provide native associations without changing Label's CSS.
 
+### Text Area
+
+`TextArea` uses one native `textarea`, with a Medium default, no placeholder
+and no counter unless requested. It fills its parent. The five density presets
+start at 68/88/108/124/148 units, with native vertical resizing and overflow;
+no cloned value, custom scrollbar DOM or resize-handle drawing is needed.
+
+```svelte
+<script>
+  import { TextArea } from "@stylos/ui";
+  let notes = $state("");
+</script>
+
+<TextArea labelText="Notes" name="notes" bind:value={notes}
+  hasCounterText maxlength={1000} minlength={2} />
+```
+
+`maxlength` and `minlength` are optional nonnegative integers, including zero.
+Use numeric Svelte props. Invalid negative/fractional limits are ignored.
+Choose `minlength <= maxlength` when both exist. Native editing enforces the
+maximum; the component does not truncate values supplied programmatically.
+The live counter follows native UTF-16 length and normalized line breaks. It
+shows only the count without a maximum and `count / maxlength` with one.
+`counterText` optionally overrides the display and never enforces a limit.
+Georama Regular counter sizes are 10/10/12/12/14 across XS through XL.
+The [Text Area review](verification/text-area-2026-10-26.md) records the
+source measurements, owner decisions, browser checks and remaining release gates.
+
+Validation is supplied by the consumer. Error and warning expose the Label's
+supporting message; success shows a mark. Only error sets `aria-invalid`.
+Messages, the enabled nonempty counter and external `descriptionIds` form the
+accessible description. Supply a meaningful message and an accessible name
+when hiding Label. Read-only and disabled retain native semantics and suppress
+validation; native form submission and reset use the bound value.
+
+The status mark is positioned absolutely over the textarea, aligned with
+Input Text's glyph and round backdrop. Toggling validation does not reserve
+text width. Optional decorative snippets still reserve their own width; the
+status moves before a configured trailing snippet to avoid overlapping it.
+Both icon slots are single elements, with no empty groups. The labelled plain
+field uses four elements: root, Label, field and textarea. The shared field
+provides the containing block and local stacking context in every mode.
+Svelte measures optional snippet widths automatically. Plain HTML may use
+`inputTextBehavior` on `.stylos-text-area-field` when supplying those snippets;
+validation alone needs no measurement adapter.
+
+Migration from the provisional API: Medium replaces XS as default; placeholder
+and counter default off. Replace string length attributes with numbers. Omit
+`counterText` for a live count; no implicit 1000-character maximum is invented.
+
 ### Input Search
 
 `InputSearch` follows Input Text's native field geometry, semantics and compact
@@ -445,9 +498,11 @@ DOM. Both default to `size="medium"`, an empty value and no placeholder. The
 unfocused value uses ellipsis; focus exposes native horizontal text scrolling.
 The permanent Search icon is decorative. Submit or execute a query in the
 consumer's form or input handler; there is no configurable trailing icon.
+Search has no `validation` prop, status drawing, validation border or
+`aria-invalid` state. Supporting hints remain optional and are associated
+through `aria-describedby`. Remove `validation` from existing Search callsites.
 
-A nonempty editable value adds `ButtonInner` with Close before validation and
-Search. Its footprint is 12/14/16/18/20 across the five sizes; Search remains
+A nonempty editable value adds `ButtonInner` with Close before Search. Its footprint is 12/14/16/18/20 across the five sizes; Search remains
 16/20/24/28/32. Clear commits an empty bound value, emits one bubbling `input`
 event followed by one `change`, and focuses the native input without submitting
 its form. Set `clearAccessibleName` for localization; its default is `Clear`

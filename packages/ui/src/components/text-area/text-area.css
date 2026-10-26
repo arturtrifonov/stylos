@@ -1,29 +1,120 @@
-@import "../../behaviors/field.css";
+@import "../../behaviors/compact-field.css";
+@import "../../behaviors/scrollbar.css";
 
-/* Native multiline control: the frame follows user resizing. */
-.stylos-text-area { gap: var(--_stylos-input-gap); }
+.stylos-text-area {
+  --_stylos-input-optical: var(--stylos-dimension-gap-g-0_250);
+  gap: var(--_stylos-area-stack-gap);
+}
+.stylos-text-area > .stylos-label { padding-inline: 0; }
 .stylos-text-area-field { height: auto; }
+
+/* Three native line boxes match Figma's trimmed three-line viewport. The
+ * one-line minimum provides the remaining padding, without a value wrapper. */
 .stylos-text-area .stylos-text-area-field > textarea {
-  height: var(--_stylos-area-height);
+  height: calc(var(--_stylos-input-height) + 2 * var(--_stylos-area-line));
   min-height: var(--_stylos-input-height);
-  padding-block: var(--_stylos-area-padding);
+  padding-block: calc((var(--_stylos-input-height) - var(--_stylos-area-line)) / 2 - var(--stylos-border-width-normal));
   resize: vertical;
+  overflow: auto;
   font-weight: var(--stylos-font-weight-base);
   font-size: var(--_stylos-area-font);
   line-height: var(--_stylos-area-line);
   text-overflow: clip;
 }
-.stylos-text-area-adornments { align-items: flex-start; padding-block: var(--_stylos-area-padding); }
+
+.stylos-text-area .stylos-text-area-leading { top: var(--_stylos-area-padding); }
+.stylos-text-area .stylos-text-area-trailing {
+  inset-block-start: var(--_stylos-area-padding);
+  inset-block-end: auto;
+  min-height: var(--_stylos-input-icon-size);
+}
+
+/* Status overlays the textarea; only optional content slots reserve text space.
+ * Its glyph shares Input Text's right edge; the round backdrop overhangs it. */
+.stylos-text-area .stylos-text-area-validation {
+  position: absolute;
+  top: calc((var(--_stylos-input-height) - var(--_stylos-input-validation-size)) / 2);
+  inset-inline-end: calc(var(--_stylos-input-padding) + var(--_stylos-input-trailing-reserve, 0rem));
+  width: var(--_stylos-input-validation-size);
+  height: var(--_stylos-input-validation-size);
+  pointer-events: none;
+}
+.stylos-text-area .stylos-text-area-field:has(.stylos-text-area-validation) {
+  --_stylos-input-trailing-reserve: 0rem;
+}
+.stylos-text-area .stylos-text-area-field:has(.stylos-text-area-icon[data-position="trailing"]) {
+  --_stylos-input-trailing-reserve: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical) + var(--_stylos-input-gap));
+}
+
 .stylos-text-area-counter {
+  min-height: var(--_stylos-area-counter-height);
+  align-content: center;
   padding-inline: var(--stylos-dimension-gap-g-0_250);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--stylos-color-text-secondary);
   font-family: var(--stylos-font-family-normal);
-  font-size: var(--_stylos-input-suffix-size);
-  line-height: var(--_stylos-input-suffix-line);
-  font-weight: var(--stylos-font-weight-emphasis);
+  font-size: var(--_stylos-area-counter-font);
+  line-height: var(--_stylos-area-counter-line);
+  font-weight: var(--stylos-font-weight-base);
+  letter-spacing: var(--stylos-font-letter-spacing-style-normal);
+  font-variant-numeric: tabular-nums;
 }
-.stylos-text-area[data-size="extra small"] { --_stylos-area-height: calc(calc(3 * var(--stylos-dimension-size-s-3_000) - var(--stylos-dimension-gap-g-1_000)) + var(--stylos-dimension-gap-g-0_500)); --_stylos-area-padding: var(--stylos-dimension-gap-g-0_500); --_stylos-area-font: var(--stylos-font-size-0_875); --_stylos-area-line: var(--stylos-font-line-height-text-0_875); }
-.stylos-text-area[data-size="small"] { --_stylos-area-height: calc(calc(2 * var(--stylos-dimension-size-s-5_000) + var(--stylos-dimension-gap-g-1_000))); --_stylos-area-padding: var(--stylos-dimension-gap-g-0_750); --_stylos-area-font: var(--stylos-font-size-1_125); --_stylos-area-line: var(--stylos-font-line-height-text-1_125); }
-.stylos-text-area[data-size="medium"] { --_stylos-area-height: calc(calc(2 * var(--stylos-dimension-size-s-6_000) + var(--stylos-dimension-gap-g-1_000)) + var(--stylos-dimension-gap-g-0_500)); --_stylos-area-padding: var(--stylos-dimension-gap-g-1_000); --_stylos-area-font: var(--stylos-font-size-1_375); --_stylos-area-line: var(--stylos-font-line-height-text-1_375); }
-.stylos-text-area[data-size="large"] { --_stylos-area-height: calc(calc(2 * var(--stylos-dimension-size-s-7_000) + var(--stylos-dimension-gap-g-1_000)) + var(--stylos-dimension-gap-g-0_500)); --_stylos-area-padding: var(--stylos-dimension-gap-g-1_250); --_stylos-area-font: var(--stylos-font-size-1_625); --_stylos-area-line: var(--stylos-font-line-height-text-1_625); }
-.stylos-text-area[data-size="extra large"] { --_stylos-area-height: calc(calc(3 * var(--stylos-dimension-size-s-6_000)) + var(--stylos-dimension-gap-g-0_500)); --_stylos-area-padding: var(--stylos-dimension-gap-g-1_500); --_stylos-area-font: var(--stylos-font-size-1_875); --_stylos-area-line: var(--stylos-font-line-height-text-1_875); }
+.stylos-text-area:has(> .stylos-text-area-field > textarea:disabled) > .stylos-text-area-counter { color: var(--stylos-color-text-disabled); }
+
+.stylos-text-area[data-size="extra small"] {
+  --_stylos-input-optical: var(--stylos-dimension-gap-g-0_250);
+  --_stylos-area-stack-gap: var(--stylos-dimension-gap-g-0_500);
+  --_stylos-input-gap: var(--stylos-dimension-gap-g-0_750);
+  --_stylos-area-padding: var(--stylos-dimension-gap-g-0_500);
+  --_stylos-area-font: var(--stylos-font-size-0_875);
+  --_stylos-area-line: var(--stylos-font-line-height-text-0_875);
+  --_stylos-area-counter-font: var(--stylos-font-size-0_625);
+  --_stylos-area-counter-line: var(--stylos-font-line-height-string-0_625);
+  --_stylos-area-counter-height: var(--stylos-font-line-height-string-0_625);
+}
+.stylos-text-area[data-size="small"] {
+  --_stylos-input-optical: var(--stylos-dimension-gap-g-0_250);
+  --_stylos-area-stack-gap: var(--stylos-dimension-gap-g-0_625);
+  --_stylos-input-gap: var(--stylos-dimension-gap-g-0_875);
+  --_stylos-area-padding: var(--stylos-dimension-gap-g-0_750);
+  --_stylos-area-font: var(--stylos-font-size-1_125);
+  --_stylos-area-line: var(--stylos-font-line-height-text-1_125);
+  --_stylos-area-counter-font: var(--stylos-font-size-0_625);
+  --_stylos-area-counter-line: var(--stylos-font-line-height-string-0_625);
+  --_stylos-area-counter-height: var(--stylos-font-line-height-string-0_750);
+}
+.stylos-text-area[data-size="medium"] {
+  --_stylos-input-optical: var(--stylos-dimension-gap-g-0_250);
+  --_stylos-area-stack-gap: var(--stylos-dimension-gap-g-0_750);
+  --_stylos-input-gap: var(--stylos-dimension-gap-g-1_000);
+  --_stylos-area-padding: var(--stylos-dimension-gap-g-1_000);
+  --_stylos-area-font: var(--stylos-font-size-1_375);
+  --_stylos-area-line: var(--stylos-font-line-height-text-1_375);
+  --_stylos-area-counter-font: var(--stylos-font-size-0_750);
+  --_stylos-area-counter-line: var(--stylos-font-line-height-string-0_750);
+  --_stylos-area-counter-height: var(--stylos-font-line-height-string-0_750);
+}
+.stylos-text-area[data-size="large"] {
+  --_stylos-input-optical: var(--stylos-dimension-gap-g-0_250);
+  --_stylos-area-stack-gap: var(--stylos-dimension-gap-g-0_875);
+  --_stylos-input-gap: var(--stylos-dimension-gap-g-1_250);
+  --_stylos-area-padding: var(--stylos-dimension-gap-g-1_250);
+  --_stylos-area-font: var(--stylos-font-size-1_625);
+  --_stylos-area-line: var(--stylos-font-line-height-text-1_625);
+  --_stylos-area-counter-font: var(--stylos-font-size-0_750);
+  --_stylos-area-counter-line: var(--stylos-font-line-height-string-0_750);
+  --_stylos-area-counter-height: var(--stylos-font-line-height-string-0_875);
+}
+.stylos-text-area[data-size="extra large"] {
+  --_stylos-input-optical: var(--stylos-dimension-gap-g-0_250);
+  --_stylos-area-stack-gap: var(--stylos-dimension-gap-g-1_000);
+  --_stylos-input-gap: var(--stylos-dimension-gap-g-1_500);
+  --_stylos-area-padding: var(--stylos-dimension-gap-g-1_500);
+  --_stylos-area-font: var(--stylos-font-size-1_875);
+  --_stylos-area-line: var(--stylos-font-line-height-text-1_875);
+  --_stylos-area-counter-font: var(--stylos-font-size-0_875);
+  --_stylos-area-counter-line: var(--stylos-font-line-height-string-0_875);
+  --_stylos-area-counter-height: var(--stylos-font-line-height-string-0_875);
+}

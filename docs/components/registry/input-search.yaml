@@ -74,20 +74,6 @@ api:
       -
         value: "disabled"
   -
-    name: "validation"
-    kind: "variant"
-    default: "off"
-    description: "Consumer-supplied checking result. Error and warning show supporting text; success shows only a mark. Read-only and disabled suppress the outcome. Only error sets aria-invalid; a warning is advisory."
-    values:
-      -
-        value: "off"
-      -
-        value: "error"
-      -
-        value: "warning"
-      -
-        value: "success"
-  -
     name: "value"
     kind: "text"
     default: ""
@@ -106,14 +92,14 @@ api:
     name: "has additional text"
     kind: "boolean"
     default: false
-    description: "Shows the Label's supporting line outside error and warning, which require the line."
+    description: "Shows the Label's optional supporting hint. Search has no validation state."
     controls:
       - "additional text"
   -
     name: "additional text"
     kind: "text"
     default: "Additional text"
-    description: "Hint or validation message, associated with the field through aria-describedby."
+    description: "Supporting hint, associated with the field through aria-describedby."
   -
     name: "has placeholder"
     kind: "boolean"
@@ -201,7 +187,7 @@ sizing_model:
   adjustable:
     horizontal: true
     vertical: false
-  intent: "Same five field heights and text/icon geometry as Input Text. Clear uses the validation_icon footprint for its density; Search uses icon. Width follows the parent layout and has no component width token. The complete value remains available: ellipsis applies outside focus and the native input scrolls while editing."
+  intent: "Same five field heights and text/icon geometry as Input Text. Clear uses the clear_icon footprint for its density; Search uses icon. Width follows the parent layout and has no component width token. The complete value remains available: ellipsis applies outside focus and the native input scrolls while editing."
   sizes:
     -
       size: "extra small"
@@ -218,7 +204,7 @@ sizing_model:
       suffix_font_size: "size/0_625"
       suffix_line_height: "line height/string/0_625"
       icon: "size/s-2_000"
-      validation_icon: "size/s-1_500"
+      clear_icon: "size/s-1_500"
     -
       size: "small"
       field_height: "size/s-4_000"
@@ -234,7 +220,7 @@ sizing_model:
       suffix_font_size: "size/0_625"
       suffix_line_height: "line height/string/0_625"
       icon: "size/s-2_500"
-      validation_icon: "size/s-1_750"
+      clear_icon: "size/s-1_750"
     -
       size: "medium"
       field_height: "size/s-5_000"
@@ -250,7 +236,7 @@ sizing_model:
       suffix_font_size: "size/0_750"
       suffix_line_height: "line height/string/0_750"
       icon: "size/s-3_000"
-      validation_icon: "size/s-2_000"
+      clear_icon: "size/s-2_000"
     -
       size: "large"
       field_height: "size/s-6_000"
@@ -266,7 +252,7 @@ sizing_model:
       suffix_font_size: "size/0_750"
       suffix_line_height: "line height/string/0_750"
       icon: "size/s-3_500"
-      validation_icon: "size/s-2_250"
+      clear_icon: "size/s-2_250"
     -
       size: "extra large"
       field_height: "size/s-7_000"
@@ -282,7 +268,7 @@ sizing_model:
       suffix_font_size: "size/0_875"
       suffix_line_height: "line height/string/0_875"
       icon: "size/s-4_000"
-      validation_icon: "size/s-2_500"
+      clear_icon: "size/s-2_500"
 a11y:
   -
     status: "requires"
@@ -292,14 +278,14 @@ a11y:
     note: "Localize clear accessible name when needed. Search and Close drawings are decorative; the native clear button carries the action name and is keyboard reachable while available."
   -
     status: "requires"
-    note: "Supply a meaningful validation message. Error alone sets aria-invalid; error and warning expose their supporting text through aria-describedby. Read-only and disabled suppress outcomes and Clear while retaining the value."
+    note: "Supporting hints and suffixes are associated through aria-describedby. Read-only and disabled suppress Clear while retaining the value. Search has no validation prop, status mark or aria-invalid state."
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4833:15163"
-  last_verified: "2026-10-25"
+  last_verified: "2026-10-26"
 limitations:
   - "Whole-release Chrome/Orca, contrast, two-theme visual and accessibility acceptance remain in packages/ui/verification/0.3.0.md; component readiness does not close that release gate."
   - "Search execution belongs to the enclosing form or oninput/onchange consumer. The trailing search mark is decorative."
-  - "Migration from the provisional API: remove has trailing icon and trailing icon; Search is permanent. To retain the former defaults, set size to extra small and has placeholder to true explicitly. Use Input Text when the trailing decorative mark needs to be configurable."
+  - "Migration from the provisional API: remove validation, has trailing icon and trailing icon; Search is permanent. To retain the former defaults, set size to extra small and has placeholder to true explicitly. Use Input Text when the trailing decorative mark needs to be configurable."
 figma_notes:
-  - "Figma input text becomes bindable value; is filled follows the value; hover/focus follow the browser. The permanent trailing Search mark is decorative and cannot be hidden or replaced. Button Inner with Close appears before validation and Search for a filled editable value; its footprint follows validation size (12/14/16/18/20 px). Optional suffix text remains distinct from Label supporting text. No result popup, filtering, debounce or submit action belongs to this component."
+  - "Figma input text becomes bindable value; is filled follows the value; hover/focus follow the browser. The permanent trailing Search mark is decorative and cannot be hidden or replaced. Button Inner with Close appears before Search for a filled editable value; its footprint follows clear size (12/14/16/18/20 px). Optional suffix text remains distinct from Label supporting text. No result popup, filtering, debounce or submit action belongs to this component."
