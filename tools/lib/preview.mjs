@@ -177,19 +177,20 @@ export function sampleHtml(entry, props = {}) {
     const id = props.id || `stylos-dropdown-parent-preview-${++inputPreviewCounter}`;
     const descriptionId = `${id}-description`;
     const icon = props["has icon"] && props.icon
-      ? `<span class="stylos-dropdown-item-leading" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: props.icon })}</span>` : "";
+      ? sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: props.icon }) : "";
     const arrow = sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: "arrow_right" });
-    return `<li role="presentation"><button type="button" class="stylos-dropdown-item ${cls}"${attr} id="${esc(id)}" aria-label="${esc(props["label text"] ?? "Option")}"${props.controls ? ` aria-controls="${esc(props.controls)}"` : ""}${props.state === "disabled" ? " disabled" : ""}${props["has additional text"] ? ` aria-describedby="${esc(descriptionId)}"` : ""}>${icon}<span class="stylos-dropdown-item-content"><span class="stylos-dropdown-item-label">${esc(props["label text"] ?? "Option")}</span>${props["has additional text"] ? `<span class="stylos-dropdown-item-additional" id="${esc(descriptionId)}">${esc(props["additional text"])}</span>` : ""}</span><span class="stylos-dropdown-item-parent-arrow" aria-hidden="true">${arrow}</span></button></li>`;
+    return `<li role="presentation"><button type="button" class="stylos-dropdown-item ${cls}"${attr}${icon ? " data-leading-icon" : ""} id="${esc(id)}" aria-label="${esc(props["label text"] ?? "Option")}"${props.controls ? ` aria-controls="${esc(props.controls)}"` : ""}${props.state === "disabled" ? " disabled" : ""}${props["has additional text"] ? ` aria-describedby="${esc(descriptionId)}"` : ""}>${icon}<span class="stylos-dropdown-item-content"><span class="stylos-dropdown-item-label">${esc(props["label text"] ?? "Option")}</span>${props["has additional text"] ? `<span class="stylos-dropdown-item-additional" id="${esc(descriptionId)}">${esc(props["additional text"])}</span>` : ""}</span>${arrow}</button></li>`;
   }
   if (entry.id === "Dropdown Item Default") {
     const icon = props["has icon"] && typeof props.icon === "string" && iconDrawings().has(props.icon)
-      ? `<span class="stylos-dropdown-item-leading" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: props.icon })}</span>` : "";
+      ? sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: props.icon }) : "";
     const tick = sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: "check" });
+    const leading = icon ? " data-leading-icon" : "";
     if (props.interaction === "action") {
       const descriptionId = `stylos-dropdown-action-preview-${++inputPreviewCounter}-description`;
-      return `<li role="presentation"><button type="button" class="stylos-dropdown-item ${cls}"${attr} data-value="${esc(props.value)}" aria-label="${esc(props["label text"] ?? "Option")}"${props.value ? ` aria-pressed="${props["is selected"] === "true"}"` : ""}${props.state === "disabled" ? " disabled" : ""}${props["has additional text"] ? ` aria-describedby="${esc(descriptionId)}"` : ""}>${icon}<span class="stylos-dropdown-item-content"><span class="stylos-dropdown-item-label">${esc(props["label text"] ?? "Option")}</span>${props["has additional text"] ? `<span class="stylos-dropdown-item-additional" id="${esc(descriptionId)}">${esc(props["additional text"])}</span>` : ""}</span><span class="stylos-dropdown-item-selected" aria-hidden="true">${tick}</span></button></li>`;
+      return `<li role="presentation"><button type="button" class="stylos-dropdown-item ${cls}"${attr}${leading} data-value="${esc(props.value)}" aria-label="${esc(props["label text"] ?? "Option")}"${props.value ? ` aria-pressed="${props["is selected"] === "true"}"` : ""}${props.state === "disabled" ? " disabled" : ""}${props["has additional text"] ? ` aria-describedby="${esc(descriptionId)}"` : ""}>${icon}<span class="stylos-dropdown-item-content"><span class="stylos-dropdown-item-label">${esc(props["label text"] ?? "Option")}</span>${props["has additional text"] ? `<span class="stylos-dropdown-item-additional" id="${esc(descriptionId)}">${esc(props["additional text"])}</span>` : ""}</span>${tick}</button></li>`;
     }
-    return `<li class="stylos-dropdown-item ${cls}" role="option"${attr} data-value="${esc(props.value)}" aria-selected="${props["is selected"] === "true"}"${props.state === "disabled" ? ' aria-disabled="true"' : ""}>${icon}<span class="stylos-dropdown-item-content"><span class="stylos-dropdown-item-label">${esc(props["label text"] ?? "Option")}</span>${props["has additional text"] ? `<span class="stylos-dropdown-item-additional">${esc(props["additional text"])}</span>` : ""}</span><span class="stylos-dropdown-item-selected" aria-hidden="true">${tick}</span></li>`;
+    return `<li class="stylos-dropdown-item ${cls}" role="option"${attr}${leading} data-value="${esc(props.value)}" aria-selected="${props["is selected"] === "true"}"${props.state === "disabled" ? ' aria-disabled="true"' : ""}>${icon}<span class="stylos-dropdown-item-content"><span class="stylos-dropdown-item-label">${esc(props["label text"] ?? "Option")}</span>${props["has additional text"] ? `<span class="stylos-dropdown-item-additional">${esc(props["additional text"])}</span>` : ""}</span>${tick}</li>`;
   }
 
   if (["Dropdown Item Checkbox", "Dropdown Item Toggle"].includes(entry.id)) {
@@ -200,8 +201,8 @@ export function sampleHtml(entry, props = {}) {
     const native = ["name", "value", "form"].filter(name => props[name])
       .map(name => ` ${name}="${esc(props[name])}"`).join("");
     const input = `<input type="checkbox"${family === "toggle" ? ' role="switch"' : ""} id="${esc(id)}"${native}${selected ? " checked" : ""}${props.state === "disabled" ? " disabled" : ""}${props["has additional text"] ? ` aria-describedby="${esc(descriptionId)}"` : ""} aria-label="${esc(props["label text"] ?? "Option")}">`;
-    const control = `<span class="stylos-${family}-input" data-size="${esc(props.size ?? "medium")}" data-state="${esc(props.state ?? "default")}" data-is-checked="${selected}">${input}<span class="stylos-${family}-input-surface"></span></span>`;
-    return `<li role="presentation"><label class="stylos-dropdown-item ${cls}"${attr} for="${esc(id)}"><span class="stylos-dropdown-item-control">${control}</span><span class="stylos-dropdown-item-content"><span class="stylos-dropdown-item-label">${esc(props["label text"] ?? "Option")}</span>${props["has additional text"] ? `<span class="stylos-dropdown-item-additional" id="${esc(descriptionId)}">${esc(props["additional text"] ?? "Additional")}</span>` : ""}</span></label></li>`;
+    const control = `<span class="stylos-${family}-input" data-size="${esc(props.size ?? "medium")}" data-state="${esc(props.state ?? "default")}" data-is-checked="${selected}">${input}</span>`;
+    return `<li role="presentation"><label class="stylos-dropdown-item ${cls}"${attr} for="${esc(id)}">${control}<span class="stylos-dropdown-item-content"><span class="stylos-dropdown-item-label">${esc(props["label text"] ?? "Option")}</span>${props["has additional text"] ? `<span class="stylos-dropdown-item-additional" id="${esc(descriptionId)}">${esc(props["additional text"] ?? "Additional")}</span>` : ""}</span></label></li>`;
   }
 
   // Label is the one structural case: the required marker and the supporting
@@ -283,11 +284,13 @@ export function sampleHtml(entry, props = {}) {
       const triggerSemantics = semantics.replace(/ readonly/g, ' aria-readonly="true"').replace(/ required/g, ' aria-required="true"');
       const svg = name => sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name });
       const clear = props["has clear button"] && filled && state === "default"
-        ? `<span class="stylos-select-clear"><button class="stylos-button-inner" data-state="default" type="button" aria-label="${esc(props["clear accessible name"] || `Clear ${accessibleName || ""}`)}"><span class="stylos-button-inner-icon" aria-hidden="true">${svg("close")}</span></button></span>` : "";
-      const chevron = state === "default" ? `<span class="stylos-select-icon" data-position="trailing" aria-hidden="true">${svg("arrow_drop_down")}</span>` : "";
+        ? `<button class="stylos-button-inner" data-state="default" type="button" aria-label="${esc(props["clear accessible name"] || `Clear ${accessibleName || ""}`)}">${svg("close")}</button>` : "";
+      const chevron = state === "default" ? svg("arrow_drop_down") : "";
+      const leading = icon("leading").replace('class="stylos-input-text-icon"', 'class="stylos-select-leading"');
+      const trailingParts = suffix.replaceAll("stylos-input-text", "stylos-select") + clear + validation.replaceAll("stylos-input-text", "stylos-select") + chevron;
       const formSemantics = (state === "disabled" ? " disabled" : "") + (props["is required"] && state === "default" ? " required" : "");
       const nativeSelect = `<select data-select-native id="${esc(id)}-native"${native}${formSemantics} aria-hidden="true" tabindex="-1"><option value=""${filled ? "" : " selected"}></option>${filled ? `<option value="${esc(props.value)}" selected>${esc(display)}</option>` : ""}</select>`;
-      return `<div class="${cls}"${attr} data-is-filled="${filled}">${label}<div class="stylos-select-field" data-surface-layer="1" data-surface-attachment="in-layout"><button type="button" class="stylos-select-trigger" id="${esc(id)}" role="combobox" aria-haspopup="listbox" aria-expanded="false"${triggerSemantics}><span class="stylos-select-value"><span>${esc(display)}</span></span></button>${nativeSelect}<div class="stylos-select-adornments"><span class="stylos-select-leading">${icon("leading").replaceAll("stylos-input-text", "stylos-select")}</span><span class="stylos-select-trailing">${suffix.replaceAll("stylos-input-text", "stylos-select")}${clear}${validation.replaceAll("stylos-input-text", "stylos-select")}${chevron}</span></div></div></div>`;
+      return `<div class="${cls}"${attr} data-is-filled="${filled}">${label}<div class="stylos-select-field" data-surface-layer="1" data-surface-attachment="in-layout"><button type="button" class="stylos-select-trigger" id="${esc(id)}" role="combobox" aria-haspopup="listbox" aria-expanded="false"${triggerSemantics}><span class="stylos-select-value">${esc(display)}</span></button>${nativeSelect}${leading}${trailingParts ? `<span class="stylos-select-trailing">${trailingParts}</span>` : ""}</div></div>`;
     }
     const trailing = icon("trailing");
     if (["Input Text", "Input Search", "Text Area"].includes(entry.id)) {
@@ -295,7 +298,7 @@ export function sampleHtml(entry, props = {}) {
       const area = entry.id === "Text Area";
       const svg = name => sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name });
       const clear = search && props.value && state === "default"
-        ? `<button class="stylos-button-inner" data-state="default" type="button" aria-label="${esc(props["clear accessible name"] || `Clear ${accessibleName || "search"}`)}"><span class="stylos-button-inner-icon" aria-hidden="true">${svg("close")}</span></button>` : "";
+        ? `<button class="stylos-button-inner" data-state="default" type="button" aria-label="${esc(props["clear accessible name"] || `Clear ${accessibleName || "search"}`)}">${svg("close")}</button>` : "";
       const leading = icon("leading").replace('class="stylos-input-text-icon"', 'class="stylos-input-text-leading"');
       const trailingParts = suffix + clear + (area ? "" : validation) + (search ? svg("search") : trailing);
       const limits = ["maxlength", "minlength"].flatMap(name => {
@@ -317,17 +320,18 @@ export function sampleHtml(entry, props = {}) {
     const icon = position => {
       const name = props[`${position} icon`];
       return props[`has ${position} icon`] && typeof name === "string" && iconDrawings().has(name)
-        ? `<span class="stylos-tag-icon" data-position="${position}" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name })}</span>` : "";
+        ? sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name }) : "";
     };
     const content = `${icon("leading")}<span class="stylos-tag-label">${esc(props["label text"] ?? "Tag")}</span>${icon("trailing")}`;
+    const flags = `${icon("leading") ? " data-leading-icon" : ""}${icon("trailing") ? " data-trailing-icon" : ""}`;
     if (entry.id === "Tag Interactive") {
       const native = ["id", "name", "value", "form"].filter(name => props[name])
         .map(name => ` ${name}="${esc(props[name])}"`).join("");
       const description = props["description ids"] ? ` aria-describedby="${esc(props["description ids"])}"` : "";
       const disabled = props.state === "disabled" ? " disabled" : "";
-      return `<button type="${esc(props.type ?? "button")}" class="${cls}"${attr}${native}${description}${disabled}>${content}</button>`;
+      return `<button type="${esc(props.type ?? "button")}" class="${cls}"${attr}${native}${description}${disabled}${flags}>${content}</button>`;
     }
-    return `<span class="${cls}"${attr}>${content}</span>`;
+    return `<span class="${cls}"${attr}${flags}>${content}</span>`;
   }
 
   if (entry.id === "Button Icon") {
@@ -337,7 +341,7 @@ export function sampleHtml(entry, props = {}) {
     const description = props["description ids"] ? ` aria-describedby="${esc(props["description ids"])}"` : "";
     const disabled = props.state === "disabled" ? " disabled" : "";
     const icon = typeof props.icon === "string" && iconDrawings().has(props.icon)
-      ? `<span class="stylos-button-icon-mark" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: props.icon })}</span>` : "";
+      ? sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: props.icon }) : "";
     return `<button type="${esc(props.type ?? "button")}" class="${cls}"${attr}${native}${name}${description}${disabled}>${icon}</button>`;
   }
 
@@ -347,7 +351,7 @@ export function sampleHtml(entry, props = {}) {
     const name = props["accessible name"] ? ` aria-label="${esc(props["accessible name"])}"` : "";
     const description = props["description ids"] ? ` aria-describedby="${esc(props["description ids"])}"` : "";
     const icon = typeof props.icon === "string" && iconDrawings().has(props.icon)
-      ? `<span class="stylos-button-inner-icon" aria-hidden="true">${sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: props.icon })}</span>` : "";
+      ? sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name: props.icon }) : "";
     return `<button type="button" class="${cls}"${attr}${id}${name}${description}${disabled}>${icon}</button>`;
   }
 
@@ -363,11 +367,11 @@ export function sampleHtml(entry, props = {}) {
     const native = ["id", "name", "value", "form"].filter(name => props[name])
       .map(name => ` ${name}="${esc(props[name])}"`).join("");
     const description = props["description ids"] ? ` aria-describedby="${esc(props["description ids"])}"` : "";
-    return `<button type="${esc(props.type ?? "button")}" class="${cls}"${attr}${native}${description}${disabled}><span>${esc(props["label text"] ?? "Button")}</span></button>`;
+    return `<button type="${esc(props.type ?? "button")}" class="${cls}"${attr}${native}${description}${disabled}>${esc(props["label text"] ?? "Button")}</button>`;
   }
 
   if (["Checkbox Input", "Radio Input", "Toggle Input"].includes(entry.id)) {
-    return `<span class="${cls}"${attr} aria-hidden="true"><span class="${cls}-surface"></span></span>`;
+    return `<span class="${cls}"${attr} aria-hidden="true"></span>`;
   }
 
   if (["Checkbox Label", "Checkbox Text", "Radio Label", "Radio Text", "Toggle Label", "Toggle Text"].includes(entry.id)) {
@@ -375,7 +379,9 @@ export function sampleHtml(entry, props = {}) {
     const size = esc(props.size ?? (family === "checkbox" ? "medium" : "extra small"));
     const state = esc(props.state ?? "default");
     const selection = esc(props["is checked"] ?? "false");
-    return `<span class="${cls}"${attr}><span class="stylos-${family}-input" data-size="${size}" data-state="${state}" data-is-checked="${selection}" aria-hidden="true"><span class="stylos-${family}-input-surface"></span></span><span class="stylos-${family}-copy">${esc(props["label text"] ?? entry.family)}</span></span>`;
+    const label = esc(props["label text"] ?? entry.family);
+    const copy = entry.id.endsWith("Text") ? `<span class="stylos-${family}-copy">${label}</span>` : label;
+    return `<span class="${cls}"${attr}><span class="stylos-${family}-input" data-size="${size}" data-state="${state}" data-is-checked="${selection}" aria-hidden="true"></span>${copy}</span>`;
   }
 
   return `<span class="${cls}"${attr}>${esc(content)}</span>`;
@@ -393,19 +399,19 @@ function windowPanelHtml(entry, props, attr) {
     return sampleHtml({ id: "Button", api: Object.keys(values).map(name => ({ name, kind: name === "label text" ? "text" : "variant", values: [{ value: values[name] }] })) }, values);
   };
   const hasActions = (props["has primary button"] ?? true) || (props["has secondary button"] ?? true) || (props["has tertiary button"] ?? false);
-  return `<section class="stylos-window stylos-${entry.id.toLowerCase()}"${attr} id="${esc(id)}" aria-labelledby="${esc(id)}-heading" data-surface-layer="${modal ? 6 : 5}" data-surface-attachment="${modal ? "free" : "window-edge"}" data-surface-edge="${esc(props.position ?? "right")}"${previewStyle ? ` style="${esc(previewStyle)}"` : ""}><div class="stylos-window-header"><h2 class="stylos-window-heading" id="${esc(id)}-heading">${esc(heading)}</h2><span class="stylos-window-close"><button type="button" class="stylos-button-inner" data-state="default" aria-label="${esc(props["close accessible name"] ?? "Close")}"><span class="stylos-button-inner-icon" aria-hidden="true">${icon}</span></button></span></div><div class="stylos-window-content stylos-scrollbar" data-scrollbar-size="medium" data-scrollbar-position="absolute">${props["content slot"] ?? ""}</div>${hasActions ? `<div class="stylos-window-footer">${action("tertiary", "ghost", "base", "Alternative")}<div class="stylos-window-actions">${action("secondary", "outline", "base", "Cancel")}${action("primary", "base", "primary", "Confirm")}</div></div>` : ""}</section>`;
+  return `<section class="stylos-window stylos-${entry.id.toLowerCase()}"${attr} id="${esc(id)}" aria-labelledby="${esc(id)}-heading" data-surface-layer="${modal ? 6 : 5}" data-surface-attachment="${modal ? "free" : "window-edge"}" data-surface-edge="${esc(props.position ?? "right")}"${previewStyle ? ` style="${esc(previewStyle)}"` : ""}><div class="stylos-window-header"><h2 class="stylos-window-heading" id="${esc(id)}-heading">${esc(heading)}</h2><button type="button" class="stylos-button-inner" data-state="default" aria-label="${esc(props["close accessible name"] ?? "Close")}">${icon}</button></div><div class="stylos-window-content stylos-scrollbar" data-scrollbar-size="medium" data-scrollbar-position="absolute">${props["content slot"] ?? ""}</div>${hasActions ? `<div class="stylos-window-footer">${action("tertiary", "ghost", "base", "Alternative")}${action("secondary", "outline", "base", "Cancel")}${action("primary", "base", "primary", "Confirm")}</div>` : ""}</section>`;
 }
 
 function tableCellHtml(heading, props, attr) {
   const iconHtml = name => sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name });
-  const icon = props["has icon"] && props.icon ? `<span class="stylos-table-cell-icon" aria-hidden="true">${iconHtml(props.icon)}</span>` : "";
+  const icon = props["has icon"] && props.icon ? iconHtml(props.icon) : "";
   const text = props["cell text"] ?? "Cell text";
   const copy = `<span class="stylos-table-cell-copy"><span class="stylos-table-cell-label" title="${esc(text)}">${esc(text)}</span>${props["has additional text"] ? `<span class="stylos-table-cell-additional" title="${esc(props["additional text"])}">${esc(props["additional text"])}</span>` : ""}</span>`;
-  const action = (kind, name) => `<span class="stylos-table-cell-action" data-table-action="${kind}"><button type="button" class="stylos-button-inner" data-state="default" aria-label="${esc(props[`${kind} accessible name`] || `${kind === "sort" ? "Sort" : "Filter"} by ${text}`)}"><span class="stylos-button-inner-icon" aria-hidden="true">${iconHtml(name)}</span></button></span>`;
+  const action = (kind, name) => `<button type="button" class="stylos-button-inner" data-state="default" aria-label="${esc(props[`${kind} accessible name`] || `${kind === "sort" ? "Sort" : "Filter"} by ${text}`)}">${iconHtml(name)}</button>`;
   const controls = heading ? `${props["is sorted"] ? action("sort", props["sort direction"] === "descending" ? "arrow_upward" : "arrow_downward") : ""}${props["is filtered"] ? action("filter", "filter_list") : ""}` : "";
   const associations = `${props.id ? ` id="${esc(props.id)}"` : ""}${props.headers ? ` headers="${esc(props.headers)}"` : ""}`;
   const tag = heading ? "th" : "td";
-  return `<${tag} class="stylos-table-cell stylos-table-cell-${heading ? "heading" : "text"}"${attr}${associations}${heading ? ` scope="col" data-constrained="${!!(props["is sorted"] || props["is filtered"])}"${props["is sorted"] ? ` aria-sort="${esc(props["sort direction"] ?? "ascending")}"` : ""}` : ""}><div class="stylos-table-cell-frame">${icon}${copy}${controls}</div></${tag}>`;
+  return `<${tag} class="stylos-table-cell stylos-table-cell-${heading ? "heading" : "text"}"${attr}${associations}${heading ? ` scope="col" data-constrained="${!!(props["is sorted"] || props["is filtered"])}"${props["is sorted"] ? ` aria-sort="${esc(props["sort direction"] ?? "ascending")}"` : ""}` : ""}><div class="stylos-table-cell-frame"${icon ? " data-icon" : ""}>${icon}${copy}${controls}</div></${tag}>`;
 }
 
 /** Native cells and rows require table scaffolding on standalone preview pages. */

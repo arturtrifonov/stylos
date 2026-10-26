@@ -21,9 +21,9 @@
     <thead>
       <TableRowHead {size}>
         <TableCellHeading cellText="Workspace" />
-        <TableCellHeading cellText="Status" isFiltered={filtered} filterAccessibleName="Clear status filter" onclick={() => { filtered = false; }} />
+        <TableCellHeading cellText="Status" isFiltered={filtered} filterAccessibleName="Clear status filter" onfilterclick={() => { filtered = false; }} />
         <TableCellHeading cellText="Amount" alignment="end" isSorted sortDirection={direction}
-          onclick={() => { direction = direction === "ascending" ? "descending" : "ascending"; }} />
+          onsortclick={() => { direction = direction === "ascending" ? "descending" : "ascending"; }} />
       </TableRowHead>
     </thead>
     <tbody>

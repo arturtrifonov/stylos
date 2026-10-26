@@ -4,7 +4,8 @@
 
 /* Figma Input Text (4392:6011) and Select (4804:9784) share density,
  * adornment geometry and surface effects. Full-field controls reserve measured
- * adornment widths. Icon overhang comes from the same local collection as Button.
+ * adornment widths; compact-field.css positions the side groups. Icon overhang
+ * comes from the same local collection as Button.
  */
 :is(.stylos-input-text, .stylos-select, .stylos-input-search, .stylos-text-area) {
   --_stylos-input-optical: var(--stylos-dimension-gap-g-0_250);
@@ -75,17 +76,6 @@
   transition: border-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
 }
 
-:is(.stylos-input-text-adornments, .stylos-select-adornments, .stylos-input-search-adornments, .stylos-text-area-adornments) {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-inline: var(--_stylos-input-padding);
-  pointer-events: none;
-  color: var(--stylos-color-text-base);
-}
-
 :is(.stylos-input-text-leading, .stylos-select-leading, .stylos-input-search-leading, .stylos-text-area-leading, .stylos-input-text-trailing, .stylos-select-trailing, .stylos-input-search-trailing, .stylos-text-area-trailing) {
   display: flex;
   align-items: center;
@@ -93,20 +83,17 @@
   min-width: 0;
 }
 
-:is(.stylos-input-text-leading, .stylos-select-leading, .stylos-input-search-leading, .stylos-text-area-leading):empty { display: none; }
-:is(.stylos-input-text-trailing, .stylos-select-trailing, .stylos-input-search-trailing, .stylos-text-area-trailing) { margin-inline-start: auto; }
-
 /* Fixed icon reserves also work before the measurement adapter mounts. */
 :is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-leading, .stylos-select-leading, .stylos-input-search-leading, .stylos-text-area-leading) > *) {
   --_stylos-input-leading-reserve: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical) + var(--_stylos-input-gap));
 }
-:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon)[data-position="trailing"]) {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-icon[data-position="trailing"], .stylos-text-area-icon[data-position="trailing"], .stylos-select-trailing > .stylos-icon)) {
   --_stylos-input-trailing-reserve: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical) + var(--_stylos-input-gap));
 }
 :is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-text-area-validation)) {
   --_stylos-input-trailing-reserve: calc(var(--_stylos-input-validation-size) - var(--stylos-dimension-gap-g-0_250) + var(--_stylos-input-gap));
 }
-:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-text-area-validation)):has(:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon)[data-position="trailing"]) {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(:is(.stylos-input-text-validation, .stylos-select-validation, .stylos-text-area-validation)):has(:is(.stylos-input-text-icon[data-position="trailing"], .stylos-text-area-icon[data-position="trailing"], .stylos-select-trailing > .stylos-icon)) {
   --_stylos-input-trailing-reserve: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical) + var(--_stylos-input-validation-size) - var(--stylos-dimension-gap-g-0_250) + 2 * var(--_stylos-input-gap));
 }
 
@@ -126,7 +113,7 @@
   color: var(--stylos-color-text-secondary);
 }
 
-:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon) {
+:is(.stylos-input-text-icon, .stylos-text-area-icon) {
   --stylos-icon-footprint: var(--_stylos-input-icon-size);
   position: relative;
   flex: none;
@@ -134,14 +121,13 @@
   height: var(--_stylos-input-icon-size);
 }
 
-:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon) > * {
+:is(.stylos-input-text-icon, .stylos-text-area-icon) > * {
   position: absolute;
   top: 0;
   width: var(--_stylos-input-icon-size);
   height: var(--_stylos-input-icon-size);
 }
-:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon)[data-position="leading"] > * { right: 0; }
-:is(.stylos-input-text-icon, .stylos-select-icon, .stylos-input-search-icon, .stylos-text-area-icon)[data-position="trailing"] > * { left: 0; }
+:is(.stylos-input-text-icon, .stylos-text-area-icon)[data-position="trailing"] > * { inset-inline-start: 0; }
 
 :is(.stylos-input-text-validation, .stylos-select-validation, .stylos-text-area-validation) {
   --stylos-icon-footprint: var(--_stylos-input-validation-size);
@@ -156,7 +142,7 @@
   content: "";
   position: absolute;
   top: calc((var(--_stylos-input-validation-size) - var(--_stylos-input-icon-size)) / 2);
-  left: calc((var(--_stylos-input-validation-size) - var(--_stylos-input-icon-size)) / 2);
+  inset-inline-start: calc((var(--_stylos-input-validation-size) - var(--_stylos-input-icon-size)) / 2);
   width: var(--_stylos-input-icon-size);
   height: var(--_stylos-input-icon-size);
   background-color: var(--_stylos-input-validation-background);
@@ -192,7 +178,6 @@
   box-shadow: none;
 }
 :is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field) > :is(input, textarea, .stylos-select-trigger):disabled,
-:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(> :is(input, textarea, .stylos-select-trigger):disabled) :is(.stylos-input-text-adornments, .stylos-select-adornments, .stylos-input-search-adornments, .stylos-text-area-adornments),
 :is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(> :is(input, textarea, .stylos-select-trigger):disabled) :is(.stylos-input-text-suffix, .stylos-select-suffix, .stylos-input-search-suffix, .stylos-text-area-suffix),
 :is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field) > :is(input, textarea, .stylos-select-trigger):disabled::placeholder {
   color: var(--stylos-color-text-disabled);

@@ -26,8 +26,4 @@
   data-size={size}
   data-state={state}
   disabled={state === "disabled"}
->
-  {#if icon}
-    <span class="stylos-button-icon-mark" aria-hidden="true">{@render icon()}</span>
-  {/if}
-</button>
+>{@render icon?.()}</button>

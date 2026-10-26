@@ -31,7 +31,7 @@ export function startingSetPreview(entry, props, { cls, attr, esc, icon, button 
   if (entry.id.startsWith("Alert ")) {
     const timer = entry.id === "Alert Popup Timer";
     const inline = entry.id === "Alert Inline";
-    const close = props["has close button"] ? `<button class="stylos-button-inner" type="button" aria-label="${esc(props["close accessible name"] || "Close")}"><span class="stylos-button-inner-icon">${icon("close")}</span></button>` : "";
+    const close = props["has close button"] ? `<button class="stylos-button-inner" type="button" aria-label="${esc(props["close accessible name"] || "Close")}">${icon("close")}</button>` : "";
     const content = props["has content"] ? `<div class="stylos-alert-content">${props["content slot"] ?? ""}</div>` : "";
     const heading = (timer || props["has heading"]) ? `<p class="stylos-alert-heading">${esc(props["heading text"] ?? "Heading Text")}</p>` : "";
     if (!timer) {
@@ -43,7 +43,7 @@ export function startingSetPreview(entry, props, { cls, attr, esc, icon, button 
     const remaining = Number.isFinite(props["remaining time"]) ? Math.min(total, Math.max(0, props["remaining time"])) : 0;
     const counter = props["has timer counter"] ? `<span class="stylos-alert-timer-count">${Math.ceil(remaining)}${esc(props["time unit"] ?? "")}</span>` : "";
     const progress = startingSetPreview({ id: "Progress Bar" }, { value: String(total > 0 ? remaining / total * 100 : 0), "has label": false }, { cls: "stylos-progress-bar", attr: "", esc, icon, button });
-    return `<section class="stylos-alert ${cls}"${attr} data-surface-layer="4" data-surface-attachment="free"${props["is open"] === false ? " hidden" : ""}><div class="stylos-alert-body"><div class="stylos-alert-heading-row"><div class="stylos-alert-timer-header">${counter}${heading}${undo}</div>${close}</div>${content}</div><div class="stylos-alert-timer-progress" aria-hidden="true">${progress}</div></section>`;
+    return `<section class="stylos-alert ${cls}"${attr} data-surface-layer="4" data-surface-attachment="free"${props["is open"] === false ? " hidden" : ""}><div class="stylos-alert-body"><div class="stylos-alert-heading-row">${counter}${heading}${undo}${close}</div>${content}</div><div class="stylos-alert-timer-progress" aria-hidden="true">${progress}</div></section>`;
   }
   // Selection is the native checked radio; label text and icons are direct children.
   const mark = name => typeof name === "string" && name ? icon(name) : "";

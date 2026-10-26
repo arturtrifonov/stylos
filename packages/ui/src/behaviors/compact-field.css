@@ -1,10 +1,10 @@
 @import "./field.css";
 
 /* The existing field positions its side parts; no overlay wrapper is needed. */
-:is(.stylos-input-text-field, .stylos-input-search-field, .stylos-text-area-field) { z-index: 0; }
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field) { z-index: 0; }
 
 /* One slot both measures the leading mark and supplies its optical overhang. */
-:is(.stylos-input-text-leading, .stylos-input-search-leading, .stylos-text-area-leading) {
+:is(.stylos-input-text-leading, .stylos-select-leading, .stylos-input-search-leading, .stylos-text-area-leading) {
   --stylos-icon-footprint: var(--_stylos-input-icon-size);
   position: absolute;
   inset-inline-start: var(--_stylos-input-padding);
@@ -15,7 +15,7 @@
   pointer-events: none;
 }
 
-:is(.stylos-input-text-leading, .stylos-input-search-leading, .stylos-text-area-leading) > * {
+:is(.stylos-input-text-leading, .stylos-select-leading, .stylos-input-search-leading, .stylos-text-area-leading) > * {
   position: absolute;
   top: 0;
   inset-inline-end: 0;
@@ -23,7 +23,7 @@
   height: var(--_stylos-input-icon-size);
 }
 
-:is(.stylos-input-text-trailing, .stylos-input-search-trailing, .stylos-text-area-trailing) {
+:is(.stylos-input-text-trailing, .stylos-select-trailing, .stylos-input-search-trailing, .stylos-text-area-trailing) {
   position: absolute;
   inset-block: 0;
   inset-inline-end: var(--_stylos-input-padding);
@@ -32,7 +32,7 @@
 }
 
 /* The slots inherit disabled colour even without the old overlay container. */
-:is(.stylos-input-text-field, .stylos-input-search-field, .stylos-text-area-field):has(> :is(input, textarea):disabled)
-  > :is(.stylos-input-text-leading, .stylos-input-text-trailing, .stylos-input-search-leading, .stylos-input-search-trailing, .stylos-text-area-leading, .stylos-text-area-trailing) {
+:is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field):has(> :is(input, textarea, .stylos-select-trigger):disabled)
+  > :is(.stylos-input-text-leading, .stylos-input-text-trailing, .stylos-select-leading, .stylos-select-trailing, .stylos-input-search-leading, .stylos-input-search-trailing, .stylos-text-area-leading, .stylos-text-area-trailing) {
   color: var(--stylos-color-text-disabled);
 }

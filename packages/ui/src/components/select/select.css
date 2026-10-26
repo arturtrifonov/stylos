@@ -1,4 +1,4 @@
-@import "../../behaviors/field.css";
+@import "../../behaviors/compact-field.css";
 @import "../button-inner/button-inner.css";
 @import "../dropdown/dropdown.css";
 @import "../dropdown-item-default/dropdown-item-default.css";
@@ -22,7 +22,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.stylos-select-value > span { display: inline; }
 .stylos-select[data-is-filled="false"] .stylos-select-value { color: var(--stylos-color-text-tertiary); }
 
 /* Vertical trim is enabled only on XS–L placeholders in the source set. */
@@ -31,22 +30,25 @@
   text-box-edge: cap alphabetic;
 }
 
-.stylos-select-clear {
+/* Clear and the chevron render directly in the trailing group; each gives
+ * its outward optical overhang back with a negative end margin. */
+.stylos-select-trailing > .stylos-button-inner {
   --stylos-button-inner-footprint: var(--_stylos-input-validation-size);
-  display: block;
-  flex: none;
-  width: calc(var(--_stylos-input-validation-size) - var(--stylos-dimension-gap-g-0_250));
-  height: var(--_stylos-input-validation-size);
+  margin-inline-end: calc(-1 * var(--stylos-dimension-gap-g-0_250));
   pointer-events: auto;
 }
-.stylos-select-clear > .stylos-button-inner { display: block; }
+.stylos-select-trailing > .stylos-icon {
+  --stylos-icon-footprint: var(--_stylos-input-icon-size);
+  flex: none;
+  margin-inline-end: calc(-1 * var(--_stylos-input-optical));
+}
 
 .stylos-select-field:has(> .stylos-select-trigger[aria-expanded="true"])::before,
-.stylos-select-field:has(.stylos-select-clear :focus-visible)::before { opacity: 0; }
+.stylos-select-field:has(> .stylos-select-trailing > .stylos-button-inner:focus-visible)::before { opacity: 0; }
 .stylos-select-field:has(> .stylos-select-trigger[aria-expanded="true"])::after,
-.stylos-select-field:has(.stylos-select-clear :focus-visible)::after { opacity: 1; }
+.stylos-select-field:has(> .stylos-select-trailing > .stylos-button-inner:focus-visible)::after { opacity: 1; }
 .stylos-select-trigger[aria-expanded="true"] { border-color: var(--stylos-color-border-primary); }
-.stylos-select-field:has(.stylos-select-clear :focus-visible) .stylos-button-inner::after { opacity: 0; }
+.stylos-select-trailing > .stylos-button-inner:focus-visible::after { opacity: 0; }
 
 .stylos-select[data-state="disabled"] .stylos-select-value { color: var(--stylos-color-text-disabled); }
 .stylos-select[data-state="read only"] .stylos-select-trigger { cursor: default; }

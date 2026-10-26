@@ -22,13 +22,11 @@
   hidden={!isOpen} aria-labelledby={titleId}>
   <div class="stylos-alert-body">
     <div class="stylos-alert-heading-row">
-      <div class="stylos-alert-timer-header">
-        {#if hasTimerCounter}<span class="stylos-alert-timer-count">{Math.ceil(remaining)}{timeUnit}</span>{/if}
-        <p class="stylos-alert-heading" id={titleId}
-          role={announcement === "off" ? undefined : announcement === "assertive" ? "alert" : "status"}
-          aria-atomic={announcement === "off" ? undefined : "true"}>{headingText}</p>
-        {#if hasUndoButton}<Button {size} variant="outline" tone="base" labelText={undoButtonText} onclick={onundoclick} />{/if}
-      </div>
+      {#if hasTimerCounter}<span class="stylos-alert-timer-count">{Math.ceil(remaining)}{timeUnit}</span>{/if}
+      <p class="stylos-alert-heading" id={titleId}
+        role={announcement === "off" ? undefined : announcement === "assertive" ? "alert" : "status"}
+        aria-atomic={announcement === "off" ? undefined : "true"}>{headingText}</p>
+      {#if hasUndoButton}<Button {size} variant="outline" tone="base" labelText={undoButtonText} onclick={onundoclick} />{/if}
       {#if hasCloseButton}<ButtonInner accessibleName={closeAccessibleName} icon={closeIcon} onclick={close} />{/if}
     </div>
     {#if hasContent}<div class="stylos-alert-content">{@render children?.()}</div>{/if}

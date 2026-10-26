@@ -1,29 +1,21 @@
 @import "./dropdown-item.css";
 
-/* The label is the complete hit target; the nested native control owns state. */
-.stylos-dropdown-item-control {
-  position: relative;
-  flex: none;
-  width: calc(var(--_stylos-dropdown-icon-size) - var(--_stylos-dropdown-icon-overhang));
-  height: var(--_stylos-dropdown-icon-size);
+/* The label is the complete hit target; the nested native control owns state.
+ * The control renders directly in the row, and Figma's outward overhang comes
+ * off the padding on its side. */
+.stylos-dropdown-item.stylos-dropdown-item-checkbox {
+  padding-inline-start: calc(var(--_stylos-dropdown-row-padding-inline) - var(--_stylos-dropdown-icon-overhang));
 }
-.stylos-dropdown-item-control > * {
-  position: absolute;
-  inset-block-start: 0;
-  inset-inline-end: 0;
+.stylos-dropdown-item.stylos-dropdown-item-toggle {
+  padding-inline-start: calc(var(--_stylos-dropdown-row-padding-inline) - var(--stylos-dimension-gap-g-0_250));
 }
-.stylos-dropdown-item-toggle .stylos-dropdown-item-control {
-  width: calc(var(--_stylos-dropdown-icon-size) * 3 / 2 - var(--stylos-dimension-gap-g-0_250));
+.stylos-dropdown-item.stylos-dropdown-item-toggle[data-alignment="end"] {
+  padding-inline-start: var(--_stylos-dropdown-row-padding-inline);
+  padding-inline-end: calc(var(--_stylos-dropdown-row-padding-inline) - var(--stylos-dimension-gap-g-0_250));
 }
-.stylos-dropdown-item-toggle[data-alignment="end"] .stylos-dropdown-item-control {
-  order: 1;
-}
-.stylos-dropdown-item-toggle[data-alignment="end"] .stylos-dropdown-item-control > * {
-  inset-inline-end: auto;
-  inset-inline-start: 0;
-}
+.stylos-dropdown-item-toggle[data-alignment="end"] > .stylos-toggle-input { order: 1; }
 .stylos-dropdown-item:has(input:focus-visible)::after { opacity: 1; }
-.stylos-dropdown-item-control input:focus-visible + :is(.stylos-checkbox-input-surface, .stylos-toggle-input-surface) {
+.stylos-dropdown-item > :is(.stylos-checkbox-input, .stylos-toggle-input):has(> input:focus-visible) {
   outline: none;
 }
 .stylos-dropdown-item:has(input:enabled):hover .stylos-checkbox-input {

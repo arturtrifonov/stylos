@@ -1,5 +1,7 @@
 /* Native input supplies interaction; the same surface supports static samples.
- * Stroke stays inside the fixed square. Marks retain Figma's exact SVG bounds.
+ * The root span is the surface: the invisible input covers it and the mark is
+ * its pseudo-element. Stroke stays inside the fixed square. Marks retain
+ * Figma's exact SVG bounds.
  */
 .stylos-checkbox-input {
   --_stylos-checkbox-empty: var(--stylos-color-surface-subtle-base-default);
@@ -13,7 +15,13 @@
   vertical-align: middle;
   width: var(--_stylos-checkbox-size);
   height: var(--_stylos-checkbox-size);
+  border-radius: var(--stylos-radius-small);
+  background-color: var(--_stylos-checkbox-empty);
+  box-shadow: inset 0 0 0 var(--stylos-border-width-normal) var(--_stylos-checkbox-border);
   cursor: pointer;
+  transition:
+    background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear),
+    box-shadow var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
 }
 
 .stylos-checkbox-input > input {
@@ -26,26 +34,11 @@
   cursor: inherit;
 }
 
-.stylos-checkbox-input-surface {
-  display: block;
-  width: var(--_stylos-checkbox-size);
-  height: var(--_stylos-checkbox-size);
-  border-radius: var(--stylos-radius-small);
-  background-color: var(--_stylos-checkbox-empty);
-  box-shadow: inset 0 0 0 var(--stylos-border-width-normal) var(--_stylos-checkbox-border);
-  pointer-events: none;
-  transition:
-    background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear),
-    box-shadow var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
-}
-
 .stylos-checkbox-input:is([data-is-checked="true"], [data-is-checked="mixed"]),
 .stylos-checkbox-input:has(> input:is(:checked, :indeterminate)) {
-  & > .stylos-checkbox-input-surface {
-    background-color: var(--_stylos-checkbox-selected);
-    box-shadow: none;
-  }
-  & > .stylos-checkbox-input-surface::after {
+  background-color: var(--_stylos-checkbox-selected);
+  box-shadow: none;
+  &::after {
     content: "";
     display: block;
     width: var(--_stylos-checkbox-size);
@@ -53,6 +46,7 @@
     background-color: var(--_stylos-checkbox-mark);
     mask-image: var(--_stylos-checkbox-current-mark);
     mask-repeat: no-repeat;
+    pointer-events: none;
     transition: background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
   }
 }
@@ -83,25 +77,27 @@
   cursor: default;
 }
 
-.stylos-checkbox-input[data-is-focused="true"] > .stylos-checkbox-input-surface,
-.stylos-checkbox-input > input:focus-visible + .stylos-checkbox-input-surface {
+.stylos-checkbox-input[data-is-focused="true"],
+.stylos-checkbox-input:has(> input:focus-visible) {
   outline: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary);
   outline-offset: var(--stylos-dimension-gap-g-0_250);
 }
 
+/* The native control draws itself; the custom surface steps aside. */
 @media (forced-colors: active) {
+  .stylos-checkbox-input {
+    visibility: hidden;
+  }
   .stylos-checkbox-input > input {
+    visibility: visible;
     opacity: 1;
     appearance: auto;
-  }
-  .stylos-checkbox-input > .stylos-checkbox-input-surface {
-    visibility: hidden;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stylos-checkbox-input-surface,
-  .stylos-checkbox-input-surface::after {
+  .stylos-checkbox-input,
+  .stylos-checkbox-input::after {
     transition: none;
   }
 }

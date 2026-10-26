@@ -17,11 +17,9 @@
 <li role="presentation">
   <label class="stylos-dropdown-item stylos-dropdown-item-toggle" for={controlId}
     data-size={resolvedSize} data-state={state} data-is-selected={isSelected} data-alignment={alignment} {onchange}>
-    <span class="stylos-dropdown-item-control">
-      <ToggleInput size={resolvedSize} {state} bind:isChecked={isSelected}
-        id={controlId} {name} {value} {form} accessibleName={labelText}
-        descriptionIds={hasAdditionalText ? descriptionId : ""} />
-    </span>
+    <ToggleInput size={resolvedSize} {state} bind:isChecked={isSelected}
+      id={controlId} {name} {value} {form} accessibleName={labelText}
+      descriptionIds={hasAdditionalText ? descriptionId : ""} />
     <span class="stylos-dropdown-item-content">
       <span class="stylos-dropdown-item-label">{labelText}</span>
       {#if hasAdditionalText}<span class="stylos-dropdown-item-additional" id={descriptionId}>{additionalText}</span>{/if}

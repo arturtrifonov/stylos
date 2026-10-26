@@ -2,6 +2,7 @@
 @import "../components/icon/icon.css";
 
 .stylos-dropdown-item {
+  --stylos-icon-footprint: var(--_stylos-dropdown-icon-size);
   box-sizing: border-box;
   display: flex;
   align-items: flex-start;
@@ -71,18 +72,18 @@
   line-height: var(--_stylos-dropdown-additional-line-height);
 }
 .stylos-dropdown-item[data-state="disabled"] .stylos-dropdown-item-additional { color: inherit; }
-.stylos-dropdown-item-leading,
-.stylos-dropdown-item-selected {
-  --stylos-icon-footprint: var(--_stylos-dropdown-icon-size);
-  position: relative;
-  flex: none;
-  width: calc(var(--_stylos-dropdown-icon-size) - var(--_stylos-dropdown-icon-overhang));
-  height: var(--_stylos-dropdown-icon-size);
+/* Icons render directly in the row. Figma's outward optical overhang comes
+ * off the padding on the icon's side; the selection check shows only on a
+ * selected row. These selectors outrank the shared base rule, which several
+ * components import again. */
+.stylos-dropdown-item[data-leading-icon] {
+  padding-inline-start: calc(var(--_stylos-dropdown-row-padding-inline) - var(--_stylos-dropdown-icon-overhang));
 }
-.stylos-dropdown-item-leading > * { position: absolute; inset-inline-end: 0; inset-block-start: 0; }
-.stylos-dropdown-item-selected > * { position: absolute; inset-inline-start: 0; inset-block-start: 0; }
-.stylos-dropdown-item-selected { display: none; }
-.stylos-dropdown-item[data-is-selected="true"] .stylos-dropdown-item-selected { display: block; }
+.stylos-dropdown-item-default > .stylos-icon:last-child { display: none; }
+.stylos-dropdown-item.stylos-dropdown-item-default[data-is-selected="true"] {
+  padding-inline-end: calc(var(--_stylos-dropdown-row-padding-inline) - var(--_stylos-dropdown-icon-overhang));
+}
+.stylos-dropdown-item-default[data-is-selected="true"] > .stylos-icon:last-child { display: block; }
 .stylos-dropdown-item::after {
   content: "";
   position: absolute;

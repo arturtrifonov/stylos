@@ -757,7 +757,7 @@ test("the real Tooltip contract keeps its preview when content width is present"
 test("an implemented component opens on a live preview and ships its CSS", () => {
   const entry = contract();
   const html = renderComponentPage(entry, pageContext([entry], { resolveToken, preview: PREVIEW }));
-  assert.match(html, /class="preview-hero"><span class="stylos-checkbox-input" data-size="extra small" data-is-checked="false" aria-hidden="true"><span class="stylos-checkbox-input-surface">/);
+  assert.match(html, /class="preview-hero"><span class="stylos-checkbox-input" data-size="extra small" data-is-checked="false" aria-hidden="true"><\/span>/);
   assert.match(html, /class="slot live"/);
   assert.doesNotMatch(html, /class="slot" style="width:/);
   assert.ok(html.includes(PREVIEW.tokensCss), "the token sheet is inlined");
@@ -787,7 +787,7 @@ test("a live value row rides on the contract's defaults", () => {
   const entry = contract();
   const html = renderComponentPage(entry, pageContext([entry], { resolveToken, preview: PREVIEW }));
   // the `size: medium` row still carries the default `is checked`
-  assert.match(html, /<span class="stylos-checkbox-input" data-size="medium" data-is-checked="false" aria-hidden="true"><span class="stylos-checkbox-input-surface"><\/span><\/span>/);
+  assert.match(html, /<span class="stylos-checkbox-input" data-size="medium" data-is-checked="false" aria-hidden="true"><\/span>/);
 });
 
 test("a boolean shows both states, and switches on the property it controls", () => {
@@ -836,17 +836,20 @@ test("the real Checkbox contract renders a static surface with its form properti
   const entry = loadRegistry(repoRoot).find(entry => entry.id === "Checkbox Input");
   const html = sampleHtml(entry, {...defaultAssignment(entry), "is checked":"mixed", "accessible name":"Select row", name:"rows", value:"42"});
   assert.match(html,/data-is-checked="mixed"/);
-  assert.match(html,/class="stylos-checkbox-input-surface"/);
+  // The root span is the surface; there is no inner surface element.
+  assert.match(html,/aria-hidden="true"><\/span>$/);
+  assert.doesNotMatch(html,/input-surface/);
   assert.doesNotMatch(html,/>Select row|>rows|>42|<input/);
 });
 
-test("Checkbox compositions preview nested Input surface and only visible label text", () => {
+test("Checkbox compositions preview the nested Input surface and only visible label text", () => {
   for (const id of ["Checkbox Label", "Checkbox Text"]) {
     const entry = loadRegistry(repoRoot).find(entry => entry.id === id);
     const html = sampleHtml(entry, {...defaultAssignment(entry),"label text":"Visible <copy>","accessible name":"Short name",name:"consent",value:"yes"});
-    assert.match(html, /stylos-checkbox-input-surface/);
+    assert.match(html, /<span class="stylos-checkbox-input"[^>]*aria-hidden="true"><\/span>/);
     assert.match(html, /data-size="medium"/);
-    assert.match(html, /stylos-checkbox-copy">Visible &lt;copy&gt;/);
+    // Label sets one line directly in the label; Text keeps its wrapping copy box.
+    assert.match(html, id === "Checkbox Text" ? /stylos-checkbox-copy">Visible &lt;copy&gt;/ : /<\/span>Visible &lt;copy&gt;<\/span>$/);
     assert.doesNotMatch(html, /Short name|consent|yes|<input/);
   }
 });
@@ -858,7 +861,7 @@ test(`${id} ${variant} preview retains native semantics and escapes copy and for
   const html = sampleHtml(entry, {...defaultAssignment(entry), variant, type:"submit",name:'intent"',value:'<publish>',state:"disabled","label text":"<Save>"});
   assert.match(html, /<button type="submit"/);
   assert.match(html, /name="intent&quot;" value="&lt;publish&gt;"/);
-  assert.match(html, / disabled><span>&lt;Save&gt;<\/span>/);
+  assert.match(html, / disabled>&lt;Save&gt;<\/button>/);
   assert.throws(() => sampleHtml(entry,{onclick:()=>{}}), /cannot render an event callback/);
 });
 }

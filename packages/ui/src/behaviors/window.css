@@ -80,7 +80,7 @@
   font-variant-numeric: lining-nums tabular-nums;
   overflow-wrap: anywhere;
 }
-.stylos-window-close { --stylos-button-inner-footprint: var(--_stylos-window-close-size); display: flex; flex: none; }
+.stylos-window-header > .stylos-button-inner { --stylos-button-inner-footprint: var(--_stylos-window-close-size); }
 .stylos-window-content {
   display: flex;
   flex-direction: column;
@@ -91,12 +91,15 @@
   gap: var(--_stylos-window-padding);
 }
 .stylos-drawer .stylos-window-content { flex: 1; min-height: 0; overflow: auto; }
+/* The buttons sit directly in the footer: the pair at the end, the tertiary
+ * action pushed to the start, apart from them. */
 .stylos-window-footer {
+  flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--_stylos-window-footer-gap);
   box-shadow: inset 0 var(--stylos-border-width-normal) var(--stylos-color-border-secondary);
 }
-.stylos-window-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; flex: 1; min-width: 0; gap: var(--_stylos-window-footer-gap); }
+.stylos-window-footer > .stylos-button-ghost { margin-inline-end: auto; }
 
 /* stylelint-disable unit-disallowed-list -- Window widths are explicitly above the dimension scale in Modal/Drawer contracts. */
 .stylos-window[data-size="extra small"] {

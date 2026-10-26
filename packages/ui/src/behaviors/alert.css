@@ -33,7 +33,12 @@
 .stylos-alert-content > :first-child { margin-block-start: 0; }
 .stylos-alert-content > :last-child { margin-block-end: 0; }
 .stylos-alert-actions { display: flex; flex-wrap: wrap; gap: var(--_stylos-alert-stack); }
-.stylos-alert-icon { --stylos-icon-footprint: var(--_stylos-alert-icon); display: inline-flex; flex: none; color: var(--_stylos-alert-accent, var(--stylos-color-text-base)); }
+/* A supplied icon renders directly as the alert's first child. */
+.stylos-alert > :first-child:not(.stylos-alert-body) { --stylos-icon-footprint: var(--_stylos-alert-icon); flex: none; color: var(--_stylos-alert-accent, var(--stylos-color-text-base)); }
+/* An SVG keeps an author colour in forced colours; take the alert's system colour instead. */
+@media (forced-colors: active) {
+  .stylos-alert > :first-child:not(.stylos-alert-body) { color: inherit; }
+}
 .stylos-alert > .stylos-button-inner { --stylos-button-inner-footprint: var(--_stylos-alert-icon); }
 .stylos-alert[data-type="warning"] { --_stylos-alert-accent: var(--stylos-color-text-warning); }
 .stylos-alert[data-type="danger"] { --_stylos-alert-accent: var(--stylos-color-text-danger); }

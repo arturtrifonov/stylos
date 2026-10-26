@@ -32,24 +32,20 @@
   padding-block: var(--stylos-dimension-gap-g-0_500);
   margin-block: calc(-1 * var(--stylos-dimension-gap-g-0_500));
 }
-/* A negative outer margin retains the optical overhang without a slot wrapper. */
-.stylos-accordion-header > .stylos-icon {
+/* A negative outer margin retains the optical overhang without a slot wrapper.
+ * The expand mark is the first child; a supplied icon follows it directly. */
+.stylos-accordion-header > .stylos-icon:first-child {
   margin-inline-start: calc(-1 * var(--_stylos-input-optical, var(--stylos-dimension-gap-g-0_250)));
 }
-.stylos-accordion-header[data-expand-icon-position="trailing"] > .stylos-icon {
+.stylos-accordion-header[data-expand-icon-position="trailing"] > .stylos-icon:first-child {
   order: 2;
   margin-inline-start: 0;
   margin-inline-end: calc(-1 * var(--_stylos-input-optical, var(--stylos-dimension-gap-g-0_250)));
 }
-.stylos-accordion-icon {
-  position: relative;
-  display: flex;
-  align-items: center;
+.stylos-accordion-header > :not(:first-child, .stylos-accordion-title) {
   flex: none;
-  width: calc(var(--_stylos-input-icon-size) - var(--_stylos-input-optical, var(--stylos-dimension-gap-g-0_250)));
-  height: var(--_stylos-input-icon-size);
+  margin-inline-start: calc(-1 * var(--_stylos-input-optical, var(--stylos-dimension-gap-g-0_250)));
 }
-.stylos-accordion-icon > * { position: absolute; inset-inline-end: 0; }
 .stylos-accordion-header:enabled:hover { background: var(--stylos-color-surface-subtle-base-hover); }
 .stylos-accordion-header:enabled:active { background: var(--stylos-color-surface-subtle-base-active); }
 .stylos-accordion-header:focus-visible { outline: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary); outline-offset: var(--stylos-border-width-thick); }
