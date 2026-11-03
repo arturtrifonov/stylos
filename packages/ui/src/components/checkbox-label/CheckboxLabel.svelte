@@ -12,5 +12,5 @@
 
 <label class="stylos-checkbox-label" data-size={size} data-state={state} for={controlId}>
   <CheckboxInput {size} {state} bind:isChecked id={controlId} {name} {value} {form} {accessibleName} {descriptionIds} {isRequired} />
-  <span class="stylos-checkbox-copy">{labelText}</span>
+  {labelText}
 </label>

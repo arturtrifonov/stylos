@@ -20,8 +20,10 @@ for (const variant of ["fill", "outline"]) {
     });
     assert.match(html, /^<span class="stylos-tag stylos-tag-/);
     assert.match(html, /stylos-tag-label">Category &lt;one&gt; &amp; &quot;two&quot;</);
-    assert.match(html, /data-position="leading" aria-hidden="true"><svg[^>]*data-name="check"/);
-    assert.match(html, /data-position="trailing" aria-hidden="true"><svg[^>]*data-name="arrow_forward"/);
+    // Icons render directly; the root records which side gives up padding.
+    assert.match(html, / data-leading-icon data-trailing-icon><svg[^>]*data-name="check"/);
+    assert.match(html, /<\/span><svg[^>]*data-name="arrow_forward"[^>]*>.*<\/svg><\/span>$/);
+    assert.doesNotMatch(html, /stylos-tag-icon/);
     assert.doesNotMatch(html, /<button|<a |tabindex|onclick/);
     assert.doesNotMatch(sampleHtml(entry, { ...props, "leading icon": "check" }), /<svg/);
     assert.doesNotMatch(sampleHtml(entry, { ...props, "has leading icon": true }), /<svg|stylos-tag-icon/);
@@ -45,10 +47,10 @@ for (const variant of ["fill", "outline"]) {
     assert.match(html, /^<button type="submit" class="stylos-tag-interactive stylos-tag-interactive-/);
     assert.match(html, /id="apply&quot;"/);
     assert.match(html, /name="action" value="apply&amp;" form="filters&quot;"/);
-    assert.match(html, /aria-describedby="hint&quot;" disabled>/);
+    assert.match(html, /aria-describedby="hint&quot;" disabled data-leading-icon data-trailing-icon><svg[^>]*data-name="check"/);
     assert.match(html, /stylos-tag-label">Apply &lt;one&gt; &amp; &quot;two&quot;</);
-    assert.match(html, /data-position="leading" aria-hidden="true"><svg[^>]*data-name="check"/);
-    assert.match(html, /data-position="trailing" aria-hidden="true"><svg[^>]*data-name="arrow_forward"/);
+    assert.match(html, /<\/span><svg[^>]*data-name="arrow_forward"[^>]*>.*<\/svg><\/button>$/);
+    assert.doesNotMatch(html, /stylos-tag-icon/);
     assert.equal((html.match(/<button/g) ?? []).length, 1);
     assert.doesNotMatch(html, /aria-pressed|href=|tabindex|onclick/);
     assert.match(sampleHtml(entry, props), /^<button type="button"/);

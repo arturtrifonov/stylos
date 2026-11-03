@@ -24,5 +24,4 @@
     checked={isChecked === "true"}
     use:radioBehavior={{ isChecked, name, form, onChange: (selection) => { isChecked = selection; } }}
   />
-  <span class="stylos-radio-input-surface" aria-hidden="true"></span>
 </span>

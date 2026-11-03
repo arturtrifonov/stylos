@@ -2,6 +2,7 @@
 .stylos-table-cell { padding: var(--_stylos-table-head-padding, 0) 0; vertical-align: middle; }
 .stylos-table-cell-heading { vertical-align: top; }
 .stylos-table-cell-frame {
+  --stylos-icon-footprint: var(--_stylos-table-icon-size);
   display: flex;
   align-items: flex-start;
   position: relative;
@@ -41,21 +42,19 @@
 }
 .stylos-table-cell-additional { font-size: var(--_stylos-table-additional-size); line-height: var(--_stylos-table-additional-line); color: var(--stylos-color-text-secondary); }
 .stylos-table-cell-heading .stylos-table-cell-additional { font-weight: var(--stylos-font-weight-emphasis); }
-.stylos-table-cell-icon {
-  --stylos-icon-footprint: var(--_stylos-table-icon-size);
-  position: relative;
-  flex: none;
-  width: calc(var(--_stylos-table-icon-size) - var(--_stylos-table-icon-overhang));
-  height: var(--_stylos-table-icon-size);
+/* The icon renders directly at the cell's outer edge; Figma's optical
+ * overhang comes off the padding on that side, which end alignment mirrors. */
+.stylos-table-cell-frame[data-icon] {
+  padding-inline-start: calc(var(--_stylos-table-cell-inline) - var(--_stylos-table-icon-overhang));
 }
-.stylos-table-cell-icon > * { position: absolute; inset-inline-end: 0; inset-block-start: 0; }
-.stylos-table-cell[data-alignment="end"] .stylos-table-cell-icon > * { inset-inline-end: auto; inset-inline-start: 0; }
-.stylos-table-cell-action {
+.stylos-table-cell[data-alignment="end"] .stylos-table-cell-frame[data-icon] {
+  padding-inline-start: var(--_stylos-table-cell-inline);
+  padding-inline-end: calc(var(--_stylos-table-cell-inline) - var(--_stylos-table-icon-overhang));
+}
+/* Sort and filter controls centre on the icon line without a slot wrapper. */
+.stylos-table-cell-frame > .stylos-button-inner {
   --stylos-button-inner-footprint: var(--_stylos-table-control-size);
-  display: flex;
-  align-items: center;
-  flex: none;
-  height: var(--_stylos-table-icon-size);
+  margin-block: calc((var(--_stylos-table-icon-size) - var(--_stylos-table-control-size)) / 2);
 }
 .stylos-table-cell-heading[data-constrained="true"] .stylos-table-cell-frame::after {
   content: "";

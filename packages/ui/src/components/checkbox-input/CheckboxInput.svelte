@@ -24,5 +24,4 @@
     checked={isChecked === "true"}
     use:checkboxBehavior={{ isChecked, onChange: (selection) => { isChecked = selection; } }}
   />
-  <span class="stylos-checkbox-input-surface" aria-hidden="true"></span>
 </span>

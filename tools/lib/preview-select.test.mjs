@@ -16,19 +16,23 @@ test("Select previews retain separate full-field and clear buttons with escaped 
     "input text": "Design < team", "label text": "Workspace", "has clear button": true, "is required": true });
   assert.match(html, /<label[^>]*for="workspace">Workspace/);
   assert.match(html, /<button[^>]*role="combobox"[^>]*aria-label="Workspace" aria-required="true"/);
-  assert.match(html, /Design &lt; team<\/span><\/span><\/button>/);
+  assert.match(html, /<span class="stylos-select-value">Design &lt; team<\/span><\/button>/);
   assert.match(html, /<select[^>]*name="workspace" form="settings" required/);
   assert.match(html, /<option value="a&amp;&quot;b" selected>Design &lt; team/);
   assert.match(html, /aria-label="Clear Workspace"/);
   assert.doesNotMatch(html, /<button[^>]*>[\s\S]*?<button[^>]*>[\s\S]*?<\/button>[\s\S]*?<\/button>/);
+  // As in Input Text: side groups sit directly in the field, and clear and
+  // the chevron render directly in the trailing group.
+  assert.match(html, /<span class="stylos-select-trailing"><button class="stylos-button-inner"[^>]*><svg[^>]*data-name="close"[\s\S]*<\/button><svg[^>]*data-name="arrow_drop_down"[\s\S]*<\/svg><\/span><\/div><\/div>$/);
+  assert.doesNotMatch(html, /stylos-select-(adornments|leading|clear|icon)|button-inner-icon/);
 });
 
 test("empty, read-only and disabled Select states suppress clear and preserve semantics", () => {
-  assert.doesNotMatch(render({ "has clear button": true }), /stylos-select-clear/);
+  assert.doesNotMatch(render({ "has clear button": true }), /stylos-button-inner/);
   for (const state of ["read only", "disabled"]) {
     const html = render({ state, value: "design", validation: "error", "has clear button": true, "is required": true });
     assert.match(html, /data-validation="off"/);
-    assert.doesNotMatch(html, /stylos-select-clear|data-name="arrow_drop_down"|aria-invalid="true"| required/);
+    assert.doesNotMatch(html, /stylos-button-inner|stylos-select-trailing|data-name="arrow_drop_down"|aria-invalid="true"| required/);
     assert.match(html, state === "read only" ? /aria-readonly="true"/ : /<select[^>]* disabled/);
     if (state === "read only") assert.doesNotMatch(html, /<select[^>]* disabled/);
   }

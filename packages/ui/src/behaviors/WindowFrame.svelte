@@ -20,11 +20,9 @@
   style:--stylos-window-width={width || undefined}>
   <div class="stylos-window-header">
     <h2 class="stylos-window-heading" id={headingId}>{headingText || (kind === "modal" ? "Modal heading" : "Drawer heading")}</h2>
-    <span class="stylos-window-close">
-      <ButtonInner accessibleName={closeAccessibleName} onclick={dismiss}>
-        {#snippet icon()}<Icon name="close" />{/snippet}
-      </ButtonInner>
-    </span>
+    <ButtonInner accessibleName={closeAccessibleName} onclick={dismiss}>
+      {#snippet icon()}<Icon name="close" />{/snippet}
+    </ButtonInner>
   </div>
   <!-- svelte-ignore a11y_no_noninteractive_tabindex (The named Drawer overflow region needs a keyboard scroll target.) -->
   <div class="stylos-window-content stylos-scrollbar" data-scrollbar-size="medium" data-scrollbar-position="absolute"
@@ -35,10 +33,8 @@
   {#if hasPrimaryButton || hasSecondaryButton || hasTertiaryButton}
   <div class="stylos-window-footer">
     {#if hasTertiaryButton}<Button {size} variant="ghost" tone="base" labelText={tertiaryButtonText} onclick={ontertiaryclick} />{/if}
-    <div class="stylos-window-actions">
-      {#if hasSecondaryButton}<Button {size} variant="outline" tone="base" labelText={secondaryButtonText} onclick={cancel} />{/if}
-      {#if hasPrimaryButton}<Button {size} tone="primary" labelText={primaryButtonText} onclick={onprimaryclick} />{/if}
-    </div>
+    {#if hasSecondaryButton}<Button {size} variant="outline" tone="base" labelText={secondaryButtonText} onclick={cancel} />{/if}
+    {#if hasPrimaryButton}<Button {size} tone="primary" labelText={primaryButtonText} onclick={onprimaryclick} />{/if}
   </div>
   {/if}
 </div>

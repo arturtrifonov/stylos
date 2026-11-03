@@ -1,9 +1,10 @@
 @import "../components/icon/icon.css";
 
-/* Figma Tag geometry. Each icon slot is two units narrower than its icon;
- * the matching gap token carries the outward optical compensation.
+/* Figma Tag geometry. Icons render directly; the two-unit outward optical
+ * compensation comes off the padding on the icon's side.
  */
 :is(.stylos-tag-fill, .stylos-tag-outline, .stylos-tag-interactive-fill, .stylos-tag-interactive-outline) {
+  --stylos-icon-footprint: var(--_stylos-tag-icon-size);
   display: inline-flex;
   flex: none;
   align-items: center;
@@ -42,21 +43,13 @@
   }
 }
 
-.stylos-tag-icon {
-  --stylos-icon-footprint: var(--_stylos-tag-icon-size);
-  position: relative;
-  flex: none;
-  width: calc(var(--_stylos-tag-icon-size) - var(--stylos-dimension-gap-g-0_250));
-  height: var(--_stylos-tag-icon-size);
+:is(.stylos-tag-fill, .stylos-tag-outline, .stylos-tag-interactive-fill, .stylos-tag-interactive-outline)[data-leading-icon] {
+  padding-inline-start: calc(var(--_stylos-tag-padding) - var(--stylos-dimension-gap-g-0_250));
 }
 
-.stylos-tag-icon > * {
-  position: absolute;
-  top: 0;
+:is(.stylos-tag-fill, .stylos-tag-outline, .stylos-tag-interactive-fill, .stylos-tag-interactive-outline)[data-trailing-icon] {
+  padding-inline-end: calc(var(--_stylos-tag-padding) - var(--stylos-dimension-gap-g-0_250));
 }
-
-.stylos-tag-icon[data-position="leading"] > * { right: 0; }
-.stylos-tag-icon[data-position="trailing"] > * { left: 0; }
 
 :is(.stylos-tag-fill, .stylos-tag-outline, .stylos-tag-interactive-fill, .stylos-tag-interactive-outline)[data-size="extra small"] {
   --_stylos-tag-height: var(--stylos-dimension-size-s-2_000);

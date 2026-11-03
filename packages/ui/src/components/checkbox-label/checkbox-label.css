@@ -7,10 +7,7 @@
   /* Intrinsic hug/fill sizing, not an authored dimension. */
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
   width: max-content;
+  white-space: nowrap;
   font-weight: var(--stylos-font-weight-emphasis);
   line-height: var(--_stylos-checkbox-string-line);
-}
-
-.stylos-checkbox-label > .stylos-checkbox-copy {
-  white-space: nowrap;
 }

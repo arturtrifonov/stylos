@@ -17,7 +17,9 @@ test("Button Inner previews a named local-action button with a decorative active
   assert.match(html, /id="clear&quot;"/);
   assert.match(html, /aria-describedby="help&quot;"/);
   assert.match(html, / disabled>/);
-  assert.match(html, /stylos-button-inner-icon" aria-hidden="true"><svg/);
+  // The Icon renders directly in the button, without an icon wrapper.
+  assert.match(html, / disabled><svg[^>]*aria-hidden="true"/);
+  assert.doesNotMatch(html, /stylos-button-inner-icon/);
   assert.match(html, /data-name="close"[^>]*><path /);
   assert.doesNotMatch(sampleHtml(entry, { icon: "missing_mark" }), /<svg|<path/);
   assert.doesNotMatch(sampleHtml(entry, defaultAssignment(entry)), /<svg|<path/);

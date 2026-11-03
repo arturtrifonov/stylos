@@ -231,7 +231,9 @@ and DOM review. Switcher and its two segments were aligned with the updated
 Figma set on 2026-10-26 and approved as **ready** ([evidence](verification/switcher-2026-10-26.md)).
 **Tabs Horizontal**, **Tab Item** and **Tab Item Icon** were aligned with the
 finished Figma set and approved as **ready** on 2026-10-26
-([evidence](verification/tabs-2026-10-26.md)). Builds and examples do not
+([evidence](verification/tabs-2026-10-26.md)). A later
+[wrapper review](verification/wrappers-2026-10-26.md) removed jobless DOM
+wrappers across the core without changing rendering. Builds and examples do not
 promote readiness. The [alert and progress review](verification/alerts-progress-2026-10-25.md)
 records the documentation and DOM audit, fixes and outstanding release checks.
 
@@ -304,8 +306,8 @@ independently. That heading element remains present when the panel is collapsed.
 includes the collapsed and expanded glyph. `expandIconPosition` places it at
 the leading or trailing edge. The component fills its parent's available width;
 the built-in disclosure SVG uses a negative logical margin for its optical
-overhang, with no wrapper. The optional custom icon keeps its own slot because
-its snippet may contain arbitrary markup.
+overhang, with no wrapper. The optional custom icon renders directly after it
+with the same margin; pass a single Icon in its snippet.
 Consecutive direct Accordion siblings automatically share one divider: the
 following sibling omits its top border while retaining its header inset. No
 wrapper or manual border prop is needed for a contiguous list. Separate groups
@@ -327,7 +329,8 @@ Undo action and callback. Its counter is outside the
 live heading so second-by-second updates do not repeat the notification.
 
 Popup uses the current five-size Figma composition, including heading/h6
-through heading/h2 and matching-size action buttons. Its decorative icon slot uses the heading's line-height token as its height.
+through heading/h2 and matching-size action buttons. Its decorative icon renders directly and
+centres on the first heading line with block margins derived from the heading's line-height token.
 The native Close button centres on that first line with block margins, without
 an alignment wrapper; its square icon and focus geometry stay unchanged.
 A wrapping or hidden heading preserves this alignment. Popup uses elevation 4. The heading sits directly in the body; hiding it leaves no empty
@@ -351,8 +354,9 @@ needed; the default empty string adds no unit. Counter and Close footprints matc
 text and tabular lining figures. Padding and the gap before Progress Bar follow
 12/14/16/20/24; the counter/heading/Undo cluster has a separate 6/8/10/12/14 gap.
 Content follows the matching body-text size. Progress Bar stays 8 high, with its
-label hidden and outside the live heading. The cluster wrapper keeps the distinct
-Close spacing in every state; heading padding is applied directly to the text.
+label hidden and outside the live heading. Counter, heading, Undo and Close share
+one row; Close takes the larger outer spacing as its start margin in every state.
+Heading padding is applied directly to the text.
 The single **default** story is a user-started countdown with editable duration,
 Start, Pause/Resume and Reset. Controls configure the same component. There is no
 autoplay: expiry stays visible at 0, Undo stops the countdown, and Close dismisses
@@ -584,7 +588,7 @@ presets; external dimension overrides are not part of this contract.
 
 Independent HTML uses `.stylos-button-icon` plus `.stylos-button-base`,
 `.stylos-button-outline` or `.stylos-button-ghost`, with the same data attributes
-as Button and a decorative `.stylos-button-icon-mark` child. Link tokens, fonts
+as Button and the decorative Icon SVG as its direct child. Link tokens, fonts
 and `@stylos/ui/css/button-icon.css`; this export includes its Button dependency.
 
 ### Surface profiles
@@ -707,6 +711,9 @@ in the registry; this implementation does not change the palette.
 controls and inherit `Dropdown` size. Bind `isSelected` to `"false" | "true"`.
 The complete row is a label; keyboard focus surrounds the row once. Optional
 additional text is an associated description. Toggle accepts `alignment="start|end"`.
+The control renders directly in the row; Figma's outward overhang comes off the
+row padding on its side. Default and Parent rows render their leading icon,
+selection check and arrow the same way, without slot wrappers.
 
 Render these rows inside `Dropdown contentRole="group"` and connect an external
 button and `[data-dropdown-positioner]` using `dropdownControlsBehavior`:
@@ -887,7 +894,10 @@ contract remains ready.
 
 ### Checkbox Input
 
-`CheckboxInput` renders a native checkbox with a decorative surface. Supply
+`CheckboxInput` renders a native checkbox inside a span that is its decorative
+surface: the transparent input covers the span and the mark is the span's
+pseudo-element, with no separate surface element. Radio and Toggle Input follow
+the same structure. Supply
 `accessibleName`, or an `id` associated with a surrounding HTML label. A name
 from surrounding row content remains the consumer's responsibility.
 
@@ -983,7 +993,7 @@ Both compose `CheckboxInput`, default to medium and expose the same form, select
 </div>
 ```
 
-Label hugs its single line and uses emphasis weight with string line height. Text fills the parent width, wraps using text line height and centres the box on its first line; choose the column width in the surrounding layout. Text's optional `children` snippet replaces `labelText`. Supply phrasing content such as text, emphasis and anchors, with no nested labels or additional controls. Native anchor activation follows the link without toggling selection, including inside a disabled option; a disabled checkbox does not disable an independent link. Supplementary copy belongs outside the label and is connected through `descriptionIds`; required validity does not add an error appearance.
+Label hugs its single line, set as a text node directly in the label, and uses emphasis weight with string line height. Text fills the parent width, wraps using text line height and centres the box on its first line; choose the column width in the surrounding layout. Text's optional `children` snippet replaces `labelText`. Supply phrasing content such as text, emphasis and anchors, with no nested labels or additional controls. Native anchor activation follows the link without toggling selection, including inside a disabled option; a disabled checkbox does not disable an independent link. Supplementary copy belongs outside the label and is connected through `descriptionIds`; required validity does not add an error appearance.
 
 Hover and pressing across the full label update the input's existing Motion surface transitions. Native disabled fieldsets also disable the input and copy. The CSS exports for Label/Text include the shared layout and Checkbox Input styles; link tokens and fonts separately as usual.
 
@@ -1004,8 +1014,9 @@ The browser derives hover, press and keyboard focus; `state="disabled"` and a
 disabled fieldset prevent activation and focus. Labels are uppercased in CSS.
 Surface transitions use micro/linear Motion and become immediate with reduced
 motion. Optional `leadingIcon` and `trailingIcon` require their presence booleans;
-unassigned icons render no slot. Marks are decorative and retain Figma's optical
-alignment. `type="button"` is the default; submit/reset, `name`, `value` and `form`
+unassigned icons render nothing. Marks render directly in the button; the
+root's `data-leading-icon` and `data-trailing-icon` take Figma's outward optical
+overhang off the padding on that side. The label is a text node. `type="button"` is the default; submit/reset, `name`, `value` and `form`
 retain native form behaviour. `onclick` receives the native event and can cancel
 its default action. `descriptionIds` links supporting text.
 
@@ -1102,7 +1113,7 @@ extend to 140% of it (56 units by default). A parent can set
 `--stylos-button-inner-footprint` to a size token and `--stylos-button-inner-color`
 to a text-role token. The halo and focus frame follow the footprint's proportions;
 leave enough room around adjacent controls. Independent HTML uses the same native
-button, an optional `.stylos-button-inner-icon` child and the exported CSS.
+button, an optional Icon SVG as its direct child and the exported CSS.
 
 `state="disabled"` and native disabled fieldsets suppress activation and focus.
 Hover, pressing and keyboard focus are browser states. Motion uses micro/linear
@@ -1124,9 +1135,9 @@ Pass `labelText` in its original case; CSS transforms only its appearance.
 ```
 
 Optional leading/trailing snippets are decorative; the label carries the meaning.
-Their booleans control visibility, and an unassigned snippet renders no slot.
-Each icon slot is two units narrower than its icon, preserving Figma’s outward
-optical alignment. Outline is painted inside the same footprint, so switching
+Their booleans control visibility, and an unassigned snippet renders nothing.
+Icons render directly in the tag; `data-leading-icon` and `data-trailing-icon`
+take Figma’s two-unit outward optical overhang off the padding on that side. Outline is painted inside the same footprint, so switching
 treatments does not change layout. Size, spacing, radius, type and colors use
 tokens. Both text cases use `text-box-trim: trim-both` and
 `text-box-edge: cap alphabetic` to centre Figma’s cap-height box without manual
@@ -1213,8 +1224,10 @@ native select owns submission, required validation, autofill and reset. Native
 forwarded to the form control. Read-only stays focusable and submitted but
 cannot open or clear; disabled fields and disabled fieldsets leave form data.
 
-The five size profiles, adornments, resting layer-1 shadow and fading focus
-halo reuse Input Text CSS. The list uses Dropdown's layer-3 motion and native
+The five size profiles, side groups, resting layer-1 shadow and fading focus
+halo reuse Input Text CSS. As in Input Text, the leading and trailing groups sit
+directly in the field and render only with content; Clear and the chevron are
+direct children of the trailing group. The list uses Dropdown's layer-3 motion and native
 scrollbar. Vertical trim follows the Select text layers in Figma: enabled only
 for XS–L placeholders, absent for XL and chosen values. Long values truncate
 horizontally; option rows retain their full text. `maxHeight` limits the list.
@@ -1257,9 +1270,9 @@ An already constrained heading shows its sort/filter Button Inner controls.
 `isSorted` and `sortDirection="ascending|descending"` expose `aria-sort`;
 `isFiltered` shows the filter control. Both flags share one bottom mark.
 Set localized `sortAccessibleName` and `filterAccessibleName` as needed.
-`onclick` receives the native click from either control; its button's nearest
-`[data-table-action]` wrapper identifies `sort` or `filter`. The owner updates
-the state and data. Initiating constraints through a menu remains a later slice.
+`onsortclick` and `onfilterclick` receive the native click from their own
+control; both controls render directly in the cell. The owner updates the state
+and data. They replace the former single `onclick` (owner decision, 2026-10-26). Initiating constraints through a menu remains a later slice.
 
 Body rows accept `hasBackground` and `hasDivider`; the owner chooses banding.
 Browser hover changes only enabled backgrounds, preserving the current Figma

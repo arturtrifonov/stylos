@@ -18,7 +18,9 @@ for (const variant of ["base", "outline", "ghost"]) {
     assert.match(html, /aria-label="Find &quot;items&quot; &lt;now&gt;"/);
     assert.match(html, /id="find&quot;" name="action" value="find&amp;" form="filters&quot;"/);
     assert.match(html, /aria-describedby="hint&quot;" disabled>/);
-    assert.match(html, /stylos-button-icon-mark" aria-hidden="true"><svg[^>]*data-name="search"/);
+    // The Icon renders directly in the button, without a mark wrapper.
+    assert.match(html, /disabled><svg[^>]*data-name="search"[^>]*>.*<\/svg><\/button>$/);
+    assert.doesNotMatch(html, /stylos-button-icon-mark/);
     assert.equal((html.match(/<button/g) ?? []).length, 1);
     assert.doesNotMatch(html, /aria-pressed|href=|tabindex|onclick/);
   });
@@ -30,7 +32,7 @@ test("Button Icon samples configure an icon and name without introducing runtime
   assert.match(defaults, /aria-label="Add item"/);
   assert.match(defaults, /data-name="add"/);
   assert.doesNotMatch(sampleHtml(entry), /<svg|aria-label/);
-  assert.doesNotMatch(sampleHtml(entry, { icon: "unknown" }), /stylos-button-icon-mark|<svg/);
+  assert.doesNotMatch(sampleHtml(entry, { icon: "unknown" }), /<svg/);
   assert.throws(() => sampleHtml(entry, { state: "hover" }), /no value "hover"/);
   assert.throws(() => sampleHtml(entry, { "is focused": true }), /no api property/);
   assert.throws(() => sampleHtml(entry, { onclick: () => {} }), /event callback/);

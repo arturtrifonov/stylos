@@ -44,6 +44,23 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Changed
 
+- Remove DOM wrappers that had no job, without changing rendering. Button
+  loses its label span and icon slots; Button Icon, Button Inner, Tag and Tag
+  Interactive lose their icon slots. Checkbox, Radio and Toggle Input draw on
+  their root span instead of a separate surface element, and the Label
+  variants set their text directly. Dropdown Item rows lose their leading,
+  check, arrow and control slots. Select drops its adornment overlay, empty
+  side groups and nested value and clear spans, and is now structured like
+  Input Text. Modal and Drawer lose their close and action wrappers, Alert and
+  Accordion Header their icon slots, Alert Popup Timer its inner header row,
+  and the table cells their icon and action wrappers. Icons render directly:
+  Figma's optical overhang comes off the padding on the icon's side
+  (`data-leading-icon`, `data-trailing-icon`) or from a negative logical
+  margin. Independent HTML follows the same structure.
+- **Breaking:** Table Cell Heading reports `onsortclick` and `onfilterclick`
+  instead of one `onclick` that the consumer told apart by a
+  `data-table-action` wrapper.
+
 - Align Tabs Horizontal and Tab Item with the finished Figma set. A tab is one
   button: label text, Icon snippets and a size- and state-matched Badge render
   without wrappers. The row hangs its outer label padding, spaces tabs 1 unit
@@ -155,6 +172,12 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Fixed
 
+- Dropdown Item Toggle's switch now overhangs the row's start edge as Dropdown
+  Item Checkbox's box does. A rule whose effect depended on stylesheet order
+  had left it 2 px further in, closer to its label.
+- Leading and trailing icons in Button, Tag and the text fields overhang toward
+  the outer edge in right-to-left layouts too; the overhang used physical
+  `left` and `right`.
 - Align Accordion insets, header/content spacing and optical icon placement
   with the reviewed Figma geometry; prevent clipped title descenders and
   double borders between consecutive sections. Remove the built-in disclosure

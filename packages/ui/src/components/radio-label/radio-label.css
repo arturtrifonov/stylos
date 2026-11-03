@@ -7,10 +7,7 @@
   /* Intrinsic hug/fill sizing, not an authored dimension. */
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
   width: max-content;
+  white-space: nowrap;
   font-weight: var(--stylos-font-weight-base);
   line-height: var(--_stylos-radio-string-line);
-}
-
-.stylos-radio-label > .stylos-radio-copy {
-  white-space: nowrap;
 }

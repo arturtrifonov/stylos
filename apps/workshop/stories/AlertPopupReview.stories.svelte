@@ -21,12 +21,11 @@
     const heading = root.querySelector<HTMLElement>(".stylos-alert-heading")!;
     const line = parseFloat(getComputedStyle(heading).lineHeight);
     await expect(line % 2).toBe(0);
-    for (const slot of root.querySelectorAll<HTMLElement>(".stylos-alert-icon")) {
-      const box = slot.getBoundingClientRect();
-      const icon = slot.querySelector("svg")!.getBoundingClientRect();
-      await expect(box.height).toBeCloseTo(line, 1);
-      await expect(box.top).toBeCloseTo(heading.getBoundingClientRect().top, 1);
-      await expect(icon.top - box.top).toBeCloseTo(box.bottom - icon.bottom, 1);
+    // The icon renders directly and centres on the first heading line.
+    await expect(root.querySelector(".stylos-alert-icon")).toBeNull();
+    for (const mark of root.querySelectorAll(":scope > svg")) {
+      const icon = mark.getBoundingClientRect();
+      await expect(icon.top + icon.height / 2).toBeCloseTo(heading.getBoundingClientRect().top + line / 2, 1);
     }
     await expect(root.querySelector(".stylos-alert-heading-row")).toBeNull();
     const close = root.querySelector<HTMLButtonElement>(":scope > .stylos-button-inner")!;
@@ -56,7 +55,8 @@
   const heading = wrapped.querySelector<HTMLElement>(".stylos-alert-heading")!;
   const line = parseFloat(getComputedStyle(heading).lineHeight);
   await expect(heading.getBoundingClientRect().height).toBeGreaterThan(line);
-  await expect(wrapped.querySelector(".stylos-alert-icon")!.getBoundingClientRect().height).toBeCloseTo(line, 1);
+  const mark = wrapped.querySelector(":scope > svg")!.getBoundingClientRect();
+  await expect(mark.top + mark.height / 2).toBeCloseTo(heading.getBoundingClientRect().top + line / 2, 1);
   await expect(absent.querySelector(".stylos-alert-heading")).toBeNull();
   await expect(absent.querySelector(".stylos-alert-heading-row")).toBeNull();
   const body = absent.querySelector(".stylos-alert-body")!.getBoundingClientRect();

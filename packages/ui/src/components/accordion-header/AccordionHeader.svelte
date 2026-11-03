@@ -13,6 +13,7 @@
   let { size = "extra small", state = "default", isExpanded = $bindable(false),
     expandIconPosition = "leading", expandIcon = "chevron", labelText = "Accordion title", hasIcon = false,
     icon, id, controls, onclick }: AccordionHeaderProps = $props();
+  const supplied = $derived(hasIcon ? icon : undefined);
 </script>
 
 <button type="button" class="stylos-accordion-header" {id}
@@ -20,6 +21,6 @@
   disabled={state === "disabled"} aria-expanded={isExpanded} aria-controls={controls}
   onclick={event => { isExpanded = !isExpanded; onclick?.(event); }}>
   <Icon name={expandIcons[expandIcon][isExpanded ? 1 : 0]} />
-  {#if hasIcon && icon}<span class="stylos-accordion-icon" aria-hidden="true">{@render icon()}</span>{/if}
+  {@render supplied?.()}
   <span class="stylos-accordion-title">{labelText}</span>
 </button>

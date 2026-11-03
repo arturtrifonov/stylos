@@ -82,12 +82,14 @@ test("timer previews compose matching-size controls and controlled progress outs
     const read = markupReader(sampleHtml(entry, { ...defaultAssignment(entry), size,
       "has close button": true, "has content": true, duration: 10, "remaining time": 7 }));
     assert.equal(read("stylos-alert-popup-timer", "data-surface-layer"), "4");
-    const header = read("stylos-alert-timer-header");
-    assert.equal(read("stylos-alert-heading").parentNode, header);
-    assert.equal(read("stylos-alert-timer-count").parentNode, header);
-    assert.equal(read("stylos-button-outline").parentNode, header);
+    // One heading row holds the counter, heading, Undo and Close directly.
+    const row = read("stylos-alert-heading-row");
+    assert.equal(read("stylos-alert-timer-header"), undefined);
+    assert.equal(read("stylos-alert-heading").parentNode, row);
+    assert.equal(read("stylos-alert-timer-count").parentNode, row);
+    assert.equal(read("stylos-button-outline").parentNode, row);
     assert.equal(read("stylos-button-outline", "data-size"), size);
-    assert.equal(read("stylos-button-inner").parentNode, read("stylos-alert-heading-row"));
+    assert.equal(read("stylos-button-inner").parentNode, row);
     assert.equal(read("stylos-alert-timer-progress", "aria-hidden"), "true");
     assert.match(sampleHtml(entry, { ...defaultAssignment(entry), size, duration: 10, "remaining time": 7 }), /<progress[^>]* value="70"/);
   }

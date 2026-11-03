@@ -17,8 +17,4 @@
   disabled={state === "disabled"}
   aria-label={accessibleName || undefined}
   aria-describedby={descriptionIds || undefined}
->
-  {#if icon}
-    <span class="stylos-button-inner-icon" aria-hidden="true">{@render icon()}</span>
-  {/if}
-</button>
+>{@render icon?.()}</button>

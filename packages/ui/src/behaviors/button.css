@@ -78,23 +78,19 @@
   }
 }
 
-:is(.stylos-button-base-icon, .stylos-button-outline-icon, .stylos-button-ghost-icon) {
+/* Icons render directly in the button. Figma's optical overhang keeps the
+ * icon's footprint and lets the padding on its side give way. */
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost) {
   --stylos-icon-footprint: var(--_stylos-button-icon-size);
-  position: relative;
-  flex: none;
-  width: calc(var(--_stylos-button-icon-size) - var(--_stylos-button-optical));
-  height: var(--_stylos-button-icon-size);
 }
 
-:is(.stylos-button-base-icon, .stylos-button-outline-icon, .stylos-button-ghost-icon) > * {
-  position: absolute;
-  top: 0;
-  width: var(--_stylos-button-icon-size);
-  height: var(--_stylos-button-icon-size);
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost)[data-leading-icon] {
+  padding-inline-start: calc(var(--_stylos-button-padding) - var(--_stylos-button-optical));
 }
 
-:is(.stylos-button-base-icon, .stylos-button-outline-icon, .stylos-button-ghost-icon)[data-position="leading"] > * { right: 0; }
-:is(.stylos-button-base-icon, .stylos-button-outline-icon, .stylos-button-ghost-icon)[data-position="trailing"] > * { left: 0; }
+:is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost)[data-trailing-icon] {
+  padding-inline-end: calc(var(--_stylos-button-padding) - var(--_stylos-button-optical));
+}
 
 :is(.stylos-button-base, .stylos-button-outline, .stylos-button-ghost)[data-size="extra small"] {
   --_stylos-button-height: var(--stylos-dimension-size-s-3_000);

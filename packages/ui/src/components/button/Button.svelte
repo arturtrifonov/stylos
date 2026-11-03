@@ -7,6 +7,8 @@
     hasLeadingIcon = false, leadingIcon, hasTrailingIcon = false, trailingIcon,
     type = "button", id, name = "", value = "", form = "", descriptionIds = "", onclick,
   }: ButtonProps = $props();
+  const leading = $derived(hasLeadingIcon ? leadingIcon : undefined);
+  const trailing = $derived(hasTrailingIcon ? trailingIcon : undefined);
 </script>
 
 <button
@@ -25,12 +27,6 @@
   data-size={size}
   data-state={state}
   disabled={state === "disabled"}
->
-  {#if hasLeadingIcon && leadingIcon}
-    <span class={`stylos-button-${variant}-icon`} data-position="leading" aria-hidden="true">{@render leadingIcon()}</span>
-  {/if}
-  <span>{labelText}</span>
-  {#if hasTrailingIcon && trailingIcon}
-    <span class={`stylos-button-${variant}-icon`} data-position="trailing" aria-hidden="true">{@render trailingIcon()}</span>
-  {/if}
-</button>
+  data-leading-icon={leading ? "" : undefined}
+  data-trailing-icon={trailing ? "" : undefined}
+>{@render leading?.()}{labelText}{@render trailing?.()}</button>

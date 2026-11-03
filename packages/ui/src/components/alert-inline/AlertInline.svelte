@@ -18,7 +18,7 @@
   data-surface-layer="1" data-surface-attachment="in-layout"
   hidden={!isOpen} role={announcement === "off" ? undefined : announcement === "assertive" ? "alert" : "status"}
   aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={hasHeading ? titleId : undefined}>
-  {#if hasIcon && icon}<span class="stylos-alert-icon" aria-hidden="true">{@render icon()}</span>{/if}
+  {#if hasIcon}{@render icon?.()}{/if}
   <div class="stylos-alert-body">
     {#if hasHeading}<p class="stylos-alert-heading" id={titleId}>{headingText}</p>{/if}
     {#if hasContent}<div class="stylos-alert-content">{@render children?.()}</div>{/if}

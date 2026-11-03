@@ -7,11 +7,12 @@
     hasAdditionalText = false, additionalText = "Additional text", id, headers }: TableCellTextProps = $props();
   const rowSize = getContext<() => TableCellTextProps["size"]>(tableSizeContext);
   const resolvedSize = $derived(rowSize?.() ?? size ?? "medium");
+  const leading = $derived(hasIcon ? icon : undefined);
 </script>
 
 <td class="stylos-table-cell stylos-table-cell-text" {id} {headers} data-size={resolvedSize} data-alignment={alignment}>
-  <div class="stylos-table-cell-frame">
-    {#if hasIcon && icon}<span class="stylos-table-cell-icon" aria-hidden="true">{@render icon()}</span>{/if}
+  <div class="stylos-table-cell-frame" data-icon={leading ? "" : undefined}>
+    {@render leading?.()}
     <span class="stylos-table-cell-copy">
       <span class="stylos-table-cell-label" title={cellText}>{cellText}</span>
       {#if hasAdditionalText}<span class="stylos-table-cell-additional" title={additionalText}>{additionalText}</span>{/if}
