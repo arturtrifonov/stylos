@@ -12,18 +12,30 @@
   // focusable: otherwise its controls reach and scroll it, and the extra stop
   // only confused (verification/orca-2026-11-03.md). Chrome and Firefox make
   // such a scroller focusable themselves; Safari does not, hence the attribute.
-  const focusable = "a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])";
+  // Only a control Tab can actually reach counts: hidden inputs, controls in a
+  // disabled fieldset, tabindex="-1", inert or unrendered elements do not.
+  const candidates = "a[href], area[href], button, input, select, textarea, iframe, summary, [contenteditable]:not([contenteditable='false']), [tabindex]";
+  // Visibility is judged within the region alone, so the window opening or
+  // closing around it does not change the answer.
+  function reachable(element: HTMLElement, region: HTMLElement) {
+    if (element.tabIndex < 0 || element.matches(":disabled, input[type='hidden']") || element.closest("[inert]")) return false;
+    for (let node: HTMLElement | null = element; node && node !== region; node = node.parentElement)
+      if (getComputedStyle(node).display === "none") return false;
+    const visibility = getComputedStyle(element).visibility;
+    return visibility === "visible" || visibility === getComputedStyle(region).visibility;
+  }
   function scrollStop(region: HTMLElement) {
     // Writes only on a change: the observer also sees this attribute.
     const update = () => {
-      const stop = !region.querySelector(focusable);
+      const stop = ![...region.querySelectorAll<HTMLElement>(candidates)].some(element => reachable(element, region));
       if (stop && region.getAttribute("tabindex") !== "0") region.setAttribute("tabindex", "0");
       else if (!stop && region.hasAttribute("tabindex")) region.removeAttribute("tabindex");
     };
     update();
-    const observer = new MutationObserver(update);
-    observer.observe(region, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "tabindex", "href"] });
-    return () => observer.disconnect();
+    const mutations = new MutationObserver(update);
+    mutations.observe(region, { childList: true, subtree: true, attributes: true,
+      attributeFilter: ["disabled", "tabindex", "href", "type", "hidden", "inert", "style", "class", "contenteditable"] });
+    return () => mutations.disconnect();
   }
   function cancel(event: MouseEvent) {
     onsecondaryclick?.(event);

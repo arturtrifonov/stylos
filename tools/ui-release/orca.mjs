@@ -9,7 +9,9 @@ import "@stylos/ui/text.css";
 
 const app = document.querySelector("#app");
 const manifest = await (await fetch("/manifest.json")).json();
-const KEY = "stylos-orca-walkthrough-2";
+// Answers belong to the build they were given on: a rebuilt source starts empty
+// rather than inheriting answers and reporting them under its own identity.
+const KEY = `stylos-orca-walkthrough:${manifest.sourceFingerprint}`;
 const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) ?? {}; } catch { return {}; } };
 const store = Object.assign({ results: {}, orca: "50.3" }, load());
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch {} };
@@ -94,7 +96,7 @@ function scenarioPage(index) {
 function summaryText() {
   const b = manifest.build ?? {};
   const lines = [`# Orca walkthrough — ${new Date().toISOString().slice(0, 10)}`, "",
-    `Build ${b.commit} (${b.branch})${b.changed ? ", uncommitted changes" : ""}${b.master && !b.containsMaster ? ` — NOT current master ${b.master}` : ""}`,
+    `Build ${b.commit} (${b.branch}), source ${manifest.sourceFingerprint.slice(0, 12)}${b.changed ? ", uncommitted changes" : ""}${b.master && !b.containsMaster ? ` — NOT current master ${b.master}` : ""}`,
     `Chrome ${chrome}; Orca ${store.orca}; ${navigator.platform}`, ""];
   for (const step of checks) {
     const answer = store.results[step.id] ?? {};
