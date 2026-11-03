@@ -172,6 +172,9 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Fixed
 
+- Dropdown's list has the bottom padding Figma gives it — 4 / 8 / 12 / 16 /
+  20 px from extra small to extra large, 4 px above the first item as before —
+  so every Dropdown, Select and menu panel matches Figma's height.
 - Orca no longer says "blank" between a checkbox, radio or toggle and its
   label text. Checkbox, Radio and Toggle Label and Text, and Dropdown Item
   Checkbox and Toggle lay the control and its text out inline instead of as

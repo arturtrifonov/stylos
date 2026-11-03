@@ -4,14 +4,18 @@
 @import "../../behaviors/dropdown-navigation.css";
 
 .stylos-dropdown {
-  --_stylos-dropdown-list-padding-block: var(--stylos-dimension-gap-g-0_500);
+  /* The list's end padding grows with size, as Figma's does: 4/8/12/16/20 px
+   * below the last item against 4 px above the first (owner decision,
+   * verification/figma-2026-11-03.md). */
+  --_stylos-dropdown-list-padding-start: var(--stylos-dimension-gap-g-0_500);
+  --_stylos-dropdown-list-padding-end: var(--stylos-dimension-gap-g-0_500);
 
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   width: calc(100%);
   min-height: 0;
-  max-height: var(--_stylos-dropdown-height-limit, calc(6.5 * var(--_stylos-dropdown-row-height) + 5 * var(--stylos-dimension-gap-g-0_500) + 2 * var(--_stylos-dropdown-list-padding-block) + 2 * var(--stylos-border-width-normal)));
+  max-height: var(--_stylos-dropdown-height-limit, calc(6.5 * var(--_stylos-dropdown-row-height) + 5 * var(--stylos-dimension-gap-g-0_500) + var(--_stylos-dropdown-list-padding-start) + var(--_stylos-dropdown-list-padding-end) + 2 * var(--stylos-border-width-normal)));
   border: var(--stylos-border-width-normal) solid var(--stylos-color-border-default);
   border-radius: var(--stylos-radius-medium);
   background-color: var(--stylos-color-background-base);
@@ -24,7 +28,7 @@
   flex: 1 1 auto;
   min-height: 0;
   margin: 0;
-  padding-block: var(--_stylos-dropdown-list-padding-block);
+  padding-block: var(--_stylos-dropdown-list-padding-start) var(--_stylos-dropdown-list-padding-end);
   padding-inline: var(--stylos-dimension-gap-g-0_500);
   gap: var(--stylos-dimension-gap-g-0_500);
   list-style: none;
@@ -61,6 +65,7 @@
 }
 
 .stylos-dropdown[data-size="small"] {
+  --_stylos-dropdown-list-padding-end: var(--stylos-dimension-gap-g-1_000);
   --_stylos-dropdown-band-padding: var(--stylos-dimension-gap-g-1_250);
   --_stylos-dropdown-back-padding-block: var(--stylos-dimension-gap-g-0_875);
   --_stylos-dropdown-back-padding-inline: var(--stylos-dimension-gap-g-0_375);
@@ -68,6 +73,7 @@
 }
 
 .stylos-dropdown[data-size="medium"] {
+  --_stylos-dropdown-list-padding-end: var(--stylos-dimension-gap-g-1_500);
   --_stylos-dropdown-band-padding: var(--stylos-dimension-gap-g-1_500);
   --_stylos-dropdown-back-padding-block: var(--stylos-dimension-gap-g-1_000);
   --_stylos-dropdown-back-padding-inline: var(--stylos-dimension-gap-g-0_500);
@@ -75,6 +81,7 @@
 }
 
 .stylos-dropdown[data-size="large"] {
+  --_stylos-dropdown-list-padding-end: var(--stylos-dimension-gap-g-2_000);
   --_stylos-dropdown-band-padding: var(--stylos-dimension-gap-g-1_750);
   --_stylos-dropdown-back-padding-block: var(--stylos-dimension-gap-g-1_000);
   --_stylos-dropdown-back-padding-inline: var(--stylos-dimension-gap-g-0_625);
@@ -82,6 +89,7 @@
 }
 
 .stylos-dropdown[data-size="extra large"] {
+  --_stylos-dropdown-list-padding-end: var(--stylos-dimension-gap-g-2_500);
   --_stylos-dropdown-band-padding: var(--stylos-dimension-gap-g-2_000);
   --_stylos-dropdown-back-padding-block: var(--stylos-dimension-gap-g-1_250);
   --_stylos-dropdown-back-padding-inline: var(--stylos-dimension-gap-g-0_750);
