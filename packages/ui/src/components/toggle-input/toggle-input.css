@@ -34,7 +34,12 @@
 }
 
 .stylos-toggle-input::after {
+  /* `content: "" / ""` gives this decorative box empty alternative text, so
+   * Chrome does not expose it to Orca as an unnamed object. It is below the
+   * Baseline floor (Firefox 128, Safari 17.4); an older browser drops that
+   * declaration and keeps the plain `content: ""` before it, as before. */
   content: "";
+  content: "" / "";
   position: absolute;
   inset-block-start: var(--_stylos-toggle-inset);
   inset-inline-start: var(--_stylos-toggle-inset);

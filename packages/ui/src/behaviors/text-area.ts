@@ -10,3 +10,13 @@ export function textAreaCounter(value: string, maximum?: number, custom?: string
   const limit = nativeLengthLimit(maximum);
   return limit === undefined ? `${count}` : `${count} / ${limit}`;
 }
+
+/** The counter as words for the textarea's description: "13 / 40" alone does
+ * not say what is counted (verification/orca-2026-11-03.md). */
+export function textAreaCounterDescription(value: string, maximum?: number, custom?: string): string {
+  if (custom !== undefined) return custom;
+  const count = value.replace(/\r\n?/g, "\n").length;
+  const limit = nativeLengthLimit(maximum);
+  const unit = (limit ?? count) === 1 ? "character" : "characters";
+  return limit === undefined ? `${count} ${unit}` : `${count} of ${limit} ${unit}`;
+}

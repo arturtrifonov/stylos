@@ -1,13 +1,26 @@
 @import "../toggle-input/toggle-input.css";
 @import "../../behaviors/toggle-option.css";
 
+/* Inline, not flex: a flex label lays the control and its text out as separate
+ * blocks, which Chrome reports as separate lines, and Orca then speaks the text
+ * line as "blank" after the control (verification/orca-2026-11-03.md). A line
+ * as tall as the taller of text and control centres both, as flex did. */
 .stylos-toggle-label {
-  display: inline-flex;
-  align-items: center;
+  --_stylos-toggle-row: max(var(--_stylos-toggle-string-line), var(--_stylos-toggle-box));
+  display: inline-block;
   /* Intrinsic hug/fill sizing, not an authored dimension. */
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
   width: max-content;
   white-space: nowrap;
   font-weight: var(--stylos-font-weight-base);
-  line-height: var(--_stylos-toggle-string-line);
+  line-height: var(--_stylos-toggle-row);
+  /* No baseline of its own: in a line of text the label sits on its bottom
+   * edge, as the flex label did, not on its text's baseline. */
+  contain: layout;
+}
+
+.stylos-toggle-label > .stylos-toggle-input {
+  vertical-align: top;
+  margin-block-start: calc((var(--_stylos-toggle-row) - var(--_stylos-toggle-box)) / 2);
+  margin-inline-end: var(--_stylos-toggle-gap);
 }

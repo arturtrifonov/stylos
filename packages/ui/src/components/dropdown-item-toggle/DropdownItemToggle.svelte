@@ -11,18 +11,16 @@
   const panelSize = getContext<() => DropdownItemToggleProps["size"]>(dropdownSizeContext);
   const resolvedSize = $derived(panelSize?.() ?? size ?? "medium");
   const controlId = $derived(id || generatedId);
+  const labelId = $derived(`${controlId}-label`);
   const descriptionId = $derived(`${controlId}-description`);
 </script>
 
 <li role="presentation">
   <label class="stylos-dropdown-item stylos-dropdown-item-toggle" for={controlId}
     data-size={resolvedSize} data-state={state} data-is-selected={isSelected} data-alignment={alignment} {onchange}>
-    <ToggleInput size={resolvedSize} {state} bind:isChecked={isSelected}
-      id={controlId} {name} {value} {form} accessibleName={labelText}
-      descriptionIds={hasAdditionalText ? descriptionId : ""} />
-    <span class="stylos-dropdown-item-content">
-      <span class="stylos-dropdown-item-label">{labelText}</span>
-      {#if hasAdditionalText}<span class="stylos-dropdown-item-additional" id={descriptionId}>{additionalText}</span>{/if}
-    </span>
+    <span class="stylos-dropdown-item-line"><ToggleInput size={resolvedSize} {state} bind:isChecked={isSelected}
+      id={controlId} {name} {value} {form} labelIds={labelId}
+      descriptionIds={hasAdditionalText ? descriptionId : ""} /><span class="stylos-dropdown-item-label" id={labelId}>{labelText}</span></span>
+    {#if hasAdditionalText}<span class="stylos-dropdown-item-additional" id={descriptionId}>{additionalText}</span>{/if}
   </label>
 </li>

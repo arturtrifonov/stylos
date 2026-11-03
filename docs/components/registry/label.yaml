@@ -202,6 +202,10 @@ api:
     name: "additional text id"
     kind: "string"
     description: "ID of the supporting line, for the control's aria-describedby. Web integration; no visual effect."
+  -
+    name: "label text id"
+    kind: "string"
+    description: "ID of the label text alone, for the control's aria-labelledby, so the control's name excludes the supporting line. Web integration; no visual effect."
 limitations:
   - "The required marker is not drawn while state is disabled. The layer is absent from those variants rather than hidden, so a required field that is currently unavailable loses the one mark saying it must be filled — and gets it back when the field becomes available again."
   - "No outcome while disabled. state and validation do not combine: a label above an unavailable control has nothing to report, which is the same rule the fields it names follow."
@@ -212,7 +216,7 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4373-7431"
   last_verified: "2026-09-05"
-notes: "The api block is ordered as the properties read, not as Figma reports them."
+notes: "The api block is ordered as the properties read, not as Figma reports them. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): `label text id` lets a field name itself from the label text by aria-labelledby instead of repeating it in aria-label, which left the label unrelated to its field and spoken as stray text."
 import:
   batch: 1
   ready: true

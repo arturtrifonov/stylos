@@ -13,9 +13,63 @@
   padding-inline-start: var(--_stylos-dropdown-row-padding-inline);
   padding-inline-end: calc(var(--_stylos-dropdown-row-padding-inline) - var(--stylos-dimension-gap-g-0_250));
 }
-.stylos-dropdown-item-toggle[data-alignment="end"] > .stylos-toggle-input { order: 1; }
+/* The control and its label text share one inline line, not flex items: flex
+ * lays them out as separate blocks, which Chrome reports as separate lines,
+ * and Orca speaks the text line as "blank" after the control
+ * (verification/orca-2026-11-03.md). The line ellipsizes the label;
+ * the row stays unclipped for its outside focus frame. The supporting line
+ * sits under the label text. An end-aligned toggle stays first in the line and
+ * is shifted into the reserve at its end. */
+.stylos-dropdown-item:is(.stylos-dropdown-item-checkbox, .stylos-dropdown-item-toggle) {
+  --_stylos-dropdown-control-inline: var(--_stylos-dropdown-icon-size);
+  display: block;
+}
+.stylos-dropdown-item.stylos-dropdown-item-toggle {
+  --_stylos-dropdown-control-inline: calc(var(--_stylos-dropdown-icon-size) * 3 / 2);
+}
+.stylos-dropdown-item-line {
+  display: block;
+  padding-block: var(--_stylos-dropdown-text-padding);
+  white-space: nowrap;
+  /* Clip only across, for the ellipsis: the control is taller than the text
+   * line and must not be cut off above the supporting line. */
+  overflow-x: clip;
+  overflow-y: visible;
+  text-overflow: ellipsis;
+}
+.stylos-dropdown-item-line > :is(.stylos-checkbox-input, .stylos-toggle-input) {
+  vertical-align: top;
+  /* The control spans the text padding above and below the text line, as it
+   * did beside the flex column; its margins keep the line box one text line
+   * tall. */
+  margin-block: calc(-1 * var(--_stylos-dropdown-text-padding))
+    calc(var(--_stylos-dropdown-line-height) + var(--_stylos-dropdown-text-padding) - var(--_stylos-dropdown-icon-size));
+  margin-inline-end: var(--_stylos-dropdown-row-gap);
+}
+.stylos-dropdown-item-line > .stylos-dropdown-item-label {
+  display: inline;
+  padding-block: 0;
+  margin-block: 0;
+}
+.stylos-dropdown-item:is(.stylos-dropdown-item-checkbox, .stylos-dropdown-item-toggle) > .stylos-dropdown-item-additional {
+  margin-block: calc(var(--_stylos-dropdown-text-gap) - var(--_stylos-dropdown-text-padding)) 0;
+  padding-inline-start: calc(var(--_stylos-dropdown-control-inline) + var(--_stylos-dropdown-row-gap));
+}
+.stylos-dropdown-item:is(.stylos-dropdown-item-checkbox, .stylos-dropdown-item-toggle):has(> .stylos-dropdown-item-additional) > .stylos-dropdown-item-line {
+  padding-block-end: 0;
+}
+.stylos-dropdown-item-toggle[data-alignment="end"] > .stylos-dropdown-item-line {
+  padding-inline-end: calc(var(--_stylos-dropdown-control-inline) + var(--_stylos-dropdown-row-gap));
+}
+.stylos-dropdown-item-toggle[data-alignment="end"] > .stylos-dropdown-item-line > .stylos-toggle-input {
+  margin-inline-end: calc(-1 * var(--_stylos-dropdown-control-inline));
+  inset-inline-start: calc(100% + var(--_stylos-dropdown-row-gap));
+}
+.stylos-dropdown-item-toggle[data-alignment="end"] > .stylos-dropdown-item-additional {
+  padding-inline: 0 calc(var(--_stylos-dropdown-control-inline) + var(--_stylos-dropdown-row-gap));
+}
 .stylos-dropdown-item:has(input:focus-visible)::after { opacity: 1; }
-.stylos-dropdown-item > :is(.stylos-checkbox-input, .stylos-toggle-input):has(> input:focus-visible) {
+.stylos-dropdown-item :is(.stylos-checkbox-input, .stylos-toggle-input):has(> input:focus-visible) {
   outline: none;
 }
 .stylos-dropdown-item:has(input:enabled):hover .stylos-checkbox-input {

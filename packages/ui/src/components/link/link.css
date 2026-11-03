@@ -44,7 +44,12 @@
 }
 
 .stylos-link-content::before {
+  /* `content: "" / ""` gives this decorative box empty alternative text, so
+   * Chrome does not expose it to Orca as an unnamed object. It is below the
+   * Baseline floor (Firefox 128, Safari 17.4); an older browser drops that
+   * declaration and keeps the plain `content: ""` before it, as before. */
   content: "";
+  content: "" / "";
   background-color: var(--_stylos-link-surface);
   transition: background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
 }
@@ -55,6 +60,7 @@
 
 .stylos-link:focus-visible > .stylos-link-content::after {
   content: "";
+  content: "" / "";
   border: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary);
 }
 
@@ -71,6 +77,7 @@
 
 .stylos-link[data-has-expanded-hit-area="true"]:not([aria-disabled="true"])::after {
   content: "";
+  content: "" / "";
   position: absolute;
   z-index: 1;
   inset: 0;

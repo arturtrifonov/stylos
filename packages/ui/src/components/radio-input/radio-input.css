@@ -38,7 +38,12 @@
   background-color: var(--_stylos-radio-selected);
   box-shadow: none;
   &::after {
+    /* `content: "" / ""` gives this decorative box empty alternative text, so
+     * Chrome does not expose it to Orca as an unnamed object. It is below the
+     * Baseline floor (Firefox 128, Safari 17.4); an older browser drops that
+     * declaration and keeps the plain `content: ""` before it, as before. */
     content: "";
+    content: "" / "";
     display: block;
     width: var(--_stylos-radio-size);
     height: var(--_stylos-radio-size);

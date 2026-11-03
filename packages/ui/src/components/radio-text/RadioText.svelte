@@ -11,6 +11,5 @@
 </script>
 
 <label class="stylos-radio-text" data-size={size} data-state={state} for={controlId}>
-  <RadioInput {size} {state} bind:isChecked id={controlId} {name} {value} {form} {accessibleName} {descriptionIds} {isRequired} />
-  <span class="stylos-radio-copy">{#if children}{@render children()}{:else}{labelText}{/if}</span>
+  <RadioInput {size} {state} bind:isChecked id={controlId} {name} {value} {form} {accessibleName} {descriptionIds} {isRequired} /><span class="stylos-radio-copy">{#if children}{@render children()}{:else}{labelText}{/if}</span>
 </label>

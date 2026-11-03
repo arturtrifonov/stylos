@@ -152,6 +152,11 @@ api:
     default: ""
     description: "The input's accessible name, mapped to aria-label. Leave empty when an associated HTML label already supplies the name. The component draws no visible label."
   -
+    name: "label ids"
+    kind: "string"
+    default: ""
+    description: "Space-separated ids of visible text that names the input, mapped to aria-labelledby. Use it instead of accessible name when the name is already on screen; it takes precedence over accessible name."
+  -
     name: "description ids"
     kind: "string"
     default: ""
@@ -174,7 +179,7 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4349-1753"
   last_verified: "2026-10-07"
-notes: "Hover, pressing and selection treatment transition surface colour and border with duration/micro and easing/linear; the glyph and selection semantics change immediately, without movement or delay. Reduced motion makes these colour changes immediate. The local-state profile keeps a small control responsive and interrupted transitions continue from their current presentation. Historical unused itemSpacing bindings in Figma use Gap/g-6, Gap/g-8 or Gap/g-10; all visual children are positioned absolutely, so these gaps do not affect its footprint. The visual surface accepts no content children. Surrounding labels and copy belong to the consumer or the Checkbox Label/Text compositions. The historical parents list is carried from the pre-split entry."
+notes: "Hover, pressing and selection treatment transition surface colour and border with duration/micro and easing/linear; the glyph and selection semantics change immediately, without movement or delay. Reduced motion makes these colour changes immediate. The local-state profile keeps a small control responsive and interrupted transitions continue from their current presentation. Historical unused itemSpacing bindings in Figma use Gap/g-6, Gap/g-8 or Gap/g-10; all visual children are positioned absolutely, so these gaps do not affect its footprint. The visual surface accepts no content children. Surrounding labels and copy belong to the consumer or the Checkbox Label/Text compositions. The historical parents list is carried from the pre-split entry. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): `label ids` names the input from visible text by aria-labelledby, so a composing row can name it from its label text alone without aria-label."
 import:
   batch: 1
   ready: true

@@ -5,7 +5,7 @@
   import Label from "../label/Label.svelte";
   import Icon from "../icon/Icon.svelte";
   import type { TextAreaProps } from "./props.ts";
-  import { nativeLengthLimit, textAreaCounter } from "../../behaviors/text-area.ts";
+  import { nativeLengthLimit, textAreaCounter, textAreaCounterDescription } from "../../behaviors/text-area.ts";
   import { inputTextBehavior } from "../../behaviors/input-text.ts";
 
   let {
@@ -14,7 +14,7 @@
     hasAdditionalText = false, additionalText = "Additional text",
     hasPlaceholder = false, placeholderText = "Placeholder text",
     hasLeadingIcon = false, leadingIcon, hasTrailingIcon = false, trailingIcon,
-    hasCounterText = false, counterText, maxlength, minlength, isRequired = false,
+    hasCounterText = false, counterText, counterAccessibleText, maxlength, minlength, isRequired = false,
     id, name, form, autocomplete, accessibleName, labelIds, descriptionIds,
     oninput, onchange,
   }: TextAreaProps = $props();
@@ -22,10 +22,12 @@
   const maxLength = $derived(nativeLengthLimit(maxlength));
   const minLength = $derived(nativeLengthLimit(minlength));
   const counter = $derived(textAreaCounter(value, maxLength, counterText));
+  const counterDescription = $derived(textAreaCounterDescription(value, maxLength, counterAccessibleText ?? counterText));
   const instanceId = $props.id();
   const initialValue = untrack(() => value);
   const controlId = $derived(id ?? `text-area-${instanceId}`);
   const messageId = $derived(`${controlId}-message`);
+  const labelTextId = $derived(`${controlId}-label`);
   const counterId = $derived(`${controlId}-counter`);
   const outcome = $derived(state === "default" ? validation : "off");
   const labelOutcome = $derived(outcome === "error" || outcome === "warning" ? outcome : "off");
@@ -58,6 +60,7 @@
       validation={labelOutcome}
       htmlFor={controlId}
       additionalTextId={messageId}
+      labelTextId={labelTextId}
     />
   {:else if showsMessage}
     <span id={messageId} hidden>{additionalText}</span>
@@ -75,8 +78,8 @@
       disabled={state === "disabled"}
       readonly={state === "read only"}
       required={isRequired}
-      aria-label={hasLabel ? labelText : accessibleName}
-      aria-labelledby={hasLabel ? undefined : labelIds}
+      aria-label={hasLabel ? undefined : accessibleName}
+      aria-labelledby={hasLabel ? labelTextId : labelIds}
       aria-describedby={describedBy}
       aria-invalid={outcome === "error" ? "true" : undefined}
       {oninput} {onchange}
@@ -87,5 +90,5 @@
     {/if}
     {#if outcome !== "off"}<span class="stylos-text-area-validation" aria-hidden="true"><Icon name={validationIcon} /></span>{/if}
   </div>
-  {#if hasCounterText}<span class="stylos-text-area-counter" id={counterId}>{counter}</span>{/if}
+  {#if hasCounterText}<span class="stylos-text-area-counter" aria-hidden="true">{counter}</span><span id={counterId} hidden>{counterDescription}</span>{/if}
 </div>

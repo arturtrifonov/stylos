@@ -29,7 +29,12 @@
 }
 
 .stylos-button-inner::before {
+  /* `content: "" / ""` gives this decorative box empty alternative text, so
+   * Chrome does not expose it to Orca as an unnamed object. It is below the
+   * Baseline floor (Firefox 128, Safari 17.4); an older browser drops that
+   * declaration and keeps the plain `content: ""` before it, as before. */
   content: "";
+  content: "" / "";
   position: absolute;
   z-index: -1;
   inset: -20%;
@@ -62,6 +67,7 @@
 
 .stylos-button-inner:focus-visible::after {
   content: "";
+  content: "" / "";
   position: absolute;
   inset: -5%;
   border-radius: var(--stylos-radius-round);

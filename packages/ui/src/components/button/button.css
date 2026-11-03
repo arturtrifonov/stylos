@@ -42,7 +42,12 @@
 
 /* The INSIDE stroke keeps Outline the same width as Base and Ghost. */
 .stylos-button-outline::before {
+  /* `content: "" / ""` gives this decorative box empty alternative text, so
+   * Chrome does not expose it to Orca as an unnamed object. It is below the
+   * Baseline floor (Firefox 128, Safari 17.4); an older browser drops that
+   * declaration and keeps the plain `content: ""` before it, as before. */
   content: "";
+  content: "" / "";
   position: absolute;
   inset: 0;
   border: var(--stylos-border-width-normal) solid var(--_stylos-button-border);

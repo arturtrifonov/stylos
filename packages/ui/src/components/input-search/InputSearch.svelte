@@ -25,6 +25,7 @@
   const initialValue = untrack(() => value);
   const controlId = $derived(id ?? `input-search-${instanceId}`);
   const messageId = $derived(`${controlId}-message`);
+  const labelTextId = $derived(`${controlId}-label`);
   const suffixId = $derived(`${controlId}-suffix`);
   const showsMessage = $derived(hasAdditionalText);
   const describedBy = $derived([
@@ -59,6 +60,7 @@
       state={state === "disabled" ? "disabled" : "default"}
       htmlFor={controlId}
       additionalTextId={messageId}
+      labelTextId={labelTextId}
     />
   {:else if showsMessage}
     <span id={messageId} hidden>{additionalText}</span>
@@ -77,8 +79,8 @@
       disabled={state === "disabled"}
       readonly={state === "read only"}
       required={isRequired}
-      aria-label={hasLabel ? labelText : accessibleName}
-      aria-labelledby={hasLabel ? undefined : labelIds}
+      aria-label={hasLabel ? undefined : accessibleName}
+      aria-labelledby={hasLabel ? labelTextId : labelIds}
       aria-describedby={describedBy}
       {oninput} {onchange}
     />

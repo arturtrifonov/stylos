@@ -14,8 +14,8 @@ test("Select previews retain separate full-field and clear buttons with escaped 
   assert.equal(defaults.size, "medium");
   const html = render({ id: "workspace", name: "workspace", form: "settings", value: 'a&"b',
     "input text": "Design < team", "label text": "Workspace", "has clear button": true, "is required": true });
-  assert.match(html, /<label[^>]*for="workspace">Workspace/);
-  assert.match(html, /<button[^>]*role="combobox"[^>]*aria-label="Workspace" aria-required="true"/);
+  assert.match(html, /<label[^>]*for="workspace"><span id="workspace-label" data-label-text>Workspace<\/span>/);
+  assert.match(html, /<button[^>]*role="combobox"[^>]*aria-labelledby="workspace-label" aria-required="true"/);
   assert.match(html, /<span class="stylos-select-value">Design &lt; team<\/span><\/button>/);
   assert.match(html, /<select[^>]*name="workspace" form="settings" required/);
   assert.match(html, /<option value="a&amp;&quot;b" selected>Design &lt; team/);

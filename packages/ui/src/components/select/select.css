@@ -43,12 +43,12 @@
   margin-inline-end: calc(-1 * var(--_stylos-input-optical));
 }
 
-.stylos-select-field:has(> .stylos-select-trigger[aria-expanded="true"])::before,
-.stylos-select-field:has(> .stylos-select-trailing > .stylos-button-inner:focus-visible)::before { opacity: 0; }
-.stylos-select-field:has(> .stylos-select-trigger[aria-expanded="true"])::after,
-.stylos-select-field:has(> .stylos-select-trailing > .stylos-button-inner:focus-visible)::after { opacity: 1; }
+.stylos-select-field:has(> .stylos-select-trigger[aria-expanded="true"])::before { opacity: 0; }
+.stylos-select-field:has(> .stylos-select-trigger[aria-expanded="true"])::after { opacity: 1; }
 .stylos-select-trigger[aria-expanded="true"] { border-color: var(--stylos-color-border-primary); }
-.stylos-select-trailing > .stylos-button-inner:focus-visible::after { opacity: 0; }
+/* The clear button keeps Button Inner's own focus ring, and the field does
+ * not show focus meanwhile, so the two stops look different (owner decision,
+ * verification/orca-2026-11-03.md). */
 
 .stylos-select[data-state="disabled"] .stylos-select-value { color: var(--stylos-color-text-disabled); }
 .stylos-select[data-state="read only"] .stylos-select-trigger { cursor: default; }

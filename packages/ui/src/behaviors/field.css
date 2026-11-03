@@ -30,7 +30,12 @@
  * control paints above these layers and keeps the entire pointer hit area. */
 :is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field)::before,
 :is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field)::after {
+  /* `content: "" / ""` gives this decorative box empty alternative text, so
+   * Chrome does not expose it to Orca as an unnamed object. It is below the
+   * Baseline floor (Firefox 128, Safari 17.4); an older browser drops that
+   * declaration and keeps the plain `content: ""` before it, as before. */
   content: "";
+  content: "" / "";
   position: absolute;
   inset: 0;
   z-index: -1;
@@ -140,6 +145,7 @@
 
 :is(.stylos-input-text-validation, .stylos-select-validation, .stylos-text-area-validation)::before {
   content: "";
+  content: "" / "";
   position: absolute;
   top: calc((var(--_stylos-input-validation-size) - var(--_stylos-input-icon-size)) / 2);
   inset-inline-start: calc((var(--_stylos-input-validation-size) - var(--_stylos-input-icon-size)) / 2);

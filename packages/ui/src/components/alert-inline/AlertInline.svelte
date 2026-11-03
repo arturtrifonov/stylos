@@ -16,13 +16,15 @@
 {#snippet closeIcon()}<Icon name="close" />{/snippet}
 <section class="stylos-alert stylos-alert-inline" data-size={size} data-type={type} data-announcement={announcement}
   data-surface-layer="1" data-surface-attachment="in-layout"
-  hidden={!isOpen} role={announcement === "off" ? undefined : announcement === "assertive" ? "alert" : "status"}
-  aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={hasHeading ? titleId : undefined}>
-  {#if hasIcon}{@render icon?.()}{/if}
-  <div class="stylos-alert-body">
-    {#if hasHeading}<p class="stylos-alert-heading" id={titleId}>{headingText}</p>{/if}
-    {#if hasContent}<div class="stylos-alert-content">{@render children?.()}</div>{/if}
-    {#if hasButtons}<div class="stylos-alert-actions"><Button {size} tone="primary" labelText={primaryButtonText} onclick={onprimaryclick} /><Button {size} variant="outline" tone="base" labelText={secondaryButtonText} onclick={onsecondaryclick} /></div>{/if}
-  </div>
-  {#if hasCloseButton}<ButtonInner accessibleName={closeAccessibleName} icon={closeIcon} onclick={close} />{/if}
+  data-is-open={isOpen} role={announcement === "off" ? undefined : announcement === "assertive" ? "alert" : "status"}
+  aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={isOpen && hasHeading ? titleId : undefined}>
+  {#if isOpen}
+    {#if hasIcon}{@render icon?.()}{/if}
+    <div class="stylos-alert-body">
+      {#if hasHeading}<p class="stylos-alert-heading" id={titleId}>{headingText}</p>{/if}
+      {#if hasContent}<div class="stylos-alert-content">{@render children?.()}</div>{/if}
+      {#if hasButtons}<div class="stylos-alert-actions"><Button {size} tone="primary" labelText={primaryButtonText} onclick={onprimaryclick} /><Button {size} variant="outline" tone="base" labelText={secondaryButtonText} onclick={onsecondaryclick} /></div>{/if}
+    </div>
+    {#if hasCloseButton}<ButtonInner accessibleName={closeAccessibleName} icon={closeIcon} onclick={close} />{/if}
+  {/if}
 </section>

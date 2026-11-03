@@ -37,7 +37,12 @@
  * place of its resting elevation (effects.md, Focus), crossfaded as in fields.
  * The focused radio is the checked one, which the selected surface shows. */
 .stylos-switcher::before {
+  /* `content: "" / ""` gives this decorative box empty alternative text, so
+   * Chrome does not expose it to Orca as an unnamed object. It is below the
+   * Baseline floor (Firefox 128, Safari 17.4); an older browser drops that
+   * declaration and keeps the plain `content: ""` before it, as before. */
   content: "";
+  content: "" / "";
   position: absolute;
   inset: calc(-1 * var(--stylos-border-width-normal));
   z-index: -1;
@@ -86,6 +91,7 @@
   .stylos-switcher > .stylos-switcher-item:has(> input:checked) { anchor-name: --stylos-switcher-selection; }
   .stylos-switcher:has(> .stylos-switcher-item > input:checked)::after {
     content: "";
+    content: "" / "";
     position: absolute;
     z-index: -1;
     position-anchor: --stylos-switcher-selection;

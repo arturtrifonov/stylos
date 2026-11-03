@@ -21,7 +21,12 @@
 }
 
 .stylos-indicator-special::before {
+  /* `content: "" / ""` gives this decorative box empty alternative text, so
+   * Chrome does not expose it to Orca as an unnamed object. It is below the
+   * Baseline floor (Firefox 128, Safari 17.4); an older browser drops that
+   * declaration and keeps the plain `content: ""` before it, as before. */
   content: "";
+  content: "" / "";
   box-sizing: border-box;
   width: var(--_stylos-indicator-special-dot);
   height: var(--_stylos-indicator-special-dot);

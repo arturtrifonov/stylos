@@ -135,7 +135,7 @@ a11y:
     note: "The heading names the panel, so it has to be present and has to say what the drawer is for. It is the only text the component guarantees, and it is what assistive technology announces on open."
   -
     status: "requires"
-    note: "The content is a named, keyboard-focusable native scrolling region. Header and footer stay fixed while only the content scrolls; the existing medium/absolute browser scrollbar follows the Figma instance."
+    note: "The content is a named native scrolling region; it is a tab stop only while it holds nothing focusable, so text alone can still be scrolled from the keyboard (amended 2026-11-03). Header and footer stay fixed while only the content scrolls; the existing medium/absolute browser scrollbar follows the Figma instance."
 sizing_model:
   horizontal: "fixed"
   vertical: "fill"
@@ -317,7 +317,7 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "5232-15231"
   last_verified: "2026-10-12"
-notes: "Level 5, window edge attachment under FND-LAYERS-01 and FND-LAYERS-02; shadow selection follows FND-EFFECTS-05 and surface motion follows FND-MOTION-18. position takes physical values where naming.md §7 prefers leading and trailing. That is a deliberate exception with a reason recorded on the property: the border's side is a physical fact about which edge the panel is against, and a logical property would put it on the wrong side in a right-to-left interface. Web focus, keyboard dismissal and content scrolling are implemented; assistive-technology assessment remains a separate verification. children is carried over whole from the imported entry; narrowing it is a later judgement."
+notes: "Level 5, window edge attachment under FND-LAYERS-01 and FND-LAYERS-02; shadow selection follows FND-EFFECTS-05 and surface motion follows FND-MOTION-18. position takes physical values where naming.md §7 prefers leading and trailing. That is a deliberate exception with a reason recorded on the property: the border's side is a physical fact about which edge the panel is against, and a logical property would put it on the wrong side in a right-to-left interface. Web focus, keyboard dismissal and content scrolling are implemented; assistive-technology assessment remains a separate verification. children is carried over whole from the imported entry; narrowing it is a later judgement. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): the content region is a tab stop only while it holds nothing focusable; with controls inside, they reach and scroll it."
 import:
   batch: 2
   ready: false

@@ -22,6 +22,7 @@
   const initialValue = untrack(() => value);
   const controlId = $derived(id ?? `input-text-${instanceId}`);
   const messageId = $derived(`${controlId}-message`);
+  const labelTextId = $derived(`${controlId}-label`);
   const suffixId = $derived(`${controlId}-suffix`);
   const outcome = $derived(state === "default" ? validation : "off");
   const labelOutcome = $derived(outcome === "error" || outcome === "warning" ? outcome : "off");
@@ -57,6 +58,7 @@
       validation={labelOutcome}
       htmlFor={controlId}
       additionalTextId={messageId}
+      labelTextId={labelTextId}
     />
   {:else if showsMessage}
     <span id={messageId} hidden>{additionalText}</span>
@@ -74,8 +76,8 @@
       disabled={state === "disabled"}
       readonly={state === "read only"}
       required={isRequired}
-      aria-label={hasLabel ? labelText : accessibleName}
-      aria-labelledby={hasLabel ? undefined : labelIds}
+      aria-label={hasLabel ? undefined : accessibleName}
+      aria-labelledby={hasLabel ? labelTextId : labelIds}
       aria-describedby={describedBy}
       aria-invalid={outcome === "error" ? "true" : undefined}
       {oninput} {onchange}

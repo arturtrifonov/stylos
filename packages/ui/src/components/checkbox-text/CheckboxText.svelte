@@ -11,6 +11,5 @@
 </script>
 
 <label class="stylos-checkbox-text" data-size={size} data-state={state} for={controlId}>
-  <CheckboxInput {size} {state} bind:isChecked id={controlId} {name} {value} {form} {accessibleName} {descriptionIds} {isRequired} />
-  <span class="stylos-checkbox-copy">{#if children}{@render children()}{:else}{labelText}{/if}</span>
+  <CheckboxInput {size} {state} bind:isChecked id={controlId} {name} {value} {form} {accessibleName} {descriptionIds} {isRequired} /><span class="stylos-checkbox-copy">{#if children}{@render children()}{:else}{labelText}{/if}</span>
 </label>

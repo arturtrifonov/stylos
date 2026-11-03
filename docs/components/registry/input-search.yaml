@@ -30,7 +30,7 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: "Aligned with Input Text and the reviewed Figma variants on 2026-10-25. The owner approved component readiness on 2026-10-25 after the compact DOM, native clear action, five sizes and form semantics were reviewed. Release-wide accessibility acceptance remains separate."
+notes: "Aligned with Input Text and the reviewed Figma variants on 2026-10-25. The owner approved component readiness on 2026-10-25 after the compact DOM, native clear action, five sizes and form semantics were reviewed. Release-wide accessibility acceptance remains separate. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): with a visible label the field is named from the label text by aria-labelledby (Label's `label text id`) instead of a duplicating aria-label."
 import:
   batch: 1
   ready: true

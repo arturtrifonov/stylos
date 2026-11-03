@@ -57,7 +57,12 @@
   margin-block: calc((var(--_stylos-table-icon-size) - var(--_stylos-table-control-size)) / 2);
 }
 .stylos-table-cell-heading[data-constrained="true"] .stylos-table-cell-frame::after {
+  /* `content: "" / ""` gives this decorative box empty alternative text, so
+   * Chrome does not expose it to Orca as an unnamed object. It is below the
+   * Baseline floor (Firefox 128, Safari 17.4); an older browser drops that
+   * declaration and keeps the plain `content: ""` before it, as before. */
   content: "";
+  content: "" / "";
   position: absolute;
   inset-inline: var(--_stylos-table-cell-inline);
   bottom: calc(-1 * var(--_stylos-table-constraint-size));
@@ -77,6 +82,7 @@
 .stylos-table-row-head::after,
 .stylos-table-row-body[data-has-divider="true"]::after {
   content: "";
+  content: "" / "";
   position: absolute;
   inset-inline: 0;
   bottom: 0;

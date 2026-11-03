@@ -1,23 +1,24 @@
 @import "../toggle-input/toggle-input.css";
 @import "../../behaviors/toggle-option.css";
 
+/* Inline for the reason given in toggle-label.css. The start padding reserves the
+ * control's place and the control hangs into it, so wrapped lines align with
+ * the first. */
 .stylos-toggle-text {
-  display: flex;
-  align-items: flex-start;
+  display: block;
+  box-sizing: border-box;
   /* Intrinsic hug/fill sizing, not an authored dimension. */
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
   width: 100%;
+  padding-inline-start: calc(calc(var(--_stylos-toggle-box) * 3 / 2) + var(--_stylos-toggle-gap));
   font-weight: var(--stylos-font-weight-base);
   line-height: var(--_stylos-toggle-text-line);
   font-variant-numeric: lining-nums tabular-nums;
+  overflow-wrap: anywhere;
 }
 
 .stylos-toggle-text > .stylos-toggle-input {
-  margin-block-start: calc((var(--_stylos-toggle-text-line) - var(--_stylos-toggle-height)) / 2);
-}
-
-.stylos-toggle-text > .stylos-toggle-copy {
-  flex: 1;
-  min-width: 0;
-  overflow-wrap: anywhere;
+  vertical-align: top;
+  margin-block-start: calc((var(--_stylos-toggle-text-line) - var(--_stylos-toggle-box)) / 2);
+  margin-inline: calc(-1 * (calc(var(--_stylos-toggle-box) * 3 / 2) + var(--_stylos-toggle-gap))) var(--_stylos-toggle-gap);
 }

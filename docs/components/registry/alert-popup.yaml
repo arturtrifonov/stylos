@@ -196,7 +196,7 @@ figma:
 limitations:
   - "Component review completed on 2026-10-25; release-wide accessibility and publication acceptance remain tracked in packages/ui/verification/0.3.0.md."
   - "Popup is a notification surface, not a modal dialog; it neither traps focus nor implements an overlay queue."
-notes: "Owner-directed starting-set expansion, 2026-10-17. Popup geometry reviewed against the redesigned XS and remaining variants on 2026-10-25. The surface uses elevation 4, matching Figma and FND-LAYERS-01. Heading line heights follow FND-TYPOGRAPHY-14; the adjacent icon and close containers bind to the same token. Reviewed for component readiness on 2026-10-25; release-wide acceptance remains separate."
+notes: "Owner-directed starting-set expansion, 2026-10-17. Popup geometry reviewed against the redesigned XS and remaining variants on 2026-10-25. The surface uses elevation 4, matching Figma and FND-LAYERS-01. Heading line heights follow FND-TYPOGRAPHY-14; the adjacent icon and close containers bind to the same token. Reviewed for component readiness on 2026-10-25; release-wide acceptance remains separate. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): a closed alert stays in the DOM, empty and visually hidden, so its live region exists before it opens and the opening content is announced; static HTML still closes with hidden."
 children:
   - "Avatar"
   - "Badge"

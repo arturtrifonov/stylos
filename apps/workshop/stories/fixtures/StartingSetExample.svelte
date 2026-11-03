@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { tick } from "svelte";
   import { Accordion, AlertInline, AlertPopup, AlertPopupTimer, InputSearch, ProgressBar,
     Switcher, SwitcherItem, TabsHorizontal, TabItem, TextArea, Button } from "@stylos/ui";
   let query = $state("");
@@ -10,6 +11,9 @@
   let popupOpen = $state(true);
   let timerOpen = $state(true);
   const id = $props.id();
+  // The host owns focus once an alert removes the control that had it (each
+  // alert's contract); here it returns to the control that brings alerts back.
+  const refocus = () => tick().then(() => document.getElementById(`${id}-show`)?.focus());
 </script>
 
 <form onsubmit={event => { event.preventDefault(); status = JSON.stringify([...new FormData(event.currentTarget)]); }}>
@@ -32,15 +36,15 @@
         <div role="tabpanel" tabindex="0" id={`${id}-panel-activity`} aria-labelledby={`${id}-activity`} hidden={tab !== "activity"}>Workspace activity</div>
       {/snippet}
     </TabsHorizontal></section>
-    <section><h2>Alert Inline</h2><AlertInline bind:isOpen={inlineOpen} hasCloseButton hasIcon={false} headingText="Workspace imported"
+    <section><h2>Alert Inline</h2><AlertInline bind:isOpen={inlineOpen} hasCloseButton hasIcon={false} headingText="Workspace imported" onclose={refocus}
       onprimaryclick={() => { status = "Inline accepted"; }} onsecondaryclick={() => { status = "Inline cancelled"; }}>Your workspace is ready.</AlertInline></section>
     <section><h2>Alert Popup</h2><AlertPopup bind:isOpen={popupOpen} hasIcon={false} headingText="Workspace updated"
       onprimaryclick={() => { status = "Popup accepted"; }} onsecondaryclick={() => { status = "Popup cancelled"; }}>Changes were saved.</AlertPopup></section>
     <section><h2>Alert Popup Timer</h2><AlertPopupTimer bind:isOpen={timerOpen} headingText="Workspace archived"
-      onundoclick={() => { status = "Archive undone"; timerOpen = false; }} /></section>
+      onundoclick={() => { status = "Archive undone"; timerOpen = false; refocus(); }} /></section>
   </div>
   <Button type="submit" labelText="Submit workspace" /><Button type="reset" variant="outline" labelText="Reset workspace" />
-  <Button variant="outline" labelText="Show notifications" onclick={() => { inlineOpen = true; popupOpen = true; timerOpen = true; }} />
+  <Button id={`${id}-show`} variant="outline" labelText="Show notifications" onclick={() => { inlineOpen = true; popupOpen = true; timerOpen = true; }} />
   <p role="status">{status}</p>
 </form>
 

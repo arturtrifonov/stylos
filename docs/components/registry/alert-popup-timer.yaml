@@ -176,7 +176,7 @@ limitations:
   - "Component review completed on 2026-10-25; release-wide accessibility and publication acceptance remain tracked in packages/ui/verification/0.3.0.md."
   - "Popup is a notification surface, not a modal dialog; it neither traps focus nor implements an overlay queue."
   - "Controlled presentation only: the consumer owns the clock, pause/resume, expiry, undo and persistence. No automatic dismissal or per-second screen-reader announcement is introduced."
-notes: "Five Timer sizes aligned with the owner-refined Figma component on 2026-10-25. The neutral design replaces the legacy type variants and always includes a heading. Reviewed for component readiness on 2026-10-25; release-wide acceptance remains separate."
+notes: "Five Timer sizes aligned with the owner-refined Figma component on 2026-10-25. The neutral design replaces the legacy type variants and always includes a heading. Reviewed for component readiness on 2026-10-25; release-wide acceptance remains separate. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): the section itself is the live region, as for Alert Popup, named by its heading; the counter is aria-live=off so its ticks are not announced; a closed Timer stays in the DOM, empty and visually hidden, so opening is announced. Focus after Undo or Close remains the host's."
 children:
   - "Avatar"
   - "Badge"

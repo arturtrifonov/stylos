@@ -8,6 +8,35 @@
     primaryButtonText = "Confirm", secondaryButtonText = "Cancel", tertiaryButtonText = "Alternative",
     closeAccessibleName = "Close", width, onprimaryclick, onsecondaryclick, ontertiaryclick, position = "right" }:
     ModalProps & { kind: "modal" | "drawer"; headingId: string; dismiss: () => void; position?: "left" | "right" } = $props();
+  // The Drawer's overflow region is a tab stop only while it holds nothing
+  // focusable: otherwise its controls reach and scroll it, and the extra stop
+  // only confused (verification/orca-2026-11-03.md). Chrome and Firefox make
+  // such a scroller focusable themselves; Safari does not, hence the attribute.
+  // Only a control Tab can actually reach counts: hidden inputs, controls in a
+  // disabled fieldset, tabindex="-1", inert or unrendered elements do not.
+  const candidates = "a[href], area[href], button, input, select, textarea, iframe, summary, [contenteditable]:not([contenteditable='false']), [tabindex]";
+  // Visibility is judged within the region alone, so the window opening or
+  // closing around it does not change the answer.
+  function reachable(element: HTMLElement, region: HTMLElement) {
+    if (element.tabIndex < 0 || element.matches(":disabled, input[type='hidden']") || element.closest("[inert]")) return false;
+    for (let node: HTMLElement | null = element; node && node !== region; node = node.parentElement)
+      if (getComputedStyle(node).display === "none") return false;
+    const visibility = getComputedStyle(element).visibility;
+    return visibility === "visible" || visibility === getComputedStyle(region).visibility;
+  }
+  function scrollStop(region: HTMLElement) {
+    // Writes only on a change: the observer also sees this attribute.
+    const update = () => {
+      const stop = ![...region.querySelectorAll<HTMLElement>(candidates)].some(element => reachable(element, region));
+      if (stop && region.getAttribute("tabindex") !== "0") region.setAttribute("tabindex", "0");
+      else if (!stop && region.hasAttribute("tabindex")) region.removeAttribute("tabindex");
+    };
+    update();
+    const mutations = new MutationObserver(update);
+    mutations.observe(region, { childList: true, subtree: true, attributes: true,
+      attributeFilter: ["disabled", "tabindex", "href", "type", "hidden", "inert", "style", "class", "contenteditable"] });
+    return () => mutations.disconnect();
+  }
   function cancel(event: MouseEvent) {
     onsecondaryclick?.(event);
     if (!event.defaultPrevented) dismiss();
@@ -24,9 +53,9 @@
       {#snippet icon()}<Icon name="close" />{/snippet}
     </ButtonInner>
   </div>
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex (The named Drawer overflow region needs a keyboard scroll target.) -->
   <div class="stylos-window-content stylos-scrollbar" data-scrollbar-size="medium" data-scrollbar-position="absolute"
-    tabindex={kind === "drawer" ? 0 : undefined} role={kind === "drawer" ? "region" : undefined}
+    {@attach kind === "drawer" ? scrollStop : undefined}
+    role={kind === "drawer" ? "region" : undefined}
     aria-labelledby={kind === "drawer" ? headingId : undefined}>
     {#if children}{@render children()}{/if}
   </div>

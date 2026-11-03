@@ -141,6 +141,11 @@ api:
     default: ""
     description: "Accessible name mapped to aria-label. Supply this or associate an external label."
   -
+    name: "label ids"
+    kind: "string"
+    default: ""
+    description: "Space-separated ids of visible text that names the input, mapped to aria-labelledby. Use it instead of accessible name when the name is already on screen; it takes precedence over accessible name."
+  -
     name: "description ids"
     kind: "string"
     default: ""
@@ -163,7 +168,7 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4341-31485"
   last_verified: "2026-10-10"
-notes: "Native Toggle Input implementation. Historical parents are retained; legacy Label/Icon/Badge/Loader children are removed because they are not content children of this control. Motion uses duration/micro and easing/linear, with reduced-motion and forced-colors support."
+notes: "Native Toggle Input implementation. Historical parents are retained; legacy Label/Icon/Badge/Loader children are removed because they are not content children of this control. Motion uses duration/micro and easing/linear, with reduced-motion and forced-colors support. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): `label ids` names the input from visible text by aria-labelledby, so a composing row can name it from its label text alone without aria-label."
 import:
   batch: 1
   ready: true
