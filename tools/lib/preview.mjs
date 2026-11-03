@@ -248,7 +248,7 @@ export function sampleHtml(entry, props = {}) {
     const suffixId = `${id}-suffix`;
     const counterId = `${id}-counter`;
     const counter = textAreaCounter(props.value ?? "", props.maxlength, props["counter text"]);
-    const counterDescription = textAreaCounterDescription(props.value ?? "", props.maxlength, props["counter accessible text"]);
+    const counterDescription = textAreaCounterDescription(props.value ?? "", props.maxlength, props["counter accessible text"] ?? props["counter text"]);
     const message = props["additional text"] ?? "Additional text";
     const labelProps = {
       size, state: state === "disabled" ? "disabled" : "default", validation: labelOutcome,

@@ -23,8 +23,8 @@
   <div class="stylos-table-cell-frame" data-icon={leading ? "" : undefined}>
     {@render leading?.()}
     <span class="stylos-table-cell-copy">
-      <span class="stylos-table-cell-label" id={textId} title={cellText}>{cellText}</span>
-      {#if hasAdditionalText}<span class="stylos-table-cell-additional" id={`${textId}-additional`} title={additionalText}>{additionalText}</span>{/if}
+      <span class="stylos-table-cell-label" id={isSorted || isFiltered ? textId : undefined} title={cellText}>{cellText}</span>
+      {#if hasAdditionalText}<span class="stylos-table-cell-additional" id={isSorted || isFiltered ? `${textId}-additional` : undefined} title={additionalText}>{additionalText}</span>{/if}
     </span>
     {#if isSorted}
       <ButtonInner accessibleName={sortAccessibleName || `Sort by ${cellText}`} onclick={onsortclick}>

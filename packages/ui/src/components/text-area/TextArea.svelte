@@ -22,7 +22,7 @@
   const maxLength = $derived(nativeLengthLimit(maxlength));
   const minLength = $derived(nativeLengthLimit(minlength));
   const counter = $derived(textAreaCounter(value, maxLength, counterText));
-  const counterDescription = $derived(textAreaCounterDescription(value, maxLength, counterAccessibleText));
+  const counterDescription = $derived(textAreaCounterDescription(value, maxLength, counterAccessibleText ?? counterText));
   const instanceId = $props.id();
   const initialValue = untrack(() => value);
   const controlId = $derived(id ?? `text-area-${instanceId}`);

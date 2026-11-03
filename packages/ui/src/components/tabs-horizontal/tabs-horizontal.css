@@ -33,6 +33,11 @@
  * around the row in the field focus treatment, crossfaded as in fields. The
  * focused tab is the selected one, which the indicator shows. */
 .stylos-tabs-horizontal::before {
+  /* `content: "" / ""` gives this decorative box empty alternative text, so
+   * Chrome does not expose it to Orca as an unnamed object. It is below the
+   * Baseline floor (Firefox 128, Safari 17.4); an older browser drops that
+   * declaration and keeps the plain `content: ""` before it, as before. */
+  content: "";
   content: "" / "";
   position: absolute;
   inset-block: calc(-1 * var(--stylos-dimension-gap-g-0_375)) 0;
@@ -68,6 +73,7 @@
   }
   .stylos-tabs-list > .stylos-tab-item[aria-selected="true"] { anchor-name: --stylos-tab-selection; }
   .stylos-tabs-list:has(> .stylos-tab-item[aria-selected="true"])::after {
+    content: "";
     content: "" / "";
     position: absolute;
     position-anchor: --stylos-tab-selection;

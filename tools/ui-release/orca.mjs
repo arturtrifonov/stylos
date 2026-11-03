@@ -64,7 +64,7 @@ function scenarioPage(index) {
     </section>
     <div class="sample-head"><button type="button" id="focus">К примеру</button><button type="button" id="restart">Начать сценарий заново</button></div>
     <h2 id="sample-start" class="sample-title" tabindex="-1">Пример</h2>
-    <section id="sample" aria-labelledby="sample-start"></section>
+    <section id="sample" lang="en" aria-labelledby="sample-start"></section>
     <div class="checks">${scenario.checks.map(checkCard).join("")}</div>
     <div class="nav">
       <button type="button" id="back"${index === 0 ? " disabled" : ""}>Предыдущий сценарий</button>

@@ -52,7 +52,11 @@
   margin-right: auto;
 
 }
-.stylos-window::after { content: "" / ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; }
+/* `content: "" / ""` gives this decorative box empty alternative text, so
+ * Chrome does not expose it to Orca as an unnamed object. It is below the
+ * Baseline floor (Firefox 128, Safari 17.4); an older browser drops that
+ * declaration and keeps the plain `content: ""` before it, as before. */
+.stylos-window::after { content: ""; content: "" / ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; }
 .stylos-modal::after { box-shadow: inset 0 0 0 var(--stylos-border-width-normal) var(--stylos-color-border-secondary); }
 .stylos-drawer[data-position="right"]::after { box-shadow: inset var(--stylos-border-width-normal) 0 var(--stylos-color-border-secondary); }
 .stylos-drawer[data-position="left"]::after { box-shadow: inset calc(-1 * var(--stylos-border-width-normal)) 0 var(--stylos-color-border-secondary); }

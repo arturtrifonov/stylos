@@ -206,7 +206,7 @@ api:
   -
     name: "counter accessible text"
     kind: "text"
-    description: "Optional words for the counter in the textarea's description, which replace the visible count for assistive technology. When omitted: \"13 of 40 characters\", or \"13 characters\" without a valid limit. Supply it to translate the words or to match a custom counter text."
+    description: "Optional words for the counter in the textarea's description, which replace the visible count for assistive technology. When omitted, a custom counter text is spoken as it is, otherwise \"13 of 40 characters\", or \"13 characters\" without a valid limit. Supply it to translate the words."
   -
     name: "maxlength"
     kind: "number"

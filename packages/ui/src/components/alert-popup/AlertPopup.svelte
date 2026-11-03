@@ -17,7 +17,7 @@
 <section class="stylos-alert stylos-alert-popup" data-type={type} data-size={size} data-announcement={announcement}
   data-surface-layer="4" data-surface-attachment="free"
   data-is-open={isOpen} role={announcement === "off" ? undefined : announcement === "assertive" ? "alert" : "status"}
-  aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={hasHeading ? titleId : undefined}>
+  aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={isOpen && hasHeading ? titleId : undefined}>
   {#if isOpen}
     {#if hasIcon}{@render icon?.()}{/if}
     <div class="stylos-alert-body">

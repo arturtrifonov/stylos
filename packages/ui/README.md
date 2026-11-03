@@ -493,7 +493,7 @@ shows only the count without a maximum and `count / maxlength` with one.
 `counterText` optionally overrides the display and never enforces a limit.
 The description carries the count in words — "13 of 40 characters" — and the
 visible count is hidden from assistive technology; `counterAccessibleText`
-translates the words or matches a custom `counterText`.
+translates the words, and a custom `counterText` is spoken as it is.
 Georama Regular counter sizes are 10/10/12/12/14 across XS through XL.
 The [Text Area review](verification/text-area-2026-10-26.md) records the
 source measurements, owner decisions, browser checks and remaining release gates.

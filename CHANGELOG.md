@@ -195,7 +195,7 @@ All notable changes to the Stylos Design System project (foundations, components
 - **Breaking for hand-written HTML:** Dropdown Item Checkbox and Toggle rows
   wrap the control and label in `.stylos-dropdown-item-line`, replacing
   `.stylos-dropdown-item-content`.
-- Drawer's content region is no longer a tab stop of its own.
+- Drawer's content region is a tab stop only while it holds nothing focusable.
 - Dropdown Item Toggle's switch now overhangs the row's start edge as Dropdown
   Item Checkbox's box does. A rule whose effect depended on stylesheet order
   had left it 2 px further in, closer to its label.

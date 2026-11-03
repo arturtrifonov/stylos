@@ -20,7 +20,7 @@
 <section class="stylos-alert stylos-alert-popup-timer" data-size={size} data-announcement={announcement}
   data-surface-layer="4" data-surface-attachment="free"
   data-is-open={isOpen} role={announcement === "off" ? undefined : announcement === "assertive" ? "alert" : "status"}
-  aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={titleId}>
+  aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={isOpen ? titleId : undefined}>
   {#if isOpen}
     <div class="stylos-alert-body">
       <div class="stylos-alert-heading-row">

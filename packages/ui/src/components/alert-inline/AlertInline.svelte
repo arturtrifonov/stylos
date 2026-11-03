@@ -17,7 +17,7 @@
 <section class="stylos-alert stylos-alert-inline" data-size={size} data-type={type} data-announcement={announcement}
   data-surface-layer="1" data-surface-attachment="in-layout"
   data-is-open={isOpen} role={announcement === "off" ? undefined : announcement === "assertive" ? "alert" : "status"}
-  aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={hasHeading ? titleId : undefined}>
+  aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={isOpen && hasHeading ? titleId : undefined}>
   {#if isOpen}
     {#if hasIcon}{@render icon?.()}{/if}
     <div class="stylos-alert-body">

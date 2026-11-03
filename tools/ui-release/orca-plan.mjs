@@ -1,6 +1,7 @@
 // The Linux Chrome + Orca walkthrough for 0.3.0 acceptance (packages/ui/verification/0.3.0.md).
 // One scenario per composition; its checks run in order on the same mounted example.
-// Expectations were read from the accessibility tree and real key presses on 31814e9.
+// Expectations were read from the accessibility tree and real key presses on 31814e9,
+// then updated to the fixed behaviour of PR #90.
 // [Key] renders as a key cap. `known` names a suspected finding, so a fail confirms it.
 //
 // Scope, by owner decision on 2026-11-03: checks that passed in the first pass (run on
