@@ -182,10 +182,15 @@ All notable changes to the Stylos Design System project (foundations, components
   `aria-labelledby`, and Dropdown rows from their label text, so Orca stops
   reading every label of a Drawer, Modal or menu as stray text when it opens.
   Label adds `labelTextId`; Checkbox, Radio and Toggle Input add `labelIds`.
-- Alerts are announced when they open: a closed Alert Inline, Popup or Popup
-  Timer stays in the DOM as an empty, visually hidden live region. Timer's
-  section is the live region, as Popup's is, and its counter is
-  `aria-live="off"`.
+- Alerts are announced once when they open, in Orca too, also when several
+  open together. Alert Inline, Popup and Popup Timer speak through a visually
+  hidden announcer that receives one text — heading, then content; Timer its
+  heading only — instead of making their section the live region. Orca
+  dropped all but the first of the insertions an opening section produced,
+  usually a button. A closed alert stays in the DOM, empty and visually
+  hidden; the section keeps its `status` or `alert` role and its heading as
+  its name, with `aria-live="off"`, so buttons and Timer's counter are never
+  announced. The announcer empties itself after 7 seconds.
 - A table header holding sort or filter buttons is named by its text alone,
   not "Amount Sort by Amount".
 - Select's clear button shows its own focus ring; the field no longer shows

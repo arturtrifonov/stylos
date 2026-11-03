@@ -1,7 +1,7 @@
 // The Linux Chrome + Orca walkthrough for 0.3.0 acceptance (packages/ui/verification/0.3.0.md).
 // One scenario per composition; its checks run in order on the same mounted example.
 // Expectations were read from the accessibility tree and real key presses on 31814e9,
-// then updated to the fixed behaviour of PR #90.
+// then updated to the fixed behaviour of PR #90; P8 and P9 to the alert announcer (orca-2026-11-03.md, third round).
 // [Key] renders as a key cap. `known` names a suspected finding, so a fail confirms it.
 //
 // Scope, by owner decision on 2026-11-03: checks that passed in the first pass (run on
@@ -62,17 +62,17 @@ export const scenarios = [
         expect: ["После «Close» сразу Workspace name — отдельной остановки на области содержимого больше нет.", "Затем Plan, Owner, Cost centre… Notes, потом Cancel, Save.", "После Save фокус может уйти на страницу — панель немодальная, так задумано."] },
     ] },
   { id: "starting", title: "Волна 7: Switcher и алерты", sample: "StartingSet",
-    intro: "Пустые остановки Switcher, фокус после Undo и объявление Timer.",
+    intro: "Пустые остановки Switcher, фокус после Undo и объявление алертов при открытии.",
     checks: [
       { id: "P3", title: "Switcher",
         steps: ["«К примеру», [Tab] дважды — на «List».", "Обязательно [Orca]+[A] — Orca должен сказать «Focus mode»: на радиокнопках он сам его не включает. Затем [Right].", "[Orca]+[A] — browse mode, [Up]/[Down] вокруг переключателя."],
         expect: ["«Workspace view», «List, radio button, checked».", "[Right] выбирает «Grid» — «Archived» пропущен.", "В browse mode [Up]/[Down] проходят весь ряд сразу — три сегмента в одной строке; это нормально.", "Нет «blank»."] },
       { id: "P9", title: "Undo у Timer",
-        steps: ["[Tab] до «Undo» (у «Workspace archived»), [Enter].", "Послушай, затем [Tab]."],
-        expect: ["Фокус переходит на «Show notifications, button» — пример делает это как приложение.", "Orca произносит «Archive undone»."] },
+        steps: ["[Tab] до «Undo» (у «Workspace archived»).", "[Enter], послушай."],
+        expect: ["На «Undo» Orca говорит «Workspace archived, status bar» и «Undo, button» — без «3».", "После [Enter] фокус на «Show notifications, button», Orca произносит «Archive undone»."] },
       { id: "P8", title: "Появление алертов",
-        steps: ["[Shift]+[Tab] до «Close» у «Workspace imported», [Enter].", "[Enter] на «Show notifications» и ничего не нажимай."],
-        expect: ["После «Close» фокус на «Show notifications».", "Orca сам произносит «Workspace imported…» и «Workspace archived»."] },
+        steps: ["[Shift]+[Tab] трижды — «Close» у «Workspace updated», [Enter].", "Снова [Shift]+[Tab] трижды — «Close» у «Workspace imported», [Enter].", "Фокус на «Show notifications»: [Enter] и ничего не нажимай секунд пять."],
+        expect: ["На каждом «Close» Orca называет алерт: «Workspace updated, status bar», потом «Workspace imported, status bar». После [Enter] фокус возвращается на «Show notifications».", "После «Show notifications» Orca сам произносит три объявления, в любом порядке, каждое один раз: «Workspace imported. Your workspace is ready.», «Workspace updated. Changes were saved.», «Workspace archived».", "Ни Accept, Cancel, Undo, ни цифра таймера не звучат."] },
     ] },
   { id: "table", title: "Таблица", sample: "Table",
     intro: "Навигация по ячейкам (в первом прогоне были неверные клавиши), сортировка и фильтр.",

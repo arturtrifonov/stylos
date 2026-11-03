@@ -24,11 +24,12 @@
   line-height: var(--_stylos-alert-line);
 }
 .stylos-alert:not([hidden], [data-is-open="false"]) { display: flex; }
-/* A closed alert stays in the DOM, empty, so its live region exists before the
- * alert opens: content inserted into a present region is announced, a region
+/* A closed alert stays in the DOM, empty, so its announcer exists before the
+ * alert opens: text inserted into a present live region is announced, a region
  * that appears already filled is not (verification/orca-2026-11-03.md). Static
  * HTML, which announces nothing, closes with hidden. */
-.stylos-alert[data-is-open="false"] {
+.stylos-alert[data-is-open="false"],
+.stylos-alert-announcer {
   position: absolute;
   width: var(--stylos-border-width-normal);
   height: var(--stylos-border-width-normal);
@@ -37,6 +38,8 @@
   clip-path: inset(50%);
   overflow: hidden;
 }
+/* The spoken copy of the heading and content (AlertAnnouncer.svelte) stays out of layout. */
+.stylos-alert-announcer { white-space: nowrap; }
 :is(.stylos-alert-popup,.stylos-alert-popup-timer) { box-shadow: var(--_stylos-surface-shadow); }
 .stylos-alert-popup { border-color: var(--stylos-color-border-default); }
 .stylos-alert-body { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: var(--_stylos-alert-stack); }

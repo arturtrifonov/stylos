@@ -58,7 +58,7 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: "Owner-directed starting-set expansion, 2026-10-17. Inline was aligned with all five reviewed Popup size profiles on 2026-10-25. Reviewed for component readiness on 2026-10-25; release-wide acceptance remains separate. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): a closed alert stays in the DOM, empty and visually hidden, so its live region exists before it opens and the opening content is announced; static HTML still closes with hidden."
+notes: "Owner-directed starting-set expansion, 2026-10-17. Inline was aligned with all five reviewed Popup size profiles on 2026-10-25. Reviewed for component readiness on 2026-10-25; release-wide acceptance remains separate. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): a closed alert stays in the DOM, empty and visually hidden, so its live region exists before it opens and the opening content is announced; static HTML still closes with hidden. Amended 2026-11-03, second (Orca 50.3 run, packages/ui/verification/orca-2026-11-03.md): the section is not itself the live region — it keeps its status or alert role, named by its heading, with aria-live=off — and the alert announces through a visually hidden announcer that receives one text on opening: the heading, then the content. Orca drops all but the first of a burst of insertions, and an opening section inserts its heading, content and buttons at once. The announcer is emptied after 7 seconds; the state at mount is not announced."
 import:
   batch: 1
   ready: true
