@@ -64,3 +64,11 @@
     }
   }
 }
+
+/* System colours must follow the active forced-colours palette. The arc is a
+ * masked background, which forced colours would repaint as Canvas. */
+/* stylelint-disable scale-unlimited/declaration-strict-value */
+@media (forced-colors: active) {
+  .stylos-loader::before { forced-color-adjust: none; background-color: CanvasText; }
+}
+/* stylelint-enable scale-unlimited/declaration-strict-value */

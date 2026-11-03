@@ -38,6 +38,11 @@ ready. Evidence and outstanding
 release checks are recorded in
 [deferred acceptance](packages/ui/verification/0.3.0.md).
 
+**Acceptance closed, 2026-11-03:** `0.3.0` is cut with the evidence and known
+limitations recorded in [the hand-off](packages/ui/verification/0.3.0.md#closure)
+— light-theme status-colour contrast and Switcher reflow at 320 px among them —
+by owner decision; neither is recorded as passed.
+
 The release ladder now separates early integration, acceptance and product proof.
 
 | Tag | The decision it makes | Cut at |
