@@ -11,7 +11,7 @@ import { createServer } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { loadRegistry, slugPath } from "./lib/registry.mjs";
 import { readPlan, waveMembers } from "./lib/plan.mjs";
-import { builtComponents, pascalName, renderProps } from "./build-ui-types.mjs";
+import { builtComponents, camelName, pascalName, renderProps } from "./build-ui-types.mjs";
 import { releaseCases, markupReader, variantChecks } from "./lib/ui-release.mjs";
 import { verifyVariantCase } from "./ui-release/checks.mjs";
 import { validateReport, readReportBody } from "./lib/ui-release-report.mjs";
@@ -37,7 +37,10 @@ async function main() {
       assert.ok(existsSync(path.join(root, file)), `Build artifact is missing: ${file}`);
     }
     assert.equal(fileURLToPath(import.meta.resolve(`@stylos/ui/css/${slug}.css`)), path.join(root, `packages/ui/dist/css/${slug}.css`));
-    return { id: entry.id, name: pascalName(entry.id), selector: `.stylos-${slug}`, variantChecks: variantChecks(entry), cases: releaseCases(entry) };
+    // Variant and boolean props let the Figma comparison page map variant names to arguments.
+    const props = entry.api.filter(property => ["variant", "boolean"].includes(property.kind))
+      .map(property => ({ name: property.name, key: camelName(property.name), kind: property.kind, values: (property.values ?? []).map(value => value.value) }));
+    return { id: entry.id, name: pascalName(entry.id), slug, selector: `.stylos-${slug}`, variantChecks: variantChecks(entry), cases: releaseCases(entry), props };
   });
   const cases = components.reduce((total, component) => total + component.cases.length, 0);
   function inputFingerprint() {
@@ -119,6 +122,13 @@ async function main() {
                 res.end("Saved");
               } catch (error) { res.statusCode = error.status ?? 400; res.end(error.message); }
             return;
+          }
+          // Figma reference data for /figma.html, collected into build/figma-compare/ (see that page).
+          if (pathname.startsWith("/figma-data/")) {
+            const data = path.join(root, "build/figma-compare", path.basename(pathname));
+            if (!existsSync(data)) { res.statusCode = 404; res.end(); return; }
+            res.setHeader("Content-Type", data.endsWith(".png") ? "image/png" : "application/json");
+            res.end(readFileSync(data)); return;
           }
           const file = resources.get(pathname);
           if (!file) { next(); return; }
