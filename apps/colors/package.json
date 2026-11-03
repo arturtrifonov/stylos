@@ -1,29 +1,25 @@
 {
   "name": "stylos-colors",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "description": "Stylos colour token editor, adapted from Huetone.",
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 4175 --strictPort",
-    "build": "tsc --noEmit && vite build",
-    "check": "tsc --noEmit"
+    "build": "svelte-check --tsconfig ./tsconfig.json && vite build",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "@nanostores/react": "^2.0.1",
+    "@stylos/ui": "*",
     "apca-w3": "^0.1.9",
     "chroma-js": "^2.6.0",
     "comlink": "^4.4.2",
-    "nanostores": "^1.5.5",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "styled-components": "^5.3.11"
+    "svelte": "^5.46.4"
   },
   "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.3.0",
     "@types/chroma-js": "^2.4.5",
-    "@types/react": "^18.3.0",
-    "@types/react-dom": "^18.3.0",
-    "@types/styled-components": "^5.1.34",
+    "svelte-check": "^4.7.6",
     "typescript": "^5.5.0",
     "vite": "^8.0.0"
   },

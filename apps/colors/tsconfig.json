@@ -4,7 +4,8 @@
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "jsx": "react-jsx",
+    "customConditions": ["svelte"],
+    "allowImportingTsExtensions": true,
     "strict": true,
     "allowJs": true,
     "checkJs": false,
@@ -12,11 +13,10 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "noEmit": true,
-    "types": ["vite/client"],
+    "types": ["vite/client", "svelte"],
     "baseUrl": ".",
     "paths": {
-      "shared/*": ["src/huetone/shared/*"],
-      "store/*": ["src/huetone/store/*"]
+      "shared/*": ["src/huetone/shared/*"]
     }
   },
   "include": ["src"]

@@ -4,6 +4,7 @@ import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { prepareColorDraft } from './lib/color-draft.mjs';
+import { SCALE_FILE } from './lib/special-colors.mjs';
 
 export function reviewColorChanges(root, input) {
   return formatReview(prepareColorDraft(root, input));
@@ -15,10 +16,24 @@ function formatReview({ patch, affected, outside }) {
     const dependents = affected.filter(role => role.mode === change.mode && role.ref === `palette/${key}`);
     return `${change.path} (${change.mode}): ${change.before ?? '(new)'} → ${change.after} · ${dependents.length} dependent roles`;
   });
-  return [`${patch.changes.length} palette value(s) changed; ${Object.keys(patch.coordinates).length} LCH point(s) retained. Canonical files are unchanged.`,
+  const short = ref => ref.slice('palette/'.length);
+  return [`${patch.changes.length} palette value(s), ${patch.roles.length} role binding(s) and ${patch.scale.length} special scale step(s) changed; ${Object.keys(patch.coordinates).length} LCH point(s) retained. Canonical files are unchanged.`,
     `Validated the complete proposed token set and CSS build. ${affected.length} role value(s) affected.`,
     ...(outside.length ? [`${outside.length} point(s) outside sRGB: the exported CSS uses their mapped HEX previews.`, ...outside.map(key => `  ${key}`)] : []),
-    ...lines].join('\n');
+    ...lines,
+    ...patch.roles.map(change => `color/${change.path} (${change.mode}): ${short(change.before)} → ${short(change.after)}`),
+    ...patch.scale.map(change => `${SCALE_FILE} ${change.template} (${change.mode}): ${short(change.before)} → ${short(change.after)}`)].join('\n');
+}
+
+// The scale is authored, so a proposal keeps the file's own header and history.
+function specialScaleYaml(root, scale) {
+  const source = readFileSync(path.join(root, SCALE_FILE), 'utf8');
+  const lines = scale.roles.flatMap(({ template, ref }) => {
+    const values = [...ref.values()];
+    const modes = ref.has('default') || values.every(value => value === values[0]) ? [['default', values[0]]] : [...ref];
+    return [`  "${template}":`, ...modes.map(([mode, target]) => `    ${mode}: "${target}"`)];
+  });
+  return source.slice(0, source.indexOf('\nroles:') + '\nroles:\n'.length) + lines.join('\n') + '\n';
 }
 
 export function writeColorPreview(root, input, out) {
@@ -33,6 +48,7 @@ export function writeColorPreview(root, input, out) {
     'tokens.json': JSON.stringify({ ...plan.manifest, preview: true, base: plan.snapshot.fingerprint }, null, 2) + '\n',
     'impact.json': JSON.stringify(plan.affected, null, 2) + '\n',
     'draft.json': JSON.stringify(plan.patch, null, 2) + '\n',
+    ...(plan.patch.scale.length ? { '_special.yaml': specialScaleYaml(root, plan.scale) } : {}),
   })) writeFileSync(path.join(out, name), content);
   return formatReview(plan);
 }

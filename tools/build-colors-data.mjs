@@ -6,7 +6,6 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadCanonical, resolve } from './lib/tokens.mjs';
 import { loadSpecialScale } from './lib/special-colors.mjs';
-import { loadTheme, themeCss } from './lib/theme.mjs';
 import { runCheck } from './check-tokens.mjs';
 import { createFigmaBundle } from '../apps/colors/src/figma-bundle.mjs';
 
@@ -46,13 +45,6 @@ export function buildColorsData(root, out = path.join(root, 'apps/colors/public'
   mkdirSync(out, { recursive: true });
   writeFileSync(path.join(out, 'stylos.json'), JSON.stringify(snapshot, null, 2) + '\n');
   writeFileSync(path.join(out, 'stylos-colors.figma.json'), JSON.stringify(createFigmaBundle(snapshot, snapshot.palette), null, 2) + '\n');
-  const theme = loadTheme(root);
-  const explicit = ['light', 'dark'].map(mode =>
-    `:root[data-theme="${mode}"] {\n  color-scheme: ${mode};\n` +
-    [...theme[mode]].map(([role, value]) => `  --${role}: ${value};`).join('\n') + '\n}'
-  ).join('\n');
-  writeFileSync(path.join(out, 'theme.css'), themeCss(theme) + '\n' + explicit + '\n');
-  cpSync(path.join(root, 'assets/fonts'), path.join(out, 'assets/fonts'), { recursive: true });
   cpSync(path.join(root, 'apps/colors/LICENSE.huetone'), path.join(out, 'LICENSE.huetone.txt'));
   return snapshot;
 }

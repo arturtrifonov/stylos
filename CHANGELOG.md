@@ -11,6 +11,14 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Added
 
+- **Colors assigns roles and sets the special scale.** A semantic role can move
+  to any palette step, separately in light and dark. The eleven lines of the
+  special scale are editable, and every hue follows them at once. Both travel in
+  the draft (format 3; older drafts still open), the Figma transfer and server
+  saves, are checked by `colors:review`, and undo with everything else.
+- **Colors runs on `@stylos/ui`.** The interface moved from React to Svelte 5 and
+  the library's own components and released tokens; React and styled-components
+  are gone.
 - **Native Figma JSON export.** Colors downloads DTCG mode files for the built-in
   Variables import, with separate palette, semantic and Special collections.
   Values retain alpha and Figma alias metadata. The server/plugin transfer stays

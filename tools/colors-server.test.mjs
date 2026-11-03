@@ -8,7 +8,7 @@ import { createApp } from '../apps/colors-server/app.mjs';
 import { createAuth, createOidc } from '../apps/colors-server/auth.mjs';
 import { createStore } from '../apps/colors-server/store.mjs';
 import { buildColorsSnapshot } from './build-colors-data.mjs';
-import { createDraft, exportChanges } from '../apps/colors/src/model.mjs';
+import { assignRole, assignScale, createDraft, exportChanges, noAssignments } from '../apps/colors/src/model.mjs';
 const snapshot = buildColorsSnapshot(new URL('../', import.meta.url).pathname);
 const origin = 'https://colors.example.test', issuer = 'https://id.example.test';
 const keys = generateKeyPairSync('rsa', { modulusLength: 2048 });
@@ -98,6 +98,23 @@ test('a verified owner can save, reopen and publish; drafts persist across resta
     assert.equal(published.palette['indigo/700'].light, '#123456'); assert.equal(published.basePalette['indigo/700'].light, snapshot.palette['indigo/700'].light);
     assert.equal((await f.request('/auth/logout', { method: 'POST', headers })).status, 200);
     assert.equal((await f.request('/api/stylos', { headers: { Cookie: cookie } })).status, 401);
+  } finally { f.close(); }
+});
+
+test('a saved draft keeps role and scale edits, publishes them and refuses a binding that does not hold', async () => {
+  const f = fixture(); try {
+    const { cookie } = await f.login(); const session = await (await f.request('/api/session', { headers: { Cookie: cookie } })).json();
+    const headers = { Cookie: cookie, Origin: origin, 'X-CSRF-Token': session.csrf, 'Content-Type': 'application/json', 'If-Match': '0' };
+    const assignments = assignScale(snapshot, assignRole(snapshot, noAssignments(), 'text/base', 'light', 'palette/indigo/700'), 'text/special/{hue}', 'light', 'palette/{hue}/800');
+    const patch = exportChanges(snapshot, createDraft(snapshot), {}, assignments);
+    const invalid = { ...patch, scale: [{ ...patch.scale[0], after: 'palette/slate/800' }] };
+    assert.equal((await f.request('/api/stylos', { method: 'PUT', headers, body: JSON.stringify(invalid) })).status, 400);
+    const response = await f.request('/api/stylos', { method: 'PUT', headers, body: JSON.stringify(patch) }); assert.equal(response.status, 200);
+    const saved = await response.json(); assert.deepEqual(saved.draft.roles, patch.roles); assert.deepEqual(saved.draft.scale, patch.scale);
+    assert.equal((await f.request('/api/stylos/publish', { method: 'POST', headers: { ...headers, 'If-Match': saved.revision } })).status, 200);
+    const published = await (await f.request('/stylos-colors.figma.json')).json();
+    assert.equal(published.roles.find(role => role.path === 'text/base').ref.light, 'palette/indigo/700');
+    assert.equal(published.roles.find(role => role.path === 'text/special/violet').ref.light, 'palette/violet/800');
   } finally { f.close(); }
 });
 

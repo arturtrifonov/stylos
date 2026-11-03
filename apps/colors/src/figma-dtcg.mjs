@@ -17,9 +17,10 @@ function scopes(path) {
  * @param {import('./model.mjs').Snapshot} snapshot
  * @param {import('./model.mjs').Palette} palette
  * @param {import('./model.mjs').Coordinates} coordinates
+ * @param {import('./model.mjs').Assignments} [assignments]
  */
-export function createFigmaDtcgFiles(snapshot, palette, coordinates = {}) {
-  const bundle = createFigmaBundle(snapshot, palette, coordinates)
+export function createFigmaDtcgFiles(snapshot, palette, coordinates = {}, assignments) {
+  const bundle = createFigmaBundle(snapshot, palette, coordinates, assignments)
   const files = []
   function file(collection, mode, records) {
     const document = { $extensions: { 'com.figma.modeName': mode } }

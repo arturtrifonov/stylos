@@ -11,7 +11,8 @@ import { projectCoordinate, validateProjections } from '../apps/colors/src/proje
 import { oklch, cielch } from '../apps/colors/src/huetone/shared/colorFuncs/colorModels.mjs';
 import { rgb2xyz } from '../apps/colors/src/huetone/shared/colorFuncs/utils.mjs';
 import { reviewColorChanges, writeColorPreview } from './review-color-changes.mjs';
-import { createDraft, exportChanges, importChanges, resolveRole, colorCss, addHue, addStep, withDraftRoles } from '../apps/colors/src/model.mjs';
+import { createDraft, exportChanges, importChanges, importAssignments, resolveRole, colorCss, addHue, addStep, withDraftRoles, assignRole, assignScale, scaleRef, noAssignments } from '../apps/colors/src/model.mjs';
+import { createFigmaBundle, draftFromFigmaBundle } from '../apps/colors/src/figma-bundle.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const snapshot = buildColorsSnapshot(root);
@@ -92,7 +93,7 @@ test('new rows and columns round-trip with both themes and generated special fam
   let draft = addHue(createDraft(snapshot), 'brand', 'indigo');
   draft = addStep(draft, '750', (hue, mode) => draft[`${hue}/700`][mode]);
   const patch = exportChanges(snapshot, draft);
-  assert.equal(patch.version, 2);
+  assert.equal(patch.version, 3);
   assert.deepEqual(importChanges(snapshot, JSON.parse(JSON.stringify(patch))), draft);
   assert.equal(patch.changes.filter(change => change.before === null).length, (13 + 23) * 2);
   const project = withDraftRoles(snapshot, draft);
@@ -238,4 +239,97 @@ test('preview files carry a reviewable impact report and reject mismatched coord
     assert.throws(() => writeColorPreview(root, patch, path.join(root, 'tokens')), /Choose a preview directory/);
     assert.throws(() => prepareColorDraft(root, { ...patch, base: 'stale' }), /source tokens have changed/);
   } finally { rmSync(out, { recursive: true, force: true }); }
+});
+
+test('a semantic role is reassigned per theme, survives a round trip and returns to source', () => {
+  const draft = createDraft(snapshot);
+  const source = snapshot.roles.find(role => role.path === 'text/base');
+  const sourceDark = source.ref.dark ?? source.ref.default;
+  const assignments = assignRole(snapshot, noAssignments(), 'text/base', 'light', 'palette/indigo/700');
+  const project = withDraftRoles(snapshot, draft, assignments);
+  assert.equal(resolveRole(project, draft, 'text/base', 'light').value, draft['indigo/700'].light);
+  assert.equal(resolveRole(project, draft, 'text/base', 'dark').ref, sourceDark);
+  const patch = JSON.parse(JSON.stringify(exportChanges(snapshot, draft, {}, assignments)));
+  assert.equal(patch.version, 3);
+  assert.deepEqual(patch.roles.map(change => [change.path, change.mode, change.after]), [['text/base', 'light', 'palette/indigo/700']]);
+  assert.deepEqual(importAssignments(snapshot, patch, importChanges(snapshot, patch)), assignments);
+  const back = assignRole(snapshot, assignments, 'text/base', 'light', source.ref.light ?? source.ref.default);
+  assert.deepEqual(back, noAssignments());
+});
+
+test('a role binding that does not hold is refused as a whole', () => {
+  const draft = createDraft(snapshot);
+  const patch = exportChanges(snapshot, draft, {}, assignRole(snapshot, noAssignments(), 'text/base', 'light', 'palette/indigo/700'));
+  const [change] = patch.roles;
+  for (const roles of [
+    [{ ...change, path: 'text/absent' }],
+    [{ ...change, path: 'text/special/indigo' }],
+    [{ ...change, mode: 'default' }],
+    [{ ...change, before: 'palette/slate/25' }],
+    [{ ...change, after: 'palette/indigo/1' }],
+    [{ ...change, after: '#123456' }],
+    [change, change],
+  ]) assert.throws(() => importAssignments(snapshot, { ...patch, roles }, draft));
+  assert.throws(() => exportChanges(snapshot, draft, {}, assignRole(snapshot, noAssignments(), 'text/base', 'light', 'palette/brand/700')), /needs a palette step/);
+});
+
+test('one scale edit moves its role in every hue, new hues included', () => {
+  const template = 'text/special/{hue}';
+  const draft = addHue(createDraft(snapshot), 'brand', 'indigo');
+  const assignments = assignScale(snapshot, noAssignments(), template, 'light', 'palette/{hue}/800');
+  assert.equal(scaleRef(snapshot, assignments, template, 'light'), 'palette/{hue}/800');
+  const project = withDraftRoles(snapshot, draft, assignments);
+  for (const hue of ['indigo', 'slate', 'brand']) {
+    assert.equal(resolveRole(project, draft, `text/special/${hue}`, 'light').ref, `palette/${hue}/800`);
+    assert.equal(resolveRole(project, draft, `text/special/${hue}`, 'dark').ref, `palette/${hue}/800`);
+  }
+  assert.equal(resolveRole(project, draft, 'border/special/indigo', 'light').ref, 'palette/indigo/700');
+  const patch = JSON.parse(JSON.stringify(exportChanges(snapshot, draft, {}, assignments)));
+  assert.deepEqual(importAssignments(snapshot, patch, importChanges(snapshot, patch)), assignments);
+});
+
+test('a scale step keeps its hue and exists in every hue; only disabled drops the hue', () => {
+  const draft = createDraft(snapshot);
+  const scale = (template, ref) => assignScale(snapshot, noAssignments(), template, 'light', ref);
+  assert.throws(() => exportChanges(snapshot, draft, {}, scale('text/special/{hue}', 'palette/slate/700')), /own hue/);
+  assert.throws(() => exportChanges(snapshot, draft, {}, scale('text/special/{hue}', 'palette/{hue}/750')), /does not have/);
+  assert.throws(() => assignScale(snapshot, noAssignments(), 'text/absent/{hue}', 'light', 'palette/{hue}/700'), /Unknown special scale/);
+  const disabled = scale('surface/bold/special/{hue}/disabled', 'palette/indigo/100');
+  assert.equal(exportChanges(snapshot, draft, {}, disabled).scale.length, 1);
+});
+
+test('role and scale edits go through the real build, and the review proposes the authored scale', () => {
+  let assignments = assignRole(snapshot, noAssignments(), 'text/base', 'dark', 'palette/indigo/700');
+  assignments = assignScale(snapshot, assignments, 'text/special/{hue}', 'light', 'palette/{hue}/800');
+  const patch = exportChanges(snapshot, createDraft(snapshot), {}, assignments);
+  const plan = prepareColorDraft(root, patch);
+  const affected = plan.affected.map(role => `${role.path}:${role.mode}`);
+  assert.ok(affected.includes('color/text/base:dark'));
+  assert.ok(affected.includes('color/text/special/violet:light'));
+  assert.ok(!affected.includes('color/text/special/violet:dark'));
+  const css = plan.css.slice(plan.css.indexOf('[data-theme="dark"]'));
+  assert.match(css, /--stylos-color-text-base: var\(--stylos-palette-dark-indigo-700\)/);
+  const review = reviewColorChanges(root, patch);
+  assert.match(review, /1 role binding\(s\) and 1 special scale step\(s\) changed/);
+  assert.match(review, /color\/text\/base \(dark\): .* → indigo\/700/);
+  const out = mkdtempSync(path.join(tmpdir(), 'stylos-scale-'));
+  try {
+    writeColorPreview(root, patch, out);
+    const proposal = readFileSync(path.join(out, '_special.yaml'), 'utf8');
+    assert.match(proposal, /AUTHORED SYSTEM SCALE/);
+    assert.match(proposal, /"text\/special\/\{hue\}":\n    default: "palette\/\{hue\}\/800"/);
+  } finally {
+    rmSync(out, { recursive: true, force: true });
+  }
+});
+
+test('a transfer carries role and scale edits and opens as the same draft', () => {
+  const draft = createDraft(snapshot);
+  let assignments = assignRole(snapshot, noAssignments(), 'text/base', 'light', 'palette/indigo/700');
+  assignments = assignScale(snapshot, assignments, 'border/special/{hue}', 'dark', 'palette/{hue}/900');
+  const bundle = JSON.parse(JSON.stringify(createFigmaBundle(snapshot, draft, {}, assignments)));
+  assert.equal(bundle.roles.find(role => role.path === 'text/base').ref.light, 'palette/indigo/700');
+  assert.equal(bundle.roles.find(role => role.path === 'border/special/indigo').ref.dark, 'palette/indigo/900');
+  const patch = draftFromFigmaBundle(snapshot, bundle);
+  assert.deepEqual(importAssignments(snapshot, patch, importChanges(snapshot, patch)), assignments);
 });

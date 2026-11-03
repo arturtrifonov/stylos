@@ -15,6 +15,4 @@ apps/colors-server/data/
 deploy/colors/.env
 apps/colors/public/stylos-colors.figma.json
 apps/colors/public/stylos.json
-apps/colors/public/theme.css
-apps/colors/public/assets/
 apps/colors/public/LICENSE.huetone.txt

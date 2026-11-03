@@ -324,6 +324,12 @@ export/import with source checks. Review now validates the complete proposed CSS
 build and can write a standalone preview package with role impact data. Its built surface is documented in
 [`apps/colors/README.md`](apps/colors/README.md).
 
+**Follow-up 2026-11-04:** at the owner's direction Colors moved from React to
+Svelte on `@stylos/ui`, and semantic roles and the special scale became editable
+per theme, not only displayed. Both travel in the draft, the Figma transfer and
+server saves, and are checked by `colors:review`. Whether Colors should write
+`tokens/` directly remains an open owner decision.
+
 **Follow-up 2026-10-23:** the owner requested a dedicated Figma plugin. The
 color transfer now lives in `apps/figma-tokens`: explicit collection/mode mapping,
 review, in-place application with conflict checks and rollback, and palette draft

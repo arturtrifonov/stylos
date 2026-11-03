@@ -1,8 +1,12 @@
 # Stylos Colors
 
 An owner-facing editor for the base Stylos colour tokens. It is an independent
-React application; the documentation site can carry its static build at
-`colors/`, but hosting it with the site is optional. Local editing and file
+Svelte application built on `@stylos/ui`: its own interface uses the released
+tokens and components, and a draft shows only in the previews, never in the
+chrome around them. The graphs keep native range and number inputs, because they
+are the chart's own handles and the library has no Slider or Input Number yet.
+The documentation site can carry its static build at `colors/`, but hosting it
+with the site is optional. Local editing and file
 exchange need no account. The optional hosted workspace uses Pocket ID for
 server saves; fonts and the color engine remain local assets.
 
@@ -20,7 +24,7 @@ The server has its own revision history and rejects stale saves from other tabs.
 npm install
 npm run colors          # http://127.0.0.1:4175/
 npm run colors:build    # apps/colors/dist/, deployable at any subpath
-npm run colors:check    # TypeScript
+npm run colors:check    # svelte-check
 ```
 
 ## First slice
@@ -36,16 +40,26 @@ npm run colors:check    # TypeScript
 - Semantic and Special follow the token hierarchy: area, bold/subtle, family,
   then Default / Hover / Active / Disabled in aligned columns. In context previews
   use surfaces as tiles, backgrounds behind a tile, borders as borders, text as
-  text and shadows with their real opacity; Swatches shows the resolved colours. Clicking a role opens its palette step.
+  text and shadows with their real opacity; Swatches shows the resolved colours.
   Contrast ratios compare the selected pair of opaque colours; they do not
   establish component or interface accessibility. Translucent pairs have no
   ratio until a compositing context is defined.
+- **Semantic roles are reassigned here.** Choosing a role opens its bindings for
+  both themes: pick a hue, then a step, separately for Light and Dark (FND-COLOR-05).
+  Any palette step qualifies, including new rows and steps. The role's opacity
+  stays as it is. A new step or row a reassigned role uses cannot be removed
+  until the role moves elsewhere.
+- **The special scale is set here.** Special opens with the eleven lines of
+  `tokens/_special.yaml`: one step per role and theme, followed by every hue at
+  once, and a strip showing the result in all of them (FND-COLOR-14). A step must
+  exist in every hue and a role keeps its own hue; only the disabled roles name
+  a fixed hue (FND-COLOR-08). Clicking a card in Special opens its palette step.
 - Drafts persist locally in this browser. Open JSON / Save draft transfers a
   versioned JSON file between sessions. A SHA-256 fingerprint covers palette, semantic
   and special-scale records; a stale draft is rejected and remains downloadable
   for recovery rather than being silently overwritten.
 - Undo / Redo covers HEX and graph edits, bulk commands, row/step additions and
-  removals, opening a draft, gamut correction and Reset changes. A continuous
+  removals, role and scale assignments, opening a draft, gamut correction and Reset changes. A continuous
   graph gesture or input edit is one history entry. Ctrl/Cmd+Z undoes;
   Ctrl/Cmd+Shift+Z or Ctrl+Y redoes. Text fields keep their native text undo.
   Reset changes sits beside Light/Dark and resets both themes; Undo recovers the
@@ -73,10 +87,20 @@ npm run colors:review -- ~/Downloads/stylos-colors.draft.json --out /tmp/stylos-
 The review command checks the whole proposed token set through the real CSS
 builder, including new generated special families, both themes and alpha.
 `--out` creates `review.txt`, `impact.json`, `tokens.css`, `tokens.json` and the
-validated `draft.json` in a preview directory. The impact file lists changed
+validated `draft.json` in a preview directory; when the scale changed it adds the
+proposed `_special.yaml`, the authored file with its header kept. The impact file lists changed
 semantic/special values per theme with their binding and opacity. CSS uses the
 same sRGB mapping as the browser and reports out-of-gamut points explicitly.
 The preview is ready to try in a consumer without changing the source palette.
+
+Draft format 3 adds `roles` and `scale` beside `changes`, each entry naming its
+theme, its original binding and the new one, so a stale edit is refused as a
+palette one is. Formats 1 and 2 still open. The Figma transfer, the DTCG files
+and server saves carry both. In the plugin, a role whose binding changes is a
+conflict until **Replace existing role bindings with Stylos bindings** is on. Role bindings then return to the
+repository through Figma and `tokens:import`; the special scale never does, because
+`tokens/_special.yaml` is authored, so a scale change lands by adopting the proposed
+file.
 
 **Export for Figma…** downloads standard DTCG color JSON for Figma's built-in
 Variables → Import mode. Each collection/mode has its own file: `palette.light`,

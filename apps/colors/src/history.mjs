@@ -1,5 +1,5 @@
 // Whole editor commands are reversible, including coordinates and structure.
-/** @typedef {{palette: import('./model.mjs').Palette, coordinates: import('./model.mjs').Coordinates}} EditorState */
+/** @typedef {{palette: import('./model.mjs').Palette, coordinates: import('./model.mjs').Coordinates, assignments: import('./model.mjs').Assignments}} EditorState */
 /** @typedef {{past:EditorState[], present:EditorState, future:EditorState[], group:string|null}} History */
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b)
 const LIMIT = 60

@@ -7,7 +7,8 @@ Only scripts required to build or validate project artifacts. **Kept small and d
 `npm run colors` and `colors:build` first project the canonical palette, semantic
 bindings and generated special family through `lib/tokens.mjs` into an editor
 snapshot. The SHA-256 fingerprint covers both values and canonical source
-records. Theme CSS and fonts are generated alongside it for offline hosting.
+records. The editor takes its theme and fonts from `@stylos/ui`, so `colors` and
+`colors:build` build that package first.
 The generated `stylos-colors.figma.json` uses the editor's existing complete
 transfer format for anonymous direct loading from the hosted plugin panel.
 The documentation build refreshes this data when including an existing editor
@@ -15,7 +16,8 @@ bundle. `npm run colors:review -- <file>` validates a downloaded changes file
 against the current source, checks LCH/HEX agreement, validates the complete
 proposed set through the CSS builder and prints its diff and affected-role counts.
 With `--out <preview-directory>` it writes review.txt, impact.json, tokens.css,
-tokens.json and draft.json for trying the result in a consumer. Neither command
+tokens.json and draft.json for trying the result in a consumer, and a proposed
+`_special.yaml` when the draft changes the scale. Neither command
 writes canonical token files. Browser and CLI share validation in
 `apps/colors/src/model.mjs`; see [the editor guide](../apps/colors/README.md).
 

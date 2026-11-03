@@ -21,8 +21,9 @@ The owner-facing color transfer plugin is documented in
 and modes explicitly, previews changes and updates variables in place while
 preserving aliases and opacity. The Colors editor downloads standard DTCG mode files for native import. Its
 advanced plugin transfer and the server endpoint use a separate protocol; the
-editor also accepts the plugin's return palette draft. Repository token records still come
-through the existing Figma export/import pipeline.
+editor also accepts the plugin's return palette draft. Both carry reassigned roles; the
+plugin writes them once role rebinding is allowed. Repository token records still come
+through the existing Figma export/import pipeline, except the authored special scale.
 
 ## Library structure
 

@@ -1,7 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync, renameSync, openSync, fsyncSync, closeSync, rmSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
-import { importChanges, exportChanges, createDraft } from '../colors/src/model.mjs';
+import { importAssignments, importChanges, exportChanges, createDraft } from '../colors/src/model.mjs';
 import { validateProjections } from '../colors/src/projection.mjs';
 import { createFigmaBundle } from '../colors/src/figma-bundle.mjs';
 
@@ -27,12 +27,13 @@ export function createStore(directory, snapshot) {
     } finally { rmSync(temporary, { force: true }); }
   }
   function normalize(draft) {
-    if (!draft || !Array.isArray(draft.changes) || draft.changes.length > 10000 || Object.keys(draft.coordinates ?? {}).length > 10000) throw new HttpError(400, 'Invalid or oversized color draft.');
+    if (!draft || !Array.isArray(draft.changes) || draft.changes.length > 10000 || Object.keys(draft.coordinates ?? {}).length > 10000 ||
+        (draft.roles ?? []).length > 10000 || (draft.scale ?? []).length > 10000) throw new HttpError(400, 'Invalid or oversized color draft.');
     try {
       const palette = importChanges(snapshot, draft);
       if (Object.keys(palette).length > 5000) throw new Error('The palette is too large.');
       validateProjections(palette, draft.coordinates ?? {});
-      return exportChanges(snapshot, palette, draft.coordinates ?? {});
+      return exportChanges(snapshot, palette, draft.coordinates ?? {}, importAssignments(snapshot, draft, palette));
     } catch (error) { throw new HttpError(400, error.message); }
   }
   function working() {
@@ -53,8 +54,9 @@ export function createStore(directory, snapshot) {
     publish(expected, subject) {
       const saved = working(); compare(saved, expected);
       const draft = normalize(saved.draft);
+      const palette = importChanges(snapshot, draft);
       const next = { schemaVersion: 1, revision: randomUUID(), workingRevision: saved.revision, updatedAt: new Date().toISOString(), subject, draft,
-        bundle: createFigmaBundle(snapshot, importChanges(snapshot, draft), draft.coordinates ?? {}) };
+        bundle: createFigmaBundle(snapshot, palette, draft.coordinates ?? {}, importAssignments(snapshot, draft, palette)) };
       write('history/' + next.revision, next); write('published', next);
       return { revision: next.revision, workingRevision: next.workingRevision, updatedAt: next.updatedAt };
     },

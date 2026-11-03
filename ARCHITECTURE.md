@@ -154,7 +154,7 @@ leave this record intact; style updates require a fresh Figma read.
 
 **Amended 2026-10-23 — base colour editor, first slice.** The owner selected
 editing Stylos's base tokens before consumer themes. `apps/colors` is an
-independent React application adapted from Huetone; `npm run colors` runs it
+independent application adapted from Huetone; `npm run colors` runs it
 locally. Its snapshot is generated through `loadCanonical`, with semantic
 references, alpha and generated special roles retained. Browser drafts edit
 palette values in light and dark independently and preview the dependent roles.
@@ -174,6 +174,18 @@ current-session undo history; reset and file replacement are reversible commands
 The palette uses page flow while the desktop inspector can scroll independently.
 Role previews group canonical paths by area, intensity, family and state, with
 contextual and swatch presentations sharing the same resolver.
+**Amended 2026-11-04 — Svelte interface, role and scale editing.** At the owner's
+direction the interface moved from React to Svelte 5 on `@stylos/ui`, so the
+editor is a consumer of the system it edits; Huetone's graph was ported by hand
+and its colour engine kept, with the MIT notice. Its chrome uses released tokens;
+a draft shows only in previews. The draft format moved to version 3: alongside
+palette changes it carries role bindings per theme and steps of the authored
+special scale, each with the binding it replaces, and versions 1 and 2 still open.
+A role takes any palette step; a scale line applies to every hue, so a per-hue
+exception does not exist (FND-COLOR-14). `colors:review` applies both to the
+proposed set before the CSS build, and `--out` adds a proposed `_special.yaml`.
+No canonical file is written. Role bindings return through Figma and `tokens:import`;
+the scale is authored, so nothing imports it and a person adopts the proposal.
 **Follow-up 2026-10-24 — neutral lightness preview.** Grayscale pins a preview;
 holding physical B activates it temporarily outside editable fields. Samples
 use zero chroma at the same lightness in the selected colour space, retaining
