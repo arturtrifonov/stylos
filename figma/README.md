@@ -14,6 +14,16 @@ Documentation and authoring conventions for the Figma implementation. **Figma ho
 
 These conventions apply to Figma. Public API and design-language rules stay in `docs/`; a tool constraint does not become a rule for the whole system.
 
+## Stylos Tokens plugin
+
+The owner-facing color transfer plugin is documented in
+[`apps/figma-tokens/README.md`](../apps/figma-tokens/README.md). It maps collections
+and modes explicitly, previews changes and updates variables in place while
+preserving aliases and opacity. The Colors editor downloads standard DTCG mode files for native import. Its
+advanced plugin transfer and the server endpoint use a separate protocol; the
+editor also accepts the plugin's return palette draft. Repository token records still come
+through the existing Figma export/import pipeline.
+
 ## Library structure
 
 Four Stylos files, plus one external library:

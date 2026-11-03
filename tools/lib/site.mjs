@@ -88,6 +88,11 @@ export function hasStorybook(root) {
   return existsSync(path.join(root, "apps/workshop/storybook-static/index.html"));
 }
 
+/** The editor can also run independently; link it only when its bundle exists. */
+export function hasColorEditor(root) {
+  return existsSync(path.join(root, "apps/colors/dist/index.html"));
+}
+
 /** The system's one version line (ARCHITECTURE.md §9), for the hero pill. */
 export function systemVersion(root) {
   const version = readJson(path.join(root, "package.json"))?.version;
@@ -111,6 +116,7 @@ export function siteFacts(root, entries = null) {
     npm: packageFacts(root),
     repo: repoUrl(root),
     storybook: hasStorybook(root),
+    colors: hasColorEditor(root),
     version: systemVersion(root),
     distribution: specStatus(root, "0010") === "Built" ? "built" : "planned",
   };

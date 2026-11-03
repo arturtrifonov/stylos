@@ -4,7 +4,7 @@ import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
-import { figmaLibraries, packageFacts, specStatus, repoUrl, hasStorybook, systemVersion, siteFacts } from "./site.mjs";
+import { figmaLibraries, packageFacts, specStatus, repoUrl, hasStorybook, hasColorEditor, systemVersion, siteFacts } from "./site.mjs";
 
 /** A throwaway repository holding only the files a test writes into it. */
 function fixture(files = {}) {
@@ -99,4 +99,11 @@ test("the header's Figma link is the components library, not the first row", () 
 test("the storybook check is the built workshop's index and nothing subtler", () => {
   assert.equal(hasStorybook(fixture()), false);
   assert.equal(hasStorybook(fixture({ "apps/workshop/storybook-static/index.html": "<!doctype html>" })), true);
+});
+
+test("the color editor link exists only when an editor bundle is built", () => {
+  assert.equal(hasColorEditor(fixture()), false);
+  const root = fixture({ "apps/colors/dist/index.html": "<!doctype html>" });
+  assert.equal(hasColorEditor(root), true);
+  assert.equal(siteFacts(root).colors, true);
 });

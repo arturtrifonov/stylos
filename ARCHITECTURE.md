@@ -152,6 +152,85 @@ Effect styles omitted by variable exports are recorded separately in
 colours while referencing the canonical shadow-colour roles. Collection imports
 leave this record intact; style updates require a fresh Figma read.
 
+**Amended 2026-10-23 — base colour editor, first slice.** The owner selected
+editing Stylos's base tokens before consumer themes. `apps/colors` is an
+independent React application adapted from Huetone; `npm run colors` runs it
+locally. Its snapshot is generated through `loadCanonical`, with semantic
+references, alpha and generated special roles retained. Browser drafts edit
+palette values in light and dark independently and preview the dependent roles.
+At the owner's follow-up, they also add hue rows and interpolated step columns;
+new hue groups use the existing special scale. Original LCH coordinates survive
+editing, reload and export, with explicit out-of-sRGB markings and a Make colors
+displayable action. Changes format v2 carries additions and coordinates while
+retaining v1 draft compatibility; the browser validates HEX projections on import.
+Export/import carries original values and a source fingerprint; `colors:review`
+validates the complete file against the current source without writing canonical
+records. Browser and CLI use the same gamut projection. Review checks the
+proposed palette through the canonical resolver and CSS builder; its optional
+preview directory contains CSS, a token manifest and role impact data. This
+slice does not change Figma's authoring ownership or write canonical tokens.
+Editor commands record palette and coordinate state together in a bounded,
+current-session undo history; reset and file replacement are reversible commands.
+The palette uses page flow while the desktop inspector can scroll independently.
+Role previews group canonical paths by area, intensity, family and state, with
+contextual and swatch presentations sharing the same resolver.
+**Follow-up 2026-10-24 — neutral lightness preview.** Grayscale pins a preview;
+holding physical B activates it temporarily outside editable fields. Samples
+use zero chroma at the same lightness in the selected colour space, retaining
+raw palette coordinates and role alpha. This is session-only display state;
+palette data, graph editing, history, contrast metrics and transfers are unchanged.
+**Follow-up 2026-10-23 — owner-requested Figma plugin.** `apps/figma-tokens`
+implements the color transfer as an account-library plugin. Send to Figma exports
+complete source/draft palettes and role references. The plugin explicitly maps
+collections/modes, reviews additions and updates, preserves variable IDs and
+writes aliases plus composed opacity. Source conflicts and changed previews
+stop application; a failed operation rolls back its own writes. A palette return
+file opens as a browser draft. Canonical repository records continue through
+Figma export and `tokens:import`; no authored override layer is introduced.
+The first slice covers color variables, not other token types or publication.
+Its native form panel starts with a readiness handshake; request IDs correlate
+responses, optional relaunch metadata cannot interrupt startup, and a browser
+harness executes the complete panel against the real entrypoint with simulated
+variables. Source and verification limits are in `apps/figma-tokens/README.md`.
+The static Colors bundle can be hosted independently or optionally carried by
+the documentation site; hosting does not grant write access to Stylos or Figma.
+**Follow-up 2026-10-23 — owner-requested separate hosting.** `deploy/colors`
+packages the prebuilt editor behind the existing Hetzner Caddy proxy, in a
+separate Docker Compose service on its external `web` network. Each build also
+projects the canonical snapshot to the existing Figma bundle format at
+`stylos-colors.figma.json`, with anonymous read-only CORS on the host.
+The editor is deployed at `https://colors.arturtrifonov.com`. The Figma panel
+loads that public bundle automatically and exposes Refresh with source
+version/time feedback and a fingerprint tooltip; a refresh invalidates the previous review. Local
+file/paste import remains available for browser drafts and offline transfers.
+**Follow-up 2026-10-24 — comparison-first plugin.** Loading also compares the
+source with current variables automatically, without writing. Mapping/options
+remain available in a collapsed section; ambiguous targets still require a
+choice. The result distinguishes new variables, updated mode values, unchanged
+values and alias-bound roles following palette edits. Apply remains explicit
+and retains its before/after report; a matching file reports no writes.
+**Owner follow-up 2026-10-29 — separate native export and plugin protocol.**
+The editor's download action emits standard DTCG documents per collection/mode
+for Figma's built-in import. Special has separate `color.special` mode files;
+this projection neither migrates existing Figma variables nor changes canonical
+token names. sRGB values retain alpha; Figma extensions record alias targets and
+composed-color opacity in the existing export syntax. The server endpoint retains
+its versioned full transfer for the plugin, including provenance and comparison
+metadata. An advanced local plugin-transfer download remains available.
+**Owner amendment 2026-10-23 — public editing, private Stylos saves.**
+`apps/colors-server` adds an optional Node API beside the static editor. The
+existing Pocket ID instance at `id.arturtrifonov.com` serves a separate Colors
+OIDC client, with a dedicated owner-only group. The API also allowlists the
+owner subject; shared Heuristica identities do not inherit editor rights.
+Authenticated saves require the session, same-origin CSRF token and working
+revision. The stored working copy is private; Publish colors explicitly
+promotes that saved revision to the public bundle read by Figma. Both records
+persist atomically with revision history in the host data volume. Everyone can
+still import supported JSON, open published colors and edit/export local drafts.
+Client credentials never enter browser/plugin code. Sessions expire and are
+lost on API restart; saved records persist. This service does not change the
+canonical repository import path or publish the Figma library.
+
 ### 2.2 Components
 
 The code package separates DOM behaviour in `packages/ui/src/behaviors/` from
@@ -211,7 +290,7 @@ Components themselves live in Figma. Their whole contract — level, role, purpo
 
 Property kind describes the contract's role, not just its storage: `text` carries textual content, while `string` carries an identifier or another non-text string value. Both generate TypeScript `string` props; their defaults and example values are checked as strings. `Icon.name` is the first `string` property. Global naming and relative property order live in [`docs/foundations/naming.md`](docs/foundations/naming.md); Figma's property representations and panel projection live in [`figma/naming.md`](figma/naming.md).
 
-`npm run build` renders the whole set into `build/` — the front page, the guideline set, the registry view, one page per component, and `assets/` beside them — and it is the command that produces an uploadable tree; `npm run build:publish` additionally builds the Storybook workshop and copies it in at `build/storybook/`, which is the tree the site (SPEC 0011) is published from. The front page presents the system as designed and derives every mark of what exists — the Planned badges, the counts, the charts, the Storybook link — from the repository at build time, so it is never edited to match reality. `npm run registry:view` renders the registry view alone as one self-contained HTML file, where relations are links rather than files to open, and every row links to that component's page. `npm run components:view` writes those pages — one per entry under `build/components/`, the contract laid out to be read rather than parsed. It is also the one place the two records meet: a contract records dimensions as token names, and the page resolves them against `tokens/` at build time and shows the value with the name, so the scale stays legible without a number ever being copied into a contract. The pages are also the token set's first consumer in the other direction: colour, radius, the type scale and both families are resolved from `tokens/` by `tools/lib/theme.mjs` on every build and emitted as custom properties, so no Stylos value is transcribed into a stylesheet. That is a theme, not the CSS build of [`PLAN.md`](PLAN.md) Stage 5 — the pages are hand-written HTML and use no Stylos component. Two flags are derived at build time and never authored: `documented` (the contract carries a summary, a purpose, a `use_when` and a description on every property) and `linked` (a Figma node is recorded). Neither output is committed — both are cheap to rebuild and would put a diff the size of the whole registry into every registry change.
+`npm run build` renders the whole set into `build/` — the front page, the guideline set, the registry view, one page per component, and `assets/` beside them — and it is the command that produces an uploadable tree; `npm run build:publish` additionally builds the Storybook workshop and Colors editor and copies them in at `build/storybook/` and `build/colors/`, which is the tree the site (SPEC 0011) is published from. The front page presents the system as designed and derives every mark of what exists — the Planned badges, the counts, the charts, the Storybook link — from the repository at build time, so it is never edited to match reality. `npm run registry:view` renders the registry view alone as one self-contained HTML file, where relations are links rather than files to open, and every row links to that component's page. `npm run components:view` writes those pages — one per entry under `build/components/`, the contract laid out to be read rather than parsed. It is also the one place the two records meet: a contract records dimensions as token names, and the page resolves them against `tokens/` at build time and shows the value with the name, so the scale stays legible without a number ever being copied into a contract. The pages are also the token set's first consumer in the other direction: colour, radius, the type scale and both families are resolved from `tokens/` by `tools/lib/theme.mjs` on every build and emitted as custom properties, so no Stylos value is transcribed into a stylesheet. That is a theme, not the CSS build of [`PLAN.md`](PLAN.md) Stage 5 — the pages are hand-written HTML and use no Stylos component. Two flags are derived at build time and never authored: `documented` (the contract carries a summary, a purpose, a `use_when` and a description on every property) and `linked` (a Figma node is recorded). Neither output is committed — both are cheap to rebuild and would put a diff the size of the whole registry into every registry change.
 
 **Sizing contract amendment — 2026-10-04.** Each recorded sizing model declares `hug`, `fixed` or `fill` and an external adjustment permission per axis. The type explains how a dimension is determined; fixed dimensions may change through public `size` choices or a supported consumer-chosen value. Its `intent` explains supported overrides and relationships between dimensions. The validator requires these fields, and component pages show width and height permissions separately. Figma sizing representation and inspection conventions live in [`figma/sizing.md`](figma/sizing.md), while [`docs/foundations/sizing.md`](docs/foundations/sizing.md) owns the system contract.
 
@@ -252,6 +331,7 @@ This is the only closed loop in the system, and the only automated step anywhere
 | `apps/workshop/stories/generated/` | `docs/components/registry/*.yaml` | `tools/build-ui-stories.mjs` | no — derived, rebuilt on demand |
 | `packages/ui/dist/package/` | `packages/ui/src/` | `svelte-package` | no — derived, rebuilt on demand |
 | `apps/workshop/storybook-static/` — the workshop | registry-generated stories and authored compositions | Storybook | no — derived, rebuilt on demand |
+| `apps/colors/dist/`, optionally `build/colors/` — the base colour editor | `apps/colors/src/`, canonical palette/color and special scale | `npm run colors:build`; the site refreshes the snapshot when copying the bundle | no — derived, rebuilt on demand |
 | `build/ui-release/` — Stage 5 build/browser evidence and CSS-only smoke page | the core membership in `PLAN.md`, registry APIs and implemented wrappers/CSS | `tools/check-ui-release.mjs`; browser checks record their own results | no — evidence is rebuilt, with a source fingerprint |
 | `packages/ui/dist/css/<name>.css`, `dist/css/stylos.css` — the CSS export, per component and in aggregate, consumable without Svelte | `packages/ui/src/components/<name>/<name>.css` | `tools/build-ui-css.mjs` | no — derived, rebuilt on demand |
 | `packages/ui/dist/fonts.css`, `dist/assets/fonts/` — the font export: the `@font-face` rules and woff2 subsets behind the families `tokens.css` names | `assets/fonts/`, `FONT_FACES` in `tools/lib/theme.mjs` | `tools/build-ui-fonts.mjs` | no — derived, rebuilt on demand |

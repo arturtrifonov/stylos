@@ -15,13 +15,16 @@ test("every optional link is derived — absent input, absent link", () => {
   assert.doesNotMatch(bare, /storybook/i);
   assert.doesNotMatch(bare, /figma/i);
   assert.doesNotMatch(bare, /github/i);
+  assert.doesNotMatch(bare, /colors\//);
 
   const full = renderSiteHeader({
     storybook: true,
+    colors: true,
     figmaUrl: "https://www.figma.com/design/abc/Stylos--Components",
     repoUrl: "https://github.com/arturtrifonov/stylos",
   });
   assert.match(full, /href="storybook\/"/);
+  assert.match(full, /href="colors\/"/);
   assert.match(full, /href="https:\/\/www\.figma\.com\/design\/abc\/Stylos--Components"/);
   assert.match(full, /href="https:\/\/github\.com\/arturtrifonov\/stylos"/);
 });

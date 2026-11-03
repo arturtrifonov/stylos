@@ -314,6 +314,41 @@ A preview is static: a Zag machine does not run in it, so an open menu or a visi
 
 ---
 
+### 4.4 Base colour authoring
+
+**Owner direction, 2026-10-23:** integrate Huetone for editing Stylos's base
+tokens first; consumer theme generation is a separate later scenario. The
+independent editor starts with canonical light/dark ramps, graph editing,
+semantic/special impact previews, persistent browser drafts and changes-file
+export/import with source checks. Review now validates the complete proposed CSS
+build and can write a standalone preview package with role impact data. Its built surface is documented in
+[`apps/colors/README.md`](apps/colors/README.md).
+
+**Follow-up 2026-10-23:** the owner requested a dedicated Figma plugin. The
+color transfer now lives in `apps/figma-tokens`: explicit collection/mode mapping,
+review, in-place application with conflict checks and rollback, and palette draft
+export back to Colors. Figma remains the authoring implementation; repository
+records still use the existing export/import path. The first account-library
+build and read-only Styles planner check passed; interactive Apply/Undo in the
+Figma panel remains manual acceptance.
+
+**Hosting follow-up 2026-10-23:** the owner requested a separate editor service
+on the existing Hetzner host. Colors is live at `colors.arturtrifonov.com` behind
+Caddy in its own Docker service. The plugin now loads published canonical
+colors automatically from the same host, with a manual reload and mandatory
+review before applying. Browser draft storage remains local. A subsequent owner
+instruction added private working-copy saves and explicit publication through
+the existing Pocket ID service, restricted to the owner's account. The Node API
+and UI now implement these; signed OIDC integration tests passed and the live
+guest/API boundary and Pocket ID redirect were checked. Completing passkey login
+and authenticated UI acceptance requires the owner. Reverse exchange remains a
+file workflow; experimental drafts are not promoted automatically.
+
+Next, complete that interactive acceptance, then add semantic-binding and
+special-scale editing and broader token types to the plugin. Hue and step
+additions are already part of the browser draft; consumer-specific themes follow
+base authoring. No new release gate or automatic library publication is added.
+
 ## 5. Schedule
 
 At 5–10 h/week, from 2026-09-06:
@@ -349,7 +384,7 @@ Do **not** pull: the consumer skill or `registry.json` — requirement 2 of the 
 
 **Deliberately unanswered before `0.4.0`:** the project's public contact details, responsive breakpoints (desktop-only scope makes them premature), automated skill installation, and React or any other framework adapter — the layering allows one and nothing asks for it.
 
-**A Stylos Figma plugin is intended**, and the reason is ergonomic rather than technical: it removes the manual export and the JSON handling from the loop entirely, and opens the direction of authoring the palette outside Figma. Its scope and timing are open, not its existence. It is not on the critical path — the current pipeline works — so it is scheduled when the manual step becomes the thing slowing the week down.
+**The first Stylos Figma plugin slice is built** under the owner’s 2026-10-23 direction (§4.4): color proposals from the editor, explicit destinations, review and in-place application, plus a palette return draft. Published colors load directly from the separately hosted Colors service; owner-only server saves and publication use the existing Pocket ID. Unpublished transfers to Figma and reverse exchange still use JSON files. Supporting every token collection and publishing a general plugin remain later work; none is on the current release critical path.
 
 ---
 

@@ -31,6 +31,8 @@ docs/          charter, principles, the rules of rules, foundations, component s
 tokens/        the canonical token set, imported from Figma
 packages/ui/   @stylos/ui — the Svelte 5 component package, built from the registry's contracts
 apps/workshop/ the Storybook workshop for @stylos/ui; stories are generated, run locally
+apps/colors/   the independent Huetone-based editor for base colour drafts
+apps/colors-server/  optional Pocket ID workspace saves and explicit publication
 skills/        Figma Agent skills — modular source, compiled to one importable document
 tools/         small dependency-free scripts that build and check the above
 assets/        the wordmark and the two self-hosted families, for the generated site
@@ -72,7 +74,8 @@ npm run build:skills      # skills/src/ → skills/dist/, imported into Figma Ag
 npm run validate:registry # component registry: contradictions fail, judgements are reported
 npm run build             # → build/, the whole publishable site
 npm run dev               # local site at http://127.0.0.1:4173/, rebuilds and reloads on edits
-npm run build:publish     # the same, plus the Storybook workshop at build/storybook/
+npm run build:publish     # the same, plus Storybook and the Colors editor
+npm run colors            # independent colour editor at http://127.0.0.1:4175/
 npm run registry:view     # → build/registry.html alone, while editing YAML
 npm run components:view   # → build/components/ alone, one page per component
 ```
@@ -80,8 +83,17 @@ npm run components:view   # → build/components/ alone, one page per component
 `npm run build` produces something uploadable: it writes the front page, the
 registry view and every component page, and copies `assets/` in beside them.
 `npm run build:publish` is the tree the site is published from — it builds the
-workshop first and copies it in (SPEC 0011);
+workshop and Colors editor first and copies them in;
 the deploy itself is a manual upload. The last two are the same renderers on
 their own, for the loop where a rebuild of 101 pages is not worth waiting
 for — they do not copy the fonts, so a page built that way falls back to the
 system stack.
+
+The [Stylos Tokens Figma plugin](apps/figma-tokens/README.md) transfers the Colors
+editor's palettes and color roles into explicitly selected collections/modes,
+with a review before application and a palette draft export back to the editor.
+The independent editor is live at [colors.arturtrifonov.com](https://colors.arturtrifonov.com).
+The plugin loads published tokens from it automatically. The hosted editor keeps
+file import public, and uses the existing Pocket ID service for owner-only
+working-copy saves and explicit color publication. Figma return drafts still
+use a file. Host setup is in [deploy/colors](deploy/colors/README.md).

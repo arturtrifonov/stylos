@@ -574,6 +574,7 @@ export function renderHome({
     active: "home",
     brand: false,
     storybook: site?.storybook ?? false,
+    colors: site?.colors ?? false,
     figmaUrl: site?.figmaMain ?? site?.figma?.[0]?.url ?? null,
     repoUrl: site?.repo ?? null,
   });

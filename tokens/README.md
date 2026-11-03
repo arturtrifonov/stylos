@@ -86,6 +86,18 @@ A colour Figma did not bind at all is a literal, and is taken exactly as exporte
 
 ## Commands
 
+`npm run colors` opens the independent base-colour editor from a generated
+snapshot of this record. It previews semantic and generated special colours
+while editing a browser-local palette draft. Exported changes can be checked
+with `npm run colors:review -- <file>`. Adding `--out <preview-directory>` builds
+a review package containing proposed CSS, a token manifest and role impact data,
+including new special families and opacity. This first slice does not write canonical
+files or change import ownership. **Export for Figma…** downloads standard DTCG mode files for native Figma
+import. The [Stylos Tokens plugin](../apps/figma-tokens/README.md) reads its own
+complete transfer protocol from the server, with an advanced local-file fallback
+and a destination review before applying variables. Repository updates still come from Figma
+exports through `tokens:import`; see [the editor guide](../apps/colors/README.md).
+
 Motion durations retain their exported `{value, unit}` as a nested YAML mapping,
 including `ms` or `s`. Easing values retain the supplied `linear` or
 `cubic-bezier(...)` string. Import and canonical checks validate both types;

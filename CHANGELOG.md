@@ -4,6 +4,69 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Fixed
+
+- Restore published color loading in the Figma plugin after enabling the Colors
+  API: its proxy no longer duplicates the API's CORS header, which browsers reject.
+
+### Added
+
+- **Native Figma JSON export.** Colors downloads DTCG mode files for the built-in
+  Variables import, with separate palette, semantic and Special collections.
+  Values retain alpha and Figma alias metadata. The server/plugin transfer stays
+  a separate protocol; unpublished transfers remain under Advanced.
+- **Simpler Stylos Tokens sync panel.** Published colors are compared with the
+  file automatically. A compact result separates new variables, updated values,
+  unchanged values and roles following palette edits. Collection mapping and
+  file import are collapsed; before/after rows remain available, and successful
+  application retains its report. No-change checks explicitly report no writes.
+- **Colors grayscale preview.** A visible Grayscale switch and hold-B shortcut
+  reveal palette lightness without hue. Neutral samples preserve lightness in
+  OKLCH/CIELCH, raw graph coordinates and role opacity; drafts and exports keep
+  their original colours.
+- **Owner-only Stylos workspace with Pocket ID.** The public Colors editor can
+  import draft and complete-transfer JSON. A separate client of the existing
+  Pocket ID service grants only the owner server save/open and explicit
+  publication. Server-side identity, CSRF/origin and revision checks protect
+  private working records; published colors remain anonymous for the plugin.
+  Atomic storage retains revision history. Auth and publication have signed
+  OIDC integration tests, including unauthorized and concurrent requests.
+- **Separate Colors host package.** A small Docker Compose service serves the
+  prebuilt editor behind the existing Caddy proxy. Its generated canonical
+  Figma bundle has a read-only CORS endpoint; Stylos Tokens now loads it
+  automatically with Reload tokens and source version/fingerprint feedback.
+  The editor is live at colors.arturtrifonov.com.
+  Browser drafts are still local; server-side draft exchange is pending.
+- **Figma plugin panel repair.** Native form controls, isolated event handlers,
+  readiness messages and correlated replies replace the fragile panel startup.
+  Unavailable relaunch metadata no longer interrupts the import handler. The
+  window starts compact, collapses pasted JSON after loading and exposes an
+  explicit draft download link. The full panel flow now has a browser harness.
+- **Stylos Tokens Figma plugin, first color slice.** Send to Figma exports both
+  palettes and their semantic/special bindings. The plugin maps collections and
+  modes explicitly, previews changes, updates variables in place, preserves
+  aliases and opacity, detects source/stale-preview conflicts, rolls back failed
+  writes and returns a palette draft to the editor. Published privately to the
+  owner's Figma account; interactive Apply/Undo acceptance remains manual.
+- **Colors draft review and consumer preview.** The review command validates
+  the full proposed set through the CSS builder and can export preview CSS,
+  tokens and a role impact report with `--out`. Browser and CLI share LCH/HEX
+  projection validation. Source token files remain unchanged.
+- **Colors editing and role previews.** Undo/Redo and an undoable Reset changes
+  beside Light/Dark cover palette values, raw graph coordinates and added rows or
+  steps. The palette scrolls with the page, the inspector starts with Color space,
+  and the large intro is replaced by a header title. Semantic and Special follow
+  their token hierarchy with state columns and switch between contextual previews
+  and plain swatches. Open draft / Save draft clarify the file actions.
+- **Stylos Colors, first authoring slice.** An independent Huetone-based editor
+  loads the canonical light/dark palette, edits HEX or OKLCH/CIELCH ramps and
+  previews dependent semantic and generated special roles. Browser drafts and
+  versioned changes-file export/import retain original values and reject stale
+  sources. Add hue rows and interpolated step columns, retain original LCH
+  coordinates, mark out-of-sRGB colours and explicitly make them displayable.
+  Larger controls use an outline on hover without lifting swatches. `colors:review` checks downloaded changes without writing canonical
+  tokens. Run `npm run colors`; the static build can also accompany the site.
+
 ## [0.3.0] — 2026-11-03
 
 Completes the Stage 5 acceptance that 0.2.0 deferred, for the 48-entry core.
