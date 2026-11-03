@@ -92,8 +92,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* The mark's own selectors too: their :has() and :not() outrank a plain ::after. */
   .stylos-radio-input,
-  .stylos-radio-input::after {
+  .stylos-radio-input::after,
+  .stylos-radio-input[data-is-checked="true"]:not(:has(> input))::after,
+  .stylos-radio-input:has(> input:checked)::after {
     transition: none;
   }
 }

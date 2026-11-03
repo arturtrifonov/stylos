@@ -101,8 +101,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* The mark's own selector too: its :has() outranks a plain ::after. */
   .stylos-checkbox-input,
-  .stylos-checkbox-input::after {
+  .stylos-checkbox-input::after,
+  .stylos-checkbox-input:has(> input:is(:checked, :indeterminate))::after {
     transition: none;
   }
 }
