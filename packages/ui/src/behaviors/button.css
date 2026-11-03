@@ -138,3 +138,15 @@
   --_stylos-button-icon-size: var(--stylos-dimension-size-s-4_000);
   --_stylos-button-optical: var(--stylos-dimension-gap-g-0_375);
 }
+
+/* A filled button has no border, so forced colours, which repaint its
+ * background as Canvas, would leave only its label. An inset outline keeps
+ * its shape without changing its size; focus replaces it with the focus ring. */
+/* stylelint-disable scale-unlimited/declaration-strict-value */
+@media (forced-colors: active) {
+  .stylos-button-base:not(:focus-visible, [data-is-focused="true"]) {
+    outline: var(--stylos-border-width-normal) solid ButtonText;
+    outline-offset: calc(-1 * var(--stylos-border-width-normal));
+  }
+}
+/* stylelint-enable scale-unlimited/declaration-strict-value */

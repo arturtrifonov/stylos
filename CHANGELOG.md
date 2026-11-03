@@ -4,6 +4,46 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-11-03
+
+Completes the Stage 5 acceptance that 0.2.0 deferred, for the 48-entry core.
+Every urgent starting-set contract is **ready** after owner review. The package
+remains private and UNLICENSED, consumed as a git dependency.
+
+### Acceptance and known limitations
+
+- **Evidence:** a fresh expanded-core regression (3,306 packaged SSR cases,
+  6,612 browser renders, no axe violations, every incomplete check determined by
+  hand); a guided Linux Chrome + Orca walkthrough run twice by the owner; a
+  Figma comparison of waves 1–6 (1,408 variants, every size within 1 px); and
+  contrast on every variant in both themes, reduced motion, reflow at 320 px and
+  forced colours. The hand-off and its records are
+  [packages/ui/verification/0.3.0.md](packages/ui/verification/0.3.0.md).
+- **Known limitations:** in the light theme, white text on the warning, danger
+  and success fills of Button and Tag reaches 3.1–3.4:1, and their danger
+  outline 4.47:1 — palette roles, left to the Colors project. Switcher's
+  segments neither wrap nor shrink, so four medium segments overflow a 320 px
+  viewport. In Orca's browse mode, arrows still stop once on a control's label
+  text ("blank") and leave radio groups to focus mode — Orca's handling, not the
+  markup. Alert announcement is verified in the accessibility tree; the owner's
+  Orca confirmation is pending. No full-product accessibility claim follows
+  from this release; the proof screen is 0.4.0.
+
+### Figma library
+
+- The Figma version marker is retired: `meta/version` is not kept, and
+  `tokens:check` no longer compares a Figma record with `package.json`. Stylos /
+  Styles and Stylos / Components are published with this section as the publish
+  description.
+
+### Compatibility
+
+- **Breaking:** Table Cell Heading reports `onsortclick` and `onfilterclick`
+  instead of one `onclick`. Hand-written Dropdown Item Checkbox and Toggle rows
+  wrap the control and label in `.stylos-dropdown-item-line`, replacing
+  `.stylos-dropdown-item-content`. Hand-written fields name their input from a
+  `span[data-label-text]` by `aria-labelledby`. The rest is additive.
+
 ### Added
 
 - **Tab Item Icon**, an icon-only tab matching its own Figma set: a
@@ -172,6 +212,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Fixed
 
+- In forced colours, the selected Switcher segment keeps its label, filled
+  Buttons and Button Icons keep their shape, Loader stays visible and Progress
+  Bar shows its empty track.
+- Under reduced motion, checkbox and radio marks no longer transition.
 - Dropdown's list has the bottom padding Figma gives it — 4 / 8 / 12 / 16 /
   20 px from extra small to extra large, 4 px above the first item as before —
   so every Dropdown, Select and menu panel matches Figma's height.

@@ -76,5 +76,5 @@
 }
 
 @media (forced-colors: active) {
-  .stylos-progress-bar > progress { appearance: auto; }
+  .stylos-progress-bar > progress { appearance: auto; border: var(--stylos-border-width-normal) solid CanvasText; }
 }

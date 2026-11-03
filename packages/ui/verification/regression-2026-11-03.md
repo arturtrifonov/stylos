@@ -113,3 +113,14 @@ Linux Chrome + Orca, visual comparison with Figma, the other Switcher tones and
 states, field contrast outside the Default compositions (filled, placeholder,
 disabled), zoom/reflow, forced colours, reduced motion, consumer compositions and
 Figma synchronization remain open in the [hand-off](0.3.0.md).
+
+## Release commit run
+
+Repeated on `55663d6`, the 0.3.0 release preparation, from `npm ci`: all
+checks pass, `tokens:check -- --strict` included (no warnings now that the
+Figma version marker is retired); `ui:verify` 48 components, 3,306 SSR cases;
+the browser run in headless Chrome 156 6,612 of 6,612 renders, no errors, no
+axe violations, and the same 14 incomplete checks determined above.
+`ui:verify:results` accepts the report (source fingerprint `b338e605f82e…`).
+Only verification records changed after it, which the fingerprint does not
+cover.

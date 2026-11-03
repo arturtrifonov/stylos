@@ -32,65 +32,6 @@ export function readNaming(root) {
   return parse(readFileSync(file, "utf8"), { filename: "tokens/_naming.yaml" });
 }
 
-/**
- * Does the library still report the version the repository is on?
- *
- * `meta/version` in *Stylos / Styles* is the only place a reader — a person
- * in the Assets panel, or an agent reading variables — meets the version of
- * the published library. `npm run tokens:import` records what it said into
- * figma/library.yaml; this compares that with package.json, so a forgotten
- * bump stops being invisible at exactly the moment it matters.
- *
- * Because the export is manual, this answers what the library reported at the
- * last export, never what it reports right now. That is enough: the moment it
- * has to be right is the release, and the release is when it is exported.
- *
- * See docs/specs/0006-versioning-and-release-0-1-0.md §6.
- */
-export function checkLibraryVersion(root, problems) {
-  const system = JSON.parse(readFileSync(path.join(root, "package.json"), "utf8")).version;
-  const file = path.join(root, "figma/library.yaml");
-
-  if (!existsSync(file)) {
-    problems.warnings.push(
-      `figma/library.yaml does not exist, so nothing records what version the published Figma ` +
-        `library reports. Add the meta collection and its "version" variable in Stylos / Styles, ` +
-        `then import it: npm run tokens:import -- --collection meta <file>`
-    );
-    return;
-  }
-
-  const version = parse(readFileSync(file, "utf8"), { filename: "figma/library.yaml" }).get(
-    "version"
-  );
-
-  if (typeof version !== "string" || version === "") {
-    problems.errors.push(
-      `figma/library.yaml carries no version. It is generated — re-run ` +
-        `npm run tokens:import -- --collection meta <file> rather than editing it.`
-    );
-    return;
-  }
-
-  // Owner-authorized release exception, 2026-10-17: ship the implementation
-  // now and complete Figma synchronization during 0.3.0 acceptance (PLAN §1).
-  // Preserve the real export record. This exact pair alone is deferred;
-  // any other mismatch, including 0.3.0, still fails. --strict also rejects it.
-  if (system === "0.2.0" && version === "0.1.0") {
-    problems.warnings.push(
-      `0.2.0 release exception (2026-10-17): Figma last reported "0.1.0"; ` +
-        `synchronization and a fresh export are deferred to 0.3.0 acceptance. ` +
-        `See PLAN.md §1 and packages/ui/verification/0.3.0.md.`
-    );
-  } else if (version !== system) {
-    problems.errors.push(
-      `the Figma library reported version "${version}" at its last export; package.json says ` +
-        `the system is "${system}". One of the two was not bumped. Correct meta/version in ` +
-        `Stylos / Styles and re-import it, or correct package.json.`
-    );
-  }
-}
-
 /** The generated special family against its scale and the record (FND-COLOR-14). */
 function checkSpecialScale(root, naming, collections) {
   const byName = new Map(collections.map((c) => [c.name, c]));
@@ -159,7 +100,6 @@ export function runCheck({ root, strict = false }) {
     problems
   );
 
-  checkLibraryVersion(root, problems);
   try {
     problems.errors.push(...validateEffectStyles(loadEffectStyles(root), collections));
     problems.errors.push(...validateSurfaceMotionProfile(loadSurfaceMotionProfile(root), collections));

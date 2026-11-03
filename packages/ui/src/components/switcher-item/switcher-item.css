@@ -81,7 +81,9 @@
 /* stylelint-disable scale-unlimited/declaration-strict-value */
 @media (forced-colors: active) {
   .stylos-switcher-item { --_stylos-switcher-selection: Highlight; }
-  .stylos-switcher-item:has(> input:checked) { color: HighlightText; }
+  /* Forced colours lay a Canvas backplate under text, which hid the selected
+   * label against its Highlight surface; this segment paints its own pair. */
+  .stylos-switcher-item:has(> input:checked) { forced-color-adjust: none; color: HighlightText; background: Highlight; }
   .stylos-switcher-item:has(> input:disabled) { color: GrayText; }
 }
 /* stylelint-enable scale-unlimited/declaration-strict-value */
