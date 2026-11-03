@@ -246,7 +246,6 @@ This is the only closed loop in the system, and the only automated step anywhere
 | `tokens/<collection>.yaml` | a Figma export and `tokens/_naming.yaml` | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
 | `tokens/_styles.yaml` | Figma effect styles omitted from variable exports | recorded from Plugin API reads with source IDs | yes — maintained separately from collection imports |
 | `tokens/_history.yaml` | each import run | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
-| `figma/library.yaml` | a Figma export of the `meta` collection | `tools/import-tokens.mjs` | yes — generated, never hand-edited |
 | `packages/ui/dist/tokens.css`, `tokens.json` | `tokens/*.yaml` | `tools/build-css.mjs` | no — derived, rebuilt on demand |
 | `packages/ui/src/components/*/props.ts` | `docs/components/registry/*.yaml` | `tools/build-ui-types.mjs` | no — derived, rebuilt on demand |
 | `packages/ui/dist/icons/<name>.{js,d.ts,svg}`, `packages/ui/src/components/icon/icons.ts` — every mark of the icon preset, and the registered ones | `assets/icons/manifest.yaml` and the `material-symbols` font pinned by `package-lock.json` | `tools/build-ui-icons.mjs` | no — derived, rebuilt on demand |
@@ -393,11 +392,10 @@ That is what the table above means when the change is made in Figma rather than 
 | `package.json` | the number itself |
 | a git tag | annotated, on the commit that is the release |
 | `CHANGELOG.md` | the notes, with a `### Figma library` subsection recording the publish and what moved in it |
-| `meta/version` in *Stylos / Styles* | a string variable naming the release the published library belongs to |
 
 **`CHANGELOG.md` is the only source of notes.** The GitHub release body and the Figma publish description are copies of it, made at the moment of release and never edited afterwards.
 
-**`meta/version` is checked, not trusted.** `npm run tokens:import` records it in `figma/library.yaml` and `npm run tokens:check` fails when it disagrees with `package.json`. Because the export is manual, it answers what the library reported at the last export and nothing about right now — which is enough, since the moment it matters is the release.
+**The Figma library carries no version of its own** (owner decision, 2026-11-03). It named its release in a `meta/version` variable, imported into `figma/library.yaml` and checked against `package.json`; that marker stopped being kept when Figma stopped being where tokens are authored, and the check, the import and the record were removed. A publish names its release in the publish description, which is copied from the notes.
 
 **Owner-directed exception, 2026-10-17 — early `0.2.0` implementation release.**
 The owner explicitly authorized GitHub merges and release execution by the agent,
@@ -410,6 +408,7 @@ acceptance: the generated export record truthfully remains at its last observed
 `0.1.0`. Token checking warns only for that exact pair (strict mode fails); any
 other mismatch fails as before. This temporary exception neither creates an
 independent Figma version line nor establishes accessibility or visual parity.
-The `0.3.0` acceptance must close it with real evidence and a fresh export.
+Closed 2026-11-03: the Figma version marker and its check were retired by owner
+decision, so the warning is gone and nothing is compared with Figma.
 
 **The milestone list is not duplicated outside `PLAN.md` §9**, GitHub Milestones included. §8 says why.

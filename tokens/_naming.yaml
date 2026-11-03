@@ -10,18 +10,6 @@ source:
   key: "2OJYDoTE9EAdQKaJAJK9Kt"
   url: "https://www.figma.com/design/2OJYDoTE9EAdQKaJAJK9Kt/Stylos--Styles"
 
-# The library's version marker. Not a token, and never written to tokens/: it
-# is a STRING variable in Figma naming the release the published library
-# belongs to, and `npm run tokens:import` records it in figma/library.yaml
-# instead. It is declared here because this file is the whitelist — a
-# collection nobody declared cannot be imported, and that has to hold for this
-# one too. If either is built with another name the import says so rather than
-# guessing. See docs/specs/0006-versioning-and-release-0-1-0.md §6.
-meta:
-  from: "meta"
-  mode: "meta"
-  variable: "version"
-
 # Semantic collection -> the primitive collection it aliases into. Corrected
 # 2026-09-05: it said `space: "space-scale"`, and neither name has existed
 # since the collection became `dimension`. Nothing read the field, which is why

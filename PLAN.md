@@ -60,7 +60,7 @@ Svelte checking, package/workshop builds and packaged SSR. These engineering
 checks remain in force; they do not substitute for the acceptance below.
 
 No new distribution channel is introduced: the package stays private. The last
-recorded Figma marker remains `0.1.0`; synchronization/publication verification
+recorded Figma marker remained `0.1.0` (retired 2026-11-03, §`0.3.0`); synchronization/publication verification
 and a fresh real export move to `0.3.0`. `tokens:check` warns for this exact
 `0.2.0`/`0.1.0` pair; any other mismatch still fails, and strict mode rejects the
 warning. Never fabricate or hand-edit an export to make a release pass.
@@ -80,8 +80,12 @@ including the draft additions. The complete hand-off is
 
 In addition, resolve the 18 incomplete axe checks; evaluate Linux Chrome + Orca;
 finish visual, contrast, focus, zoom/reflow, reduced-motion and composition
-review; fix and repeat failing cases; synchronize/re-import the Figma version
-and verify publication. Record exact scope, versions and remaining limitations.
+review; fix and repeat failing cases; publish the Figma library with the release
+notes. Record exact scope, versions and remaining limitations.
+
+*Amended 2026-11-03 — owner decision:* the Figma version marker (`meta/version`)
+is retired, so `0.3.0` neither re-imports it nor checks it; `tokens:check` no
+longer compares a Figma record with `package.json` (`figma/README.md`).
 No component or full-product accessibility claim follows merely from a tag.
 
 ### `0.4.0`
