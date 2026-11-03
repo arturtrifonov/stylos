@@ -22,8 +22,10 @@ test("the text field has an associated native label and escaped form attributes"
   assert.equal(defaults.value, "");
   const html = render({ id: "reference", name: "reference", form: "invoice", autocomplete: "off",
     value: 'A < B & "C"', "label text": "Reference", "is required": true });
-  assert.match(html, /<label[^>]*for="reference">Reference/);
-  assert.match(html, /<input type="text" id="reference" value="A &lt; B &amp; &quot;C&quot;" name="reference" form="invoice" autocomplete="off" aria-label="Reference" required/);
+  assert.match(html, /<label[^>]*for="reference"><span id="reference-label" data-label-text>Reference<\/span>/);
+  assert.match(html, /aria-labelledby="reference-label"/);
+  assert.doesNotMatch(html, /aria-label="/);
+  assert.match(html, /<input type="text" id="reference" value="A &lt; B &amp; &quot;C&quot;" name="reference" form="invoice" autocomplete="off" aria-labelledby="reference-label" required/);
   assert.match(html, /data-is-filled="true"/);
   assert.doesNotMatch(html, / placeholder=|aria-invalid/);
   assert.throws(() => render({ "is filled": "true" }), /no api property/);
@@ -93,7 +95,8 @@ test("plain fields have no empty side slots and optional parts retain their own 
   const read = markupReader(render({}));
   const elements = node => node.childNodes?.filter(child => child.tagName) ?? [];
   const count = node => 1 + elements(node).reduce((sum, child) => sum + count(child), 0);
-  assert.equal(count(read("stylos-input-text")), 4);
+  // The label text span is the field's aria-labelledby target.
+  assert.equal(count(read("stylos-input-text")), 5);
   assert.equal(read("stylos-input-text-field").childNodes.filter(child => child.tagName).length, 1);
   const decorated = markupReader(render({ "has leading icon": true, "leading icon": "person",
     "has trailing icon": true, "trailing icon": "search", "has suffix text": true, "suffix text": "USD" }));
@@ -112,7 +115,7 @@ test("Search shares Text defaults and always shows its fixed decorative search m
   const html = search({});
   const read = markupReader(html);
   const count = node => 1 + (node.childNodes?.filter(child => child.tagName) ?? []).reduce((sum, child) => sum + count(child), 0);
-  assert.equal(count(read("stylos-input-search")), 7);
+  assert.equal(count(read("stylos-input-search")), 8);
   assert.match(html, /<input type="search"/);
   assert.match(html, /data-name="search"/);
   assert.doesNotMatch(html, / placeholder=|<button|adornments|search-icon/);
@@ -145,7 +148,7 @@ test("Text Area follows reviewed defaults and has no empty decoration wrappers",
   assert.equal(areaDefaults["has counter text"], false);
   const read = markupReader(area({}));
   const count = node => 1 + (node.childNodes?.filter(child => child.tagName) ?? []).reduce((sum, child) => sum + count(child), 0);
-  assert.equal(count(read("stylos-text-area")), 4);
+  assert.equal(count(read("stylos-text-area")), 5);
   assert.equal(read("stylos-text-area-field").childNodes.find(node => node.tagName)?.tagName, "textarea");
   assert.equal(read("stylos-text-area-adornments"), undefined);
   assert.equal(read("stylos-text-area-leading"), undefined);

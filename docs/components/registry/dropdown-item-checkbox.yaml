@@ -195,4 +195,4 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4858:5264"
   last_verified: "2026-10-11"
-notes: "The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."
+notes: "The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): the control and the label text share one inline line, so Orca no longer stops on the text as \"blank\"; the input is named from the label text by aria-labelledby instead of a duplicating aria-label, so a panel no longer reads its rows' labels as stray text."

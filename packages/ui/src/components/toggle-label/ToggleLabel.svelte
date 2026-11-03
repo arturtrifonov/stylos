@@ -11,6 +11,5 @@
 </script>
 
 <label class="stylos-toggle-label" data-size={size} data-state={state} for={controlId}>
-  <ToggleInput {size} {state} bind:isChecked id={controlId} {name} {value} {form} {accessibleName} {descriptionIds} {isRequired} />
-  {labelText}
+  <ToggleInput {size} {state} bind:isChecked id={controlId} {name} {value} {form} {accessibleName} {descriptionIds} {isRequired} />{labelText}
 </label>

@@ -209,7 +209,7 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4333-26184"
   last_verified: "2026-10-10"
-notes: "Native Radio Text implementation. Historical parents are retained; legacy Label/Icon/Badge/Loader children are removed because they are not content children of this control. Motion uses duration/micro and easing/linear, with reduced-motion and forced-colors support."
+notes: "Native Radio Text implementation. Historical parents are retained; legacy Label/Icon/Badge/Loader children are removed because they are not content children of this control. Motion uses duration/micro and easing/linear, with reduced-motion and forced-colors support. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): the label is laid out inline, the control hanging into a reserved start padding, so Chrome reports the control and the first text line as one line and Orca no longer stops on the text as \"blank\"; rendering is unchanged."
 import:
   batch: 1
   ready: true

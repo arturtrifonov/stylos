@@ -38,7 +38,7 @@
   background-color: var(--_stylos-radio-selected);
   box-shadow: none;
   &::after {
-    content: "";
+    content: "" / "";
     display: block;
     width: var(--_stylos-radio-size);
     height: var(--_stylos-radio-size);

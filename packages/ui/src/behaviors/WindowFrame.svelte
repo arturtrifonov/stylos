@@ -24,9 +24,11 @@
       {#snippet icon()}<Icon name="close" />{/snippet}
     </ButtonInner>
   </div>
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex (The named Drawer overflow region needs a keyboard scroll target.) -->
+  <!-- The Drawer's overflow region is no tab stop of its own: browsers make a
+    scroller keyboard-focusable when it holds nothing focusable (owner decision,
+    verification/orca-2026-11-03.md). -->
   <div class="stylos-window-content stylos-scrollbar" data-scrollbar-size="medium" data-scrollbar-position="absolute"
-    tabindex={kind === "drawer" ? 0 : undefined} role={kind === "drawer" ? "region" : undefined}
+    role={kind === "drawer" ? "region" : undefined}
     aria-labelledby={kind === "drawer" ? headingId : undefined}>
     {#if children}{@render children()}{/if}
   </div>

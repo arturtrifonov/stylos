@@ -29,7 +29,7 @@
 }
 
 .stylos-button-inner::before {
-  content: "";
+  content: "" / "";
   position: absolute;
   z-index: -1;
   inset: -20%;
@@ -61,7 +61,7 @@
 }
 
 .stylos-button-inner:focus-visible::after {
-  content: "";
+  content: "" / "";
   position: absolute;
   inset: -5%;
   border-radius: var(--stylos-radius-round);

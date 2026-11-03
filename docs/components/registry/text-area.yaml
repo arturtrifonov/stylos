@@ -30,7 +30,7 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: "Owner-directed component review completed 2026-10-26 against the updated Figma set. Counter sizes 10/10/12/12/14 and the counter-off default were confirmed by the owner; Figma was left unchanged during implementation. Scoped evidence: packages/ui/verification/text-area-2026-10-26.md."
+notes: "Owner-directed component review completed 2026-10-26 against the updated Figma set. Counter sizes 10/10/12/12/14 and the counter-off default were confirmed by the owner; Figma was left unchanged during implementation. Scoped evidence: packages/ui/verification/text-area-2026-10-26.md. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): the counter is described in words through `counter accessible text`; the visible count is hidden from assistive technology. With a visible label the field is named from the label text by aria-labelledby (Label's `label text id`) instead of a duplicating aria-label."
 import:
   batch: 1
   ready: true
@@ -198,10 +198,15 @@ api:
     default: false
     controls:
       - "counter text"
+      - "counter accessible text"
   -
     name: "counter text"
     kind: "text"
     description: "Optional custom counter display. When omitted, show the UTF-16 length of the value, with / maxlength only when a valid limit exists. CR and CRLF count as native LF. This display never enforces a limit."
+  -
+    name: "counter accessible text"
+    kind: "text"
+    description: "Optional words for the counter in the textarea's description, which replace the visible count for assistive technology. When omitted: \"13 of 40 characters\", or \"13 characters\" without a valid limit. Supply it to translate the words or to match a custom counter text."
   -
     name: "maxlength"
     kind: "number"

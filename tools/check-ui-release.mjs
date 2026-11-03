@@ -92,7 +92,11 @@ async function main() {
   }
   assert.ok([...resources.keys()].some(url => url.endsWith(".woff2")), "Font stylesheet has no resolvable assets");
   const sourceFingerprint = inputFingerprint();
-  const manifest = { components, cases, sourceFingerprint };
+  // Which checkout is being served: the Orca walkthrough warns when it is not current master.
+  const git = (...args) => { try { return execFileSync("git", args, { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim(); } catch { return null; } };
+  const build = { commit: git("rev-parse", "--short", "HEAD"), branch: git("rev-parse", "--abbrev-ref", "HEAD"), master: git("rev-parse", "--short", "origin/master"),
+    containsMaster: git("merge-base", "--is-ancestor", "origin/master", "HEAD") !== null, changed: Boolean(git("status", "--porcelain")), path: root };
+  const manifest = { components, cases, sourceFingerprint, build };
   writeFileSync(path.join(out, "manifest.json"), JSON.stringify(manifest, null, 2));
   // Serve immutable bytes for this run; mid-run changes invalidate report upload.
   const resourceBytes = new Map([...resources].map(([url, file]) => [url, readFileSync(file)]));

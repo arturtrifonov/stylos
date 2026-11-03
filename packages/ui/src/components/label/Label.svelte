@@ -25,6 +25,7 @@
     validation = "off",
     htmlFor,
     additionalTextId,
+    labelTextId,
   }: LabelProps = $props();
 
   const showsAdditional = $derived(validation !== "off" || hasAdditionalText);
@@ -42,4 +43,4 @@
   data-validation={validation}
   data-is-required={isRequired}
   data-has-additional-text={hasAdditionalText}
->{labelText}{#if isRequired}<span aria-hidden="true">{" "}*</span>{/if}{#if showsAdditional}<span id={additionalTextId}>{additionalText}</span>{/if}</label>
+>{#if labelTextId}<span id={labelTextId} data-label-text>{labelText}</span>{:else}{labelText}{/if}{#if isRequired}<span aria-hidden="true">{" "}*</span>{/if}{#if showsAdditional}<span id={additionalTextId}>{additionalText}</span>{/if}</label>

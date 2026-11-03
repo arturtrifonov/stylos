@@ -39,7 +39,7 @@
   background-color: var(--_stylos-checkbox-selected);
   box-shadow: none;
   &::after {
-    content: "";
+    content: "" / "";
     display: block;
     width: var(--_stylos-checkbox-size);
     height: var(--_stylos-checkbox-size);

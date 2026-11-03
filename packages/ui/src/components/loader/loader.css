@@ -33,7 +33,7 @@
 }
 
 .stylos-loader::before {
-  content: "";
+  content: "" / "";
   width: calc(100% * 5 / 6);
   height: calc(100% * 5 / 6);
   background-color: var(--stylos-color-text-primary);

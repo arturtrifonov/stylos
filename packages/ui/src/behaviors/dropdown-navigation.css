@@ -8,7 +8,7 @@
   box-shadow: var(--_stylos-surface-shadow);
 }
 [data-dropdown-navigation]::before {
-  content: "";
+  content: "" / "";
   position: absolute;
   inset: 0;
   box-sizing: border-box;

@@ -19,17 +19,18 @@
 {#snippet closeIcon()}<Icon name="close" />{/snippet}
 <section class="stylos-alert stylos-alert-popup-timer" data-size={size} data-announcement={announcement}
   data-surface-layer="4" data-surface-attachment="free"
-  hidden={!isOpen} aria-labelledby={titleId}>
-  <div class="stylos-alert-body">
-    <div class="stylos-alert-heading-row">
-      {#if hasTimerCounter}<span class="stylos-alert-timer-count">{Math.ceil(remaining)}{timeUnit}</span>{/if}
-      <p class="stylos-alert-heading" id={titleId}
-        role={announcement === "off" ? undefined : announcement === "assertive" ? "alert" : "status"}
-        aria-atomic={announcement === "off" ? undefined : "true"}>{headingText}</p>
-      {#if hasUndoButton}<Button {size} variant="outline" tone="base" labelText={undoButtonText} onclick={onundoclick} />{/if}
-      {#if hasCloseButton}<ButtonInner accessibleName={closeAccessibleName} icon={closeIcon} onclick={close} />{/if}
+  data-is-open={isOpen} role={announcement === "off" ? undefined : announcement === "assertive" ? "alert" : "status"}
+  aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={titleId}>
+  {#if isOpen}
+    <div class="stylos-alert-body">
+      <div class="stylos-alert-heading-row">
+        {#if hasTimerCounter}<span class="stylos-alert-timer-count" aria-live="off">{Math.ceil(remaining)}{timeUnit}</span>{/if}
+        <p class="stylos-alert-heading" id={titleId}>{headingText}</p>
+        {#if hasUndoButton}<Button {size} variant="outline" tone="base" labelText={undoButtonText} onclick={onundoclick} />{/if}
+        {#if hasCloseButton}<ButtonInner accessibleName={closeAccessibleName} icon={closeIcon} onclick={close} />{/if}
+      </div>
+      {#if hasContent}<div class="stylos-alert-content">{@render children?.()}</div>{/if}
     </div>
-    {#if hasContent}<div class="stylos-alert-content">{@render children?.()}</div>{/if}
-  </div>
-  <div class="stylos-alert-timer-progress" aria-hidden="true"><ProgressBar value={String(progress)} hasLabel={false} /></div>
+    <div class="stylos-alert-timer-progress" aria-hidden="true"><ProgressBar value={String(progress)} hasLabel={false} /></div>
+  {/if}
 </section>

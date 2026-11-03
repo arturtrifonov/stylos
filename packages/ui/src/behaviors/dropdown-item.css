@@ -85,7 +85,7 @@
 }
 .stylos-dropdown-item-default[data-is-selected="true"] > .stylos-icon:last-child { display: block; }
 .stylos-dropdown-item::after {
-  content: "";
+  content: "" / "";
   position: absolute;
   inset: 0;
   /* Figma's enlarged frame has an OUTSIDE stroke: its painted edge is

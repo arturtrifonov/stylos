@@ -30,7 +30,7 @@
  * control paints above these layers and keeps the entire pointer hit area. */
 :is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field)::before,
 :is(.stylos-input-text-field, .stylos-select-field, .stylos-input-search-field, .stylos-text-area-field)::after {
-  content: "";
+  content: "" / "";
   position: absolute;
   inset: 0;
   z-index: -1;
@@ -139,7 +139,7 @@
 }
 
 :is(.stylos-input-text-validation, .stylos-select-validation, .stylos-text-area-validation)::before {
-  content: "";
+  content: "" / "";
   position: absolute;
   top: calc((var(--_stylos-input-validation-size) - var(--_stylos-input-icon-size)) / 2);
   inset-inline-start: calc((var(--_stylos-input-validation-size) - var(--_stylos-input-icon-size)) / 2);

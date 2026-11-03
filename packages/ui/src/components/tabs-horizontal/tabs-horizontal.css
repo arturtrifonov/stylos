@@ -33,7 +33,7 @@
  * around the row in the field focus treatment, crossfaded as in fields. The
  * focused tab is the selected one, which the indicator shows. */
 .stylos-tabs-horizontal::before {
-  content: "";
+  content: "" / "";
   position: absolute;
   inset-block: calc(-1 * var(--stylos-dimension-gap-g-0_375)) 0;
   inset-inline: calc(-1 * (var(--_stylos-selection-padding) + var(--stylos-dimension-gap-g-0_375)));
@@ -68,7 +68,7 @@
   }
   .stylos-tabs-list > .stylos-tab-item[aria-selected="true"] { anchor-name: --stylos-tab-selection; }
   .stylos-tabs-list:has(> .stylos-tab-item[aria-selected="true"])::after {
-    content: "";
+    content: "" / "";
     position: absolute;
     position-anchor: --stylos-tab-selection;
     bottom: 0;

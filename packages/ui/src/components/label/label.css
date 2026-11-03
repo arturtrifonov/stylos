@@ -2,9 +2,10 @@
  *
  * Selectors are keyed on the data attributes that carry the contract's values
  * (ADR 0002). The element is the semantic <label>; the name is its bare text,
- * the required marker is a span[aria-hidden] beside it — presentational, the
- * requiredness itself lives on the control — and the supporting line is the
- * span without it. Height is the sum of what is switched on: the supporting
+ * or a span[data-label-text] when a field names itself from it by
+ * aria-labelledby; the required marker is a span[aria-hidden] beside it —
+ * presentational, the requiredness itself lives on the control — and the
+ * supporting line is the span with neither. Height is the sum of what is switched on: the supporting
  * line is a block with the size's gap above it, and nothing here reserves
  * space around the label.
  *
@@ -38,7 +39,7 @@
 
 /* the supporting line — a quieter block under the name */
 
-.stylos-label > span:not([aria-hidden]) {
+.stylos-label > span:not([aria-hidden], [data-label-text]) {
   display: block;
   font-weight: var(--stylos-font-weight-base);
   color: var(--stylos-color-text-secondary);
@@ -51,7 +52,7 @@
   line-height: var(--stylos-font-line-height-string-0_750);
 }
 
-.stylos-label[data-size="extra small"] > span:not([aria-hidden]) {
+.stylos-label[data-size="extra small"] > span:not([aria-hidden], [data-label-text]) {
   font-size: var(--stylos-font-size-0_625);
   line-height: var(--stylos-font-line-height-string-0_625);
   margin-block-start: var(--stylos-dimension-gap-g-0_125);
@@ -62,7 +63,7 @@
   line-height: var(--stylos-font-line-height-string-0_875);
 }
 
-.stylos-label[data-size="small"] > span:not([aria-hidden]) {
+.stylos-label[data-size="small"] > span:not([aria-hidden], [data-label-text]) {
   font-size: var(--stylos-font-size-0_625);
   line-height: var(--stylos-font-line-height-string-0_625);
   margin-block-start: var(--stylos-dimension-gap-g-0_250);
@@ -73,7 +74,7 @@
   line-height: var(--stylos-font-line-height-string-1_000);
 }
 
-.stylos-label[data-size="medium"] > span:not([aria-hidden]) {
+.stylos-label[data-size="medium"] > span:not([aria-hidden], [data-label-text]) {
   font-size: var(--stylos-font-size-0_750);
   line-height: var(--stylos-font-line-height-string-0_750);
   margin-block-start: var(--stylos-dimension-gap-g-0_375);
@@ -84,7 +85,7 @@
   line-height: var(--stylos-font-line-height-string-1_125);
 }
 
-.stylos-label[data-size="large"] > span:not([aria-hidden]) {
+.stylos-label[data-size="large"] > span:not([aria-hidden], [data-label-text]) {
   font-size: var(--stylos-font-size-0_750);
   line-height: var(--stylos-font-line-height-string-0_750);
   margin-block-start: var(--stylos-dimension-gap-g-0_500);
@@ -95,7 +96,7 @@
   line-height: var(--stylos-font-line-height-string-1_250);
 }
 
-.stylos-label[data-size="extra large"] > span:not([aria-hidden]) {
+.stylos-label[data-size="extra large"] > span:not([aria-hidden], [data-label-text]) {
   font-size: var(--stylos-font-size-0_875);
   line-height: var(--stylos-font-line-height-string-0_875);
   margin-block-start: var(--stylos-dimension-gap-g-0_500);
@@ -103,15 +104,15 @@
 
 /* validation — recolours the supporting line and nothing else */
 
-.stylos-label[data-validation="error"] > span:not([aria-hidden]) {
+.stylos-label[data-validation="error"] > span:not([aria-hidden], [data-label-text]) {
   color: var(--stylos-color-text-danger);
 }
 
-.stylos-label[data-validation="warning"] > span:not([aria-hidden]) {
+.stylos-label[data-validation="warning"] > span:not([aria-hidden], [data-label-text]) {
   color: var(--stylos-color-text-warning);
 }
 
-.stylos-label[data-validation="success"] > span:not([aria-hidden]) {
+.stylos-label[data-validation="success"] > span:not([aria-hidden], [data-label-text]) {
   color: var(--stylos-color-text-success);
 }
 
@@ -121,7 +122,7 @@
   color: var(--stylos-color-text-disabled);
 }
 
-.stylos-label[data-state="disabled"] > span:not([aria-hidden]) {
+.stylos-label[data-state="disabled"] > span:not([aria-hidden], [data-label-text]) {
   color: var(--stylos-color-text-disabled);
 }
 

@@ -25,6 +25,7 @@
 }
 
 :is(.stylos-toggle-label, .stylos-toggle-text)[data-size="extra small"] {
+  --_stylos-toggle-box: var(--stylos-dimension-size-s-2_000);
   --_stylos-toggle-gap: var(--stylos-dimension-gap-g-0_500);
   --_stylos-toggle-font: var(--stylos-font-size-0_750);
   --_stylos-toggle-string-line: var(--stylos-font-line-height-string-0_750);
@@ -32,6 +33,7 @@
 }
 
 :is(.stylos-toggle-label, .stylos-toggle-text)[data-size="small"] {
+  --_stylos-toggle-box: var(--stylos-dimension-size-s-2_500);
   --_stylos-toggle-gap: var(--stylos-dimension-gap-g-0_625);
   --_stylos-toggle-font: var(--stylos-font-size-0_875);
   --_stylos-toggle-string-line: var(--stylos-font-line-height-string-0_875);
@@ -39,6 +41,7 @@
 }
 
 :is(.stylos-toggle-label, .stylos-toggle-text)[data-size="medium"] {
+  --_stylos-toggle-box: var(--stylos-dimension-size-s-3_000);
   --_stylos-toggle-gap: var(--stylos-dimension-gap-g-0_750);
   --_stylos-toggle-font: var(--stylos-font-size-1_000);
   --_stylos-toggle-string-line: var(--stylos-font-line-height-string-1_000);
@@ -46,6 +49,7 @@
 }
 
 :is(.stylos-toggle-label, .stylos-toggle-text)[data-size="large"] {
+  --_stylos-toggle-box: var(--stylos-dimension-size-s-3_500);
   --_stylos-toggle-gap: var(--stylos-dimension-gap-g-0_875);
   --_stylos-toggle-font: var(--stylos-font-size-1_250);
   --_stylos-toggle-string-line: var(--stylos-font-line-height-string-1_250);
@@ -53,6 +57,7 @@
 }
 
 :is(.stylos-toggle-label, .stylos-toggle-text)[data-size="extra large"] {
+  --_stylos-toggle-box: var(--stylos-dimension-size-s-4_000);
   --_stylos-toggle-gap: var(--stylos-dimension-gap-g-1_000);
   --_stylos-toggle-font: var(--stylos-font-size-1_500);
   --_stylos-toggle-string-line: var(--stylos-font-line-height-string-1_500);

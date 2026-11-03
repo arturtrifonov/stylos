@@ -21,7 +21,7 @@
 }
 
 .stylos-indicator-special::before {
-  content: "";
+  content: "" / "";
   box-sizing: border-box;
   width: var(--_stylos-indicator-special-dot);
   height: var(--_stylos-indicator-special-dot);

@@ -29,7 +29,7 @@
 /* Without anchor positioning each selected tab draws its own indicator in the band. */
 @supports not (anchor-name: --stylos-tab-selection) {
   .stylos-tab-item[aria-selected="true"]::after {
-    content: "";
+    content: "" / "";
     position: absolute;
     inset-inline: var(--_stylos-selection-padding);
     bottom: calc(-1 * var(--_stylos-tab-band));

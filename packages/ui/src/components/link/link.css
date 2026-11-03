@@ -44,7 +44,7 @@
 }
 
 .stylos-link-content::before {
-  content: "";
+  content: "" / "";
   background-color: var(--_stylos-link-surface);
   transition: background-color var(--stylos-motion-duration-micro) var(--stylos-motion-easing-linear);
 }
@@ -54,7 +54,7 @@
 }
 
 .stylos-link:focus-visible > .stylos-link-content::after {
-  content: "";
+  content: "" / "";
   border: var(--stylos-border-width-thick) solid var(--stylos-color-border-primary);
 }
 
@@ -70,7 +70,7 @@
 }
 
 .stylos-link[data-has-expanded-hit-area="true"]:not([aria-disabled="true"])::after {
-  content: "";
+  content: "" / "";
   position: absolute;
   z-index: 1;
   inset: 0;

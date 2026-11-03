@@ -15,7 +15,7 @@
 // preview's only to draw.
 
 import { readFileSync } from "node:fs";
-import { nativeLengthLimit, textAreaCounter } from "../../packages/ui/src/behaviors/text-area.ts";
+import { nativeLengthLimit, textAreaCounter, textAreaCounterDescription } from "../../packages/ui/src/behaviors/text-area.ts";
 import { fileURLToPath } from "node:url";
 
 import { drawRegistered } from "./icon-preset.mjs";
@@ -112,9 +112,9 @@ export function sampleHtml(entry, props = {}) {
         // The draft DOM contracts are rendered by startingSetPreview below.
       } else if (["Input Text", "Select", "Input Search", "Text Area"].includes(entry.id) && ["id", "value", "name", "form", "autocomplete", "label ids", "description ids", "max height", "maxlength", "minlength"].includes(name)) {
         // Native text-field attributes are rendered below.
-      } else if (entry.id === "Label" && ["html for", "additional text id"].includes(name)) {
+      } else if (entry.id === "Label" && ["html for", "additional text id", "label text id"].includes(name)) {
         // Native label association is rendered below.
-      } else if (["Checkbox Input", "Checkbox Label", "Checkbox Text", "Radio Input", "Radio Label", "Radio Text", "Toggle Input", "Toggle Label", "Toggle Text"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
+      } else if (["Checkbox Input", "Checkbox Label", "Checkbox Text", "Radio Input", "Radio Label", "Radio Text", "Toggle Input", "Toggle Label", "Toggle Text"].includes(entry.id) && ["id", "name", "value", "form", "label ids", "description ids"].includes(name)) {
         // Form integration does not change a static visual surface.
       } else if (["Button", "Button Icon", "Tag Interactive"].includes(entry.id) && ["id", "name", "value", "form", "description ids"].includes(name)) {
         // Native attributes are written by the button branch below.
@@ -196,13 +196,14 @@ export function sampleHtml(entry, props = {}) {
   if (["Dropdown Item Checkbox", "Dropdown Item Toggle"].includes(entry.id)) {
     const family = entry.id.endsWith("Toggle") ? "toggle" : "checkbox";
     const id = props.id || `stylos-dropdown-control-preview-${++inputPreviewCounter}`;
+    const labelId = `${id}-label`;
     const descriptionId = `${id}-description`;
     const selected = props["is selected"] === "true";
     const native = ["name", "value", "form"].filter(name => props[name])
       .map(name => ` ${name}="${esc(props[name])}"`).join("");
-    const input = `<input type="checkbox"${family === "toggle" ? ' role="switch"' : ""} id="${esc(id)}"${native}${selected ? " checked" : ""}${props.state === "disabled" ? " disabled" : ""}${props["has additional text"] ? ` aria-describedby="${esc(descriptionId)}"` : ""} aria-label="${esc(props["label text"] ?? "Option")}">`;
+    const input = `<input type="checkbox"${family === "toggle" ? ' role="switch"' : ""} id="${esc(id)}"${native}${selected ? " checked" : ""}${props.state === "disabled" ? " disabled" : ""}${props["has additional text"] ? ` aria-describedby="${esc(descriptionId)}"` : ""} aria-labelledby="${esc(labelId)}">`;
     const control = `<span class="stylos-${family}-input" data-size="${esc(props.size ?? "medium")}" data-state="${esc(props.state ?? "default")}" data-is-checked="${selected}">${input}</span>`;
-    return `<li role="presentation"><label class="stylos-dropdown-item ${cls}"${attr} for="${esc(id)}">${control}<span class="stylos-dropdown-item-content"><span class="stylos-dropdown-item-label">${esc(props["label text"] ?? "Option")}</span>${props["has additional text"] ? `<span class="stylos-dropdown-item-additional" id="${esc(descriptionId)}">${esc(props["additional text"] ?? "Additional")}</span>` : ""}</span></label></li>`;
+    return `<li role="presentation"><label class="stylos-dropdown-item ${cls}"${attr} for="${esc(id)}"><span class="stylos-dropdown-item-line">${control}<span class="stylos-dropdown-item-label" id="${esc(labelId)}">${esc(props["label text"] ?? "Option")}</span></span>${props["has additional text"] ? `<span class="stylos-dropdown-item-additional" id="${esc(descriptionId)}">${esc(props["additional text"] ?? "Additional")}</span>` : ""}</label></li>`;
   }
 
   // Label is the one structural case: the required marker and the supporting
@@ -230,7 +231,8 @@ export function sampleHtml(entry, props = {}) {
     const additionalId = props["additional text id"] ? ` id="${esc(props["additional text id"])}"` : "";
     const additional = showsAdditional ? `<span${additionalId}>${esc(props["additional text"] ?? "Additional text")}</span>` : "";
     const htmlFor = props["html for"] ? ` for="${esc(props["html for"])}"` : "";
-    return `<label class="${cls}"${attr}${htmlFor}>${esc(props["label text"] ?? "Label")}${marker}${additional}</label>`;
+    const text = props["label text id"] ? `<span id="${esc(props["label text id"])}" data-label-text>${esc(props["label text"] ?? "Label")}</span>` : esc(props["label text"] ?? "Label");
+    return `<label class="${cls}"${attr}${htmlFor}>${text}${marker}${additional}</label>`;
   }
 
   if (["Input Text", "Select", "Input Search", "Text Area"].includes(entry.id)) {
@@ -242,20 +244,22 @@ export function sampleHtml(entry, props = {}) {
     const hasLabel = props["has label"] ?? true;
     const showsMessage = labelOutcome !== "off" || props["has additional text"];
     const messageId = `${id}-message`;
+    const labelTextId = `${id}-label`;
     const suffixId = `${id}-suffix`;
     const counterId = `${id}-counter`;
     const counter = textAreaCounter(props.value ?? "", props.maxlength, props["counter text"]);
+    const counterDescription = textAreaCounterDescription(props.value ?? "", props.maxlength, props["counter accessible text"]);
     const message = props["additional text"] ?? "Additional text";
     const labelProps = {
       size, state: state === "disabled" ? "disabled" : "default", validation: labelOutcome,
       "label text": props["label text"] ?? "Label", "is required": props["is required"] ?? false,
       "has additional text": props["has additional text"] ?? false, "additional text": message,
-      "html for": id, "additional text id": messageId,
+      "html for": id, "additional text id": messageId, "label text id": labelTextId,
     };
     const label = hasLabel ? sampleHtml({ id: "Label", api: [...Object.keys(labelProps).map(name => ({
       name, kind: ["size", "state", "validation"].includes(name) ? "variant"
         : ["is required", "has additional text"].includes(name) ? "boolean"
-        : ["html for", "additional text id"].includes(name) ? "string" : "text",
+        : ["html for", "additional text id", "label text id"].includes(name) ? "string" : "text",
       values: [{ value: labelProps[name] }],
     }))] }, labelProps) : showsMessage ? `<span id="${esc(messageId)}" hidden>${esc(message)}</span>` : "";
     const descriptions = [props["description ids"], showsMessage ? messageId : "",
@@ -264,8 +268,8 @@ export function sampleHtml(entry, props = {}) {
     const native = ["name", "form", "autocomplete"].filter(name => props[name])
       .map(name => ` ${name}="${esc(props[name])}"`).join("");
     const accessibleName = hasLabel ? props["label text"] ?? "Label" : props["accessible name"];
-    const semantics = (accessibleName ? ` aria-label="${esc(accessibleName)}"` : "")
-      + (!hasLabel && props["label ids"] ? ` aria-labelledby="${esc(props["label ids"])}"` : "")
+    const semantics = (!hasLabel && accessibleName ? ` aria-label="${esc(accessibleName)}"` : "")
+      + (hasLabel ? ` aria-labelledby="${esc(labelTextId)}"` : props["label ids"] ? ` aria-labelledby="${esc(props["label ids"])}"` : "")
       + (descriptions ? ` aria-describedby="${esc(descriptions)}"` : "")
       + (outcome === "error" ? ' aria-invalid="true"' : "")
       + (state === "disabled" ? " disabled" : state === "read only" ? " readonly" : "")
@@ -311,7 +315,7 @@ export function sampleHtml(entry, props = {}) {
       const right = area ? trailing.replace('class="stylos-input-text-icon"', 'class="stylos-input-text-trailing stylos-input-text-icon"') : trailingParts ? `<span class="stylos-input-text-trailing">${trailingParts}</span>` : "";
       const field = `<div class="stylos-input-text-field" data-surface-layer="1" data-surface-attachment="in-layout">${control}${leading}${right}${area ? validation : ""}</div>`;
       const prefix = area ? "stylos-text-area-" : search ? "stylos-input-search-" : "stylos-input-text-";
-      const count = area && props["has counter text"] ? `<span class="stylos-text-area-counter" id="${esc(counterId)}">${esc(counter)}</span>` : "";
+      const count = area && props["has counter text"] ? `<span class="stylos-text-area-counter" aria-hidden="true">${esc(counter)}</span><span id="${esc(counterId)}" hidden>${esc(counterDescription)}</span>` : "";
       return `<div class="${cls}"${attr} data-is-filled="${!!props.value}">${label}${field.replaceAll("stylos-input-text-", prefix)}${count}</div>`;
     }
   }
@@ -406,12 +410,17 @@ function tableCellHtml(heading, props, attr) {
   const iconHtml = name => sampleHtml({ id: "Icon", api: [{ name: "name", kind: "string" }] }, { name });
   const icon = props["has icon"] && props.icon ? iconHtml(props.icon) : "";
   const text = props["cell text"] ?? "Cell text";
-  const copy = `<span class="stylos-table-cell-copy"><span class="stylos-table-cell-label" title="${esc(text)}">${esc(text)}</span>${props["has additional text"] ? `<span class="stylos-table-cell-additional" title="${esc(props["additional text"])}">${esc(props["additional text"])}</span>` : ""}</span>`;
+  // A header holding sort or filter buttons names itself from its text alone.
+  const named = heading && (props["is sorted"] || props["is filtered"]);
+  const textId = `table-heading-preview-${++inputPreviewCounter}-text`;
+  const labelId = named ? ` id="${textId}"` : "";
+  const additionalId = named && props["has additional text"] ? ` id="${textId}-additional"` : "";
+  const copy = `<span class="stylos-table-cell-copy"><span class="stylos-table-cell-label"${labelId} title="${esc(text)}">${esc(text)}</span>${props["has additional text"] ? `<span class="stylos-table-cell-additional"${additionalId} title="${esc(props["additional text"])}">${esc(props["additional text"])}</span>` : ""}</span>`;
   const action = (kind, name) => `<button type="button" class="stylos-button-inner" data-state="default" aria-label="${esc(props[`${kind} accessible name`] || `${kind === "sort" ? "Sort" : "Filter"} by ${text}`)}">${iconHtml(name)}</button>`;
   const controls = heading ? `${props["is sorted"] ? action("sort", props["sort direction"] === "descending" ? "arrow_upward" : "arrow_downward") : ""}${props["is filtered"] ? action("filter", "filter_list") : ""}` : "";
   const associations = `${props.id ? ` id="${esc(props.id)}"` : ""}${props.headers ? ` headers="${esc(props.headers)}"` : ""}`;
   const tag = heading ? "th" : "td";
-  return `<${tag} class="stylos-table-cell stylos-table-cell-${heading ? "heading" : "text"}"${attr}${associations}${heading ? ` scope="col" data-constrained="${!!(props["is sorted"] || props["is filtered"])}"${props["is sorted"] ? ` aria-sort="${esc(props["sort direction"] ?? "ascending")}"` : ""}` : ""}><div class="stylos-table-cell-frame"${icon ? " data-icon" : ""}>${icon}${copy}${controls}</div></${tag}>`;
+  return `<${tag} class="stylos-table-cell stylos-table-cell-${heading ? "heading" : "text"}"${attr}${associations}${heading ? ` scope="col" data-constrained="${!!(props["is sorted"] || props["is filtered"])}"${props["is sorted"] ? ` aria-sort="${esc(props["sort direction"] ?? "ascending")}"` : ""}${named ? ` aria-labelledby="${textId}${additionalId ? ` ${textId}-additional` : ""}"` : ""}` : ""}><div class="stylos-table-cell-frame"${icon ? " data-icon" : ""}>${icon}${copy}${controls}</div></${tag}>`;
 }
 
 /** Native cells and rows require table scaffolding on standalone preview pages. */

@@ -325,8 +325,11 @@ callbacks, and consumer-selected announcement urgency. Their host owns
 placement, stacking and focus after dismissal. Popup is non-modal. Timer takes
 `duration` and `remainingTime` in seconds from its host: the component does not start a clock,
 dismiss automatically, or decide when undo expires. Only Timer exposes a separate
-Undo action and callback. Its counter is outside the
-live heading so second-by-second updates do not repeat the notification.
+Undo action and callback. Each alert's section is its live region; a closed
+alert stays in the DOM, empty and visually hidden, so the content it opens with
+is announced. Timer's counter is `aria-live="off"` so second-by-second updates
+do not repeat the notification. When Close or Undo removes the focused control,
+move focus somewhere meaningful — the alert cannot know where.
 
 Popup uses the current five-size Figma composition, including heading/h6
 through heading/h2 and matching-size action buttons. Its decorative icon renders directly and
@@ -354,7 +357,7 @@ needed; the default empty string adds no unit. Counter and Close footprints matc
 text and tabular lining figures. Padding and the gap before Progress Bar follow
 12/14/16/20/24; the counter/heading/Undo cluster has a separate 6/8/10/12/14 gap.
 Content follows the matching body-text size. Progress Bar stays 8 high, with its
-label hidden and outside the live heading. Counter, heading, Undo and Close share
+label hidden from assistive technology. Counter, heading, Undo and Close share
 one row; Close takes the larger outer spacing as its start margin in every state.
 Heading padding is applied directly to the text.
 The single **default** story is a user-started countdown with editable duration,
@@ -488,6 +491,9 @@ maximum; the component does not truncate values supplied programmatically.
 The live counter follows native UTF-16 length and normalized line breaks. It
 shows only the count without a maximum and `count / maxlength` with one.
 `counterText` optionally overrides the display and never enforces a limit.
+The description carries the count in words — "13 of 40 characters" — and the
+visible count is hidden from assistive technology; `counterAccessibleText`
+translates the words or matches a custom `counterText`.
 Georama Regular counter sizes are 10/10/12/12/14 across XS through XL.
 The [Text Area review](verification/text-area-2026-10-26.md) records the
 source measurements, owner decisions, browser checks and remaining release gates.

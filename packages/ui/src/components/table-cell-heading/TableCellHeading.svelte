@@ -11,15 +11,20 @@
   const rowSize = getContext<() => TableCellHeadingProps["size"]>(tableSizeContext);
   const resolvedSize = $derived(rowSize?.() ?? size ?? "medium");
   const leading = $derived(hasIcon ? icon : undefined);
+  // With sort or filter buttons inside, the header names itself from its text
+  // alone; otherwise the buttons' names join the column's (orca-2026-11-03.md).
+  const generatedId = $props.id();
+  const textId = `${generatedId}-text`;
 </script>
 
 <th class="stylos-table-cell stylos-table-cell-heading" scope="col" {id} data-size={resolvedSize} data-alignment={alignment}
-  aria-sort={isSorted ? sortDirection : undefined} data-constrained={isSorted || isFiltered}>
+  aria-sort={isSorted ? sortDirection : undefined} data-constrained={isSorted || isFiltered}
+  aria-labelledby={isSorted || isFiltered ? (hasAdditionalText ? `${textId} ${textId}-additional` : textId) : undefined}>
   <div class="stylos-table-cell-frame" data-icon={leading ? "" : undefined}>
     {@render leading?.()}
     <span class="stylos-table-cell-copy">
-      <span class="stylos-table-cell-label" title={cellText}>{cellText}</span>
-      {#if hasAdditionalText}<span class="stylos-table-cell-additional" title={additionalText}>{additionalText}</span>{/if}
+      <span class="stylos-table-cell-label" id={textId} title={cellText}>{cellText}</span>
+      {#if hasAdditionalText}<span class="stylos-table-cell-additional" id={`${textId}-additional`} title={additionalText}>{additionalText}</span>{/if}
     </span>
     {#if isSorted}
       <ButtonInner accessibleName={sortAccessibleName || `Sort by ${cellText}`} onclick={onsortclick}>

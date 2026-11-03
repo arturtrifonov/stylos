@@ -204,7 +204,7 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4327-34970"
   last_verified: "2026-10-07"
-notes: "Composes Checkbox Input and shares its native behaviour and Motion treatment. The visible text supplies the accessible name unless accessible name overrides it. Legacy children are removed: Label, Badge and Loader are not content children of this input. The historical parents list is retained."
+notes: "Composes Checkbox Input and shares its native behaviour and Motion treatment. The visible text supplies the accessible name unless accessible name overrides it. Legacy children are removed: Label, Badge and Loader are not content children of this input. The historical parents list is retained. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): the label is laid out inline rather than as a flex row, so Chrome reports the control and its text as one line and Orca no longer stops on the text as \"blank\"; rendering is unchanged."
 import:
   batch: 1
   ready: true

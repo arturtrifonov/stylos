@@ -34,7 +34,7 @@
 }
 
 .stylos-toggle-input::after {
-  content: "";
+  content: "" / "";
   position: absolute;
   inset-block-start: var(--_stylos-toggle-inset);
   inset-inline-start: var(--_stylos-toggle-inset);

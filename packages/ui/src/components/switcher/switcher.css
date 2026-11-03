@@ -37,7 +37,7 @@
  * place of its resting elevation (effects.md, Focus), crossfaded as in fields.
  * The focused radio is the checked one, which the selected surface shows. */
 .stylos-switcher::before {
-  content: "";
+  content: "" / "";
   position: absolute;
   inset: calc(-1 * var(--stylos-border-width-normal));
   z-index: -1;
@@ -85,7 +85,7 @@
   }
   .stylos-switcher > .stylos-switcher-item:has(> input:checked) { anchor-name: --stylos-switcher-selection; }
   .stylos-switcher:has(> .stylos-switcher-item > input:checked)::after {
-    content: "";
+    content: "" / "";
     position: absolute;
     z-index: -1;
     position-anchor: --stylos-switcher-selection;

@@ -343,7 +343,7 @@ figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4804:9784"
   last_verified: "2026-10-11"
-notes: "Select and Input Text share property keys, box, type run, states and colour roles. That is because they are the same kind of thing in a form, not because either derives from the other. The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed."
+notes: "Select and Input Text share property keys, box, type run, states and colour roles. That is because they are the same kind of thing in a form, not because either derives from the other. The api order is authored for readability: Figma's componentPropertyDefinitions does not return the order the panel shows, so adjacency under naming.md sections 9 and 10 cannot be checked from the file and is not claimed. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): with a visible label the trigger and list are named from the label text by aria-labelledby (Label's `label text id`) instead of a duplicating aria-label; the clear button keeps Button Inner's own focus ring and the field shows no focus meanwhile."
 import:
   batch: 1
   ready: true

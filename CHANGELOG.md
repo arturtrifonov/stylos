@@ -172,6 +172,30 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Fixed
 
+- Orca no longer says "blank" between a checkbox, radio or toggle and its
+  label text. Checkbox, Radio and Toggle Label and Text, and Dropdown Item
+  Checkbox and Toggle lay the control and its text out inline instead of as
+  flex items, which Chrome reported as separate lines; rendering is unchanged.
+  Decorative pseudo-elements carry empty alternative text (`content: "" / ""`).
+- Fields no longer repeat their visible label in `aria-label`. Input Text,
+  Text Area, Input Search and Select name themselves from the label text by
+  `aria-labelledby`, and Dropdown rows from their label text, so Orca stops
+  reading every label of a Drawer, Modal or menu as stray text when it opens.
+  Label adds `labelTextId`; Checkbox, Radio and Toggle Input add `labelIds`.
+- Alerts are announced when they open: a closed Alert Inline, Popup or Popup
+  Timer stays in the DOM as an empty, visually hidden live region. Timer's
+  section is the live region, as Popup's is, and its counter is
+  `aria-live="off"`.
+- A table header holding sort or filter buttons is named by its text alone,
+  not "Amount Sort by Amount".
+- Select's clear button shows its own focus ring; the field no longer shows
+  focus at the same time.
+- Text Area's counter is described in words, "13 of 40 characters";
+  `counterAccessibleText` translates it.
+- **Breaking for hand-written HTML:** Dropdown Item Checkbox and Toggle rows
+  wrap the control and label in `.stylos-dropdown-item-line`, replacing
+  `.stylos-dropdown-item-content`.
+- Drawer's content region is no longer a tab stop of its own.
 - Dropdown Item Toggle's switch now overhangs the row's start edge as Dropdown
   Item Checkbox's box does. A rule whose effect depended on stylesheet order
   had left it 2 px further in, closer to its label.

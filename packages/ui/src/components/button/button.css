@@ -42,7 +42,7 @@
 
 /* The INSIDE stroke keeps Outline the same width as Base and Ghost. */
 .stylos-button-outline::before {
-  content: "";
+  content: "" / "";
   position: absolute;
   inset: 0;
   border: var(--stylos-border-width-normal) solid var(--_stylos-button-border);

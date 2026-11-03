@@ -1,19 +1,23 @@
 @import "../radio-input/radio-input.css";
 @import "../../behaviors/radio-option.css";
 
+/* Inline for the reason given in radio-label.css. The start padding reserves the
+ * control's place and the control hangs into it, so wrapped lines align with
+ * the first. */
 .stylos-radio-text {
-  display: flex;
-  align-items: flex-start;
+  display: block;
+  box-sizing: border-box;
   /* Intrinsic hug/fill sizing, not an authored dimension. */
   /* stylelint-disable-next-line scale-unlimited/declaration-strict-value */
   width: 100%;
+  padding-inline-start: calc(var(--_stylos-radio-box) + var(--_stylos-radio-gap));
   font-weight: var(--stylos-font-weight-base);
   line-height: var(--_stylos-radio-text-line);
   font-variant-numeric: lining-nums tabular-nums;
+  overflow-wrap: anywhere;
 }
 
-.stylos-radio-text > .stylos-radio-copy {
-  flex: 1;
-  min-width: 0;
-  overflow-wrap: anywhere;
+.stylos-radio-text > .stylos-radio-input {
+  vertical-align: top;
+  margin-inline: calc(-1 * (var(--_stylos-radio-box) + var(--_stylos-radio-gap))) var(--_stylos-radio-gap);
 }

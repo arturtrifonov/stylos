@@ -5,7 +5,7 @@
 
   let {
     size = "extra small", state = "default", isChecked = $bindable("false"),
-    id, name = "", value = "on", form = "", accessibleName = "",
+    id, name = "", value = "on", form = "", accessibleName = "", labelIds = "",
     descriptionIds = "", isRequired = false,
   }: ToggleInputProps = $props();
 </script>
@@ -20,7 +20,8 @@
     form={form || undefined}
     disabled={state === "disabled"}
     required={isRequired}
-    aria-label={accessibleName || undefined}
+    aria-label={labelIds ? undefined : accessibleName || undefined}
+    aria-labelledby={labelIds || undefined}
     aria-describedby={descriptionIds || undefined}
     checked={isChecked === "true"}
     use:checkboxBehavior={{ isChecked, onChange: (selection) => { isChecked = selection === "true" ? "true" : "false"; } }}

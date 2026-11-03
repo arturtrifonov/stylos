@@ -25,6 +25,7 @@
   const initialLabel = untrack(() => inputText || value);
   const controlId = $derived(id ?? `select-${instanceId}`);
   const messageId = $derived(`${controlId}-message`);
+  const labelTextId = $derived(`${controlId}-label`);
   const suffixId = $derived(`${controlId}-suffix`);
   let fieldsetDisabled = $state(false);
   const fieldState = $derived(fieldsetDisabled ? "disabled" : interactionState);
@@ -50,16 +51,16 @@
 </script>
 
 <div class="stylos-select" data-size={size} data-state={fieldState} data-validation={outcome} data-is-filled={value !== ""}
-  use:singleSelectBehavior={{ id: controlId, value, accessibleName: fieldName,
+  use:singleSelectBehavior={{ id: controlId, value, accessibleName: hasLabel ? "" : fieldName,
     disabled: interactionState === "disabled", readOnly: fieldState === "read only", invalid: outcome === "error",
     required: isRequired, name, form, autocomplete,
-    labelIds: hasLabel ? undefined : labelIds, descriptionIds: describedBy,
+    labelIds: hasLabel ? labelTextId : labelIds, descriptionIds: describedBy,
     onValueChange: next => { value = next; }, onLabelChange: next => { resolvedLabel = next; },
     onDisabledChange: next => { fieldsetDisabled = next; }, oninput, onchange }}>
   {#if hasLabel}
     <Label {size} {labelText} {hasAdditionalText} {additionalText} {isRequired}
       state={fieldState === "disabled" ? "disabled" : "default"} validation={labelOutcome}
-      htmlFor={controlId} additionalTextId={messageId} />
+      htmlFor={controlId} additionalTextId={messageId} {labelTextId} />
   {:else if showsMessage}
     <span id={messageId} hidden>{additionalText}</span>
   {/if}
@@ -67,7 +68,7 @@
     {@attach measureAdornments([hasLeadingIcon && !!leadingIcon, hasSuffixText, showsClear, outcome !== "off", fieldState === "default"])}>
     <button class="stylos-select-trigger" type="button" id={controlId} bind:this={trigger} data-dropdown-trigger
       role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls={`${controlId}-options`}
-      aria-label={fieldName || undefined} aria-labelledby={hasLabel ? undefined : labelIds}
+      aria-label={hasLabel ? undefined : fieldName || undefined} aria-labelledby={hasLabel ? labelTextId : labelIds}
       aria-describedby={describedBy} aria-readonly={fieldState === "read only" || undefined}
       aria-invalid={outcome === "error" || undefined} aria-required={isRequired || undefined}
       disabled={fieldState === "disabled"}><span class="stylos-select-value">{displayText}</span></button>

@@ -11,6 +11,5 @@
 </script>
 
 <label class="stylos-radio-label" data-size={size} data-state={state} for={controlId}>
-  <RadioInput {size} {state} bind:isChecked id={controlId} {name} {value} {form} {accessibleName} {descriptionIds} {isRequired} />
-  {labelText}
+  <RadioInput {size} {state} bind:isChecked id={controlId} {name} {value} {form} {accessibleName} {descriptionIds} {isRequired} />{labelText}
 </label>

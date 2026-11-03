@@ -11,6 +11,5 @@
 </script>
 
 <label class="stylos-toggle-text" data-size={size} data-state={state} for={controlId}>
-  <ToggleInput {size} {state} bind:isChecked id={controlId} {name} {value} {form} {accessibleName} {descriptionIds} {isRequired} />
-  <span class="stylos-toggle-copy">{#if children}{@render children()}{:else}{labelText}{/if}</span>
+  <ToggleInput {size} {state} bind:isChecked id={controlId} {name} {value} {form} {accessibleName} {descriptionIds} {isRequired} /><span class="stylos-toggle-copy">{#if children}{@render children()}{:else}{labelText}{/if}</span>
 </label>

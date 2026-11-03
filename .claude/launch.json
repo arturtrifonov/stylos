@@ -12,6 +12,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8123", "--directory", "build"],
       "port": 8123
+    },
+    {
+      "name": "ui-verify",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "ui:verify:browser"],
+      "port": 4174
     }
   ]
 }
