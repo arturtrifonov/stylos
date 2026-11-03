@@ -3,6 +3,7 @@
   import Button from "../button/Button.svelte";
   import ButtonInner from "../button-inner/ButtonInner.svelte";
   import Icon from "../icon/Icon.svelte";
+  import AlertAnnouncer from "../../behaviors/AlertAnnouncer.svelte";
   import ProgressBar from "../progress-bar/ProgressBar.svelte";
   import type { AlertPopupTimerProps } from "./props.ts";
   let { size = "extra small", isOpen = $bindable(true), headingText = "Heading Text",
@@ -20,11 +21,11 @@
 <section class="stylos-alert stylos-alert-popup-timer" data-size={size} data-announcement={announcement}
   data-surface-layer="4" data-surface-attachment="free"
   data-is-open={isOpen} role={announcement === "off" ? undefined : announcement === "assertive" ? "alert" : "status"}
-  aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={isOpen ? titleId : undefined}>
+  aria-live={announcement === "off" ? undefined : "off"} aria-labelledby={isOpen ? titleId : undefined}>
   {#if isOpen}
     <div class="stylos-alert-body">
       <div class="stylos-alert-heading-row">
-        {#if hasTimerCounter}<span class="stylos-alert-timer-count" aria-live="off">{Math.ceil(remaining)}{timeUnit}</span>{/if}
+        {#if hasTimerCounter}<span class="stylos-alert-timer-count">{Math.ceil(remaining)}{timeUnit}</span>{/if}
         <p class="stylos-alert-heading" id={titleId}>{headingText}</p>
         {#if hasUndoButton}<Button {size} variant="outline" tone="base" labelText={undoButtonText} onclick={onundoclick} />{/if}
         {#if hasCloseButton}<ButtonInner accessibleName={closeAccessibleName} icon={closeIcon} onclick={close} />{/if}
@@ -33,4 +34,5 @@
     </div>
     <div class="stylos-alert-timer-progress" aria-hidden="true"><ProgressBar value={String(progress)} hasLabel={false} /></div>
   {/if}
+  {#if announcement !== "off"}<AlertAnnouncer {isOpen} politeness={announcement} {headingText} />{/if}
 </section>

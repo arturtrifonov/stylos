@@ -3,6 +3,7 @@
   import Button from "../button/Button.svelte";
   import ButtonInner from "../button-inner/ButtonInner.svelte";
   import Icon from "../icon/Icon.svelte";
+  import AlertAnnouncer from "../../behaviors/AlertAnnouncer.svelte";
 
   import type { AlertPopupProps } from "./props.ts";
   let { size = "extra small", type = "default", isOpen = $bindable(true), hasHeading = true, headingText = "Heading Text",
@@ -17,7 +18,7 @@
 <section class="stylos-alert stylos-alert-popup" data-type={type} data-size={size} data-announcement={announcement}
   data-surface-layer="4" data-surface-attachment="free"
   data-is-open={isOpen} role={announcement === "off" ? undefined : announcement === "assertive" ? "alert" : "status"}
-  aria-atomic={announcement === "off" ? undefined : "true"} aria-labelledby={isOpen && hasHeading ? titleId : undefined}>
+  aria-live={announcement === "off" ? undefined : "off"} aria-labelledby={isOpen && hasHeading ? titleId : undefined}>
   {#if isOpen}
     {#if hasIcon}{@render icon?.()}{/if}
     <div class="stylos-alert-body">
@@ -27,4 +28,5 @@
     </div>
     {#if hasCloseButton}<ButtonInner accessibleName={closeAccessibleName} icon={closeIcon} onclick={close} />{/if}
   {/if}
+  {#if announcement !== "off"}<AlertAnnouncer {isOpen} politeness={announcement} headingText={hasHeading ? headingText : ""} withContent={hasContent} />{/if}
 </section>

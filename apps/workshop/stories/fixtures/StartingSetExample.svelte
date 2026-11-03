@@ -38,7 +38,7 @@
     </TabsHorizontal></section>
     <section><h2>Alert Inline</h2><AlertInline bind:isOpen={inlineOpen} hasCloseButton hasIcon={false} headingText="Workspace imported" onclose={refocus}
       onprimaryclick={() => { status = "Inline accepted"; }} onsecondaryclick={() => { status = "Inline cancelled"; }}>Your workspace is ready.</AlertInline></section>
-    <section><h2>Alert Popup</h2><AlertPopup bind:isOpen={popupOpen} hasIcon={false} headingText="Workspace updated"
+    <section><h2>Alert Popup</h2><AlertPopup bind:isOpen={popupOpen} hasIcon={false} headingText="Workspace updated" onclose={refocus}
       onprimaryclick={() => { status = "Popup accepted"; }} onsecondaryclick={() => { status = "Popup cancelled"; }}>Changes were saved.</AlertPopup></section>
     <section><h2>Alert Popup Timer</h2><AlertPopupTimer bind:isOpen={timerOpen} headingText="Workspace archived"
       onundoclick={() => { status = "Archive undone"; timerOpen = false; refocus(); }} /></section>
