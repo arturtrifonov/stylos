@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>
+
+:root { color-scheme:light dark; --bg:var(--figma-color-bg,#fff); --text:var(--figma-color-text,#202124); --muted:var(--figma-color-text-secondary,#73747a); --border:var(--figma-color-border,#e5e5e8); --soft:var(--figma-color-bg-secondary,#f5f5f7); --brand:var(--figma-color-bg-brand,#1769e0); --on-brand:var(--figma-color-text-onbrand,#fff); --danger:var(--figma-color-text-danger,#b3261e); --success:var(--figma-color-text-success,#17804a); }
+html,body { margin:0; padding:0; height:100%; background:var(--bg); }
+#plugin-root { height:100vh; display:flex; flex-direction:column; color:var(--text); background:var(--bg); font:12px/1.5 Inter,system-ui,sans-serif; text-align:left; }
+#plugin-root * { box-sizing:border-box; }
+#plugin-root fig-content { display:block; flex:1; min-height:0; overflow:auto; padding:0; }
+#plugin-root .content { padding:16px; }
+#plugin-root h1,#plugin-root h2,#plugin-root p { margin:0; padding:0; }
+#plugin-root h1 { font:600 18px/1.3 Inter,system-ui,sans-serif; letter-spacing:-.025em; }
+#plugin-root h2 { font:600 14px/1.4 Inter,system-ui,sans-serif; }
+#plugin-root .lead { color:var(--muted); margin-top:4px; font-size:12px; }
+#plugin-root button,#plugin-root input,#plugin-root select,#plugin-root textarea { font:inherit; color:var(--text); letter-spacing:normal; }
+#plugin-root button,#plugin-root .download-link { appearance:none; display:inline-flex; align-items:center; justify-content:center; min-height:32px; padding:6px 10px; border:1px solid var(--border); border-radius:6px; background:var(--bg); color:var(--text); font-size:12px; line-height:18px; cursor:pointer; white-space:nowrap; text-decoration:none; box-shadow:none; }
+#plugin-root button:hover:not(:disabled),#plugin-root .download-link:hover { background:var(--soft); }
+#plugin-root button.primary { background:var(--brand); color:var(--on-brand); border-color:var(--brand); font-weight:550; }
+#plugin-root button:disabled { opacity:.45; cursor:default; }
+#plugin-root :is(button,input,textarea,select,summary,a):focus-visible { outline:2px solid var(--brand); outline-offset:2px; }
+#plugin-root .source { display:flex; gap:12px; align-items:center; margin-top:16px; padding:10px; border:1px solid var(--border); border-radius:8px; }
+#plugin-root .source-icon { display:grid; place-items:center; width:32px; height:32px; border-radius:7px; background:var(--soft); font-size:18px; flex-shrink:0; }
+#plugin-root .source-copy { flex:1; min-width:0; }
+#plugin-root .source-copy strong { display:block; font-weight:550; }
+#plugin-root #source-info { display:block; color:var(--muted); font-size:11px; overflow-wrap:anywhere; margin-top:2px; }
+#plugin-root #loaded { color:var(--muted); font-size:11px; margin:8px 0 0; }
+#plugin-root .result { margin:16px 0 12px; }
+#plugin-root .result-heading { display:flex; gap:10px; align-items:center; }
+#plugin-root .result-icon { display:grid; place-items:center; width:28px; height:28px; background:var(--soft); border-radius:50%; font-size:16px; font-weight:600; flex-shrink:0; }
+#plugin-root .result[data-state="success"] .result-icon { color:var(--success); }
+#plugin-root .result[data-state="conflict"] .result-icon { color:var(--danger); }
+#plugin-root #result-copy { color:var(--muted); margin:7px 0 0 38px; font-size:12px; }
+#plugin-root .metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:12px; }
+#plugin-root .metric { border:1px solid var(--border); border-radius:7px; padding:8px 10px; }
+#plugin-root .metric strong { display:block; font-size:20px; line-height:1.25; font-weight:600; font-variant-numeric:tabular-nums; }
+#plugin-root .metric span { display:block; margin-top:3px; color:var(--muted); font-size:11px; }
+#plugin-root #following { color:var(--muted); font-size:11px; margin-top:10px; }
+#plugin-root .notice { margin-top:14px; padding:10px 12px; border:1px solid var(--danger); border-radius:7px; color:var(--danger); overflow-wrap:anywhere; }
+#plugin-root #reconnect { margin-top:8px; }
+#plugin-root details { border:0; margin:0; padding:0; }
+#plugin-root summary { cursor:pointer; font-size:12px; color:var(--text); list-style:none; display:flex; align-items:center; gap:8px; padding:12px 0; }
+#plugin-root summary::-webkit-details-marker { display:none; }
+#plugin-root summary:before { content:'›'; font:16px/1 system-ui; width:8px; color:var(--muted); }
+#plugin-root details[open] > summary:before { transform:rotate(90deg); }
+#plugin-root summary small { margin-left:auto; color:var(--muted); font-size:11px; }
+#plugin-root .divider { border-top:1px solid var(--border); }
+#plugin-root .tabs { display:flex; gap:4px; margin:0 0 10px; }
+#plugin-root .tabs button { border:0; background:none; color:var(--muted); min-height:28px; padding:4px 8px; font-size:11px; }
+#plugin-root .tabs button[aria-pressed="true"] { background:var(--soft); color:var(--text); font-weight:550; }
+#plugin-root .table-wrap { max-height:236px; overflow:auto; border:1px solid var(--border); border-radius:7px; }
+#plugin-root table { width:100%; border-collapse:collapse; table-layout:fixed; font-size:11px; }
+#plugin-root th,#plugin-root td { padding:9px 10px; text-align:left; border-bottom:1px solid var(--border); vertical-align:top; overflow-wrap:anywhere; line-height:1.5; }
+#plugin-root th { position:sticky; top:0; background:var(--soft); color:var(--muted); font-size:10px; font-weight:500; z-index:1; }
+#plugin-root th:first-child { width:40%; }
+#plugin-root td small { display:block; font-size:10px; color:var(--muted); margin-top:3px; }
+#plugin-root .token-path { font-weight:500; }
+#plugin-root .action-tag { display:inline-block; font-size:9px; padding:1px 4px; margin-top:4px; background:var(--soft); color:var(--muted); border-radius:3px; }
+#plugin-root .color-chip { display:inline-block; width:10px; height:10px; border-radius:3px; border:1px solid var(--border); margin-right:5px; vertical-align:baseline; }
+#plugin-root .value { font:10px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace; }
+#plugin-root .pagination { display:flex; align-items:center; justify-content:space-between; gap:6px; margin:8px 0 12px; color:var(--muted); font-size:10px; }
+#plugin-root .pagination button { min-height:24px; padding:2px 7px; font-size:10px; }
+#plugin-root #empty-filter { text-align:center; padding:20px; color:var(--muted); }
+#plugin-root #conflicts { color:var(--danger); padding-left:18px; margin:12px 0; max-height:125px; overflow:auto; font-size:11px; }
+#plugin-root .section-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:4px 0 10px; }
+#plugin-root .section-copy,#plugin-root .footnote { color:var(--muted); font-size:11px; margin:4px 0 10px; }
+#plugin-root .text-button { border:0; padding:0; min-height:24px; color:var(--muted); background:none; font-size:11px; }
+#plugin-root .mapping-row { display:grid; grid-template-columns:90px minmax(0,1fr) minmax(0,1fr); gap:8px; align-items:center; margin:8px 0; }
+#plugin-root .mapping-row strong { font-size:11px; font-weight:500; }
+#plugin-root .mapping-head { color:var(--muted); font-size:10px; }
+#plugin-root select { appearance:auto; width:100%; min-width:0; height:32px; padding:5px 6px; border:1px solid var(--border); border-radius:5px; background:var(--bg); }
+#plugin-root .check-row { display:flex; align-items:flex-start; gap:8px; margin:12px 0; font-size:11px; cursor:pointer; }
+#plugin-root input[type="checkbox"] { appearance:auto; width:13px; height:13px; flex-shrink:0; margin:2px 0 0; accent-color:var(--brand); }
+#plugin-root .conflict-options { background:var(--soft); border-radius:6px; padding:0 10px; margin-top:10px; }
+#plugin-root .conflict-options .check-row:last-child { padding-bottom:10px; }
+#plugin-root .file-picker { display:block; padding:10px; border:1px dashed var(--border); border-radius:6px; margin:0 0 8px; }
+#plugin-root .file-picker input { display:block; width:100%; font-size:11px; margin-top:8px; }
+#plugin-root #filename { display:block; color:var(--muted); font-size:10px; }
+#plugin-root textarea { display:block; width:100%; height:100px; padding:8px; margin-bottom:8px; resize:vertical; border:1px solid var(--border); border-radius:5px; background:var(--soft); font:10px/1.5 ui-monospace,monospace; }
+#plugin-root .source-actions { display:flex; justify-content:flex-end; margin-bottom:12px; }
+#plugin-root .export-row { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:12px 0; padding-top:10px; border-top:1px solid var(--border); color:var(--muted); font-size:11px; }
+#plugin-root #download-panel { margin-top:12px; padding:12px; background:var(--soft); border-radius:7px; }
+#plugin-root .download-copy { color:var(--muted); margin:5px 0 10px; font-size:11px; }
+#plugin-root fig-footer { display:block; flex-shrink:0; padding:0; border-top:1px solid var(--border); background:var(--bg); }
+#plugin-root .footer { display:flex; align-items:center; gap:8px; padding:12px 20px; }
+#plugin-root #footer-hint { margin-right:auto; color:var(--muted); font-size:11px; }
+#plugin-root [hidden],#plugin-root #conflicts:empty { display:none !important; }
+@media (max-width:420px) { #plugin-root .content { padding:16px; } #plugin-root .footer { padding:10px 16px; flex-wrap:wrap; } #plugin-root .mapping-row { grid-template-columns:65px minmax(0,1fr) minmax(0,1fr); gap:6px; } #plugin-root #footer-hint { width:100%; } }
+</style></head>
+<body>
+
+<div id="plugin-root">
+<fig-content><div class="content">
+  <h1>Sync colors</h1><p class="lead">Published Stylos colors → this Figma file</p>
+  <section id="file-area">
+    <div class="source"><span class="source-icon" aria-hidden="true">◈</span><div class="source-copy"><strong id="source-name">Published colors</strong><span id="source-info">colors.arturtrifonov.com</span></div><button id="load-remote" type="button" disabled>Refresh</button></div>
+    <p id="loaded" hidden></p>
+  </section>
+  <div id="status" class="notice" role="status" aria-live="polite" hidden></div><button id="reconnect" type="button" hidden>Reconnect</button>
+  <section id="result" class="result" data-state="neutral" aria-live="polite"><div class="result-heading"><span id="result-icon" class="result-icon" aria-hidden="true">↻</span><h2 id="result-title">Connecting to Figma…</h2></div><p id="result-copy">Your file will be compared automatically. Nothing is applied without you.</p>
+    <div id="summary" class="metrics" hidden><div class="metric"><strong id="count-added">0</strong><span id="label-added">New variables</span></div><div class="metric"><strong id="count-updated">0</strong><span id="label-updated">Value updates</span></div><div class="metric"><strong id="count-unchanged">0</strong><span>Unchanged values</span></div></div><p id="following" hidden></p>
+  </section>
+  <section id="review-panel" hidden>
+    <ul id="conflicts"></ul>
+    <details id="change-details" class="divider"><summary><span id="change-title">Inspect changes</span><small id="change-count"></small></summary>
+      <div class="tabs" role="group" aria-label="Compared values"><button id="filter-changes" type="button" aria-pressed="true">Changes</button><button id="filter-following" type="button" aria-pressed="false">Following palette</button><button id="filter-unchanged" type="button" aria-pressed="false">Unchanged</button></div>
+      <div id="table-wrap" class="table-wrap"><table><thead><tr><th>Token</th><th>Before</th><th>After</th></tr></thead><tbody id="diff"></tbody></table></div><p id="empty-filter" hidden>No values in this group.</p>
+      <div class="pagination"><button id="previous" type="button">Previous</button><span id="row-count"></span><button id="next" type="button">Next</button></div>
+    </details>
+  </section>
+  <details id="configuration" class="divider" hidden><summary>Collections & options<small id="mapping-hint">Automatic matching</small></summary>
+    <div class="section-heading"><h2>Import into</h2><button id="refresh" class="text-button" type="button">Refresh collections</button></div><p class="section-copy">Matched by name. New collections and modes appear in the comparison before creation.</p><div id="targets" class="footnote"></div>
+    <div class="mapping-row mapping-head"><span></span><span>Collection</span><span>Mode</span></div>
+    <div class="mapping-row"><strong>Light palette</strong><select id="light-collection" aria-label="Light palette collection"></select><select id="light-mode" aria-label="Light palette mode"></select></div>
+    <div class="mapping-row"><strong>Dark palette</strong><select id="dark-collection" aria-label="Dark palette collection"></select><select id="dark-mode" aria-label="Dark palette mode"></select></div>
+    <label class="check-row"><input id="include-roles" type="checkbox" checked><span>Include semantic and special roles</span></label>
+    <div id="role-mapping"><div class="mapping-row"><strong>Color roles</strong><select id="roles-collection" aria-label="Color role collection"></select><span></span></div><div class="mapping-row"><strong>Light mode</strong><span></span><select id="roles-light" aria-label="Color light mode"></select></div><div class="mapping-row"><strong>Dark mode</strong><span></span><select id="roles-dark" aria-label="Color dark mode"></select></div></div>
+    <details id="conflict-options" class="conflict-options"><summary>Resolve conflicts</summary><label class="check-row"><input id="allow-overwrite" type="checkbox"><span>Replace palette values edited independently in Figma</span></label><label class="check-row"><input id="allow-rebind" type="checkbox"><span>Replace existing role bindings with Stylos bindings</span></label><p class="footnote">Only enable after inspecting the differences. Check again before applying.</p></details>
+    <div class="export-row"><span>Take this file’s palette back to Colors</span><button id="export" type="button" hidden>Export palette</button></div>
+  </details>
+  <details id="file-details" class="divider"><summary>Use a local JSON file</summary><p class="section-copy">For an unpublished draft: Export for Figma → Advanced → Download plugin transfer.</p><label class="file-picker">Open transfer JSON<input id="file" type="file" accept=".json,application/json" aria-label="Open JSON file"><span id="filename"></span></label><details id="paste-details"><summary>Paste JSON instead</summary><textarea id="source" aria-label="Transfer JSON" placeholder="Paste the complete transfer JSON" spellcheck="false"></textarea><div class="source-actions"><button id="load" type="button" disabled>Load tokens</button></div></details></details>
+  <section id="download-panel" hidden><h2>Palette draft is ready</h2><p class="download-copy">Download it, then choose Open JSON in Stylos Colors.</p><a id="download" class="download-link">Download draft</a></section>
+</div></fig-content>
+<fig-footer><div class="footer"><span id="footer-hint">No changes written</span><button id="review" type="button" disabled>Check again</button><button id="apply" class="primary" type="button" hidden disabled>Apply changes</button></div></fig-footer>
+</div>
+<script>
+(function () {
+  'use strict'
+  // Isolate our bindings from host/PropsKit globals. Native form controls also
+  // avoid depending on custom-element upgrade timing or nonstandard .value APIs.
+  const element = id => document.getElementById(id)
+  let collections = [], previewRows = [], page = 0, rowFilter = 'changes', queuedCheck = false, lastPreview = null
+  let connected = false, hasSource = false, canApply = false, reviewId = null
+  let sequence = 0, active = null, timeout = null, startupTimer = null, startupAttempts = 0, downloadUrl = null
+  let remoteController = null, autoLoadStarted = false, sourceLabel = 'Local JSON'
+  const publishedUrl = 'https://colors.arturtrifonov.com/stylos-colors.figma.json'
+  const post = message => window.parent.postMessage({ pluginMessage: message }, '*')
+  const flag = id => element(id).checked
+  const countText = (count, singular, plural = singular+'s') => count+' '+(count === 1 ? singular : plural)
+  function result(title, copy, state = 'neutral') {
+    element('result-title').textContent = title; element('result-copy').textContent = copy
+    element('result').dataset.state = state
+    element('result-icon').textContent = state === 'success' ? '✓' : state === 'conflict' ? '!' : '↻'
+  }
+  function status(text, state = '') {
+    element('status').textContent = text; element('status').hidden = state !== 'error'
+    if (state === 'error') { result('Could not complete the check', 'Nothing new was applied. See the error above.', 'conflict'); element('footer-hint').textContent = 'Action needed' }
+    else if (state !== 'success') result(text, 'Nothing is applied without you.')
+  }
+  function resize(height) { post({type:'resize',height}) }
+  function updateButtons() {
+    const busy = active !== null || remoteController !== null
+    element('load-remote').disabled = busy || !connected
+    element('load').disabled = busy || !connected || !element('source').value.trim()
+    for (const id of ['refresh','review','export']) element(id).disabled = busy || !connected || !hasSource
+    element('export').hidden = !hasSource
+    element('apply').hidden = reviewId === null || !canApply
+    element('apply').disabled = busy || !connected || !canApply
+    element('review').classList.toggle('primary', reviewId === null)
+    element('apply').textContent = lastPreview?.createVariables && !lastPreview?.updateValues ? 'Add to Figma' : 'Apply changes'
+    for (const id of ['file','source','light-collection','dark-collection','roles-collection','light-mode','dark-mode','roles-light','roles-dark','include-roles','allow-overwrite','allow-rebind']) element(id).disabled = busy
+  }
+  function invalidate(clearSource = false) {
+    reviewId = null; canApply = false; lastPreview = null; queuedCheck = false
+    element('review-panel').hidden = true; element('summary').hidden = true; element('following').hidden = true
+    element('footer-hint').textContent = 'Check required'
+    result('Ready to compare', 'Check this file against the loaded colors before applying.')
+    post({type:'invalidate'})
+    if (clearSource) {
+      hasSource = false; element('configuration').hidden = true; element('loaded').hidden = true
+      element('source-info').textContent = 'No tokens loaded.'
+      element('file-area').classList.remove('loaded')
+    }
+    updateButtons()
+  }
+  function finish() { clearTimeout(timeout); timeout = null; active = null; updateButtons(); maybeCheck() }
+  function compare() { queuedCheck = false; status('Comparing with this file…'); run('preview',{mapping:mapping()}) }
+  function maybeCheck() { if (queuedCheck && connected && hasSource && !active && !remoteController) compare() }
+  function run(type, values = {}) {
+    if (active) return
+    const requestId = ++sequence
+    active = {type,requestId}; updateButtons()
+    post({type,requestId,...values})
+    timeout = setTimeout(() => {
+      if (!active || active.requestId !== requestId) return
+      queuedCheck = false; connected = false; finish(); invalidate()
+      status('Figma did not respond. Reconnect or reopen the plugin.' + (type === 'apply' ? ' Check the file before retrying an import.' : ''),'error')
+      element('reconnect').hidden = false; updateButtons()
+    },20000)
+  }
+  function connect() {
+    remoteController?.abort(); remoteController = null
+    queuedCheck = false; connected = false; finish(); startupAttempts = 0; clearInterval(startupTimer)
+    element('reconnect').hidden = true; status('Connecting to Figma…')
+    const init = () => {
+      if (connected) { clearInterval(startupTimer); return }
+      if (++startupAttempts > 5) {
+        clearInterval(startupTimer); status('The plugin could not connect to Figma. Reconnect or reopen the plugin.','error'); element('reconnect').hidden = false; updateButtons(); return
+      }
+      // No busy lock: the initial iframe message may precede sandbox readiness.
+      post({type:'init',requestId:0})
+    }
+    init(); startupTimer = setInterval(init,1200); updateButtons()
+  }
+  function options(id, entries, selected) {
+    const control = element(id); control.replaceChildren()
+    for (const entry of entries) { const option = document.createElement('option'); option.value = entry.value; option.textContent = entry.label; control.appendChild(option) }
+    control.value = entries.some(entry => entry.value === selected) ? selected : entries[0]?.value || ''
+  }
+  function collectionOptions(id, name) {
+    const previous = element(id).value, matching = collections.filter(c => c.name === name)
+    const entries = [{value:'',label:'Choose a collection…'},...collections.map(c => ({value:c.id,label:c.name}))]
+    if (!matching.length) entries.push({value:'new:'+name,label:'Create '+name})
+    const keep = previous && !previous.startsWith('new:') && entries.some(item => item.value === previous)
+    options(id,entries,keep ? previous : matching.length === 1 ? matching[0].id : matching.length === 0 ? 'new:'+name : '')
+  }
+  function modeOptions(id, collectionId, expected) {
+    const previous = element(id).value, collection = collections.find(c => c.id === element(collectionId).value)
+    const entries = (collection?.modes || []).map(mode => ({value:mode.modeId,label:mode.name}))
+    if (!entries.some(entry => entry.label === expected)) entries.push({value:'new:'+expected,label:'Create '+expected})
+    options(id,entries,entries.some(entry => entry.value === previous) ? previous : entries.find(entry => entry.label === expected)?.value || 'new:'+expected)
+  }
+  const expectedModes = {'light-mode':'palette.light','dark-mode':'palette.dark','roles-light':'color.light','roles-dark':'color.dark'}
+  function refreshMapping() {
+    collectionOptions('light-collection','palette.light'); collectionOptions('dark-collection','palette.dark'); collectionOptions('roles-collection','color')
+    for (const [id,parent] of [['light-mode','light-collection'],['dark-mode','dark-collection'],['roles-light','roles-collection'],['roles-dark','roles-collection']]) modeOptions(id,parent,expectedModes[id])
+  }
+  function mapping() {
+    return {light:{collection:element('light-collection').value,mode:element('light-mode').value},dark:{collection:element('dark-collection').value,mode:element('dark-mode').value},roles:{collection:element('roles-collection').value,light:element('roles-light').value,dark:element('roles-dark').value},includeRoles:flag('include-roles'),allowOverwrite:flag('allow-overwrite'),allowRebind:flag('allow-rebind')}
+  }
+  function loadSource(label = 'Local JSON') {
+    if (!connected) { status('Connect to Figma before loading tokens.','error'); return }
+    const text = element('source').value
+    if (text.length > 2_000_000) { status('Choose a JSON file smaller than 2 MB.','error'); return }
+    try {
+      const data = JSON.parse(text)
+      if (data?.format !== 'stylos-figma-colors') throw new Error('Use Export for Figma → Advanced → Download plugin transfer in Colors. Native DTCG JSON belongs in Figma Variables → Import mode.')
+    } catch (error) { status(error instanceof SyntaxError ? 'This is not valid JSON. Paste the complete transfer file.' : error.message,'error'); return }
+    sourceLabel = label
+    invalidate(true); status('Loading color tokens…'); run('load',{text})
+  }
+  async function loadRemote() {
+    if (!connected || active || remoteController) return
+    invalidate()
+    const controller = new AbortController(); remoteController = controller
+    const timer = setTimeout(()=>controller.abort(),12000)
+    status('Loading published tokens from Stylos…'); updateButtons()
+    try {
+      const response = await fetch(publishedUrl,{credentials:'omit',cache:'no-store',redirect:'error',signal:controller.signal})
+      if (!response.ok) throw new Error('Server returned HTTP '+response.status+'.')
+      if (Number(response.headers.get('content-length')) > 2_000_000) throw new Error('The published token bundle is larger than 2 MB.')
+      const text = await response.text()
+      if (text.length > 2_000_000) throw new Error('The published token bundle is larger than 2 MB.')
+      const data = JSON.parse(text)
+      if (data?.format !== 'stylos-figma-colors') throw new Error('The server returned an unsupported token format.')
+      element('source').value = text; element('filename').textContent = ''
+      element('file-details').open = false
+      loadSource('Published Stylos tokens')
+    } catch (error) {
+      status('Could not load published tokens: '+(error.name === 'AbortError' ? 'the request timed out.' : error.message)+(hasSource ? ' The previous source is still loaded.' : ' Retry or import a local JSON file.'),'error')
+    } finally {
+      clearTimeout(timer)
+      if (remoteController === controller) remoteController = null
+      updateButtons(); maybeCheck()
+    }
+  }
+  function filteredRows() {
+    return previewRows.filter(row => rowFilter === 'changes' ? row.action !== 'unchanged' : rowFilter === 'following' ? row.followsPalette : row.action === 'unchanged' && !row.followsPalette)
+  }
+  function renderRows() {
+    const rows = filteredRows(); element('diff').replaceChildren()
+    for (const row of rows.slice(page*40,(page+1)*40)) {
+      const tr = document.createElement('tr'), token = document.createElement('td')
+      const path = document.createElement('div'); path.className = 'token-path'; path.textContent = row.path
+      const detail = document.createElement('small'); detail.textContent = row.collection+' · '+(row.theme === 'light' ? 'Light' : 'Dark')
+      const action = document.createElement('span'); action.className='action-tag'; action.textContent = row.followsPalette ? 'Follows palette' : row.action === 'create' ? 'Added' : row.action === 'update' ? 'Updated' : 'Unchanged'
+      token.append(path,detail,action); tr.appendChild(token)
+      for (const [text,color] of [[row.before,row.beforeColor],[row.after,row.afterColor]]) {
+        const td=document.createElement('td'); td.className='value'
+        if (/^#[0-9a-f]{6}$/i.test(color || '')) { const chip=document.createElement('span'); chip.className='color-chip'; chip.style.backgroundColor=color; chip.setAttribute('aria-hidden','true'); td.appendChild(chip) }
+        td.appendChild(document.createTextNode(text)); tr.appendChild(td)
+      }
+      element('diff').appendChild(tr)
+    }
+    element('table-wrap').hidden = !rows.length; element('empty-filter').hidden = rows.length > 0
+    element('row-count').textContent = rows.length ? rows.length <= 40 ? countText(rows.length,'value') : `${page*40+1}–${Math.min((page+1)*40,rows.length)} of ${rows.length} values` : '0 values'
+    element('previous').disabled = page === 0; element('next').disabled = (page+1)*40 >= rows.length
+    element('previous').hidden = rows.length <= 40; element('next').hidden = rows.length <= 40
+    for (const key of ['changes','following','unchanged']) element('filter-'+key).setAttribute('aria-pressed',String(key === rowFilter))
+  }
+  function showComparison(message, applied = false) {
+    lastPreview=message; previewRows=message.rows; page=0
+    const changes=message.createVariables+message.updateValues, affected=message.affectedRoles || 0
+    element('review-panel').hidden=false; element('summary').hidden=false
+    element('count-added').textContent=String(message.createVariables); element('count-updated').textContent=String(message.updateValues); element('count-unchanged').textContent=String(message.unchanged-affected)
+    element('label-added').textContent=applied ? 'Variables added' : 'New variables'; element('label-updated').textContent=applied ? 'Values updated' : 'Value updates'
+    element('following').hidden=!affected; element('following').textContent=`${countText(affected,'role value')} ${applied ? 'followed' : 'will follow'} changed palette colors automatically. Their bindings stay the same.`
+    element('targets').textContent=message.targets.map(target=>`${target.name} → ${target.modes.map(mode=>mode.name+(mode.create?' (new)':'')).join(', ')}${message.createCollections.includes(target.name)?' · new collection':''}`).join(' · ')
+    element('mapping-hint').textContent=message.targets.length+' collections · '+(message.createCollections.length ? message.createCollections.length+' new' : 'matched')
+    element('conflicts').replaceChildren()
+    for (const error of message.errors) { const li=document.createElement('li'); li.textContent=error; element('conflicts').appendChild(li) }
+    element('status').hidden=true
+    rowFilter=changes || message.errors.length ? 'changes' : 'unchanged'
+    element('change-title').textContent=applied ? 'What changed' : changes || message.errors.length ? 'Inspect differences' : 'Inspect compared values'
+    element('change-count').textContent=changes || message.errors.length ? countText(previewRows.filter(row=>row.action !== 'unchanged').length,'difference') : previewRows.length+' values'; element('change-details').open=Boolean(changes || message.errors.length)
+    if (applied) {
+      result('Changes applied', `${countText(message.createVariables,'variable')} added · ${countText(message.updateValues,'value')} updated. Use Figma Undo to revert this sync.`, 'success'); element('footer-hint').textContent='Applied · Undo in Figma'
+    } else if (message.errors.length) {
+      result(countText(message.errors.length,'conflict')+(message.errors.length === 1 ? ' needs' : ' need')+' a decision', 'Nothing has been applied. Inspect differences, then resolve conflicts in Collections & options.', 'conflict'); element('configuration').open=true; element('conflict-options').open=true; element('footer-hint').textContent='Resolve conflicts first'
+    } else if (changes) {
+      result(message.updateValues ? countText(message.updateValues,'value')+' to update' : countText(message.createVariables,'variable')+' to add', (message.createCollections.length ? 'New collections: '+message.createCollections.join(', ')+'. ' : '')+'Review the differences below, then apply to this file.'); element('footer-hint').textContent='Nothing applied yet'
+    } else {
+      result('Everything matches', 'This file already matches the loaded colors. No changes were made.', 'success'); element('footer-hint').textContent='Up to date'
+    }
+    renderRows(); resize(600); document.querySelector('fig-content').scrollTop=0
+  }
+  for (const key of ['changes','following','unchanged']) element('filter-'+key).addEventListener('click',()=>{ rowFilter=key; page=0; renderRows() })
+  element('reconnect').addEventListener('click',connect)
+  element('load-remote').addEventListener('click',loadRemote)
+  element('previous').addEventListener('click',()=>{ if(page>0) { page--;renderRows() } })
+  element('next').addEventListener('click',()=>{ if((page+1)*40<filteredRows().length) { page++;renderRows() } })
+  element('file').addEventListener('change',async event=>{
+    const file = event.target.files?.[0]; if(!file) return
+    invalidate(true)
+    if (file.size > 2_000_000) { status('Choose a JSON file smaller than 2 MB.','error'); event.target.value=''; return }
+    try { element('source').value = await file.text(); element('filename').textContent = file.name; loadSource('Local file: '+file.name) }
+    catch (error) { status('Could not read this file: '+error.message,'error') }
+    event.target.value=''
+  })
+  element('source').addEventListener('input',()=>{ invalidate(true); updateButtons() })
+  element('load').addEventListener('click',()=>loadSource())
+  for (const [id,modeIds] of [['light-collection',['light-mode']],['dark-collection',['dark-mode']],['roles-collection',['roles-light','roles-dark']]]) element(id).addEventListener('change',()=>{
+    invalidate(); for(const mode of modeIds) modeOptions(mode,id,expectedModes[mode])
+  })
+  for(const id of ['light-mode','dark-mode','roles-light','roles-dark','include-roles','allow-overwrite','allow-rebind']) element(id).addEventListener('change',()=>{
+    invalidate(); element('role-mapping').hidden = !flag('include-roles')
+  })
+  element('review').addEventListener('click',compare)
+  element('refresh').addEventListener('click',()=>{ invalidate(); run('init') })
+  element('apply').addEventListener('click',()=>{ if(reviewId !== null) { canApply=false; status('Applying reviewed changes…'); run('apply',{reviewId}) } })
+  element('export').addEventListener('click',()=>{ element('footer-hint').textContent='Preparing draft…'; run('export',{mapping:mapping()}) })
+  // addEventListener preserves host message listeners; do not overwrite onmessage.
+  window.addEventListener('message',event=>{
+    const message = event.data?.pluginMessage
+    if (!message || typeof message.type !== 'string') return
+    if (message.type === 'ready') {
+      connected = true; clearInterval(startupTimer); element('reconnect').hidden=true
+      if (!hasSource && !active && !autoLoadStarted) { autoLoadStarted = true; void loadRemote() }
+      updateButtons(); return
+    }
+    if (message.requestId !== 0 && message.requestId !== active?.requestId) return
+    if (message.requestId === 0 && active) return
+    if (message.type === 'collections') { collections=message.collections; refreshMapping() }
+    else if(message.type === 'loaded') {
+      hasSource=true; element('configuration').hidden=false; element('loaded').hidden=false
+      element('file-area').classList.add('loaded'); element('paste-details').open=false
+      element('load-remote').textContent = sourceLabel === 'Published Stylos tokens' ? 'Refresh' : 'Use published'
+      element('source-name').textContent = sourceLabel === 'Published Stylos tokens' ? 'Published colors' : sourceLabel
+      element('source-info').textContent = 'v'+message.version+' · loaded '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})
+      element('source-info').title = 'Source fingerprint: '+message.fingerprint
+      element('loaded').textContent=message.palette+' palette tokens · 2 themes · '+message.roles+' roles'
+      element('file-details').open=false; queuedCheck=true; status('Comparing with this file…')
+    } else if(message.type === 'preview') {
+      reviewId=message.reviewId; canApply=!message.errors.length && (message.createVariables>0 || message.updateValues>0 || message.createCollections.length>0)
+      showComparison(message)
+    } else if(message.type === 'applied') {
+      reviewId=null; canApply=false; showComparison(message,true)
+    }
+    else if(message.type === 'error') { invalidate(); status(message.message,'error'); if(message.requestId === 0) { clearInterval(startupTimer); element('reconnect').hidden=false } }
+    else if(message.type === 'download') {
+      if(downloadUrl) URL.revokeObjectURL(downloadUrl)
+      downloadUrl=URL.createObjectURL(new Blob([message.text],{type:'application/json'}))
+      element('download').href=downloadUrl; element('download').download=message.name; element('download-panel').hidden=false
+      element('footer-hint').textContent='Draft ready'; element('download-panel').scrollIntoView({block:'nearest'})
+    } else if(message.type === 'idle') { finish() }
+    updateButtons()
+  })
+  window.addEventListener('error',event=>{ finish(); status('The interface encountered an error: '+event.message,'error') })
+  window.addEventListener('unhandledrejection',event=>{ finish(); status('The interface encountered an error: '+String(event.reason),'error') })
+  connect()
+})()
+</script>
+</body></html>

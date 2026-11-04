@@ -9,12 +9,19 @@
   },
   "workspaces": [
     "packages/ui",
-    "apps/workshop"
+    "apps/workshop",
+    "apps/colors",
+    "apps/colors-server"
   ],
   "scripts": {
     "dev": "node tools/dev-site.mjs",
     "build": "node tools/build-site.mjs",
-    "build:publish": "npm run workshop:build && npm run build",
+    "build:publish": "npm run workshop:build && npm run colors:build && npm run build",
+    "colors": "npm run ui:build && node tools/build-colors-data.mjs && npm run dev -w stylos-colors",
+    "colors:build": "npm run ui:build && node tools/build-colors-data.mjs && npm run build -w stylos-colors",
+    "colors:check": "npm run ui:build && npm run check -w stylos-colors",
+    "colors:server:build": "npm run build -w stylos-colors-server",
+    "colors:review": "node tools/review-color-changes.mjs",
     "build:skills": "node tools/build-skills.mjs",
     "validate:skills": "node tools/build-skills.mjs --check",
     "validate:registry": "node tools/lint-registry.mjs",
@@ -36,9 +43,11 @@
     "lint:css": "stylelint \"packages/ui/src/**/*.{css,svelte}\"",
     "workshop": "npm run ui:generate && npm run dev -w stylos-workshop",
     "workshop:build": "npm run ui:generate && npm run build -w stylos-workshop",
-    "test": "node --test \"tools/**/*.test.mjs\" && npm run validate:rules"
+    "test": "node --test \"tools/**/*.test.mjs\" && npm run validate:rules",
+    "figma:tokens:check": "tsc -p apps/figma-tokens/tsconfig.json"
   },
   "devDependencies": {
+    "@figma/plugin-typings": "^1.142.0",
     "axe-core": "^4.14.0",
     "fontkit": "^2.0.4",
     "material-symbols": "^0.47.1",

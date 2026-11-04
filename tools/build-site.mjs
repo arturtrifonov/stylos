@@ -35,6 +35,7 @@ import {
 } from "./build-guidelines-view.mjs";
 import { renderHome, hasColumn } from "./build-home.mjs";
 import { readPlan } from "./lib/plan.mjs";
+import { buildColorsData } from "./build-colors-data.mjs";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const out = path.join(root, "build");
@@ -82,6 +83,11 @@ if (site.storybook) {
 // The guideline set — every file, `Yet to fill` included, because the site is
 // how readiness is read before alpha.
 const guidelines = buildGuidelinesData(root, { generated, repoUrl: site.repo });
+if (site.colors) {
+  cpSync(path.join(root, "apps/colors/dist"), path.join(out, "colors"), { recursive: true });
+  // Refresh the snapshot and theme on every site build, even when reusing the bundle.
+  buildColorsData(root, path.join(out, "colors"));
+}
 const guidelineChrome = (prefix) => ({
   themeCss: themeCss(theme, { prefix }),
   logo,
@@ -90,6 +96,7 @@ const guidelineChrome = (prefix) => ({
     active: "guidelines",
     logo,
     storybook: site.storybook,
+    colors: site.colors,
     figmaUrl: site.figmaMain,
     repoUrl: site.repo,
   }),
@@ -123,6 +130,7 @@ write(
       active: "registry",
       logo,
       storybook: site.storybook,
+      colors: site.colors,
       figmaUrl: site.figmaMain,
       repoUrl: site.repo,
       bleed: true,
@@ -145,6 +153,6 @@ console.log(
   `build/ — index.html, guidelines.html, registry.html, ${guidelinePages.size} guideline pages, ` +
     `${pages.size - 1} component pages, assets/` +
     (site.storybook ? ", storybook/" : "") +
+    (site.colors ? ", colors/" : "") +
     (hasColumn(root) ? "" : "\nassets/column.png is absent; the home page is built without the capital")
 );
-

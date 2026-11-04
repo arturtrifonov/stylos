@@ -79,6 +79,7 @@ const NAV = [
  * @param {string} options.active     which NAV page this is, or "" for none
  * @param {string} options.logo       inline SVG wordmark, or ""
  * @param {boolean} options.storybook whether build/storybook/ is in the tree
+ * @param {boolean} options.colors whether build/colors/ is in the tree
  * @param {string|null} options.figmaUrl  the Components library, or null
  * @param {string|null} options.repoUrl   the repository, or null
  */
@@ -87,6 +88,7 @@ export function renderSiteHeader({
   active = "",
   logo = "",
   storybook = false,
+  colors = false,
   figmaUrl = null,
   repoUrl = null,
   bleed = false,
@@ -99,6 +101,7 @@ export function renderSiteHeader({
       `<a href="${esc(`${prefix}${href}`)}"${page === active ? ' aria-current="page"' : ""}>${label}</a>`
   );
   if (storybook) links.push(`<a href="${esc(`${prefix}storybook/`)}">Storybook</a>`);
+  if (colors) links.push(`<a href="${esc(`${prefix}colors/`)}">Colors</a>`);
   if (figmaUrl) links.push(`<a class="ext" href="${esc(figmaUrl)}">Figma</a>`);
   if (repoUrl) links.push(`<a class="ext" href="${esc(repoUrl)}">GitHub</a>`);
 

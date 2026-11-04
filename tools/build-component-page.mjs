@@ -985,6 +985,7 @@ function siteChrome(context, up) {
       active: "components",
       logo: context.logo,
       storybook: context.site.storybook,
+      colors: context.site.colors,
       figmaUrl: context.site.figmaMain ?? context.site.figma?.[0]?.url ?? null,
       repoUrl: context.site.repo,
     }),

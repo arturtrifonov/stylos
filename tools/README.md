@@ -2,6 +2,49 @@
 
 Only scripts required to build or validate project artifacts. **Kept small and dependency-free** — a dependency is added only when a script genuinely cannot do its job without one, because every one of them is a thing to track, update and be broken by — add a dependency only when a script genuinely can't do its job without one.
 
+## `build-colors-data.mjs` and `review-color-changes.mjs`
+
+`npm run colors` and `colors:build` first project the canonical palette, semantic
+bindings and generated special family through `lib/tokens.mjs` into an editor
+snapshot. The SHA-256 fingerprint covers both values and canonical source
+records. The editor takes its theme and fonts from `@stylos/ui`, so `colors` and
+`colors:build` build that package first.
+The generated `stylos-colors.figma.json` uses the editor's existing complete
+transfer format for anonymous direct loading from the hosted plugin panel.
+The documentation build refreshes this data when including an existing editor
+bundle. `npm run colors:review -- <file>` validates a downloaded changes file
+against the current source, checks LCH/HEX agreement, validates the complete
+proposed set through the CSS builder and prints its diff and affected-role counts.
+With `--out <preview-directory>` it writes review.txt, impact.json, tokens.css,
+tokens.json and draft.json for trying the result in a consumer, and a proposed
+`_special.yaml` when the draft changes the scale. Neither command
+writes canonical token files. Browser and CLI share validation in
+`apps/colors/src/model.mjs`; see [the editor guide](../apps/colors/README.md).
+
+`node tools/package-colors-host.mjs` packages completed `colors:build` and
+`colors:server:build` outputs into `build/colors-host/`: static files, the bundled
+workspace API and Docker Compose/Caddy images. It includes no runtime credentials; see
+[`deploy/colors`](../deploy/colors/README.md) for the live host and update steps.
+`colors-server.test.mjs` exercises the real OIDC library against signed identity
+fixtures and checks owner-only saves, origin/CSRF, stale writes, persistence and
+explicit publication without touching the live server.
+
+## Figma color transfer checks
+
+`npm run figma:tokens:check` type-checks `apps/figma-tokens/code.ts` against the
+official Plugin API. `figma-tokens.test.mjs` executes the actual plugin core with
+a simulated API for import/return, alias/opacity preservation, stale plans,
+repeated imports and rollback. Source transfer construction is shared with the
+Colors editor in `apps/colors/src/figma-bundle.mjs`. Deployment and interactive
+acceptance are documented in [the plugin guide](../apps/figma-tokens/README.md).
+
+`node tools/preview-figma-tokens.mjs` serves the actual panel and entrypoint on
+`http://127.0.0.1:4176/` with an in-memory simulated variable API, including an
+unsupported relaunch API to exercise startup compatibility. It never modifies
+Figma. The fixture JSON, file/paste input, mapping, review, Apply and return
+export can be exercised through the browser UI. The panel's automatic published
+token request reaches the real public Colors endpoint; only Figma is simulated.
+
 ## `build-skills.mjs`
 
 Compiles `skills/src/*/SKILL.md` into `skills/dist/stylos-figma-agent.md`, in the order declared by `skills/targets/figma-agent.md`. No dependencies — plain Node, run via:
@@ -249,7 +292,7 @@ Shared, dependency-free modules for the above.
 
 `lib/verify.mjs` checks the canonical set against itself — every reference resolves, none loop, mode dependence is declared.
 
-`lib/tokens.mjs` loads `tokens/*.yaml` into an in-memory model and resolves references — following `effect/shadow/color/base` through `color` into `palette`, in whichever theme is asked for. It is the one place that knows the canonical shape, so a consumer never re-implements YAML → model — the planned colour and accessibility viewer is meant to use it rather than grow a second reader.
+`lib/tokens.mjs` loads `tokens/*.yaml` into an in-memory model and resolves references — following `effect/shadow/color/base` through `color` into `palette`, in whichever theme is asked for. It is the one place that knows the canonical shape. The Colors editor's snapshot is projected through this loader too.
 
 `lib/special-colors.mjs` generates the special colour roles from `tokens/_special.yaml` and validates that scale (FND-COLOR-14). `lib/tokens.mjs` applies it when loading `color`; `loadCanonical(root, names, { derived: false })` returns the record alone, for the importer and for `check-tokens.mjs`.
 

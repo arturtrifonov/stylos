@@ -8,3 +8,11 @@ packages/ui/src/components/*/props.ts
 packages/ui/src/components/icon/icons.ts
 apps/workshop/stories/generated/
 apps/workshop/storybook-static/
+apps/colors/dist/
+apps/colors-server/dist/
+apps/colors-server/.env
+apps/colors-server/data/
+deploy/colors/.env
+apps/colors/public/stylos-colors.figma.json
+apps/colors/public/stylos.json
+apps/colors/public/LICENSE.huetone.txt

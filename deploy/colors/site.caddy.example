@@ -1,0 +1,12 @@
+# Replace colors.example.com with the chosen domain before installing this file
+# as /srv/caddy/sites/stylos-colors.caddy on the host.
+colors.example.com {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy same-origin
+		X-Robots-Tag "noindex, nofollow"
+	}
+	reverse_proxy stylos-colors:8080
+}

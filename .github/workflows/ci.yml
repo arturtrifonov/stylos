@@ -23,6 +23,8 @@ jobs:
       - run: npm run validate:skills
       - run: npm run tokens:check
       - run: npm run tokens:css
+      - run: npm run figma:tokens:check
+      - run: npm run colors:build
       - run: npm run build
       - run: npm run lint:css
       - run: npm run ui:check

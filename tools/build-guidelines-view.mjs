@@ -460,6 +460,7 @@ if (isMain) {
       active,
       logo: loadChrome(root, { prefix }).logo,
       storybook: site.storybook,
+      colors: site.colors,
       figmaUrl: site.figmaMain,
       repoUrl: site.repo,
     }),
