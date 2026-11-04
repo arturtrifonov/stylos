@@ -8,9 +8,11 @@
   let text = $derived(value)
   const invalid = $derived(!HEX.test(text))
 
-  function typed() {
+  // InputText calls oninput before its binding reaches text.
+  function typed(event: Event) {
+    const next = (event.target as HTMLInputElement).value
     onEditStart()
-    if (HEX.test(text)) onChange(text)
+    if (HEX.test(next)) onChange(next)
   }
 </script>
 
