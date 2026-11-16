@@ -40,7 +40,7 @@ When the work asked for is done, offer the acceptance as the one decision of the
    ```bash
    sha=$(gh pr view <number> --json headRefOid -q .headRefOid)
    for i in $(seq 90); do
-     gh api 'repos/{owner}/{repo}/issues/<number>/comments' \
+     gh api --paginate 'repos/{owner}/{repo}/issues/<number>/comments' \
        --jq '.[] | select(.user.login == "chatgpt-codex-connector[bot]") | .body' \
        | grep -q "\"commit_sha\":\"$sha\"[^}]*\"status\":\"completed\"" && { echo reviewed; exit 0; }
      sleep 20
@@ -48,7 +48,7 @@ When the work asked for is done, offer the acceptance as the one decision of the
    echo "no review after 30 minutes"
    ```
 
-3. Read what Codex found: its comments on the pull request, and its review with inline comments when it has findings, `gh api 'repos/{owner}/{repo}/pulls/<number>/comments'`. Fix what is right, in the same pull request, and run the definition-of-done checks again. Answer in its thread what is not fixed, and why. Do not ask for another review.
+3. Read what Codex found: its comments on the pull request, and its review with inline comments when it has findings, `gh api --paginate 'repos/{owner}/{repo}/pulls/<number>/comments'` — every page, because the default is the first 30 comments. Fix what is right, in the same pull request, and run the definition-of-done checks again. Answer in its thread what is not fixed, and why. Do not ask for another review.
 
 4. Merge when nothing is left and CI is green: `gh pr merge <number> --squash --delete-branch`. The owner's word that the work is ready is their call to merge. Then pull `master` in the main checkout if it is on `master` and clean, and send a push notification that it is merged.
 
