@@ -471,8 +471,10 @@ provide native associations without changing Label's CSS.
 
 `TextArea` uses one native `textarea`, with a Medium default, no placeholder
 and no counter unless requested. It fills its parent. The five density presets
-start at 68/88/108/124/148 units, with native vertical resizing and overflow;
-no cloned value, custom scrollbar DOM or resize-handle drawing is needed.
+start at 60/76/88/108/128 units — three lines of text at Input Text's font
+size — and shrink to one line, exactly as tall as Input Text (24/32/40/48/56).
+Native vertical resizing and overflow apply; no cloned value, custom scrollbar
+DOM or resize-handle drawing is needed.
 
 ```svelte
 <script>
