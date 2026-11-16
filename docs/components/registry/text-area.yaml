@@ -30,7 +30,7 @@ parents:
   - "Modal"
   - "Drawer"
   - "Side Panel Menu"
-notes: "Owner-directed component review completed 2026-10-26 against the updated Figma set. Counter sizes 10/10/12/12/14 and the counter-off default were confirmed by the owner; Figma was left unchanged during implementation. Scoped evidence: packages/ui/verification/text-area-2026-10-26.md. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): the counter is described in words through `counter accessible text`; the visible count is hidden from assistive technology. With a visible label the field is named from the label text by aria-labelledby (Label's `label text id`) instead of a duplicating aria-label."
+notes: "Owner-directed component review completed 2026-10-26 against the updated Figma set. Counter sizes 10/10/12/12/14 and the counter-off default were confirmed by the owner; Figma was left unchanged during implementation. Scoped evidence: packages/ui/verification/text-area-2026-10-26.md. Amended 2026-11-03 (owner decision, Orca review, packages/ui/verification/orca-2026-11-03.md): the counter is described in words through `counter accessible text`; the visible count is hidden from assistive technology. With a visible label the field is named from the label text by aria-labelledby (Label's `label text id`) instead of a duplicating aria-label. Amended 2026-11-16 (owner decision, implementation session): the body takes Input Text's font sizes 12/14/16/20/24 with the text line heights 18/22/24/30/36; the block padding is derived so that one line is as tall as Input Text, 24/32/40/48/56. The Figma set was changed to the same values the same day, all 140 variants."
 import:
   batch: 1
   ready: true
@@ -221,7 +221,7 @@ sizing_model:
   adjustable:
     horizontal: true
     vertical: true
-  intent: "Five density presets set three initial native lines: two body line heights plus the matching single-line field height. Native vertical resizing can reduce the field to one line. The parent controls width. The validation indicator overlays the content without reserving text width; its glyph and backdrop align with Input Text. Optional leading and trailing snippets still reserve space. Icon gaps and top alignment follow the multiline design; native overflow and resizing replace its static scrollbar and handle drawings."
+  intent: "Five density presets set three initial native lines: two body line heights plus the matching single-line field height. The body uses Input Text's font size with the text line height, and the block padding is the remainder of Input Text's height, so a one-line field is exactly as tall as Input Text. Native vertical resizing can reduce the field to one line. The parent controls width. The validation indicator overlays the content without reserving text width; its glyph and backdrop align with Input Text. Optional leading and trailing snippets still reserve space. Icon gaps and top alignment follow the multiline design; native overflow and resizing replace its static scrollbar and handle drawings."
   sizes:
     -
       size: "extra small"
@@ -234,8 +234,8 @@ sizing_model:
       counter_line_height: "line height/string/0_625"
       padding_x: "gap/g-1_000"
       padding_y: "gap/g-0_500"
-      font_size: "size/0_875"
-      line_height: "line height/text/0_875"
+      font_size: "size/0_750"
+      line_height: "line height/text/0_750"
     -
       size: "small"
       counter_height: "line height/string/0_750"
@@ -247,8 +247,8 @@ sizing_model:
       counter_line_height: "line height/string/0_625"
       padding_x: "gap/g-1_250"
       padding_y: "gap/g-0_750"
-      font_size: "size/1_125"
-      line_height: "line height/text/1_125"
+      font_size: "size/0_875"
+      line_height: "line height/text/0_875"
     -
       size: "medium"
       counter_height: "line height/string/0_750"
@@ -260,8 +260,8 @@ sizing_model:
       counter_line_height: "line height/string/0_750"
       padding_x: "gap/g-1_500"
       padding_y: "gap/g-1_000"
-      font_size: "size/1_375"
-      line_height: "line height/text/1_375"
+      font_size: "size/1_000"
+      line_height: "line height/text/1_000"
     -
       size: "large"
       counter_height: "line height/string/0_875"
@@ -273,8 +273,8 @@ sizing_model:
       counter_line_height: "line height/string/0_750"
       padding_x: "gap/g-2_000"
       padding_y: "gap/g-1_250"
-      font_size: "size/1_625"
-      line_height: "line height/text/1_625"
+      font_size: "size/1_250"
+      line_height: "line height/text/1_250"
     -
       size: "extra large"
       counter_height: "line height/string/0_875"
@@ -286,8 +286,8 @@ sizing_model:
       counter_line_height: "line height/string/0_875"
       padding_x: "gap/g-2_500"
       padding_y: "gap/g-1_500"
-      font_size: "size/1_875"
-      line_height: "line height/text/1_875"
+      font_size: "size/1_500"
+      line_height: "line height/text/1_500"
 a11y:
   -
     status: "requires"
@@ -301,7 +301,7 @@ a11y:
 figma:
   file_key: "WUc07ZBtjRvypXtsOlbVut"
   node_id: "4780:26517"
-  last_verified: "2026-10-26"
+  last_verified: "2026-11-16"
 limitations:
   - "Whole-release Chrome/Orca, contrast and two-theme accessibility acceptance remain in packages/ui/verification/0.3.0.md; this component review does not close those gates."
   - "Migration: Medium replaces XS as default; placeholder and counter default off. Length limits are numeric props. Counter text is optional custom copy; omitting it derives a live count, with no implicit maximum."

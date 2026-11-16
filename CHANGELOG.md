@@ -4,6 +4,13 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ## [Unreleased]
 
+### Changed
+
+- Text Area takes Input Text's size scale: body text is 12/14/16/20/24 with the
+  taller text line height, and the block padding is derived so that a one-line
+  Text Area is exactly as tall as Input Text. The initial three-line height
+  becomes 60/76/88/108/128.
+
 ### Fixed
 
 - Restore published color loading in the Figma plugin after enabling the Colors
