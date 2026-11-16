@@ -8,8 +8,9 @@
 .stylos-text-area > .stylos-label { padding-inline: 0; }
 .stylos-text-area-field { height: auto; }
 
-/* Three native line boxes match Figma's trimmed three-line viewport. The
- * one-line minimum provides the remaining padding, without a value wrapper. */
+/* The body takes Input Text's font size with the taller text line height. The
+ * block padding is what remains of the single-line field height, so one line
+ * is exactly as tall as Input Text; the initial height adds two more lines. */
 .stylos-text-area .stylos-text-area-field > textarea {
   height: calc(var(--_stylos-input-height) + 2 * var(--_stylos-area-line));
   min-height: var(--_stylos-input-height);
@@ -17,7 +18,6 @@
   resize: vertical;
   overflow: auto;
   font-weight: var(--stylos-font-weight-base);
-  font-size: var(--_stylos-area-font);
   line-height: var(--_stylos-area-line);
   text-overflow: clip;
 }
@@ -68,8 +68,7 @@
   --_stylos-area-stack-gap: var(--stylos-dimension-gap-g-0_500);
   --_stylos-input-gap: var(--stylos-dimension-gap-g-0_750);
   --_stylos-area-padding: var(--stylos-dimension-gap-g-0_500);
-  --_stylos-area-font: var(--stylos-font-size-0_875);
-  --_stylos-area-line: var(--stylos-font-line-height-text-0_875);
+  --_stylos-area-line: var(--stylos-font-line-height-text-0_750);
   --_stylos-area-counter-font: var(--stylos-font-size-0_625);
   --_stylos-area-counter-line: var(--stylos-font-line-height-string-0_625);
   --_stylos-area-counter-height: var(--stylos-font-line-height-string-0_625);
@@ -79,8 +78,7 @@
   --_stylos-area-stack-gap: var(--stylos-dimension-gap-g-0_625);
   --_stylos-input-gap: var(--stylos-dimension-gap-g-0_875);
   --_stylos-area-padding: var(--stylos-dimension-gap-g-0_750);
-  --_stylos-area-font: var(--stylos-font-size-1_125);
-  --_stylos-area-line: var(--stylos-font-line-height-text-1_125);
+  --_stylos-area-line: var(--stylos-font-line-height-text-0_875);
   --_stylos-area-counter-font: var(--stylos-font-size-0_625);
   --_stylos-area-counter-line: var(--stylos-font-line-height-string-0_625);
   --_stylos-area-counter-height: var(--stylos-font-line-height-string-0_750);
@@ -90,8 +88,7 @@
   --_stylos-area-stack-gap: var(--stylos-dimension-gap-g-0_750);
   --_stylos-input-gap: var(--stylos-dimension-gap-g-1_000);
   --_stylos-area-padding: var(--stylos-dimension-gap-g-1_000);
-  --_stylos-area-font: var(--stylos-font-size-1_375);
-  --_stylos-area-line: var(--stylos-font-line-height-text-1_375);
+  --_stylos-area-line: var(--stylos-font-line-height-text-1_000);
   --_stylos-area-counter-font: var(--stylos-font-size-0_750);
   --_stylos-area-counter-line: var(--stylos-font-line-height-string-0_750);
   --_stylos-area-counter-height: var(--stylos-font-line-height-string-0_750);
@@ -101,8 +98,7 @@
   --_stylos-area-stack-gap: var(--stylos-dimension-gap-g-0_875);
   --_stylos-input-gap: var(--stylos-dimension-gap-g-1_250);
   --_stylos-area-padding: var(--stylos-dimension-gap-g-1_250);
-  --_stylos-area-font: var(--stylos-font-size-1_625);
-  --_stylos-area-line: var(--stylos-font-line-height-text-1_625);
+  --_stylos-area-line: var(--stylos-font-line-height-text-1_250);
   --_stylos-area-counter-font: var(--stylos-font-size-0_750);
   --_stylos-area-counter-line: var(--stylos-font-line-height-string-0_750);
   --_stylos-area-counter-height: var(--stylos-font-line-height-string-0_875);
@@ -112,8 +108,7 @@
   --_stylos-area-stack-gap: var(--stylos-dimension-gap-g-1_000);
   --_stylos-input-gap: var(--stylos-dimension-gap-g-1_500);
   --_stylos-area-padding: var(--stylos-dimension-gap-g-1_500);
-  --_stylos-area-font: var(--stylos-font-size-1_875);
-  --_stylos-area-line: var(--stylos-font-line-height-text-1_875);
+  --_stylos-area-line: var(--stylos-font-line-height-text-1_500);
   --_stylos-area-counter-font: var(--stylos-font-size-0_875);
   --_stylos-area-counter-line: var(--stylos-font-line-height-string-0_875);
   --_stylos-area-counter-height: var(--stylos-font-line-height-string-0_875);
