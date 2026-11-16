@@ -10,7 +10,7 @@ Working rules for agent sessions in this repository. The flow they implement is 
 
 ## Git
 
-- **Never commit to `master`. Never `git merge`. Never `git tag`. Never push to `master`.** Work goes to a branch off `master` and reaches it through `gh pr create` and a squash-merge on GitHub. Releases are a person's act, made through the release ritual (SPEC 0008 §7) — never by an agent.
+- **Never commit to `master`. Never `git merge`. Never `git tag`. Never push to `master`.** Work goes to a branch off `master` and reaches it through `gh pr create --draft` and a squash-merge on GitHub, by the acceptance below. Releases are a person's act, made through the release ritual (SPEC 0008 §7) — never by an agent.
 - The PR title is the squash commit subject, in the imperative. The PR body holds the `CHANGELOG.md` lines the change earns.
 - Head branches are deleted after merge.
 
@@ -19,6 +19,44 @@ merge and release `0.2.0` now, moving all unfinished acceptance to `0.3.0` and t
 former proof release to `0.4.0` (`PLAN.md` §1). The agent may execute this specific
 release through GitHub after green CI. The prohibitions on direct master
 commits/pushes and local merges/tags remain; this is not standing release authority.
+
+## A pull request: draft, then one word to review and merge
+
+**Added 2026-11-16 — owner decision, taken from the flow in `arturtrifonov/dos`.** A pull request is opened as a draft, `gh pr create --draft`. While it is a draft the owner looks at the work and asks for more, and those changes go into the same pull request.
+
+When the work asked for is done, offer the acceptance as the one decision of the turn. The owner's word that the work is ready (ready, take it, out of draft) starts the acceptance, and the agent carries it to the end without them:
+
+1. Mark the pull request ready and ask Codex for a review. Codex reviews only when a comment asks it to; marking ready alone starts nothing.
+
+   ```bash
+   gh pr ready <number>
+   gh pr comment <number> --body "@codex review"
+   ```
+
+   Never write `@codex` in a pull request's description or anywhere else on it but this comment: Codex takes a mention elsewhere as a task and answers that it has no environment.
+
+2. Wait for the review in the background, with Bash `run_in_background`, so that its end wakes the session. Codex keeps a summary comment on the pull request with a `codex-review-state` mark, which names the commit it reviewed and whether the review is completed:
+
+   ```bash
+   sha=$(gh pr view <number> --json headRefOid -q .headRefOid)
+   for i in $(seq 90); do
+     gh api 'repos/{owner}/{repo}/issues/<number>/comments' \
+       --jq '.[] | select(.user.login == "chatgpt-codex-connector[bot]") | .body' \
+       | grep -q "\"commit_sha\":\"$sha\"[^}]*\"status\":\"completed\"" && { echo reviewed; exit 0; }
+     sleep 20
+   done
+   echo "no review after 30 minutes"
+   ```
+
+3. Read what Codex found: its comments on the pull request, and its review with inline comments when it has findings, `gh api 'repos/{owner}/{repo}/pulls/<number>/comments'`. Fix what is right, in the same pull request, and run the definition-of-done checks again. Answer in its thread what is not fixed, and why. Do not ask for another review.
+
+4. Merge when nothing is left and CI is green: `gh pr merge <number> --squash --delete-branch`. The owner's word that the work is ready is their call to merge. Then pull `master` in the main checkout if it is on `master` and clean, and send a push notification that it is merged.
+
+Stop before the merge, tell the owner, and send a push notification, when a finding needs their decision (what the work means, its scope, a design choice, a rule or a contract, anything they asked for), when a check fails or the branch conflicts with `master`, or when no review came in 30 minutes.
+
+When the owner says ready without a review, mark the pull request ready and merge it at once, with no comment to Codex and without steps 2 and 3. If they mark it ready on GitHub themselves, do nothing until they write.
+
+This covers the merge of one pull request and nothing else: `git merge`, tags and releases stay as *Git* above states them.
 
 ## Definition of done for a pull request
 
