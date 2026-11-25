@@ -6,6 +6,13 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Changed
 
+- **Colors is decided to become a standalone editor.** Owner decision of
+  2026-11-25, recorded in `PLAN.md` §4.4 with its work order: Stylos becomes one
+  project among several, a project's structure is inferred from an import such as
+  Figma's variable export, Colors owns the data rather than syncing with Figma,
+  and storage is pluggable, with the hosted server kept for the owner's projects.
+  Nothing of it is built yet.
+
 - Text Area takes Input Text's size scale: body text is 12/14/16/20/24 with the
   taller text line height, and the block padding is derived so that a one-line
   Text Area is exactly as tall as Input Text. The initial three-line height
