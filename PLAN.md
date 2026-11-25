@@ -410,7 +410,8 @@ The decisions:
    token, a local folder through the File System Access API, and a GitHub
    repository by personal token.
 
-Work order, at the 2026-11-25 estimate of four to five weeks of focused work:
+Work order, at the 2026-11-25 estimate of 22–34 focused days — five to seven
+weeks, with the inference spike on top:
 
 | Step | Scope | Estimate |
 | --- | --- | ---: |
