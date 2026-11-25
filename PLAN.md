@@ -426,6 +426,33 @@ Inference is the main risk, so a spike runs alongside step 1: the reader and a
 recognition report against a corpus of real exports — Stylos plus two or three
 public systems with different layouts — before the editor is rebuilt.
 
+**Spike built, 2026-11-25.** `apps/colors/src/import/` reads Figma's native
+export and plain DTCG and recognises collections, palette, themes, ramps, roles,
+states, preview kinds and per-hue role families; `npm run colors:import-report`
+prints what it found. The corpus is Stylos — the real token set, written by
+Colors' own native export rather than exported from Figma — and three synthetic
+systems laid out the common ways: shared single-mode primitives, tonal 0–100
+palettes, and twelve-step scales with alpha variants. On Stylos it finds the
+parallel `palette.light`/`palette.dark` collections and, unprompted, the eleven
+lines of the special scale with the fixed-hue disabled lines. What it means for
+step 1:
+
+- A palette may serve every theme at once, have one mode per theme, or be one
+  collection per theme. The model needs all three; today it assumes the last.
+- Step order is not lightness order: Stylos's dark palette and tonal palettes
+  run dark to light. Steps are any numbers (1–12, 0–100, 25–975), and a ramp may
+  carry extra steps, so "every hue has the same steps" becomes a warning.
+- Alpha ramps and named variants of a ramp exist and need a place.
+- Figma names export files after modes, so a semantic collection's name is not
+  in the export: the review asks for it.
+- Many roles carry `ALL_SCOPES`; preview kind then rests on names or stays
+  unknown, and the review lets a person set it.
+- Per-hue role families are a general pattern, not a Stylos one, so the special
+  scale becomes a general project rule.
+
+Still owed: real Figma exports — Stylos / Styles through Variables → Export, and
+at least one outside system — run through the report before step 3.
+
 **Its own repository, after step 2 — owner decision, 2026-11-25.** Colors
 leaves this repository once steps 1 and 2 are merged: by then the general model
 and the storage layer have cut its ties to `tools/`, and until then the Stylos
