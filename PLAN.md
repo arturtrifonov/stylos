@@ -430,8 +430,13 @@ public systems with different layouts — before the editor is rebuilt.
 leaves this repository once steps 1 and 2 are merged: by then the general model
 and the storage layer have cut its ties to `tools/`, and until then the Stylos
 checks guard the Stylos project against regressions. The move takes `apps/colors`,
-`apps/colors-server`, `deploy/colors` and the Colors tooling and tests, and drops
-`colors:build` from this repository's CI and `build/colors/` from the site.
+`apps/colors-server`, `deploy/colors`, the Figma plugin `apps/figma-tokens` and
+the Colors and plugin tooling and tests (`figma:tokens:check`,
+`figma-tokens.test.mjs`, `preview-figma-tokens.mjs`), and drops `colors:build`
+and the plugin check from this repository's CI and `build/colors/` from the site.
+The plugin goes with Colors because it reads Colors' transfer format and
+published address, its tests import the Colors model, and step 6 changes it;
+it is then Colors' plugin, not a Stylos token tool.
 Steps 3–6 are built there. Before the move, settle how Colors consumes
 `@stylos/ui`, which is private and unpublished: a published package (for
 instance GitHub Packages), a git dependency, or a temporary copy (§6).
