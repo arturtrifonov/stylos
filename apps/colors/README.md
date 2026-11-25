@@ -133,6 +133,20 @@ editor works from HTTP(S); browser modules require a local server rather than
 opening `index.html` directly from disk. Restart `npm run colors` after importing
 new canonical tokens to regenerate the development snapshot.
 
+## Import recognition (spike)
+
+`src/import/` is the spike for the standalone work order in
+[`PLAN.md`](../../PLAN.md) §4.4, not yet wired into the editor. `read.mjs` reads
+Figma's native variable export (DTCG with `com.figma.*` extensions) and plain DTCG;
+`infer.mjs` recognises collections, palette ramps and their direction, themes and
+how they reach the palette, role hierarchy, states, preview kinds and per-hue
+role families; `report.mjs` prints the result.
+
+```sh
+npm run colors:import-report -- path/to/export-folder
+npm run colors:import-report -- --samples      # Stylos and three synthetic layouts
+```
+
 ## Upstream
 
 The colour engine, interpolation, graph controls and worker renderer under

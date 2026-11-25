@@ -26,6 +26,10 @@ All notable changes to the Stylos Design System project (foundations, components
 
 ### Added
 
+- **Colors recognises a token export (spike).** `npm run colors:import-report`
+  reads Figma's native variable export or plain DTCG and reports the palette,
+  themes, ramps, roles, states and per-hue role families it finds. Run on Stylos,
+  it finds the special scale's eleven lines by itself. Not yet part of the editor.
 - **Colors assigns roles and sets the special scale.** A semantic role can move
   to any palette step, separately in light and dark. The eleven lines of the
   special scale are editable, and every hue follows them at once. Both travel in

@@ -22,6 +22,7 @@
     "colors:check": "npm run ui:build && npm run check -w stylos-colors",
     "colors:server:build": "npm run build -w stylos-colors-server",
     "colors:review": "node tools/review-color-changes.mjs",
+    "colors:import-report": "node tools/colors-import-report.mjs",
     "build:skills": "node tools/build-skills.mjs",
     "validate:skills": "node tools/build-skills.mjs --check",
     "validate:registry": "node tools/lint-registry.mjs",
