@@ -11,6 +11,7 @@ All notable changes to the Stylos Design System project (foundations, components
   project among several, a project's structure is inferred from an import such as
   Figma's variable export, Colors owns the data rather than syncing with Figma,
   and storage is pluggable, with the hosted server kept for the owner's projects.
+  Colors moves to its own repository after the second step of that work order.
   Nothing of it is built yet.
 
 - Text Area takes Input Text's size scale: body text is 12/14/16/20/24 with the

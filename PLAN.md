@@ -426,8 +426,15 @@ Inference is the main risk, so a spike runs alongside step 1: the reader and a
 recognition report against a corpus of real exports — Stylos plus two or three
 public systems with different layouts — before the editor is rebuilt.
 
-Still open: whether Colors leaves this repository for its own, which also
-settles how Stylos is consumed by it (§6).
+**Its own repository, after step 2 — owner decision, 2026-11-25.** Colors
+leaves this repository once steps 1 and 2 are merged: by then the general model
+and the storage layer have cut its ties to `tools/`, and until then the Stylos
+checks guard the Stylos project against regressions. The move takes `apps/colors`,
+`apps/colors-server`, `deploy/colors` and the Colors tooling and tests, and drops
+`colors:build` from this repository's CI and `build/colors/` from the site.
+Steps 3–6 are built there. Before the move, settle how Colors consumes
+`@stylos/ui`, which is private and unpublished: a published package (for
+instance GitHub Packages), a git dependency, or a temporary copy (§6).
 
 ## 5. Schedule
 
@@ -459,7 +466,7 @@ Do **not** pull: the consumer skill or `registry.json` — requirement 2 of the 
 | Evidence for WCAG 2.2 AA across complete pages and processes | component evidence in Stage 5; full-interface assessment of the Stage 6 proof, combining automated checks and human evaluation |
 | Component-specific token depth | provisional "none" (SPEC 0007 §9) until a component needs one |
 | Licence, and the distribution channel that depends on it | alpha |
-| Whether standalone Colors moves to its own repository | owner, before step 1 of the standalone Colors work order (§4.4) |
+| How standalone Colors consumes `@stylos/ui` once it has its own repository | owner, before the move after step 2 of the standalone Colors work order (§4.4); 2026-11-25: the owner decided the move itself |
 
 **The guideline set is a list of open questions with a file each.** SPEC 0013 created `docs/behavior/`, `docs/patterns/` and `docs/content/` complete and empty, plus nine more foundations; every file marked *Yet to fill* is something the system has not decided. They are not listed one by one here — the directory indexes are the list, and `npm run validate:rules` counts them. Filling one is per-topic work, scheduled when a component or a screen needs the answer, and the migration of the eight written foundations to the rule grammar is sequenced in that spec's §7.
 
