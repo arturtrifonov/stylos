@@ -242,6 +242,15 @@ still import supported JSON, open published colors and edit/export local drafts.
 Client credentials never enter browser/plugin code. Sessions expire and are
 lost on API restart; saved records persist. This service does not change the
 canonical repository import path or publish the Figma library.
+**Owner decision 2026-11-25 — standalone Colors, not yet built.** Colors is to
+become a standalone editor in which Stylos is one project: it owns project data,
+infers a project's structure from an import (Figma's variable export first),
+keeps several projects, and reaches them through a pluggable storage layer whose
+hosted instance serves the owner only. Figma stays an import source and export
+target, never a synchronised source of truth, and the canonical `tokens/` path
+above is unchanged. Everything described above remains what is built until the
+work order in [`PLAN.md`](PLAN.md) §4.4 lands; that section holds the decision
+in full.
 
 ### 2.2 Components
 

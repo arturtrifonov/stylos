@@ -355,6 +355,79 @@ special-scale editing and broader token types to the plugin. Hue and step
 additions are already part of the browser draft; consumer-specific themes follow
 base authoring. No new release gate or automatic library publication is added.
 
+#### Standalone Colors — owner decision, 2026-11-25
+
+**Decided by the owner in an implementation session (`CLAUDE.md`, amendment of
+2026-09-06), stated here before anything is built on it.** Colors becomes a
+standalone colour-system editor. Stylos is one project in it, not the shape of
+the tool. Nothing below is built yet; the built surface is still the one the
+follow-ups above describe.
+
+Today Stylos is wired through every layer of the editor: the snapshot comes from
+`tokens/` through the canonical loader and is fingerprinted by its YAML files;
+the model fixes two themes, `hue/step` paths with steps 25–975, a `mono` group
+and the special scale; role grouping and previews name Stylos roles; the draft
+and transfer formats are `stylos-*` and reject any other source; the server keeps
+one Stylos record. The Huetone colour engine, graphs, projections, history and
+contrast are already independent.
+
+The decisions:
+
+1. **Colors owns its data.** A project's palette, roles and coordinates live in
+   Colors and leave it by export. Figma is not the source of truth and is not
+   synchronised with; it is one export target and one import source. For Stylos
+   the repository path is unchanged: `tokens/` still comes from Figma through
+   `tokens:import`, which keeps inferring nothing.
+2. **Structure is inferred on import, not configured by hand.** A project is
+   created from what already exists. The first source is Figma's native variable
+   export (DTCG documents, one per collection and mode); other DTCG producers and
+   CSS custom properties may follow. The import infers collections from shared
+   path sets, palette from literal values and roles from aliases, themes from
+   modes or from parallel single-mode collections, hue groups and ordered steps
+   from paths, loose colours that are not ramps, role hierarchy and states from
+   path segments, preview kind from Figma scopes, and opacity. The person sees
+   what was recognised and corrects only the exceptions. LCH coordinates are
+   derived from the imported HEX and then kept by the project. Per-hue role
+   families such as the special scale are a later inference.
+3. **The model is general.** Any number of themes, any path depth, roles with
+   alpha, coordinates, and optional project rules. Stylos's special scale and its
+   `FND-COLOR-*` checks become rules of the Stylos project, not of the tool.
+4. **Projects.** One editor keeps several colour systems. A project is a full
+   document with its own revisions, not a diff against a source. It is created by
+   import, from a project file, empty, or as a duplicate. The current Stylos
+   working and published records migrate into the first project; the public
+   `stylos-colors.figma.json` keeps serving it, and each project gets its own
+   published address for the plugin.
+5. **Storage is a pluggable layer, and the hosted server is the owner's only.**
+   The editor reaches projects through one interface — list, open, save against
+   a revision, publish, history — and never through hard-coded endpoints. Built
+   first: the browser (IndexedDB, with file exchange), which is how anyone else
+   uses the tool, and the owner's server behind the existing owner-only Pocket ID
+   sign-in. There are no accounts or shared projects for other people. The
+   server's API is the documented storage protocol, so others can bring their
+   own host. Later, on demand: the server as a self-hostable image with its own
+   OIDC settings, connecting a remote host from the hosted editor by URL and
+   token, a local folder through the File System Access API, and a GitHub
+   repository by personal token.
+
+Work order, at the 2026-11-25 estimate of four to five weeks of focused work:
+
+| Step | Scope | Estimate |
+| --- | --- | ---: |
+| 1 | General project model; `model.mjs` and the editor state rewritten; Stylos through an adapter so nothing regresses | 4–6 days |
+| 2 | Storage interface, browser projects, server projects with per-project history and published address, Stylos migration | 4–6 days |
+| 3 | DTCG and Figma-export reader, reusing the repository's DTCG parsing | 2–3 days |
+| 4 | Structure inference and the "what was recognised" review | 4–6 days |
+| 5 | Interface without Stylos roles: N themes, role tree, previews by scope; project list and switching | 5–8 days |
+| 6 | General export; Stylos rules as project rules; plugin chooses a project | 3–5 days |
+
+Inference is the main risk, so a spike runs alongside step 1: the reader and a
+recognition report against a corpus of real exports — Stylos plus two or three
+public systems with different layouts — before the editor is rebuilt.
+
+Still open: whether Colors leaves this repository for its own, which also
+settles how Stylos is consumed by it (§6).
+
 ## 5. Schedule
 
 At 5–10 h/week, from 2026-09-06:
@@ -385,6 +458,7 @@ Do **not** pull: the consumer skill or `registry.json` — requirement 2 of the 
 | Evidence for WCAG 2.2 AA across complete pages and processes | component evidence in Stage 5; full-interface assessment of the Stage 6 proof, combining automated checks and human evaluation |
 | Component-specific token depth | provisional "none" (SPEC 0007 §9) until a component needs one |
 | Licence, and the distribution channel that depends on it | alpha |
+| Whether standalone Colors moves to its own repository | owner, before step 1 of the standalone Colors work order (§4.4) |
 
 **The guideline set is a list of open questions with a file each.** SPEC 0013 created `docs/behavior/`, `docs/patterns/` and `docs/content/` complete and empty, plus nine more foundations; every file marked *Yet to fill* is something the system has not decided. They are not listed one by one here — the directory indexes are the list, and `npm run validate:rules` counts them. Filling one is per-topic work, scheduled when a component or a screen needs the answer, and the migration of the eight written foundations to the rule grammar is sequenced in that spec's §7.
 
